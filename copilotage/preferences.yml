@@ -1,0 +1,21 @@
+language: fr
+style:
+  tone: concise
+  code_comments: fr
+  explains_when: minimal # expliquer seulement quand utile
+commits:
+  convention: conventional_commits
+  scope_examples: [core, router, markdown, build, docs, test, chore]
+quality_gates:
+  type_check: required
+  build: required
+  tests: optional_mvp # à renforcer plus tard
+review:
+  checklist:
+    - code lisible et petit diff
+    - breaking changes documentées
+    - scripts et docs alignés
+ai_collaboration:
+  prompt_defaults:
+    - "Résume les changements en 1-2 phrases"
+    - "Propose 1-2 tests rapides si possible"

@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "sitemap": "node tools/build-sitemap.mjs"
+    "sitemap": "node tools/build-sitemap.mjs",
+    "type-check": "tsc --noEmit",
+    "check": "npm run type-check && npm run build"
   },
   "dependencies": {
     "highlight.js": "^11.9.0",
