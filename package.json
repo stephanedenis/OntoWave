@@ -17,7 +17,7 @@
     "markdown-it": "^14.1.0",
     "markdown-it-anchor": "^8.6.7",
     "markdown-it-footnote": "^3.0.3",
-    "markdown-it-katex": "^0.6.0",
+    "markdown-it-katex": "^2.0.3",
     "mermaid": "^10.9.1"
   },
   "devDependencies": {
