@@ -1,0 +1,8 @@
+{
+  "defaultBranch": "main",
+  "conventionalCommits": true,
+  "languages": ["fr", "en"],
+  "codeStyle": "prettier: standard",
+  "requireTests": true,
+  "prChecklistPath": ".github/pull_request_template.md"
+}
