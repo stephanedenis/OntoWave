@@ -1,0 +1,71 @@
+name: "Feature Request"
+description: "Proposer une fonctionnalité"
+labels: [enhancement]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de suivre Copilotage: l’issue pilote la branche et la PR.
+        
+  - Branche: "<type>/issue-<num>-<slug>"
+  - Lors de l'ouverture de la PR: ajoutez les labels `prov:host=…`, `prov:pid=…`, `agent:GitHubCopilot`, `model=…`, `owner=…` (utilisez le script gh_pr_open.sh)
+  - type: input
+    id: goal
+    attributes:
+      label: Objectif
+      placeholder: Quel problème résout-on ?
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Portée minimale
+      description: Décrivez le MVP et les non-objectifs
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Critères d’acceptation
+      description: Liste de vérification concise
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Vérifications
+      options:
+        - label: Compatible avec la stratégie Camping (léger)
+        - label: Journal de session prévu
+  - type: dropdown
+    id: queue
+    attributes:
+      label: File (queue)
+      options:
+        - queue:backlog
+        - queue:ready
+        - queue:doing
+        - queue:blocked
+        - queue:done
+    validations:
+      required: false
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priorité
+      options:
+        - priority:low
+        - priority:normal
+        - priority:high
+        - priority:urgent
+    validations:
+      required: false
+  - type: dropdown
+    id: size
+    attributes:
+      label: Taille estimée
+      options:
+        - size:XS
+        - size:S
+        - size:M
+        - size:L
+        - size:XL
+    validations:
+      required: false
