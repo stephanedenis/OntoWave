@@ -7,6 +7,7 @@
   "prebuild": "npm run sitemap && npm run pageslist",
     "dev": "vite",
     "build": "vite build",
+  "postbuild": "bash -lc 'mkdir -p docs/content && rsync -a --delete content/ docs/content/'",
     "preview": "vite preview",
     "sitemap": "node tools/build-sitemap.mjs",
   "pageslist": "node tools/build-pages-txt.mjs",

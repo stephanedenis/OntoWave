@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OntoWave</title>
+    <link rel="icon" type="image/svg+xml" href='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSIxNiIgZmlsbD0iI0ZGMTQ4MCIvPjxwYXRoIGQ9Ik0xMCAyMEwyMCAxMkgxMCIgc3Ryb2tlPSIjRkZGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==' />
     <script>
       (function () {
         var canonical = 'ontowave.com';
@@ -21,10 +22,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
     <style>
-      :root { --max: 980px; }
-      body { margin: 0; font: 16px/1.5 system-ui, Arial, sans-serif; }
+  :root { --max: 980px; }
+  body { margin: 0; font: 16px/1.5 system-ui, Arial, sans-serif; }
   header { border-bottom: 1px solid #eee; }
-      .container { max-width: var(--max); margin: 0 auto; padding: 1rem; }
+  .container { max-width: var(--max); margin: 0 auto; padding: 1rem; }
       nav a { margin-right: .75rem; text-decoration: none; color: #0366d6; }
   .brand { font-weight: 700; margin-right: 1rem; }
   .search { position: relative; display: inline-block; }
@@ -44,7 +45,12 @@
       .content img { max-width: 100%; }
       pre { overflow: auto; background: #f6f8fa; padding: 1rem; }
       code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-      @media (max-width: 1000px) { .layout { grid-template-columns: 1fr; } .sidebar, .toc { display:none } }
+  @media (max-width: 1000px) { .layout { grid-template-columns: 1fr; } .sidebar, .toc { display:none } }
+  /* Minimal reading mode */
+  .minimal header, .minimal #sidebar, .minimal #toc, .minimal nav { display: none !important }
+  .minimal .layout { grid-template-columns: 1fr; }
+  .minimal .container { max-width: 46rem; }
+  .minimal #app { padding: 1.25rem 0 }
     .admonition { border-left: 4px solid #ddd; background: #fafafa; padding: .75rem; margin: 1rem 0; border-radius: 4px; }
     .admonition-title { margin: 0 0 .5rem; font-weight: 600; text-transform: capitalize; }
     .admonition.note { border-color: #3b82f6; }
@@ -96,24 +102,12 @@
         </details>
       </div>
     </header>
-    <main class="container layout">
+  <main class="container layout">
       <aside id="sidebar" class="sidebar"></aside>
       <div id="app" class="content">Chargement…</div>
       <aside id="toc" class="toc"></aside>
     </main>
-    <div class="floating-menu" id="floating-menu">
-      <details>
-        <summary>⋮</summary>
-        <ul>
-          <li><a href="#/">Accueil</a></li>
-          <li><a href="#/fr/demo/overview">Démo</a></li>
-          <li><a href="#/en/demo/overview">Demo</a></li>
-          <li><a href="#/fr">FR</a> · <a href="#/en">EN</a></li>
-          <li><a href="#/config">Configuration</a></li>
-          <li><a href="#/about">À propos</a></li>
-        </ul>
-      </details>
-    </div>
+  <div class="floating-menu" id="floating-menu"><details><summary>⋮</summary><ul><li><a href="#/config">Configuration</a></li></ul></details></div>
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <script type="module" src="/src/main.ts"></script>
   </body>

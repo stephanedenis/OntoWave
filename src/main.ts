@@ -22,6 +22,7 @@ import { renderConfigPage } from './adapters/browser/configPage'
     const F = document.getElementById('floating-menu')
     const ui = cfg.ui || {}
     if (ui.minimal) {
+  document.body.classList.add('minimal')
       H?.classList.add('hidden-by-config'); S?.classList.add('hidden-by-config'); T?.classList.add('hidden-by-config')
     } else {
       if (ui.header === false) H?.classList.add('hidden-by-config')
