@@ -1,0 +1,12 @@
+# Exemple de navigation (ordre et labels)
+- Accueil: index.md
+- Démonstrations:
+  - Aperçu: demo.md
+  - Mermaid: demo/mermaid.md
+  - PlantUML: demo/plantuml.md
+  - Graphviz: demo/graphviz.md
+  - D2: demo/d2.md
+  - Math: demo/math.md
+  - Admonitions: demo/admonitions.md
+  - Code: demo/code.md
+  - Liens: demo/links.md

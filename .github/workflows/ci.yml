@@ -21,14 +21,13 @@ jobs:
         run: npm ci || npm install
       - name: Generate sitemap
         run: npm run sitemap
+      - name: Lint
+        run: npm run lint --if-present
       - name: Type check
         run: npm run type-check
+      - name: Test
+        run: npm run test:ci --if-present
       - name: Build
         run: npm run build
-      - name: Upload dist artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist
-          if-no-files-found: warn
+      - name: List docs output
+        run: ls -la docs | head -n 100

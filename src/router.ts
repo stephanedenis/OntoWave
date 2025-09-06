@@ -8,7 +8,7 @@ export function getCurrentRoute(): Route {
   return { path }
 }
 
-export function onRouteChange(cb: (r: Route) => void) {
+export function onRouteChange(cb: (_r: Route) => void) {
   const handler = () => cb(getCurrentRoute())
   window.addEventListener('hashchange', handler)
   // Intercepter clicks internes

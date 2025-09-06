@@ -6,11 +6,19 @@ async function readConfig() {
   try {
     const raw = await fs.readFile(path.join('public', 'config.json'), 'utf8');
     const cfg = JSON.parse(raw);
-    const roots = Array.isArray(cfg.contentRoots) ? cfg.contentRoots : (cfg.contentRoot ? [cfg.contentRoot] : ['content']);
+    const roots = Array.isArray(cfg.roots) ? cfg.roots : [{ base: '/', root: '/content' }];
     return roots;
   } catch {
-    return ['content'];
+    return [{ base: '/', root: '/content' }];
   }
+}
+
+async function extractTitle(p) {
+  try {
+    const raw = await fs.readFile(p, 'utf8');
+    const m = /^(?:\s|\uFEFF)*#\s+(.+)$/m.exec(raw);
+    return m ? m[1].trim() : null;
+  } catch { return null }
 }
 
 async function walk(dir, base = dir, acc = []) {
@@ -21,7 +29,8 @@ async function walk(dir, base = dir, acc = []) {
     else if (e.isFile() && e.name.toLowerCase().endsWith('.md')) {
       const rel = path.relative(base, p);
       const route = '#/' + rel.replace(/\\.md$/i, '').replace(/\\\\/g, '/');
-      acc.push({ path: p, route });
+      const title = await extractTitle(p);
+      acc.push({ path: p, route, title });
     }
   }
   return acc;
@@ -32,12 +41,15 @@ async function main() {
   let items = [];
   for (const r of roots) {
     try {
-      const exist = await fs.stat(r).then(s => s.isDirectory()).catch(() => false);
+      const dir = r.root.replace(/^\//,'');
+      const exist = await fs.stat(dir).then(s => s.isDirectory()).catch(() => false);
       if (!exist) continue;
-      const listed = await walk(r);
+      const listed = await walk(dir);
       items = items.concat(listed);
     } catch {}
   }
+  // Tri simple par chemin
+  items.sort((a, b) => a.route.localeCompare(b.route));
   const out = { generatedAt: new Date().toISOString(), count: items.length, items };
   await fs.mkdir('public', { recursive: true });
   await fs.writeFile(path.join('public', 'sitemap.json'), JSON.stringify(out, null, 2));

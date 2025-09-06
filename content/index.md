@@ -3,7 +3,7 @@
 Ceci est un MVP « OntoWave ».
 
 - Navigation: utilisez les liens markdown pour référencer d’autres pages.
-- Exemple: [Page de démonstration](demo.md)
+- Exemples: [Page de démonstration](demo.md) · [Mermaid](demo/mermaid.md) · [PlantUML](demo/plantuml.md)
 
 ---
 

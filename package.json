@@ -9,29 +9,36 @@
     "preview": "vite preview",
     "sitemap": "node tools/build-sitemap.mjs",
     "type-check": "tsc --noEmit",
-    "check": "npm run type-check && npm run build",
+  "check": "npm run lint && npm run type-check && npm run test && npm run build",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "format": "prettier -w .",
     "lint:fix": "eslint --fix \"src/**/*.{ts,tsx}\"",
-    "release": "standard-version"
+  "test": "vitest run",
+  "test:watch": "vitest",
+  "test:ci": "vitest run --coverage",
+  "release": "standard-version"
   },
   "dependencies": {
     "highlight.js": "^11.9.0",
     "katex": "^0.16.10",
     "markdown-it": "^14.1.0",
+  "markdown-it-container": "^4.0.0",
     "markdown-it-anchor": "^8.6.7",
     "markdown-it-footnote": "^3.0.3",
     "markdown-it-katex": "^2.0.3",
     "markdown-it-link-attributes": "^4.0.1",
-    "mermaid": "^10.9.1"
+  "mermaid": "^10.9.1",
+  "yaml": "^2.5.1"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.42.0",
     "@typescript-eslint/parser": "^8.42.0",
-    "eslint": "^9.34.0",
+  "eslint": "^9.34.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "prettier": "^3.6.2",
+  "@vitest/coverage-v8": "^2.0.5",
+  "vitest": "^2.0.5",
     "standard-version": "^9.5.0",
     "typescript": "^5.5.4",
     "vite": "^5.4.0"

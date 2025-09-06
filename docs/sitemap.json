@@ -1,0 +1,56 @@
+{
+  "generatedAt": "2025-09-06T17:05:38.389Z",
+  "count": 10,
+  "items": [
+    {
+      "path": "content/demo.md",
+      "route": "#/demo.md",
+      "title": "Démonstrations OntoWave"
+    },
+    {
+      "path": "content/demo/admonitions.md",
+      "route": "#/demo/admonitions.md",
+      "title": "Admonitions"
+    },
+    {
+      "path": "content/demo/code.md",
+      "route": "#/demo/code.md",
+      "title": "Code & Surlignage"
+    },
+    {
+      "path": "content/demo/d2.md",
+      "route": "#/demo/d2.md",
+      "title": "D2 (via Kroki)"
+    },
+    {
+      "path": "content/demo/graphviz.md",
+      "route": "#/demo/graphviz.md",
+      "title": "Graphviz / DOT (via Kroki)"
+    },
+    {
+      "path": "content/demo/links.md",
+      "route": "#/demo/links.md",
+      "title": "Liens & Navigation"
+    },
+    {
+      "path": "content/demo/math.md",
+      "route": "#/demo/math.md",
+      "title": "Math (KaTeX)"
+    },
+    {
+      "path": "content/demo/mermaid.md",
+      "route": "#/demo/mermaid.md",
+      "title": "Mermaid"
+    },
+    {
+      "path": "content/demo/plantuml.md",
+      "route": "#/demo/plantuml.md",
+      "title": "PlantUML (via Kroki)"
+    },
+    {
+      "path": "content/index.md",
+      "route": "#/index.md",
+      "title": "Bienvenue"
+    }
+  ]
+}
