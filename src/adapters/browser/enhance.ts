@@ -1,3 +1,4 @@
+import { getJsonFromBundle } from './bundle'
 
 function buildTocFromHtml(html: string): string {
   const h = globalThis.document?.createElement('div')
@@ -68,8 +69,7 @@ export async function enhancePage(appEl: HTMLElement, html: string) {
   // Submodules delegation: détecter _delegate.json ou CNAME dans un sous-dossier immédiatement sous la base (en/fr/...), et proposer une bascule
   try {
     const getBaseMap = async () => {
-      const resp = await fetch('/config.json', { cache: 'no-cache' })
-      const cfg = await resp.json().catch(() => ({}))
+  const cfg = getJsonFromBundle('/config.json') || await fetch('/config.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => ({}))
       const map: Record<string, string> = {}
       for (const r of (cfg.roots || [])) {
         const base = (r.base === '/' ? '' : String(r.base || '').replace(/^\/+|\/+$/g, ''))
