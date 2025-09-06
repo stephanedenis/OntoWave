@@ -12,6 +12,18 @@ import { buildSidebar, buildPrevNext } from './adapters/browser/navigation'
   const res = await fetch('/config.json', { cache: 'no-cache' })
   const cfg = await res.json()
   const engine = cfg.engine ?? 'v2'
+  // i18n: détecter la langue préférée et rediriger vers la base correspondante si on est à la racine
+  try {
+    if (location.hash === '' || location.hash === '#/' || location.hash === '#') {
+      const supported: string[] = (cfg.i18n?.supported || []).map((s: string) => String(s).toLowerCase())
+      const defLang: string = String(cfg.i18n?.default || 'en').toLowerCase()
+      const navLangs = navigator.languages?.map(l => l.split('-')[0].toLowerCase()) || []
+      const pick = navLangs.find(l => supported.includes(l)) || defLang
+      if (supported.length > 0) {
+        location.hash = `#/${pick}`
+      }
+    }
+  } catch {}
   // Brand
   const brand = document.getElementById('brand')
   if (brand && typeof cfg.brand === 'string') brand.textContent = cfg.brand
@@ -22,7 +34,7 @@ import { buildSidebar, buildPrevNext } from './adapters/browser/navigation'
       router: browserRouter,
       view: browserView,
   md: createMdV2({ light: false }),
-  enhance: { afterRender: async (html, _route) => {
+      enhance: { afterRender: async (html, _route) => {
         const appEl = document.getElementById('app')!
         await enhancePage(appEl, html)
         // Sidebar
@@ -42,6 +54,20 @@ import { buildSidebar, buildPrevNext } from './adapters/browser/navigation'
             <span>${pn.next ? `<a href="${pn.next}">Suivant →</a>` : ''}</span>
           </div>`
         appEl.appendChild(footer)
+        // Prefetch prev/next pour accélérer la nav
+        const prefetch = async (href: string) => {
+          try {
+            const u = href.replace(/^#/, '')
+            const resp = await fetch('/sitemap.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => null)
+            const items = resp?.items || []
+            const match = items.find((it: any) => it.route === href)
+            if (!match) return
+            const md = match.path?.replace(/^\//,'') || ''
+            if (md) { await fetch('/' + md, { cache: 'force-cache' }).catch(() => {}) }
+          } catch {}
+        }
+        if (pn.prev) prefetch(pn.prev)
+        if (pn.next) prefetch(pn.next)
       } },
     })
     await app.start()

@@ -65,4 +65,17 @@ export async function enhancePage(appEl: HTMLElement, html: string) {
   // Mermaid / Kroki
   await renderMermaid(appEl)
   await renderKroki(appEl)
+  // Submodule delegate hints: si un lien externe GitHub Pages est mentionné en haut du doc, proposer la bascule
+  try {
+    const banner = appEl.querySelector('p a[href*="github.io"], p a[href*="pages.github.com" ]') as HTMLAnchorElement | null
+    if (banner && banner.href) {
+      const note = document.createElement('div')
+      note.style.margin = '1rem 0'
+      note.style.padding = '0.75rem'
+      note.style.background = '#fffbdd'
+      note.style.border = '1px solid #f0e6a0'
+      note.innerHTML = `Ce contenu semble avoir son propre site: <a href="${banner.href}">${banner.href}</a>. Ouvrir là-bas pour la navigation complète.`
+      appEl.prepend(note)
+    }
+  } catch {}
 }

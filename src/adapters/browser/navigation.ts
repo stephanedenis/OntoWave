@@ -8,24 +8,30 @@ export async function buildSidebar(): Promise<string> {
       if (y.ok) {
         const txt = await y.text()
         const { parse } = await import('yaml')
-        const nav = parse(txt) as any[]
-        const renderNav = (node: any): string => {
+        const nav = parse(txt) as any
+        const renderList = (node: any): string => {
           if (Array.isArray(node)) return `<ul>${node.map(renderNav).join('')}</ul>`
           if (typeof node === 'object' && node) {
             const [k, v] = Object.entries(node)[0]
             if (typeof v === 'string') return `<li><a href="#/${v.replace(/\.md$/i,'')}">${k}</a></li>`
-            if (Array.isArray(v)) return `<li><details open><summary>${k}</summary>${renderNav(v)}</details></li>`
+            if (Array.isArray(v)) return `<li><details open><summary>${k}</summary>${renderList(v)}</details></li>`
           }
           return ''
         }
-        return renderNav(nav)
+        // Support des sections par langue (fr:, en:)
+        if (!Array.isArray(nav) && typeof nav === 'object') {
+          const parts = Object.entries(nav).map(([lang, arr]) => `<details ${lang==='fr'?'open':''}><summary>${lang.toUpperCase()}</summary>${renderList(arr)}</details>`)
+          return parts.join('')
+        }
+        const renderNav = (node: any): string => renderList(node)
+        return renderList(nav)
       }
     } catch {}
 
     const res = await fetch('/sitemap.json', { cache: 'no-cache' })
     if (!res.ok) return ''
     const data = await res.json() as { items: SitemapItem[] }
-    const items = data.items || []
+      const items: { route: string; title?: string; base?: string }[] = data.items || []
     const tree = new Map()
     for (const it of items) {
       const path = it.route.replace('#/','')
@@ -50,6 +56,18 @@ export async function buildSidebar(): Promise<string> {
       }
       return ''
     }
+      const byBase = new Map<string, typeof items>()
+      for (const it of items) {
+        const b = (it.base || '').toString()
+        if (!byBase.has(b)) byBase.set(b, [])
+        byBase.get(b)!.push(it)
+      }
+      const sections = Array.from(byBase.entries()).map(([b, list]) => {
+        const label = b || 'root'
+        const ul = `<ul>${list.map(i => `<li><a href="${i.route}">${i.title || i.route.replace('#/','')}</a></li>`).join('')}</ul>`
+        return `<details ${b ? '' : 'open'}><summary>${label.toUpperCase()}</summary>${ul}</details>`
+      }).join('')
+      const html = sections || `<ul>${items.map(i => `<li><a href="${i.route}">${i.title || i.route.replace('#/','')}</a></li>`).join('')}</ul>`
   return renderNode(tree)
   } catch { return '' }
 }

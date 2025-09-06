@@ -1,56 +1,85 @@
 {
-  "generatedAt": "2025-09-06T17:05:38.389Z",
-  "count": 10,
+  "generatedAt": "2025-09-06T18:34:18.859Z",
+  "count": 12,
+  "i18n": {
+    "default": "fr",
+    "supported": [
+      "en",
+      "fr"
+    ]
+  },
   "items": [
     {
-      "path": "content/demo.md",
-      "route": "#/demo.md",
-      "title": "Démonstrations OntoWave"
+      "path": "content/en/demo/admonitions.md",
+      "route": "#/en/demo/admonitions.md",
+      "title": "Admonitions",
+      "base": "en"
     },
     {
-      "path": "content/demo/admonitions.md",
-      "route": "#/demo/admonitions.md",
-      "title": "Admonitions"
+      "path": "content/en/demo/code.md",
+      "route": "#/en/demo/code.md",
+      "title": "Code",
+      "base": "en"
     },
     {
-      "path": "content/demo/code.md",
-      "route": "#/demo/code.md",
-      "title": "Code & Surlignage"
+      "path": "content/en/demo/d2.md",
+      "route": "#/en/demo/d2.md",
+      "title": "D2 (via Kroki)",
+      "base": "en"
     },
     {
-      "path": "content/demo/d2.md",
-      "route": "#/demo/d2.md",
-      "title": "D2 (via Kroki)"
+      "path": "content/en/demo/graphviz.md",
+      "route": "#/en/demo/graphviz.md",
+      "title": "Graphviz (via Kroki)",
+      "base": "en"
     },
     {
-      "path": "content/demo/graphviz.md",
-      "route": "#/demo/graphviz.md",
-      "title": "Graphviz / DOT (via Kroki)"
+      "path": "content/en/demo/links.md",
+      "route": "#/en/demo/links.md",
+      "title": "Links",
+      "base": "en"
     },
     {
-      "path": "content/demo/links.md",
-      "route": "#/demo/links.md",
-      "title": "Liens & Navigation"
+      "path": "content/en/demo/math.md",
+      "route": "#/en/demo/math.md",
+      "title": "Math (KaTeX)",
+      "base": "en"
     },
     {
-      "path": "content/demo/math.md",
-      "route": "#/demo/math.md",
-      "title": "Math (KaTeX)"
+      "path": "content/en/demo/mermaid.md",
+      "route": "#/en/demo/mermaid.md",
+      "title": "Mermaid",
+      "base": "en"
     },
     {
-      "path": "content/demo/mermaid.md",
-      "route": "#/demo/mermaid.md",
-      "title": "Mermaid"
+      "path": "content/en/demo/overview.md",
+      "route": "#/en/demo/overview.md",
+      "title": "Features overview",
+      "base": "en"
     },
     {
-      "path": "content/demo/plantuml.md",
-      "route": "#/demo/plantuml.md",
-      "title": "PlantUML (via Kroki)"
+      "path": "content/en/demo/plantuml.md",
+      "route": "#/en/demo/plantuml.md",
+      "title": "PlantUML (via Kroki)",
+      "base": "en"
     },
     {
-      "path": "content/index.md",
-      "route": "#/index.md",
-      "title": "Bienvenue"
+      "path": "content/en/index.md",
+      "route": "#/en/index.md",
+      "title": "OntoWave",
+      "base": "en"
+    },
+    {
+      "path": "content/fr/demo/overview.md",
+      "route": "#/fr/demo/overview.md",
+      "title": "Aperçu des fonctionnalités",
+      "base": "fr"
+    },
+    {
+      "path": "content/fr/index.md",
+      "route": "#/fr/index.md",
+      "title": "OntoWave",
+      "base": "fr"
     }
   ]
 }

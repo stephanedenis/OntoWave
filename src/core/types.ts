@@ -1,7 +1,7 @@
 export type Route = { path: string }
 
 export type Root = { base: string; root: string }
-export type AppConfig = { roots: Root[]; engine?: 'legacy' | 'v2' }
+export type AppConfig = { roots: Root[]; engine?: 'legacy' | 'v2'; i18n?: { default: string; supported: string[] } }
 
 export interface ConfigService {
   load(): Promise<AppConfig>

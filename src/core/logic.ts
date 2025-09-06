@@ -8,11 +8,23 @@ export function normalizePath(path: string): string {
 export function resolveCandidates(roots: Root[], path: string): string[] {
   const candidates: string[] = []
   const p = normalizePath(path)
+  const tryRoots: Array<{ r: Root; sub: string }> = []
   for (const r of roots) {
+    const base = r.base === '/' ? '/' : ('/' + r.base.replace(/^\/+|\/+$/g, ''))
+    if (base === '/' || p === base || p.startsWith(base + '/')) {
+      const sub = base === '/' ? p : (p.slice(base.length) || '/')
+      tryRoots.push({ r, sub })
+    }
+  }
+  // Fallback: if nothing matched, try all roots as if base was '/'
+  if (tryRoots.length === 0) {
+    for (const r of roots) tryRoots.push({ r, sub: p })
+  }
+  for (const { r, sub } of tryRoots) {
     const prefix = r.root.replace(/\/$/, '')
-    const base = p === '/' ? '/index' : p
-    candidates.push(`${prefix}${base}.md`)
-    candidates.push(`${prefix}${p}/index.md`)
+    const baseSub = sub === '/' ? '/index' : sub
+    candidates.push(`${prefix}${baseSub}.md`)
+    candidates.push(`${prefix}${sub}/index.md`)
   }
   return candidates
 }

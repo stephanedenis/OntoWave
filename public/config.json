@@ -1,7 +1,9 @@
 {
   "engine": "v2",
   "brand": "OntoWave",
+  "i18n": { "default": "fr", "supported": ["en", "fr"] },
   "roots": [
-    { "base": "/", "root": "/content" }
+    { "base": "en", "root": "/content/en" },
+    { "base": "fr", "root": "/content/fr" }
   ]
 }

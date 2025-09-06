@@ -6,10 +6,10 @@ async function readConfig() {
   try {
     const raw = await fs.readFile(path.join('public', 'config.json'), 'utf8');
     const cfg = JSON.parse(raw);
-    const roots = Array.isArray(cfg.roots) ? cfg.roots : [{ base: '/', root: '/content' }];
-    return roots;
+  const roots = Array.isArray(cfg.roots) ? cfg.roots : [{ base: '/', root: '/content' }];
+  return { roots, cfg };
   } catch {
-    return [{ base: '/', root: '/content' }];
+  return { roots: [{ base: '/', root: '/content' }], cfg: {} };
   }
 }
 
@@ -37,7 +37,7 @@ async function walk(dir, base = dir, acc = []) {
 }
 
 async function main() {
-  const roots = await readConfig();
+  const { roots, cfg } = await readConfig();
   let items = [];
   for (const r of roots) {
     try {
@@ -45,12 +45,17 @@ async function main() {
       const exist = await fs.stat(dir).then(s => s.isDirectory()).catch(() => false);
       if (!exist) continue;
       const listed = await walk(dir);
-      items = items.concat(listed);
+      const base = r.base === '/' ? '' : ('/' + String(r.base).replace(/^\/+|\/+$/g, ''));
+      // affects route into base namespace for clarity
+      for (const it of listed) {
+        const withBase = it.route.replace(/^#\//, '#'+base+'/');
+        items.push({ ...it, route: withBase, base: r.base });
+      }
     } catch {}
   }
   // Tri simple par chemin
   items.sort((a, b) => a.route.localeCompare(b.route));
-  const out = { generatedAt: new Date().toISOString(), count: items.length, items };
+  const out = { generatedAt: new Date().toISOString(), count: items.length, i18n: cfg.i18n || null, items };
   await fs.mkdir('public', { recursive: true });
   await fs.writeFile(path.join('public', 'sitemap.json'), JSON.stringify(out, null, 2));
   console.log(`sitemap.json generated with ${items.length} items`);
