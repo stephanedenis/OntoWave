@@ -65,17 +65,59 @@ export async function enhancePage(appEl: HTMLElement, html: string) {
   // Mermaid / Kroki
   await renderMermaid(appEl)
   await renderKroki(appEl)
-  // Submodule delegate hints: si un lien externe GitHub Pages est mentionné en haut du doc, proposer la bascule
+  // Submodules delegation: détecter _delegate.json ou CNAME dans un sous-dossier immédiatement sous la base (en/fr/...), et proposer une bascule
   try {
-    const banner = appEl.querySelector('p a[href*="github.io"], p a[href*="pages.github.com" ]') as HTMLAnchorElement | null
-    if (banner && banner.href) {
-      const note = document.createElement('div')
-      note.style.margin = '1rem 0'
-      note.style.padding = '0.75rem'
-      note.style.background = '#fffbdd'
-      note.style.border = '1px solid #f0e6a0'
-      note.innerHTML = `Ce contenu semble avoir son propre site: <a href="${banner.href}">${banner.href}</a>. Ouvrir là-bas pour la navigation complète.`
-      appEl.prepend(note)
+    const getBaseMap = async () => {
+      const resp = await fetch('/config.json', { cache: 'no-cache' })
+      const cfg = await resp.json().catch(() => ({}))
+      const map: Record<string, string> = {}
+      for (const r of (cfg.roots || [])) {
+        const base = (r.base === '/' ? '' : String(r.base || '').replace(/^\/+|\/+$/g, ''))
+        if (base) map[base] = String(r.root || '')
+      }
+      return map
+    }
+    const baseMap = await getBaseMap()
+    const hash = location.hash || '#/'
+    const path = hash.replace(/^#/, '')
+    const parts = path.split('/').filter(Boolean) // e.g., ['en','vendor','page']
+    if (parts.length >= 2) {
+      const base = parts[0]
+      const folder = parts[1]
+      const rest = parts.slice(2).join('/')
+      const rootDir = baseMap[base]
+      if (rootDir) {
+        const prefix = rootDir.replace(/\/$/, '') + '/' + folder
+        // 1) _delegate.json
+        let target: string | null = null
+        try {
+          const j = await fetch(`${prefix}/_delegate.json`, { cache: 'no-cache' })
+          if (j.ok) {
+            const obj = await j.json().catch(() => null)
+            if (obj && typeof obj.baseUrl === 'string') target = obj.baseUrl.replace(/\/$/, '')
+          }
+        } catch {}
+        // 2) CNAME
+        if (!target) {
+          try {
+            const c = await fetch(`${prefix}/CNAME`, { cache: 'no-cache' })
+            if (c.ok) {
+              const domain = (await c.text()).trim()
+              if (domain) target = `https://${domain}`
+            }
+          } catch {}
+        }
+        if (target) {
+          const note = document.createElement('div')
+          note.style.margin = '1rem 0'
+          note.style.padding = '0.75rem'
+          note.style.background = '#fffbdd'
+          note.style.border = '1px solid #f0e6a0'
+          const href = rest ? `${target.replace(/\/$/, '')}/${rest}` : target
+          note.innerHTML = `Ce module possède son propre site : <a href="${href}">${href}</a>. Ouvrir là-bas pour la navigation complète.`
+          appEl.prepend(note)
+        }
+      }
     }
   } catch {}
 }

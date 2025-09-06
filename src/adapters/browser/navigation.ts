@@ -56,18 +56,7 @@ export async function buildSidebar(): Promise<string> {
       }
       return ''
     }
-      const byBase = new Map<string, typeof items>()
-      for (const it of items) {
-        const b = (it.base || '').toString()
-        if (!byBase.has(b)) byBase.set(b, [])
-        byBase.get(b)!.push(it)
-      }
-      const sections = Array.from(byBase.entries()).map(([b, list]) => {
-        const label = b || 'root'
-        const ul = `<ul>${list.map(i => `<li><a href="${i.route}">${i.title || i.route.replace('#/','')}</a></li>`).join('')}</ul>`
-        return `<details ${b ? '' : 'open'}><summary>${label.toUpperCase()}</summary>${ul}</details>`
-      }).join('')
-      const html = sections || `<ul>${items.map(i => `<li><a href="${i.route}">${i.title || i.route.replace('#/','')}</a></li>`).join('')}</ul>`
+  // Flat fallback list if tree rendering above returns empty
   return renderNode(tree)
   } catch { return '' }
 }

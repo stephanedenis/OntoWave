@@ -51,13 +51,26 @@
     .admonition.tip { border-color: #22c55e; }
     .admonition.warning { border-color: #f59e0b; }
     .admonition.danger { border-color: #ef4444; }
-    </style>
-    <script type="module" crossorigin src="/assets/index-B8L42iE9.js"></script>
+  .opts { margin-left: auto; }
+  .panel { background:#fff;border:1px solid #ddd;border-radius:6px;padding:0.75rem;min-width:320px;margin-top:0.5rem }
+  .gap-sm { gap: .5rem }
+  .ai-center { align-items: center }
+  .mt-sm { margin-top: .5rem }
+  .muted { color: #666 }
+  .small { font-size: .85em }
+  .floating-menu { position: fixed; bottom: 1rem; right: 1rem; z-index: 50 }
+  .floating-menu details { background:#fff; border:1px solid #ddd; border-radius: 999px; padding: .25rem .5rem }
+  .floating-menu summary { list-style: none; cursor: pointer }
+  .floating-menu ul { list-style: none; margin: .25rem 0 0; padding: 0 }
+  .floating-menu li { margin: .25rem 0 }
+  .hidden-by-config { display: none !important }
+  </style>
+    <script type="module" crossorigin src="/assets/index-CYzrsh5j.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/mermaid-vh1W7QOs.js">
     <link rel="modulepreload" crossorigin href="/assets/md-B_Y-_9Ry.js">
   </head>
   <body>
-    <header>
+  <header id="site-header">
   <div class="container row">
         <a id="brand" class="brand" href="#/">OntoWave</a>
         <div class="search">
@@ -67,6 +80,23 @@
         <nav class="ml-auto">
           <a href="#/">Accueil</a>
         </nav>
+        <details class="opts ml-auto">
+          <summary>Options</summary>
+          <div class="panel">
+            <label class="row gap-sm ai-center"><input type="checkbox" id="opt-search" /> Activer la recherche (opt-in)</label>
+            <div class="mt-sm">
+              <small>Importer pages.txt</small>
+              <input type="file" id="opt-pages" accept="text/plain" />
+            </div>
+            <div class="mt-sm">
+              <button id="opt-download-pages" type="button">Télécharger pages.txt</button>
+            </div>
+            <div class="mt-sm">
+              <button id="opt-export-index">Exporter l’index JSON</button>
+            </div>
+            <div id="opt-state" class="mt-sm muted small"></div>
+          </div>
+        </details>
       </div>
     </header>
     <main class="container layout">
@@ -74,6 +104,19 @@
       <div id="app" class="content">Chargement…</div>
       <aside id="toc" class="toc"></aside>
     </main>
+    <div class="floating-menu" id="floating-menu">
+      <details>
+        <summary>⋮</summary>
+        <ul>
+          <li><a href="#/">Accueil</a></li>
+          <li><a href="#/fr/demo/overview">Démo</a></li>
+          <li><a href="#/en/demo/overview">Demo</a></li>
+          <li><a href="#/fr">FR</a> · <a href="#/en">EN</a></li>
+          <li><a href="#/config">Configuration</a></li>
+          <li><a href="#/about">À propos</a></li>
+        </ul>
+      </details>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   </body>
   </html>

@@ -69,3 +69,20 @@ Publiez/recopiez vos sous-modules vers des répertoires montés comme racines de
 Limitations MVP:
 - Pas d’indexation de recherche (prévue via `sitemap.json` + Web Worker elasticlunr).
 - Sécurité XSS: le contenu est supposé de confiance. Ajoutez DOMPurify si nécessaire.
+
+## Recherche (SPA, opt-in)
+
+- L’index est inactif par défaut si aucun `search-index.json` n’est présent (à côté d’`index.html`).
+- Activez-le via le panneau « Options » (mini-menu flottant), importez un `pages.txt` (liste de chemins `.md` relatifs aux racines), laissez l’index se construire, puis exportez `search-index.json`.
+- En build, `npm run pageslist` génère automatiquement `public/pages.txt`; vous pouvez ensuite ouvrir le site, activer l’index, puis exporter.
+- La recherche privilégie la langue courante (préfixe `#/fr/` ou `#/en/`), avec repli inter-langue si aucun résultat.
+
+### Déploiement « copie statique »
+
+Pour un usage sans pipeline (copie d’`index.html` + `assets` + `config.json` + contenus):
+
+- Placez `config.json`, `nav.yml` (optionnel) et `sitemap.json`/`pages.txt` à côté d’`index.html`.
+- Si vous ne voulez pas d’indexation en ligne, exportez `search-index.json` depuis le panneau Options et copiez-le avec le site.
+- Optionnel: réduisez l’habillage via `ui` dans `public/config.json`:
+	- `"ui": { "minimal": true }` pour masquer header/sidebar/toc/footer.
+	- Ou au détail: `header:false`, `sidebar:false`, `toc:false`, `footer:false`, `menu:false`.
