@@ -8,11 +8,11 @@ import { enhancePage } from './adapters/browser/enhance'
 import { buildSidebar, buildPrevNext } from './adapters/browser/navigation'
 import { createSearch } from './adapters/browser/search'
 import { renderConfigPage } from './adapters/browser/configPage'
+import { getJsonFromBundle } from './adapters/browser/bundle'
 
 ;(async () => {
   // Toggle engine via config.json; fallback v2 par défaut si absent
-  const res = await fetch('/config.json', { cache: 'no-cache' })
-  const cfg = await res.json()
+  const cfg = getJsonFromBundle('/config.json') || await fetch('/config.json', { cache: 'no-cache' }).then(r => r.json())
   const engine = cfg.engine ?? 'v2'
   // UI options
   try {
@@ -189,8 +189,9 @@ import { renderConfigPage } from './adapters/browser/configPage'
     }
     // Activer automatiquement si un index préconstruit existe
     try {
-      const r = await fetch('/search-index.json', { cache: 'no-cache' })
-      if (r.ok) { active = true; if (opt) opt.checked = true; await ensure() }
+  const hasEmbedded = !!getJsonFromBundle('/search-index.json')
+  const ok = hasEmbedded || await fetch('/search-index.json', { cache: 'no-cache' }).then(r => r.ok).catch(() => false)
+  if (ok) { active = true; if (opt) opt.checked = true; await ensure() }
     } catch {}
     // Toggle manuel
     opt?.addEventListener('change', async () => { active = !!opt.checked; if (active) await ensure() })

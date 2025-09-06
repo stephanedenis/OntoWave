@@ -66,6 +66,24 @@ Publiez/recopiez vos sous-modules vers des répertoires montés comme racines de
 - Option: ajouter un workflow d’upload artefact si vous souhaitez conserver un build de référence.
 ***
 
+## Mode sans serveur (file://) — Standalone
+
+Ouvrez directement le site depuis un fichier HTML local (sans serveur HTTP):
+
+1) Générez la version autonome qui embarque config et contenus:
+
+```bash
+npm run build:standalone
+```
+
+2) Ouvrez `docs/standalone/index.html` dans le navigateur (schéma `file://`).
+
+Notes:
+- Le bundle embarqué (`window.__ONTOWAVE_BUNDLE__`) inclut `public/config.json`, `public/{sitemap.json,nav.yml,pages.txt,search-index.json}` si présents, ainsi que tout `content/`.
+- Le runtime tente d’abord l’accès embarqué, puis retombe sur `fetch` réseau. Ainsi, file:// fonctionne même sans serveur.
+- La recherche avancée nécessite un `search-index.json` préconstruit; sinon, mode minimal (titres).
+
+
 Limitations MVP:
 - Pas d’indexation de recherche (prévue via `sitemap.json` + Web Worker elasticlunr).
 - Sécurité XSS: le contenu est supposé de confiance. Ajoutez DOMPurify si nécessaire.

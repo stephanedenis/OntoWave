@@ -1,3 +1,4 @@
+import { getJsonFromBundle, getTextFromBundle } from './bundle'
 type Item = { route: string; title?: string; base?: string; path?: string }
 
 function tokenize(t: string): string[] {
@@ -12,8 +13,7 @@ export function createSearch() {
 
   async function loadConfig() {
     try {
-      const res = await fetch('/config.json', { cache: 'no-cache' })
-      const cfg = await res.json()
+  const cfg = getJsonFromBundle('/config.json') || await fetch('/config.json', { cache: 'no-cache' }).then(r => r.json())
       roots = (cfg.roots || []).map((r: any) => ({ base: String(r.base || '').replace(/^\/+|\/+$/g, ''), root: String(r.root || '') }))
     } catch {}
   }
@@ -38,9 +38,8 @@ export function createSearch() {
 
   async function loadFromPrebuiltIndex(): Promise<boolean> {
     try {
-      const r = await fetch('/search-index.json', { cache: 'no-cache' })
-      if (!r.ok) return false
-      const arr = await r.json() as Array<{ route: string; title: string; text?: string }>
+  const embedded = getJsonFromBundle<Array<{ route: string; title: string; text?: string }>>('/search-index.json')
+  const arr = embedded || await fetch('/search-index.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null)
       if (!Array.isArray(arr) || arr.length === 0) return false
       items = arr.map(d => ({ route: d.route, title: d.title }))
       for (const d of arr) docs.set(d.route, { title: d.title, text: d.text || '' })
@@ -50,9 +49,7 @@ export function createSearch() {
 
   async function loadFromSitemap(): Promise<boolean> {
     try {
-      const r = await fetch('/sitemap.json', { cache: 'no-cache' })
-      if (!r.ok) return false
-      const s = await r.json()
+  const s = getJsonFromBundle('/sitemap.json') || await fetch('/sitemap.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null)
       const arr = Array.isArray(s.items) ? s.items : []
       items = arr
       for (const it of items) docs.set(it.route, { title: it.title || it.route.replace('#/','') })
@@ -62,9 +59,8 @@ export function createSearch() {
 
   async function loadFromNav(): Promise<boolean> {
     try {
-      const y = await fetch('/nav.yml', { cache: 'no-cache' })
-      if (!y.ok) return false
-      const txt = await y.text()
+  const txt = getTextFromBundle('/nav.yml') || await fetch('/nav.yml', { cache: 'no-cache' }).then(r => r.ok ? r.text() : null)
+  if (!txt) return false
       const { parse } = await import('yaml')
       const nav = parse(txt)
       const list: Item[] = []
@@ -92,9 +88,9 @@ export function createSearch() {
 
   async function loadFromPagesTxt(): Promise<boolean> {
     try {
-      const r = await fetch('/pages.txt', { cache: 'no-cache' })
-      if (!r.ok) return false
-      const lines = (await r.text()).split(/\r?\n/).map(s => s.trim()).filter(Boolean)
+  const txt = getTextFromBundle('/pages.txt') || await fetch('/pages.txt', { cache: 'no-cache' }).then(r => r.ok ? r.text() : null)
+  if (!txt) return false
+  const lines = txt.split(/\r?\n/).map(s => s.trim()).filter(Boolean)
       items = lines.map(p => ({ route: routeFromPath(p), title: p.replace(/\.md$/i,'') }))
       for (const it of items) docs.set(it.route, { title: it.title || it.route.replace('#/','') })
       return items.length > 0
@@ -108,9 +104,8 @@ export function createSearch() {
       const url = it.path || contentUrlFromRoute(it.route)
       if (!url) continue
       try {
-        const res = await fetch(url, { cache: 'no-cache' })
-        if (!res.ok) continue
-        const md = await res.text()
+  const md = getTextFromBundle(url) || await fetch(url, { cache: 'no-cache' }).then(r => r.ok ? r.text() : null)
+  if (!md) continue
         const text = md.replace(/```[\s\S]*?```/g, ' ').replace(/[#>*_`\-\[\]()]/g, ' ')
         const t = docs.get(it.route)?.title || it.title || it.route
         docs.set(it.route, { title: t, text })

@@ -1,12 +1,12 @@
+import { getJsonFromBundle, getTextFromBundle } from './bundle'
 type SitemapItem = { route: string; title?: string }
 
 export async function buildSidebar(): Promise<string> {
   try {
     // Try nav.yml first
     try {
-      const y = await fetch('/nav.yml', { cache: 'no-cache' })
-      if (y.ok) {
-        const txt = await y.text()
+      const txt = getTextFromBundle('/nav.yml') || await fetch('/nav.yml', { cache: 'no-cache' }).then(r => r.ok ? r.text() : null)
+      if (txt) {
         const { parse } = await import('yaml')
         const nav = parse(txt) as any
         const renderList = (node: any): string => {
@@ -28,9 +28,8 @@ export async function buildSidebar(): Promise<string> {
       }
     } catch {}
 
-    const res = await fetch('/sitemap.json', { cache: 'no-cache' })
-    if (!res.ok) return ''
-    const data = await res.json() as { items: SitemapItem[] }
+  const data = getJsonFromBundle('/sitemap.json') || await fetch('/sitemap.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null)
+  if (!data) return ''
       const items: { route: string; title?: string; base?: string }[] = data.items || []
     const tree = new Map()
     for (const it of items) {
