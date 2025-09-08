@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OntoWave</title>
-    <link rel="icon" type="image/svg+xml" href='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSIxNiIgZmlsbD0iI0ZGMTQ4MCIvPjxwYXRoIGQ9Ik0xMCAyMEwyMCAxMkgxMCIgc3Ryb2tlPSIjRkZGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==' />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><polygon points='8,4 24,4 30,16 24,28 8,28 2,16' fill='%23F5A623'/><path d='M6 20 C10 14,22 14,26 20 C22 23,10 23,6 20 Z' fill='%230097D1'/><path d='M10 18 C12 16,20 16,22 18 C20 19,12 19,10 18 Z' fill='%23ffffff' opacity='0.9'/></svg>" />
     <script>
       (function () {
         var canonical = 'ontowave.com';
@@ -23,9 +23,16 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
     <style>
   :root { --max: 980px; }
-  body { margin: 0; font: 16px/1.5 system-ui, Arial, sans-serif; }
+    body {
+      margin: 0;
+      font: 16px/1.5 system-ui, Arial, sans-serif;
+      /* Thème alvéolaire (essaim d'information) */
+  background:#f8f8f8;
+    }
   header { border-bottom: 1px solid #eee; }
   .container { max-width: var(--max); margin: 0 auto; padding: 1rem; }
+  /* Le contenu reste sur fond blanc; seul l'extérieur du container montre le motif */
+  .container { background: #fff; }
       nav a { margin-right: .75rem; text-decoration: none; color: #0366d6; }
   .brand { font-weight: 700; margin-right: 1rem; }
   .search { position: relative; display: inline-block; }
@@ -51,6 +58,11 @@
   .minimal .layout { grid-template-columns: 1fr; }
   .minimal .container { max-width: 46rem; }
   .minimal #app { padding: 1.25rem 0 }
+  /* En mode minimal, diminuer légèrement le contraste du motif pour améliorer la lisibilité */
+  .minimal body {
+    --hc-line: #f0f0f0;
+    --hc-accent: rgba(255, 20, 128, 0.05);
+  }
     .admonition { border-left: 4px solid #ddd; background: #fafafa; padding: .75rem; margin: 1rem 0; border-radius: 4px; }
     .admonition-title { margin: 0 0 .5rem; font-weight: 600; text-transform: capitalize; }
     .admonition.note { border-color: #3b82f6; }
@@ -64,21 +76,120 @@
   .mt-sm { margin-top: .5rem }
   .muted { color: #666 }
   .small { font-size: .85em }
-  .floating-menu { position: fixed; bottom: 1rem; right: 1rem; z-index: 50 }
-  .floating-menu details { background:#fff; border:1px solid #ddd; border-radius: 999px; padding: .25rem .5rem }
-  .floating-menu summary { list-style: none; cursor: pointer }
+  .floating-menu { position: fixed; top: 1rem; left: 1rem; z-index: 50 }
+  .floating-menu details { background:#fff; border:1px solid #ddd; border-radius: 12px; padding: .25rem .5rem }
+  /* Déclencheur hexagonal (thème alvéolaire) */
+  .floating-menu summary {
+    list-style: none; cursor: pointer; display:flex; align-items:center; justify-content:center;
+    width:64px; height:64px; border-radius:0; border:1px solid #ccc; background:#fff;
+    box-shadow: 0 6px 18px rgba(0,0,0,.12);
+    /* Hexagone régulier */
+    clip-path: polygon(
+      25% 6%, 75% 6%,
+      94% 50%, 75% 94%,
+      25% 94%, 6% 50%
+    );
+  }
+  .floating-menu .fm-icon { width:32px; height:32px; display:block }
   .floating-menu ul { list-style: none; margin: .25rem 0 0; padding: 0 }
   .floating-menu li { margin: .25rem 0 }
+  .floating-menu .view-toggles { display:flex; gap:.25rem; align-items:center }
+  .floating-menu .pill { display:inline-block; padding:.15rem .5rem; border:1px solid #ccc; border-radius:999px; font-size:.85rem; line-height:1; background:#f8f8f8 }
+  .floating-menu .pill.active { background:#333; color:#fff; border-color:#333 }
   .hidden-by-config { display: none !important }
   </style>
-    <script type="module" crossorigin src="/assets/index-CMAXfl4g.js"></script>
+    <script type="module" crossorigin src="/assets/index-DdqRjGS6.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/mermaid-vh1W7QOs.js">
     <link rel="modulepreload" crossorigin href="/assets/md-B_Y-_9Ry.js">
   </head>
   <body>
+  <script>
+    (function(){
+      const stroke = '#c8c8c8';
+      const fill = 'rgba(0,0,0,0.012)';
+      const r = 34; // distance centre -> coin droit
+      const a = Math.sqrt(3)/2 * r; // apothem vertical
+      let canvas, ctx;
+      function ensure(){
+        if(canvas) return;
+        canvas = document.createElement('canvas');
+        canvas.id = 'hex-bg-canvas';
+        Object.assign(canvas.style, {
+          position:'fixed',
+          inset:'0',
+          width:'100%',
+          height:'100%',
+          zIndex:'-1',
+          pointerEvents:'none'
+        });
+        document.body.prepend(canvas);
+        ctx = canvas.getContext('2d');
+      }
+      function draw(){
+        ensure();
+        const w = canvas.width = window.innerWidth * devicePixelRatio;
+        const h = canvas.height = window.innerHeight * devicePixelRatio;
+        ctx.scale(devicePixelRatio, devicePixelRatio);
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.lineWidth = 1;
+        ctx.lineJoin = 'miter';
+        const horiz = r * 1.5; // distance entre centres horizontaux
+        const vert = a * 2;    // distance entre centres verticaux
+        const cols = Math.ceil(window.innerWidth / horiz) + 2;
+        const rows = Math.ceil(window.innerHeight / vert) + 2;
+        for(let row=0; row<rows; row++){
+          for(let col=0; col<cols; col++){
+            const cx = col * horiz + (row % 2 ? horiz/2 : 0) - r;
+            const cy = row * vert * 0.5 - a; // utiliser half-row shift for tight packing
+            if(cx < -r || cy < -a || cx > window.innerWidth + r || cy > window.innerHeight + a) continue;
+            const pts = [
+              [cx - r/2, cy - a],
+              [cx + r/2, cy - a],
+              [cx + r, cy],
+              [cx + r/2, cy + a],
+              [cx - r/2, cy + a],
+              [cx - r, cy]
+            ];
+            ctx.beginPath();
+            ctx.moveTo(pts[0][0], pts[0][1]);
+            for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i][0], pts[i][1]);
+            ctx.closePath();
+            ctx.fillStyle = fill;
+            ctx.fill();
+            ctx.strokeStyle = stroke;
+            ctx.stroke();
+          }
+        }
+      }
+      window.addEventListener('resize', ()=>{
+        // reset transform before redraw
+        if(canvas){ ctx.setTransform(1,0,0,1,0,0); }
+        draw();
+      });
+      if(document.readyState === 'complete' || document.readyState === 'interactive') {
+        draw();
+      } else {
+        document.addEventListener('DOMContentLoaded', draw);
+      }
+    })();
+  </script>
   <header id="site-header">
   <div class="container row">
-        <a id="brand" class="brand" href="#/">OntoWave</a>
+        <a id="brand" class="brand" href="#/" title="OntoWave">
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 32 32" style="vertical-align:middle; margin-right:.4rem">
+            <polygon points="8,4 24,4 30,16 24,28 8,28 2,16" fill="#F5A623"/>
+            <defs>
+              <linearGradient id="waveGradBrand" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#00B7FF"/>
+                <stop offset="100%" stop-color="#007ACC"/>
+              </linearGradient>
+            </defs>
+            <path d="M6 20 C9 15,23 15,26 20 C22 23.5,10 23.5,6 20 Z" fill="url(#waveGradBrand)"/>
+            <path d="M7 19.2 C11 16.2,21 16.2,25 19.2 C21.5 21.2,10.5 21.2,7 19.2 Z" fill="#e6f6ff" opacity="0.9"/>
+            <path d="M10 18.3 C12.2 16.4,19.8 16.4,22 18.3 C20 19.2,12 19.2,10 18.3 Z" fill="#ffffff" opacity="0.95"/>
+          </svg>
+          OntoWave
+        </a>
         <div class="search">
           <input id="search" type="search" placeholder="Rechercher…" autocomplete="off" />
           <div id="search-results" class="hidden"></div>
@@ -110,7 +221,40 @@
       <div id="app" class="content">Chargement…</div>
       <aside id="toc" class="toc"></aside>
     </main>
-  <div class="floating-menu" id="floating-menu"><details><summary>⋮</summary><ul><li><a href="#/config">Configuration</a></li></ul></details></div>
+  <div class="floating-menu" id="floating-menu">
+    <details>
+      <summary title="Navigateur sémantique" aria-label="Ouvrir le menu du navigateur sémantique" data-test-id="fm-opener">
+        <!-- Icône hexagonale avec vague (logo principal) -->
+        <svg class="fm-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+          <!-- Fond hexagonal -->
+          <polygon points="8,4 24,4 30,16 24,28 8,28 2,16" fill="#F5A623"/>
+          <!-- Vague stylisée -->
+          <defs>
+            <linearGradient id="waveGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#00B7FF"/>
+              <stop offset="100%" stop-color="#007ACC"/>
+            </linearGradient>
+          </defs>
+          <!-- Vague principale plus épaisse -->
+          <path d="M6 20 C9 15,23 15,26 20 C22 23.5,10 23.5,6 20 Z" fill="url(#waveGrad)"/>
+          <!-- Sous-couche pour éviter l'effet de 'trou' -->
+          <path d="M7 19.2 C11 16.2,21 16.2,25 19.2 C21.5 21.2,10.5 21.2,7 19.2 Z" fill="#e6f6ff" opacity="0.9"/>
+          <!-- Crête blanche adoucie -->
+          <path d="M10 18.3 C12.2 16.4,19.8 16.4,22 18.3 C20 19.2,12 19.2,10 18.3 Z" fill="#ffffff" opacity="0.95"/>
+        </svg>
+      </summary>
+      <ul>
+        <li>
+          <div class="view-toggles" id="view-toggles">
+            <button type="button" data-view="md" class="pill" title="Voir la source Markdown">MD</button>
+            <button type="button" data-view="html" class="pill" title="Voir le rendu HTML/SVG">HTML</button>
+            <button type="button" data-view="split" class="pill" title="Source + Rendu côte à côte">SBS</button>
+          </div>
+        </li>
+        <li><a href="#/config">Configuration</a></li>
+      </ul>
+    </details>
+  </div>
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   </body>
   </html>

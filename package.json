@@ -12,9 +12,11 @@
   "postbuild": "bash -lc 'mkdir -p docs/content && rsync -a --delete content/ docs/content/'",
     "preview": "vite preview",
     "sitemap": "node tools/build-sitemap.mjs",
-  "pageslist": "node tools/build-pages-txt.mjs",
+    "pageslist": "node tools/build-pages-txt.mjs",
+    "dev:docs": "npm run sitemap && npm run pageslist && npm run serve:docs",
   "type-check": "tsc --noEmit",
-  "check": "npm run lint && npm run type-check && npm run test && npm run build",
+  "spell": "cspell --no-progress --no-must-find-files .",
+  "check": "npm run lint && npm run type-check && npm run test && npm run spell && npm run build",
   "check:standalone": "npm run build:standalone",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "format": "prettier -w .",
@@ -48,6 +50,7 @@
     "standard-version": "^9.5.0",
     "typescript": "^5.5.4",
   "vite": "^5.4.0",
-  "http-server": "^14.1.1"
+  "http-server": "^14.1.1",
+  "cspell": "^8.16.0"
   }
 }

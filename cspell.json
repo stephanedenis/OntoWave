@@ -1,0 +1,28 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "language": "fr",
+  "dictionaries": ["fr"],
+  "useGitignore": true,
+  "ignorePaths": [
+    "node_modules",
+    ".git",
+    "docs/assets",
+    "dist",
+    "build",
+    "coverage",
+    "**/*.lock",
+    "**/*.min.*"
+  ],
+  "words": [
+    "OntoWave",
+    "Mermaid",
+    "PlantUML",
+    "Graphviz",
+    "KaTeX",
+    "Playwright",
+    "Vite",
+    "Vitest",
+    "Kroki"
+  ]
+}

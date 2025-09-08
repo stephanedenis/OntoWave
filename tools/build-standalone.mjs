@@ -12,12 +12,15 @@ function norm(p) {
 async function collect() {
   const bundle = {}
   // Required: config.json
-  if (await exists('public/config.json')) {
+  if (await exists('docs/config.json')) {
+    bundle['/config.json'] = await read('docs/config.json')
+  } else if (await exists('public/config.json')) {
     bundle['/config.json'] = await read('public/config.json')
   }
   // Optional aux files
   for (const f of ['sitemap.json', 'nav.yml', 'pages.txt', 'search-index.json']) {
-    if (await exists(path.join('public', f))) bundle['/' + f] = await read(path.join('public', f))
+    if (await exists(path.join('docs', f))) bundle['/' + f] = await read(path.join('docs', f))
+    else if (await exists(path.join('public', f))) bundle['/' + f] = await read(path.join('public', f))
   }
   // Content roots from config
   let roots = []
@@ -26,7 +29,7 @@ async function collect() {
     roots = Array.isArray(cfg.roots) ? cfg.roots : [{ base: '/', root: '/content' }]
   } catch {}
   for (const r of roots) {
-    const dir = String(r.root || '').replace(/^\//, '')
+  const dir = path.join('docs', String(r.root || '').replace(/^\//, ''))
     const ok = await exists(dir)
     if (!ok) continue
     await walkContent(dir, bundle)
