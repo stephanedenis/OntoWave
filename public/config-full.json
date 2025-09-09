@@ -1,0 +1,10 @@
+{
+  "engine": "v2",
+  "brand": "OntoWave Full",
+  "i18n": { "default": "fr", "supported": ["en", "fr"] },
+  "roots": [
+    { "base": "en", "root": "/content/en" },
+    { "base": "fr", "root": "/content/fr" }
+  ],
+  "ui": { "minimal": false, "header": true, "sidebar": true, "toc": true, "menu": true, "footer": true }
+}

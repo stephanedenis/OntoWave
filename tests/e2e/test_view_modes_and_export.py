@@ -21,9 +21,14 @@ def test_view_mode_switch(page, route, mode):
     expect(toggles.first).to_be_visible()
     # click the right pill
     btn = page.locator(f"#view-toggles button[data-view='{mode}']")
+    # capture old hash
+    old_hash = page.evaluate('location.hash')
     btn.click()
-    # allow hash change + re-render
-    page.wait_for_timeout(200)
+    # wait for hash to change (or remain if html mode)
+    if mode != 'html':
+        page.wait_for_function("(prev)=>location.hash!==prev", old_hash, timeout=2000)
+    else:
+        page.wait_for_timeout(150)
     # URL hash should include or exclude view parameter
     h = page.evaluate('location.hash')
     if mode == 'html':
@@ -31,8 +36,12 @@ def test_view_mode_switch(page, route, mode):
     else:
         assert f"view={mode}" in h
     # active class toggled (exactly one active)
-    active_count = page.locator('#view-toggles button.pill.active').count()
-    assert active_count == 1
+    active = page.locator('#view-toggles button.pill.active')
+    expect(active).to_have_count(1)
+    # text corresponds to mode
+    label = (active.first.text_content() or '').strip().lower()
+    expected_label = {'md':'md','html':'html','split':'sbs'}[mode]
+    assert expected_label in label
 
 
 def test_export_index_triggers_download(page, tmp_path):

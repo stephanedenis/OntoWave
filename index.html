@@ -158,10 +158,13 @@
           }
         }
       }
+      let resizeTid = 0;
       window.addEventListener('resize', ()=>{
-        // reset transform before redraw
-        if(canvas){ ctx.setTransform(1,0,0,1,0,0); }
-        draw();
+        if(resizeTid) cancelAnimationFrame(resizeTid);
+        resizeTid = requestAnimationFrame(()=>{
+          if(canvas){ ctx.setTransform(1,0,0,1,0,0); }
+          draw();
+        });
       });
       if(document.readyState === 'complete' || document.readyState === 'interactive') {
         draw();
