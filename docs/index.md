@@ -20,15 +20,16 @@
 OntoWave transforme automatiquement vos fichiers Markdown en documentation interactive. Il vous suffit de :
 
 1. **Télécharger** le fichier `ontowave.min.js` (18KB)
-2. **Créer** un fichier HTML minimal
+2. **Créer** un fichier HTML minimal  
 3. **Ajouter** vos fichiers `.md` dans le même dossier
+
+**Exemple concret - code HTML de cette page :**
 
 ```html
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Ma Documentation</title>
+    <title>OntoWave - Documentation</title>
 </head>
 <body>
     <script src="ontowave.min.js"></script>
@@ -36,14 +37,14 @@ OntoWave transforme automatiquement vos fichiers Markdown en documentation inter
 </html>
 ```
 
-**C'est tout !** OntoWave détecte automatiquement les fichiers Markdown et génère :
+**C'est tout !** OntoWave détecte automatiquement `index.md` et génère :
 - 📝 Navigation avec menu flottant
 - 🔗 Liens internes entre pages  
 - 📊 Rendu des diagrammes Mermaid
 - 🎨 Interface moderne et responsive
 - 🔍 Préservation des ancres URL
 
-*Téléchargez le fichier `ontowave.min.js` ci-dessous et placez-le dans votre dossier de site.*
+*Cette page entière fonctionne avec seulement 8 lignes de HTML !*
 
 ### 📚 Exemples progressifs
 
@@ -71,7 +72,9 @@ OntoWave est disponible pour sites statiques :
 
 OntoWave est publié sous licence **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike).
 
-Pour un usage commercial ou une licence MIT, consultez le [dépôt GitHub](https://github.com/stephanedenis/OntoWave).
+**Décharge de responsabilité MIT :** Ce logiciel est fourni "tel quel", sans garantie d'aucune sorte, expresse ou implicite. En aucun cas les auteurs ne seront responsables de réclamations, dommages ou autres responsabilités.
+
+**[📁 Code source](https://github.com/stephanedenis/OntoWave)** sur GitHub.
 
 </div>
 
@@ -95,15 +98,16 @@ Pour un usage commercial ou une licence MIT, consultez le [dépôt GitHub](https
 OntoWave automatically transforms your Markdown files into interactive documentation. Just:
 
 1. **Download** the `ontowave.min.js` file (18KB)
-2. **Create** a minimal HTML file
+2. **Create** a minimal HTML file  
 3. **Add** your `.md` files in the same folder
+
+**Real example - HTML code of this page:**
 
 ```html
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>My Documentation</title>
+    <title>OntoWave - Documentation</title>
 </head>
 <body>
     <script src="ontowave.min.js"></script>
@@ -111,14 +115,14 @@ OntoWave automatically transforms your Markdown files into interactive documenta
 </html>
 ```
 
-**That's it!** OntoWave automatically detects Markdown files and generates:
+**That's it!** OntoWave automatically detects `index.md` and generates:
 - 📝 Navigation with floating menu
 - 🔗 Internal links between pages
 - 📊 Mermaid diagrams rendering
 - 🎨 Modern responsive interface
 - 🔍 URL anchor preservation
 
-*Download the `ontowave.min.js` file below and place it in your site folder.*
+*This entire page works with only 8 lines of HTML!*
 
 ### 📚 Progressive Examples
 
@@ -146,7 +150,9 @@ OntoWave is available for static sites:
 
 OntoWave is released under **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike) license.
 
-For commercial use or MIT license, check the [GitHub repository](https://github.com/stephanedenis/OntoWave).
+**MIT Disclaimer:** This software is provided "as is", without warranty of any kind, express or implied. In no event shall the authors be liable for any claim, damages or other liability.
+
+**[📁 Source code](https://github.com/stephanedenis/OntoWave)** on GitHub.
 
 </div>
 
