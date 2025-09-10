@@ -811,6 +811,9 @@
         .replace(/^---+$/gm, '<hr>')
         // Liens - traitement différent pour HTML vs MD
         .replace(/\[([^\]]+)\]\(([^)]+\.html[^)]*)\)/g, '<a href="$2">$1</a>')
+        // Liens externes (http/https) - ne pas ajouter de hash
+        .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
+        // Liens internes - ajouter hash et navigation OntoWave
         .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="#$2" onclick="window.OntoWave.loadPage(\'$2\')">$1</a>')
         // Formatage
         .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
