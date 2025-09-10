@@ -778,7 +778,7 @@
       
       // Traiter les blocs de code AVANT les autres transformations
       const codeBlocks = [];
-      html = html.replace(/```(\w+)([\\s\\S]*?)```/g, (match, language, content) => {
+      html = html.replace(/```(\w+)([\s\S]*?)```/g, (match, language, content) => {
         const trimmedContent = content.trim();
         const placeholder = `__CODE_BLOCK_${codeBlocks.length}__`;
         
