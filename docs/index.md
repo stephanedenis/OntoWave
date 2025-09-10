@@ -67,7 +67,7 @@ OntoWave est disponible pour sites statiques :
 
 ### 📝 Licence
 
-![CC BY-NC-SA](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)
+![CC BY-NC-SA](cc-by-nc-sa.png)
 
 OntoWave est publié sous licence **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike).
 
@@ -142,7 +142,7 @@ OntoWave is available for static sites:
 
 ### 📝 License
 
-![CC BY-NC-SA](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)
+![CC BY-NC-SA](cc-by-nc-sa.png)
 
 OntoWave is released under **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike) license.
 
