@@ -813,6 +813,8 @@
         .replace(/\[([^\]]+)\]\(([^)]+\.html[^)]*)\)/g, '<a href="$2">$1</a>')
         // Liens externes (http/https) - ne pas ajouter de hash
         .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
+        // Fichiers téléchargeables - liens directs sans hash
+        .replace(/\[([^\]]+)\]\(([^)]+\.(tar\.gz|zip|pdf|doc|docx|xls|xlsx|ppt|pptx|txt|csv|json|xml|js|css|png|jpg|jpeg|gif|svg|webp)[^)]*)\)/g, '<a href="$2" download>$1</a>')
         // Liens internes - ajouter hash et navigation OntoWave
         .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="#$2" onclick="window.OntoWave.loadPage(\'$2\')">$1</a>')
         // Formatage
