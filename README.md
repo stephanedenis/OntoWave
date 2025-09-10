@@ -1,27 +1,130 @@
-# OntoWave (MVP)
+# 🚀 OntoWave - Package de Documentation Interactive
 
-Un mini site statique type « mdwiki » moderne, sans build documentaire, qui rend des fichiers Markdown côté client.
+**OntoWave** transforme votre documentation en site interactif avec un seul include !
 
-Principes:
-- Aucune compilation de contenu: les `.md` sont chargés via `fetch` et rendus côté navigateur.
-- Router hash (`#/chemin`) pour l’hébergement statique (GitHub Pages, S3, Nginx…).
-- Racines de contenu configurables (permet de mapper des sous-arborescences ou des submodules).
-- Rendu Markdown avec markdown-it, titres ancrés, code surligné, Mermaid et KaTeX.
-- Optionnel: génération d’un `sitemap.json` (outil Node) pour la recherche ou la navigation.
+## ⚡ Installation Ultra-Simple
 
-## Démarrage
+### Via CDN (Recommandé)
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Ma Docs</title></head>
+<body>
+    <!-- Un seul include suffit ! -->
+    <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+</body>
+</html>
+```
+
+### Via NPM
 
 ```bash
-cd ontowave
+npm install ontowave
+```
+
+## 🎯 Fonctionnalités
+
+- ✅ **Zero Config** - Fonctionne immédiatement
+- ✅ **Un seul include** - Pas de dépendances externes
+- ✅ **Mermaid intégré** - Diagrammes automatiques
+- ✅ **PlantUML support** - Via serveur public
+- ✅ **Navigation hash** - URLs partageables
+- ✅ **Responsive design** - Mobile-friendly
+- ✅ **Configuration JSON** - Optionnelle et flexible
+
+## 📝 Configuration Optionnelle
+
+```html
+<script type="application/json" id="ontowave-config">
+{
+    "title": "Ma Documentation",
+    "defaultPage": "index.md",
+    "mermaid": { "theme": "default" }
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+```
+
+## 🎨 Support Diagrammes
+
+### Mermaid
+```markdown
+```mermaid
+graph TD
+    A --> B
+```
+```
+
+### PlantUML
+```markdown
+```plantuml
+@startuml
+Alice -> Bob
+@enduml
+```
+```
+
+## 📦 Taille
+
+- **12KB minifié**
+- **4KB gzippé** 
+- **Zéro dépendance**
+
+## 🔗 Liens Utiles
+
+- [Documentation détaillée](README-PACKAGE.md)
+- [GitHub Repository](https://github.com/stephanedenis/OntoWave)
+- [Package NPM](https://www.npmjs.com/package/ontowave)
+
+---
+
+## 🛠️ Développement Local (version complète)
+
+Pour contribuer au développement d'OntoWave:
+
+```bash
 npm install
 npm run dev
 ```
 
-Déploiement:
+**Déploiement:**
 ```bash
 npm run build
-npm run preview # ou servez le dossier dist/ sur Pages
+npm run preview
 ```
+
+### Architecture
+
+- `dist/ontowave.js`: Package distributable principal
+- `dist/ontowave.min.js`: Version minifiée pour production
+- `example-*.html`: Exemples d'utilisation du package
+- `src/`: Code source de l'application Vite complète
+- `content/`: Fichiers Markdown d'exemple
+
+### Intégration submodules
+
+Publiez/recopiez vos sous-modules vers des répertoires montés comme racines de `config.json` (ex: `RESEARCH/`). L'app les servira tels quels et gérera les liens `.md` → routes `#/…`.
+
+### GitHub Pages et DNS
+
+1) **Configuration Pages**
+- Repo ➜ Settings ➜ Pages ➜ Build and deployment: Deploy from a branch
+- Branch: `main`, Folder: `/docs`
+- Custom domain: `ontowave.dev` (ou votre domaine)
+
+2) **DNS requis côté registrar**
+- Créez des enregistrements A pour l'apex/root:
+  - `@` ➜ 185.199.108.153
+  - `@` ➜ 185.199.109.153  
+  - `@` ➜ 185.199.110.153
+  - `@` ➜ 185.199.111.153
+- Et/ou un CNAME pour sous-domaine:
+  - `www` ➜ `<username>.github.io`
+
+---
+
+**Créé pour simplifier la documentation !** 🌊
 
 ## Structure
 - `public/config.json`: configuration des racines de contenu (par défaut `content/`).

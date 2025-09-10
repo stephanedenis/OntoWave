@@ -37,6 +37,10 @@
       server: "https://www.plantuml.com/plantuml",
       format: "svg"
     },
+    prism: {
+      theme: "default",
+      autoload: true
+    },
     navigation: {
       showHome: true,
       showBreadcrumb: true,
@@ -387,6 +391,7 @@
       this.config = { ...DEFAULT_CONFIG, ...config };
       this.container = null;
       this.mermaidLoaded = false;
+      this.prismLoaded = false;
       this.currentPage = null;
       
       console.log('🌊 OntoWave initialized with config:', this.config);
@@ -402,6 +407,9 @@
         
         // Charger Mermaid si nécessaire
         await this.loadMermaid();
+        
+        // Charger Prism si nécessaire
+        await this.loadPrism();
         
         // Créer l'interface
         this.createInterface();
@@ -470,6 +478,57 @@
       }
     }
 
+    async loadPrism() {
+      return new Promise((resolve) => {
+        if (window.Prism) {
+          this.prismLoaded = true;
+          console.log('🎨 Prism already loaded');
+          return resolve();
+        }
+
+        // Charger CSS Prism
+        const cssLink = document.createElement('link');
+        cssLink.rel = 'stylesheet';
+        cssLink.href = 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css';
+        document.head.appendChild(cssLink);
+
+        // Charger JS Prism
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js';
+        script.onload = () => {
+          // Charger les composants pour langages populaires
+          const languages = ['markup', 'css', 'javascript', 'python', 'java', 'bash', 'json', 'yaml'];
+          let loaded = 0;
+          
+          languages.forEach(lang => {
+            const langScript = document.createElement('script');
+            langScript.src = `https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-${lang}.min.js`;
+            langScript.onload = () => {
+              loaded++;
+              if (loaded === languages.length) {
+                this.prismLoaded = true;
+                console.log('🎨 Prism initialized with languages:', languages);
+                resolve();
+              }
+            };
+            langScript.onerror = () => {
+              loaded++;
+              if (loaded === languages.length) {
+                this.prismLoaded = true;
+                resolve();
+              }
+            };
+            document.head.appendChild(langScript);
+          });
+        };
+        script.onerror = () => {
+          console.warn('⚠️ Failed to load Prism library');
+          resolve();
+        };
+        document.head.appendChild(script);
+      });
+    }
+
     createInterface() {
       // Trouver ou créer le conteneur
       this.container = document.getElementById(this.config.containerId);
@@ -503,6 +562,7 @@
           <ul>
             <li><strong>Chargement rapide:</strong> Système intégré</li>
             <li><strong>Mermaid:</strong> ${this.mermaidLoaded ? 'Chargé' : 'Non disponible'}</li>
+            <li><strong>Prism:</strong> ${this.prismLoaded ? 'Chargé' : 'Non disponible'}</li>
             <li><strong>PlantUML:</strong> Support intégré</li>
             <li><strong>Navigation:</strong> Hash préservé</li>
           </ul>
@@ -681,6 +741,9 @@
         // Traiter les diagrammes
         await this.processDiagrams(contentDiv);
 
+        // Traiter la coloration syntaxique
+        await this.processPrism(contentDiv);
+
       } catch (error) {
         console.error('❌ Failed to load page:', error);
         this.showError(`Impossible de charger ${pagePath}: ${error.message}`);
@@ -731,7 +794,8 @@
                  onerror="this.parentElement.innerHTML='<div style=\\'color: #d73a49; padding: 20px;\\'>❌ Erreur de rendu PlantUML</div>'" />
           </div>`);
         } else {
-          codeBlocks.push(`<pre class="ontowave-code"><code class="language-${language}">${trimmedContent}</code></pre>`);
+          const codeClass = this.prismLoaded ? `language-${language}` : '';
+          codeBlocks.push(`<pre class="ontowave-code"><code class="${codeClass}">${trimmedContent}</code></pre>`);
         }
         
         return placeholder;
@@ -813,6 +877,26 @@
             el.innerHTML = `<div style="color: #d73a49; padding: 10px;">❌ Erreur de rendu Mermaid: ${error.message}</div><pre style="background: #f8f8f8; padding: 10px; margin-top: 10px; border-radius: 4px;"><code>${el.textContent}</code></pre>`;
           }
         });
+      }
+    }
+
+    async processPrism(container) {
+      if (!this.prismLoaded || !window.Prism) {
+        console.log('🎨 Prism not loaded, skipping syntax highlighting');
+        return;
+      }
+
+      try {
+        // Trouver tous les blocs de code avec des classes de langue
+        const codeElements = container.querySelectorAll('code[class*="language-"]');
+        console.log('🎨 Found', codeElements.length, 'code blocks for Prism highlighting');
+
+        if (codeElements.length > 0) {
+          window.Prism.highlightAllUnder(container);
+          console.log('✅ Prism syntax highlighting applied');
+        }
+      } catch (error) {
+        console.error('❌ Prism highlighting error:', error);
       }
     }
 

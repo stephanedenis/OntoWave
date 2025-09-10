@@ -19,12 +19,15 @@ export function createMd() {
     html: true,
     linkify: true,
     highlight: (str: string, lang: string): string => {
-      if (lang && hljs.getLanguage(lang)) {
+      const lc = (lang || '').trim()
+      const langClass = lc ? ` language-${lc}` : ''
+      if (lc && hljs.getLanguage(lc)) {
         try {
-          return `<pre class="hljs"><code>${hljs.highlight(str, { language: lang, ignoreIllegals: true }).value}</code></pre>`
+          const v = hljs.highlight(str, { language: lc, ignoreIllegals: true }).value
+          return `<pre class="hljs${langClass}"><code class="${langClass.trim()}">${v}</code></pre>`
         } catch {}
       }
-      return `<pre class="hljs"><code>${escapeHtml(str)}</code></pre>`
+      return `<pre class="hljs${langClass}"><code class="${langClass.trim()}">${escapeHtml(str)}</code></pre>`
     }
   })
   md.use(anchor, { permalink: anchor.permalink.headerLink() as any })

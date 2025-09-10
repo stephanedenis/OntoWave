@@ -85,3 +85,12 @@ def test_config_menu_marker_if_missing_files(page):
     conf_text = page.locator(".floating-menu a[href='#/config']").text_content() or ""
     # The site may or may not show the marker depending on environment; assert link exists
     assert "Configuration" in conf_text
+
+
+def test_floating_menu_icon_opens_menu(page):
+    page.goto(_u("fr/demo/overview"))
+    _ensure_rendered_or_skip(page)
+    opener = page.locator(".floating-menu summary[data-test-id='fm-opener']").first
+    expect(opener).to_be_visible()
+    opener.click()
+    expect(page.locator(".floating-menu a[href='#/config']")).to_be_visible()

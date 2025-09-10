@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave</title>
+    <style>
+        body {
+            margin: 0;
+            font: 16px/1.5 system-ui, Arial, sans-serif;
+            background: #f8f8f8;
+        }
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 1rem;
+            background: #fff;
+            min-height: 100vh;
+        }
+        h1 { color: #333; }
+        h2 { color: #666; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
+        a { color: #0366d6; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .status { 
+            background: #f0f8ff; 
+            border-left: 4px solid #0366d6; 
+            padding: 1rem; 
+            margin: 1rem 0; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="status">
+            ⚠️ Version statique temporaire - L'application OntoWave complète sera disponible sous peu.
+        </div>
+        
+        <h1>Bienvenue</h1>
+        <h1>OntoWave Documentation</h1>
+        
+        <h2>Languages / Langues</h2>
+        <ul>
+            <li><a href="#en/index.md">🇬🇧 English</a></li>
+            <li><a href="#fr/index.md">🇫🇷 Français</a></li>
+        </ul>
+        
+        <h2>Quick Access / Accès Rapide</h2>
+        <ul>
+            <li><a href="#demo/advanced-shapes.md">🎨 Advanced Shapes & Styling</a> - Complex diagrams with PowerPoint-like capabilities</li>
+            <li><a href="#demo/README.md">📚 Complete Demo Collection</a> - Comprehensive diagram examples</li>
+        </ul>
+        
+        <p><strong>Navigation:</strong> utilisez les liens markdown pour référencer d'autres pages.</p>
+        <p><strong>Exemples:</strong> <a href="#en/demo/mermaid.md">Démo Mermaid</a> · <a href="#en/demo/plantuml.md">Démo PlantUML</a></p>
+        
+        <hr>
+        
+        <div style="text-align: center; margin: 2rem 0;">
+            <svg width="200" height="60" viewBox="0 0 200 60">
+                <defs>
+                    <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#0097D1;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#2ECC71;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <path d="M10 30 C50 15, 150 15, 190 30 C150 45, 50 45, 10 30 Z" fill="url(#waveGrad)" opacity="0.8"/>
+                <path d="M20 28 C60 18, 140 18, 180 28 C140 38, 60 38, 20 28 Z" fill="#ffffff" opacity="0.9"/>
+                <text x="100" y="35" text-anchor="middle" fill="#333" font-family="system-ui" font-size="14" font-weight="bold">OntoWave</text>
+            </svg>
+        </div>
+        
+        <div class="status">
+            📋 <strong>État du système:</strong> Cette page statique charge le contenu de base d'OntoWave. 
+            Pour accéder aux fonctionnalités complètes de rendu Markdown et diagrammes, 
+            l'application dynamique doit être réparée.
+        </div>
+    </div>
+</body>
+</html>

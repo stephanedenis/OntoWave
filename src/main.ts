@@ -34,13 +34,9 @@ import { getJsonFromBundle } from './adapters/browser/bundle'
   // i18n: détecter la langue préférée et rediriger vers la base correspondante si on est à la racine
   try {
     if (location.hash === '' || location.hash === '#/' || location.hash === '#') {
-      const supported: string[] = (cfg.i18n?.supported || []).map((s: string) => String(s).toLowerCase())
-      const defLang: string = String(cfg.i18n?.default || 'en').toLowerCase()
-      const navLangs = navigator.languages?.map(l => l.split('-')[0].toLowerCase()) || []
-      const pick = navLangs.find(l => supported.includes(l)) || defLang
-      if (supported.length > 0) {
-        location.hash = `#/${pick}`
-      }
+      // Redirection forcée vers index.md
+      location.hash = '#index.md'
+      return; // Sortir pour laisser l'application se recharger avec le nouveau hash
     }
   } catch {}
   // Brand

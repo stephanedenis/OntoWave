@@ -1,0 +1,12 @@
+{
+  // Interface VS Code en français (si pack installé)
+  "locale": "fr",
+
+  // Correcteur orthographique en français
+  "cSpell.enabled": true,
+  "cSpell.language": "fr",
+  "cSpell.locale": "fr",
+
+  // Markdown: options mineures
+  "markdown.extension.toc.orderedList": false
+}

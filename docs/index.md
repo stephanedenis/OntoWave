@@ -18,7 +18,16 @@
 ### 🎯 Utilisation
 
 ```html
-
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Ma Documentation</title>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+</body>
+</html>
 ```
 
 ### 📚 Exemples progressifs

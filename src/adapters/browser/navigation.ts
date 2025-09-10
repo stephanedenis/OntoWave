@@ -9,22 +9,27 @@ export async function buildSidebar(): Promise<string> {
       if (txt) {
         const { parse } = await import('yaml')
         const nav = parse(txt) as any
-        const renderList = (node: any): string => {
-          if (Array.isArray(node)) return `<ul>${node.map(renderNav).join('')}</ul>`
+        const renderList = (node: any, lang?: string): string => {
+          if (Array.isArray(node)) return `<ul>${node.map(n => renderNav(n, lang)).join('')}</ul>`
           if (typeof node === 'object' && node) {
             const [k, v] = Object.entries(node)[0]
-            if (typeof v === 'string') return `<li><a href="#/${v.replace(/\.md$/i,'')}">${k}</a></li>`
-            if (Array.isArray(v)) return `<li><details open><summary>${k}</summary>${renderList(v)}</details></li>`
+            if (typeof v === 'string') {
+              const val = String(v)
+              const hasLang = /^[a-z]{2}\//i.test(val)
+              const route = hasLang ? val : (lang ? `${lang}/${val}` : val)
+              return `<li><a href="#/${route.replace(/\.md$/i,'')}">${k}</a></li>`
+            }
+            if (Array.isArray(v)) return `<li><details open><summary>${k}</summary>${renderList(v, lang)}</details></li>`
           }
           return ''
         }
         // Support des sections par langue (fr:, en:)
         if (!Array.isArray(nav) && typeof nav === 'object') {
-          const parts = Object.entries(nav).map(([lang, arr]) => `<details ${lang==='fr'?'open':''}><summary>${lang.toUpperCase()}</summary>${renderList(arr)}</details>`)
+          const parts = Object.entries(nav).map(([lang, arr]) => `<details ${lang==='fr'?'open':''}><summary>${lang.toUpperCase()}</summary>${renderList(arr, lang)}</details>`)
           return parts.join('')
         }
-        const renderNav = (node: any): string => renderList(node)
-        return renderList(nav)
+        const renderNav = (node: any, lang?: string): string => renderList(node, lang)
+        return renderList(nav, undefined)
       }
     } catch {}
 

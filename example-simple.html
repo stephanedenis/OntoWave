@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave - Documentation Simple</title>
+</head>
+<body>
+    <!-- Configuration OntoWave optionnelle -->
+    <script type="application/json" id="ontowave-config">
+    {
+        "title": "Ma Documentation OntoWave",
+        "baseUrl": "/",
+        "defaultPage": "index.md",
+        "mermaid": {
+            "theme": "default",
+            "startOnLoad": true
+        },
+        "plantuml": {
+            "server": "https://www.plantuml.com/plantuml",
+            "format": "svg"
+        },
+        "navigation": {
+            "showHome": true,
+            "showBreadcrumb": true,
+            "showToc": true
+        },
+        "ui": {
+            "theme": "default",
+            "responsive": true,
+            "animations": true
+        }
+    }
+    </script>
+
+    <!-- OntoWave Package - Un seul include nécessaire -->
+    <script src="./dist/ontowave.js"></script>
+</body>
+</html>

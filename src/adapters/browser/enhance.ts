@@ -1,5 +1,15 @@
 import { getJsonFromBundle } from './bundle'
 
+function svgToDataUri(svg: string): string {
+  try {
+    const base64 = btoa(unescape(encodeURIComponent(svg)))
+    return `data:image/svg+xml;base64,${base64}`
+  } catch {
+    // Fallback to UTF-8 encoded data URI
+    return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
+  }
+}
+
 function buildTocFromHtml(html: string): string {
   const h = globalThis.document?.createElement('div')
   if (!h) return ''
@@ -15,19 +25,26 @@ function buildTocFromHtml(html: string): string {
 }
 
 async function renderMermaid(container: HTMLElement) {
-  const blocks = Array.from(container.querySelectorAll('pre code.language-mermaid'))
+  const blocks = Array.from(container.querySelectorAll('pre code.language-mermaid')) as HTMLElement[]
   if (blocks.length === 0) return
   const { default: mermaid } = await import('mermaid')
-  mermaid.initialize({ startOnLoad: false })
+  mermaid.initialize({ startOnLoad: false, securityLevel: 'loose' as any })
+  let idx = 0
   for (const code of blocks) {
     const txt = code.textContent || ''
-    const target = document.createElement('div')
-    target.className = 'mermaid'
-    target.textContent = txt
     const pre = code.closest('pre')!
-    pre.replaceWith(target)
+    const wrapper = document.createElement('div')
+    wrapper.className = 'mermaid'
+    const id = `mmd-${Date.now()}-${idx++}`
+    try {
+      const { svg } = await mermaid.render(id, txt)
+      wrapper.innerHTML = svg
+    } catch {
+      // fallback: keep source text if render fails
+      wrapper.textContent = txt
+    }
+    pre.replaceWith(wrapper)
   }
-  await mermaid.run({})
 }
 
 async function renderKroki(container: HTMLElement) {
@@ -51,7 +68,12 @@ async function renderKroki(container: HTMLElement) {
       const svg = await res.text()
       const div = document.createElement('div')
       div.className = 'diagram'
-      div.innerHTML = svg
+      const img = document.createElement('img')
+      img.src = svgToDataUri(svg)
+      img.alt = `${engine} diagram`
+      img.style.maxWidth = '100%'
+      img.style.height = 'auto'
+      div.appendChild(img)
       const pre = code.closest('pre')!
       pre.replaceWith(div)
     } catch {}

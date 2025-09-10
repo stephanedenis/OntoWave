@@ -18,7 +18,33 @@ def playwright() -> Playwright:
 
 @pytest.fixture(scope="session")
 def browser(playwright: Playwright):
-    browser = playwright.chromium.launch(headless=True)
+    channel = os.environ.get("BROWSER_CHANNEL", "").strip()  # e.g., "msedge", "chrome"
+    exe = os.environ.get("BROWSER_EXECUTABLE", "").strip()
+    launch_kwargs = {"headless": True}
+    extra_args = os.environ.get("BROWSER_ARGS", "").strip()
+    default_args = ["--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage"]
+    if extra_args:
+        launch_kwargs["args"] = default_args + extra_args.split()
+    else:
+        launch_kwargs["args"] = default_args
+    # Prefer an explicit executable if provided or autodetected
+    if not exe:
+        for cand in [
+            "/usr/bin/microsoft-edge-stable",
+            "/usr/bin/microsoft-edge",
+            "/usr/bin/google-chrome-stable",
+            "/usr/bin/google-chrome",
+            "/usr/bin/chromium",
+            "/usr/bin/chromium-browser",
+        ]:
+            if os.path.exists(cand):
+                exe = cand
+                break
+    if exe:
+        launch_kwargs["executable_path"] = exe
+    elif channel:
+        launch_kwargs["channel"] = channel
+    browser = playwright.chromium.launch(**launch_kwargs)
     try:
         yield browser
     finally:

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OntoWave - Configuration Avancée</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <!-- Configuration avancée avec toutes les options -->
+    <script type="application/json" id="ontowave-config">
+    {
+        "title": "🌊 OntoWave - Configuration Complète",
+        "baseUrl": "/docs/",
+        "defaultPage": "index.md",
+        "containerId": "ontowave-container",
+        "mermaid": {
+            "theme": "default",
+            "startOnLoad": true,
+            "flowchart": {
+                "useMaxWidth": true,
+                "htmlLabels": true,
+                "curve": "basis"
+            },
+            "sequence": {
+                "useMaxWidth": true,
+                "showSequenceNumbers": true
+            },
+            "gantt": {
+                "useMaxWidth": true,
+                "gridLineStartPadding": 350
+            },
+            "themeVariables": {
+                "primaryColor": "#0969da",
+                "primaryTextColor": "#ffffff",
+                "primaryBorderColor": "#0969da",
+                "lineColor": "#656d76"
+            }
+        },
+        "plantuml": {
+            "server": "https://www.plantuml.com/plantuml",
+            "format": "svg"
+        },
+        "navigation": {
+            "showHome": true,
+            "showBreadcrumb": true,
+            "showToc": true,
+            "showPrevNext": true
+        },
+        "ui": {
+            "theme": "default",
+            "responsive": true,
+            "animations": true,
+            "showSidebar": true,
+            "showSearch": true,
+            "showProgress": true
+        },
+        "search": {
+            "enabled": true,
+            "placeholder": "Rechercher dans la documentation...",
+            "minLength": 2
+        },
+        "content": {
+            "showLastModified": true,
+            "showReadingTime": true,
+            "showTableOfContents": true
+        }
+    }
+    </script>
+    
+    <!-- Styles pour l'interface avancée -->
+    <style>
+        .ontowave-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+        }
+        
+        .ontowave-search {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 0.5rem 1rem;
+            color: white;
+            width: 300px;
+        }
+        
+        .ontowave-search::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .ontowave-progress {
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+        
+        .ontowave-breadcrumb {
+            background: #f8f9fa;
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 0.9rem;
+        }
+        
+        .ontowave-content {
+            padding: 2rem;
+            max-width: none;
+        }
+        
+        .ontowave-reading-time {
+            color: #6c757d;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        
+        .ontowave-toc {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .ontowave-prev-next {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .ontowave-prev-next a {
+            padding: 1rem;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #495057;
+            transition: all 0.2s ease;
+        }
+        
+        .ontowave-prev-next a:hover {
+            background: #e9ecef;
+            border-color: #0969da;
+            color: #0969da;
+        }
+    </style>
+    
+    <script src="../dist/ontowave.min.js"></script>
+</body>
+</html>
