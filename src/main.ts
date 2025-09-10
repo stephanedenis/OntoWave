@@ -111,6 +111,8 @@ import { getJsonFromBundle } from './adapters/browser/bundle'
           }
           const applyMode = async () => {
             const mode = getMode()
+              try { document.body.classList.remove('mode-html','mode-md','mode-split') } catch {}
+              try { document.body.classList.add(`mode-${mode === 'sbs' ? 'split' : mode}`) } catch {}
             if (mode === 'html') { appEl.innerHTML = cache.lastHtml; return }
             if (!cache.lastMd) await fetchMarkdown()
             const raw = cache.lastMd ? escapeHtml(cache.lastMd) : '*Markdown introuvable*'
