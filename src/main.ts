@@ -56,6 +56,115 @@ import { getJsonFromBundle } from './adapters/browser/bundle'
       enhance: { afterRender: async (html, _route) => {
         const appEl = document.getElementById('app')!
         await enhancePage(appEl, html)
+        // --- View Mode Support (html / md / split) ---
+        try {
+          // Cache structure on window to avoid refetching markdown repeatedly
+          // @ts-ignore
+          const g: any = (window as any)
+          if (!g.__owViewCache) g.__owViewCache = { lastHtml: '', lastRoute: '', lastMd: '', fetching: false }
+          const cache = g.__owViewCache
+          cache.lastHtml = appEl.innerHTML
+          cache.lastRoute = location.hash.split('?')[0]
+          const cfgRoots: Array<{ base: string; root: string }> = (cfg.roots || []).map((r: any) => ({ base: String(r.base||'').replace(/\/$/, ''), root: String(r.root||'').replace(/\/$/, '') }))
+          const escapeHtml = (s: string) => s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'} as any)[c] || c)
+          const parseRoutePath = () => {
+            const h = location.hash.replace(/^#/, '') || '/'
+            const p = h.split('?')[0]
+            return p
+          }
+          const getMode = (): string => {
+            const h = location.hash || '#/'
+            const [, q] = h.split('?')
+            const mode = new URLSearchParams(q || '').get('view') || 'html'
+            return mode
+          }
+          const fetchMarkdown = async () => {
+            if (cache.fetching) return
+            cache.fetching = true
+            try {
+              const p = parseRoutePath() // e.g. /fr/demo/mermaid
+              // Identify base (language) if first segment matches cfg base
+              const seg = p.split('/').filter(Boolean)
+              let base = seg[0] || ''
+              const rootCfg = cfgRoots.find(r => r.base === base)
+              let remainderSeg = seg.slice(1)
+              if (!rootCfg) {
+                // fallback first root
+                base = ''
+              }
+              const root = rootCfg ? rootCfg.root : (cfgRoots[0]?.root || '/content')
+              const remainder = remainderSeg.join('/')
+              const candidates: string[] = []
+              if (remainder) {
+                candidates.push(`${root}/${remainder}.md`)
+                candidates.push(`${root}/${remainder}/index.md`)
+              } else {
+                candidates.push(`${root}/index.md`)
+              }
+              for (const c of candidates) {
+                try {
+                  const res = await fetch(c, { cache: 'no-cache' })
+                  if (res.ok) { cache.lastMd = await res.text(); break }
+                } catch {}
+              }
+            } finally { cache.fetching = false }
+          }
+          const applyMode = async () => {
+            const mode = getMode()
+            if (mode === 'html') { appEl.innerHTML = cache.lastHtml; return }
+            if (!cache.lastMd) await fetchMarkdown()
+            const raw = cache.lastMd ? escapeHtml(cache.lastMd) : '*Markdown introuvable*'
+            if (mode === 'md') {
+              appEl.innerHTML = `<div class="ow-md-only"><pre class="ow-raw-md">${raw}</pre></div>`
+            } else if (mode === 'split' || mode === 'sbs') {
+              appEl.innerHTML = `<div class="ow-split"><div class="ow-pane ow-raw"><pre class="ow-raw-md">${raw}</pre></div><div class="ow-pane ow-rendered">${cache.lastHtml}</div></div>`
+            }
+          }
+          // Apply immediately for current render
+          await applyMode()
+          // Install hashchange listener once
+          if (!g.__owViewListener) {
+            g.__owViewListener = true
+            window.addEventListener('hashchange', () => {
+              // If only the query part changed (view=) and route path same, re-apply
+              const currentPath = location.hash.split('?')[0]
+              if (currentPath === cache.lastRoute) {
+                applyMode()
+              }
+            })
+          }
+        } catch {}
+        // Floating view toggles (MD / HTML / SBS)
+        try {
+          const ct = document.getElementById('view-toggles')
+          if (ct) {
+            const setActive = (mode: string | null) => {
+              ct.querySelectorAll('.pill').forEach(el => el.classList.remove('active'))
+              const sel = mode === 'split' || mode === 'sbs' ? '[data-view="split"]' : (mode === 'md' ? '[data-view="md"]' : '[data-view="html"]')
+              const btn = ct.querySelector(sel)
+              if (btn) btn.classList.add('active')
+            }
+            const applyMode = (mode: string) => {
+              const hash = location.hash || '#/'
+              const [path, q] = hash.split('?')
+              const p = new URLSearchParams((q || '').replace(/^\?/,''))
+              if (mode === 'html') p.delete('view'); else p.set('view', mode)
+              const next = p.toString()
+              location.hash = next ? `${path}?${next}` : path
+            }
+            // Init active state
+            const [_, q] = (location.hash || '#/').split('?')
+            const mode = new URLSearchParams(q || '').get('view') || 'html'
+            setActive(mode)
+            // Bind clicks
+            ct.querySelectorAll('button[data-view]').forEach(btn => {
+              btn.addEventListener('click', (e) => {
+                const v = (e.currentTarget as HTMLElement).getAttribute('data-view') || 'html'
+                applyMode(v)
+              })
+            })
+          }
+        } catch {}
         // Sidebar
         const side = await buildSidebar()
         if (side) {

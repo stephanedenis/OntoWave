@@ -94,6 +94,14 @@
   .floating-menu ul { list-style: none; margin: .25rem 0 0; padding: 0 }
   .floating-menu li { margin: .25rem 0 }
   .floating-menu .view-toggles { display:flex; gap:.25rem; align-items:center }
+  /* View mode layouts */
+  .ow-md-only, .ow-split { background:#fff; padding:0; margin:0; }
+  .ow-raw-md { margin:0; padding:1rem; background:#fff; overflow:auto; max-height:calc(100vh - 6rem); }
+  .ow-split { display:flex; gap:1px; border:1px solid #ddd; }
+  .ow-split .ow-pane { width:50%; display:flex; flex-direction:column; }
+  .ow-split .ow-pane.ow-raw { background:#fff; }
+  .ow-split .ow-pane.ow-rendered { background:#fff; padding:1rem; overflow:auto; }
+  @media (max-width: 900px) { .ow-split { flex-direction:column; } .ow-split .ow-pane { width:100%; } }
   .floating-menu .pill { display:inline-block; padding:.15rem .5rem; border:1px solid #ccc; border-radius:999px; font-size:.85rem; line-height:1; background:#f8f8f8 }
   .floating-menu .pill.active { background:#333; color:#fff; border-color:#333 }
   .hidden-by-config { display: none !important }
