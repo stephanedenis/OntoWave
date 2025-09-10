@@ -12,7 +12,7 @@
 - **📊 Diagrammes Mermaid** - Visualisations interactives intégrées
 - **🔍 Navigation intelligente** - Préservation des ancres et navigation fluide
 - **🎨 Interface moderne** - Design responsive et épuré
-- **⚡ Ultra-léger** - Seulement 18KB, aucune dépendance
+- **⚡ Ultra-léger** - Seulement 19KB, aucune dépendance
 - **🚀 Installation en une ligne** - Un seul script à inclure
 
 ### 🎯 Utilisation
@@ -47,7 +47,7 @@ Découvrez OntoWave avec nos démos :
 
 OntoWave est disponible pour sites statiques :
 
-- **[📥 Télécharger ontowave.min.js](ontowave.min.js)** (18KB) - Fichier unique à inclure
+- **[📥 Télécharger ontowave.min.js](ontowave.min.js)** (19KB) - Fichier unique à inclure
 - **[📁 Télécharger le dossier dist complet](dist.tar.gz)** (10KB) - Version de développement avec sources
 
 *Pour les sites statiques, il suffit de télécharger `ontowave.min.js` et de l'inclure dans votre HTML.*
@@ -74,7 +74,7 @@ Pour un usage commercial ou une licence MIT, consultez le [dépôt GitHub](https
 - **📊 Mermaid diagrams** - Integrated interactive visualizations
 - **🔍 Smart navigation** - Anchor preservation and smooth navigation
 - **🎨 Modern interface** - Responsive and clean design
-- **⚡ Ultra-lightweight** - Only 18KB, zero dependencies
+- **⚡ Ultra-lightweight** - Only 19KB, zero dependencies
 - **🚀 One-line installation** - Single script include
 
 ### 🎯 Usage
@@ -109,7 +109,7 @@ Discover OntoWave with our demos:
 
 OntoWave is available for static sites:
 
-- **[📥 Download ontowave.min.js](ontowave.min.js)** (18KB) - Single file to include
+- **[📥 Download ontowave.min.js](ontowave.min.js)** (19KB) - Single file to include
 - **[📁 Download complete dist folder](dist.tar.gz)** (10KB) - Development version with sources
 
 *For static sites, just download `ontowave.min.js` and include it in your HTML.*
@@ -203,3 +203,40 @@ document.addEventListener('DOMContentLoaded', function() {
     toggleLang(lang);
 });
 </script>
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ma Documentation</title>
+</head>
+<body>
+    <script src="ontowave.min.js"></script>
+</body>
+</html>
+```
+
+## Installation
+
+```bash
+npm install ontowave
+```
+
+Ou via CDN :
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+```i est un MVP « OntoWave ».
+
+- Navigation: utilisez les liens markdown pour référencer d’autres pages.
+- Exemples: [Page de démonstration](demo.md) · [Mermaid](demo/mermaid.md) · [PlantUML](demo/plantuml.md)
+
+---
+
+```mermaid
+flowchart LR
+  A[Markdown] --> B(Render)
+  B --> C[HTML]
+```
+
+Formule KaTeX: $E = mc^2$.
