@@ -17,6 +17,12 @@
 
 ### 🎯 Utilisation
 
+OntoWave transforme automatiquement vos fichiers Markdown en documentation interactive. Il vous suffit de :
+
+1. **Télécharger** le fichier `ontowave.min.js` (18KB)
+2. **Créer** un fichier HTML minimal
+3. **Ajouter** vos fichiers `.md` dans le même dossier
+
 ```html
 <!DOCTYPE html>
 <html>
@@ -29,6 +35,13 @@
 </body>
 </html>
 ```
+
+**C'est tout !** OntoWave détecte automatiquement les fichiers Markdown et génère :
+- 📝 Navigation avec menu flottant
+- 🔗 Liens internes entre pages  
+- 📊 Rendu des diagrammes Mermaid
+- 🎨 Interface moderne et responsive
+- 🔍 Préservation des ancres URL
 
 *Téléchargez le fichier `ontowave.min.js` ci-dessous et placez-le dans votre dossier de site.*
 
@@ -58,7 +71,7 @@ OntoWave est disponible pour sites statiques :
 
 OntoWave est publié sous licence **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike).
 
-Pour un usage commercial ou une licence MIT, consultez le [dépôt GitHub](https://github.com/stephane-klein/OntoWave).
+Pour un usage commercial ou une licence MIT, consultez le [dépôt GitHub](https://github.com/stephanedenis/OntoWave).
 
 </div>
 
@@ -79,6 +92,12 @@ Pour un usage commercial ou une licence MIT, consultez le [dépôt GitHub](https
 
 ### 🎯 Usage
 
+OntoWave automatically transforms your Markdown files into interactive documentation. Just:
+
+1. **Download** the `ontowave.min.js` file (18KB)
+2. **Create** a minimal HTML file
+3. **Add** your `.md` files in the same folder
+
 ```html
 <!DOCTYPE html>
 <html>
@@ -91,6 +110,13 @@ Pour un usage commercial ou une licence MIT, consultez le [dépôt GitHub](https
 </body>
 </html>
 ```
+
+**That's it!** OntoWave automatically detects Markdown files and generates:
+- 📝 Navigation with floating menu
+- 🔗 Internal links between pages
+- 📊 Mermaid diagrams rendering
+- 🎨 Modern responsive interface
+- 🔍 URL anchor preservation
 
 *Download the `ontowave.min.js` file below and place it in your site folder.*
 
@@ -120,7 +146,7 @@ OntoWave is available for static sites:
 
 OntoWave is released under **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike) license.
 
-For commercial use or MIT license, check the [GitHub repository](https://github.com/stephane-klein/OntoWave).
+For commercial use or MIT license, check the [GitHub repository](https://github.com/stephanedenis/OntoWave).
 
 </div>
 
