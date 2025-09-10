@@ -25,10 +25,12 @@
     <title>Ma Documentation</title>
 </head>
 <body>
-    <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+    <script src="ontowave.min.js"></script>
 </body>
 </html>
 ```
+
+*Téléchargez le fichier `ontowave.min.js` ci-dessous et placez-le dans votre dossier de site.*
 
 ### 📚 Exemples progressifs
 
@@ -41,12 +43,14 @@ Découvrez OntoWave avec nos démos :
 - [**05-Style MkDocs**](05-mkdocs-style.html) - Interface complète type MkDocs
 - [**Galerie**](gallery.html) - Vue d'ensemble de toutes les démos
 
-### 🌐 Distribution
+### 📦 Téléchargement
 
-OntoWave est disponible via :
-- **NPM** : `npm install ontowave`
-- **CDN jsdelivr** : `https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js`
-- **CDN unpkg** : `https://unpkg.com/ontowave@latest/dist/ontowave.min.js`
+OntoWave est disponible pour sites statiques :
+
+- **[📥 Télécharger ontowave.min.js](ontowave.min.js)** (18KB) - Fichier unique à inclure
+- **[📁 Télécharger le dossier dist complet](dist.tar.gz)** (10KB) - Version de développement avec sources
+
+*Pour les sites statiques, il suffit de télécharger `ontowave.min.js` et de l'inclure dans votre HTML.*
 
 </div>
 
@@ -75,10 +79,12 @@ OntoWave est disponible via :
     <title>My Documentation</title>
 </head>
 <body>
-    <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+    <script src="ontowave.min.js"></script>
 </body>
 </html>
 ```
+
+*Download the `ontowave.min.js` file below and place it in your site folder.*
 
 ### 📚 Progressive Examples
 
@@ -91,12 +97,14 @@ Discover OntoWave with our demos:
 - [**05-MkDocs Style**](05-mkdocs-style.html) - Complete MkDocs-like interface
 - [**Gallery**](gallery.html) - Overview of all demos
 
-### 🌐 Distribution
+### 📦 Download
 
-OntoWave is available via:
-- **NPM**: `npm install ontowave`
-- **CDN jsdelivr**: `https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js`
-- **CDN unpkg**: `https://unpkg.com/ontowave@latest/dist/ontowave.min.js`
+OntoWave is available for static sites:
+
+- **[📥 Download ontowave.min.js](ontowave.min.js)** (18KB) - Single file to include
+- **[📁 Download complete dist folder](dist.tar.gz)** (10KB) - Development version with sources
+
+*For static sites, just download `ontowave.min.js` and include it in your HTML.*
 
 </div>
 
