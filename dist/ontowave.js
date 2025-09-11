@@ -496,30 +496,26 @@
         const script = document.createElement('script');
         script.src = 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js';
         script.onload = () => {
-          // Charger les composants pour langages populaires
+          // Marquer Prism comme chargé dès que le core est disponible
+          this.prismLoaded = true;
+          console.log('🎨 Prism core loaded');
+          
+          // Charger les composants pour langages populaires en arrière-plan
           const languages = ['markup', 'html', 'css', 'javascript', 'python', 'java', 'bash', 'json', 'yaml', 'typescript', 'php'];
-          let loaded = 0;
           
           languages.forEach(lang => {
             const langScript = document.createElement('script');
             langScript.src = `https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-${lang}.min.js`;
             langScript.onload = () => {
-              loaded++;
-              if (loaded === languages.length) {
-                this.prismLoaded = true;
-                console.log('🎨 Prism initialized with languages:', languages);
-                resolve();
-              }
+              console.log(`🔤 Prism language loaded: ${lang}`);
             };
             langScript.onerror = () => {
-              loaded++;
-              if (loaded === languages.length) {
-                this.prismLoaded = true;
-                resolve();
-              }
+              console.warn(`⚠️ Failed to load Prism language: ${lang}`);
             };
             document.head.appendChild(langScript);
           });
+          
+          resolve();
         };
         script.onerror = () => {
           console.warn('⚠️ Failed to load Prism library');
@@ -795,6 +791,7 @@
           </div>`);
         } else {
           const codeClass = this.prismLoaded ? `language-${language}` : '';
+          console.log(`📝 Processing code block: language="${language}", prismLoaded=${this.prismLoaded}, class="${codeClass}"`);
           codeBlocks.push(`<pre class="ontowave-code"><code class="${codeClass}">${trimmedContent}</code></pre>`);
         }
         
@@ -888,19 +885,36 @@
     }
 
     async processPrism(container) {
-      if (!this.prismLoaded || !window.Prism) {
-        console.log('🎨 Prism not loaded, skipping syntax highlighting');
+      console.log('🔍 processPrism called - prismLoaded:', this.prismLoaded, 'window.Prism:', !!window.Prism);
+      
+      if (!window.Prism) {
+        console.log('🎨 Prism not available, skipping syntax highlighting');
         return;
       }
 
       try {
         // Trouver tous les blocs de code avec des classes de langue
         const codeElements = container.querySelectorAll('code[class*="language-"]');
-        console.log('🎨 Found', codeElements.length, 'code blocks for Prism highlighting');
+        console.log('🎨 Found', codeElements.length, 'code blocks with language classes');
+        
+        // Aussi chercher les blocs sans classe pour debug
+        const allCodeElements = container.querySelectorAll('code');
+        console.log('📝 Total code blocks found:', allCodeElements.length);
+        
+        // Log des classes trouvées
+        allCodeElements.forEach((el, i) => {
+          console.log(`Code block ${i}: class="${el.className}", content="${el.textContent?.substring(0, 30)}..."`);
+        });
 
         if (codeElements.length > 0) {
           window.Prism.highlightAllUnder(container);
-          console.log('✅ Prism syntax highlighting applied');
+          console.log('✅ Prism syntax highlighting applied to', codeElements.length, 'blocks');
+          
+          // Vérifier que la coloration a fonctionné
+          const tokenElements = container.querySelectorAll('.token');
+          console.log('🎨 Tokens created after highlighting:', tokenElements.length);
+        } else {
+          console.log('⚠️ No code blocks with language classes found for Prism');
         }
       } catch (error) {
         console.error('❌ Prism highlighting error:', error);
