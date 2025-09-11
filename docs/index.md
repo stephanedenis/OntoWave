@@ -21,7 +21,7 @@ OntoWave transforme automatiquement vos fichiers Markdown en documentation inter
 
 1. **[Télécharger ontowave.min.js](ontowave.min.js)** (18KB)
 2. **Créer** un fichier HTML minimal  
-3. **Ajouter** vos fichiers `.md` dans le même dossier
+3. **Ajouter** vos fichiers `.md` dans le même dossier. Le fichier `index.md` est votre point d'entrée par défaut.
 
 **Exemple concret - code HTML de cette page :**
 
@@ -30,7 +30,7 @@ OntoWave transforme automatiquement vos fichiers Markdown en documentation inter
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>OntoWave - Documentation</title>
+    <title>OntoWave</title>
 </head>
 <body>
     <script src="ontowave.min.js"></script>
@@ -47,7 +47,7 @@ OntoWave transforme automatiquement vos fichiers Markdown en documentation inter
 
 *Cette page entière fonctionne avec seulement 8 lignes de HTML !*
 
-### 📚 Exemples progressifs
+### 📚 Des options pour une expérience plus riche
 
 Découvrez OntoWave avec nos démos :
 
@@ -58,7 +58,7 @@ Découvrez OntoWave avec nos démos :
 - [**05-Style MkDocs**](05-mkdocs-style.html) - Interface complète type MkDocs
 - [**Galerie**](gallery.html) - Vue d'ensemble de toutes les démos
 
-![CC BY-NC-SA](cc-by-nc-sa.png)
+[![CC BY-NC-SA](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 OntoWave par **Stéphane Denis** est publié sous licence **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike).
 
@@ -89,7 +89,7 @@ OntoWave automatically transforms your Markdown files into interactive documenta
 
 1. **Download** the `ontowave.min.js` file (18KB)
 2. **Create** a minimal HTML file  
-3. **Add** your `.md` files in the same folder
+3. **Add** your `.md` files in the same folder. The `index.md` file is your default entry point.
 
 **Real example - HTML code of this page:**
 
@@ -98,7 +98,7 @@ OntoWave automatically transforms your Markdown files into interactive documenta
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>OntoWave - Documentation</title>
+    <title>OntoWave</title>
 </head>
 <body>
     <script src="ontowave.min.js"></script>
@@ -137,7 +137,7 @@ OntoWave is available for static sites:
 
 ### 📝 License
 
-![CC BY-NC-SA](cc-by-nc-sa.png)
+[![CC BY-NC-SA](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 OntoWave is released under **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike) license.
 
