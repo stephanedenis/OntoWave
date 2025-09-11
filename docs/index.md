@@ -29,6 +29,7 @@ OntoWave transforme automatiquement vos fichiers Markdown en documentation inter
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>OntoWave - Documentation</title>
 </head>
 <body>
@@ -62,7 +63,7 @@ Découvrez OntoWave avec nos démos :
 OntoWave est disponible pour sites statiques :
 
 - **[📥 Télécharger ontowave.min.js](ontowave.min.js)** (18KB) - Fichier unique à inclure
-- **[📁 Télécharger le dossier dist complet](dist.tar.gz)** (10KB) - Version de développement avec sources
+- **[📁 Télécharger le dossier dist complet](dist.tar.gz)** (10KB) - Versions JS et minifiée
 
 *Pour les sites statiques, il suffit de télécharger `ontowave.min.js` et de l'inclure dans votre HTML.*
 
@@ -107,6 +108,7 @@ OntoWave automatically transforms your Markdown files into interactive documenta
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>OntoWave - Documentation</title>
 </head>
 <body>
@@ -140,7 +142,7 @@ Discover OntoWave with our demos:
 OntoWave is available for static sites:
 
 - **[📥 Download ontowave.min.js](ontowave.min.js)** (18KB) - Single file to include
-- **[📁 Download complete dist folder](dist.tar.gz)** (10KB) - Development version with sources
+- **[📁 Download complete dist folder](dist.tar.gz)** (10KB) - JS and minified versions
 
 *For static sites, just download `ontowave.min.js` and include it in your HTML.*
 

@@ -809,6 +809,8 @@
         .replace(/^# (.+)$/gm, '<h1>$1</h1>')
         // Séparateurs HR
         .replace(/^---+$/gm, '<hr>')
+        // Images markdown - avant les liens
+        .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">')
         // Liens - traitement différent pour HTML vs MD
         .replace(/\[([^\]]+)\]\(([^)]+\.html[^)]*)\)/g, '<a href="$2">$1</a>')
         // Liens externes (http/https) - ne pas ajouter de hash
