@@ -1,5 +1,153 @@
 # OntoWave
 
+<div id="lang-fr" class="lang-content">
+
+## Micro-application pour sites statiques
+
+**OntoWave** est une micro-application légère qui transforme vos sites statiques en plateformes de documentation interactives et modernes.
+
+### ✨ Fonctionnalités principales
+
+- **📝 Rendu Markdown avancé** - Support complet de la syntaxe Markdown avec extensions
+- **🧜‍♀️ Diagrammes Mermaid** - Visualisations interactives intégrées
+- **🔍 Navigation intelligente** - Préservation des ancres et navigation fluide
+- **🎨 Interface moderne** - Design responsive et épuré
+- **⚡ Ultra-léger** - Seulement 19KB, aucune dépendance
+- **🚀 Installation en une ligne** - Un seul script à inclure
+
+### 🎯 Utilisation
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Ma Documentation</title>
+</head>
+<body>
+    <script src="ontowave.min.js"></script>
+</body>
+</html>
+```
+
+*Téléchargez le fichier `ontowave.min.js` ci-dessous et placez-le dans votre dossier de site.*
+
+### 📚 Exemples progressifs
+
+Découvrez OntoWave avec nos démos :
+
+- [**01-Minimal**](01-minimal.html) - Configuration basique (8 lignes de HTML)
+- [**02-Configuré**](02-basic-config.html) - Avec options personnalisées
+- [**03-Thématique**](03-dark-theme.html) - Style et couleurs personnalisés
+- [**04-Avancé**](04-advanced-config.html) - Fonctionnalités avancées
+- [**05-Style MkDocs**](05-mkdocs-style.html) - Interface complète type MkDocs
+- [**Galerie**](gallery.html) - Vue d'ensemble de toutes les démos
+
+### 🎨 Syntaxe et diagrammes supportés
+
+#### 🏭 PlantUML
+Diagrammes UML avec le serveur officiel PlantUML.
+
+#### 🧜‍♀️ Mermaid  
+Diagrammes interactifs avec Mermaid.js.
+
+#### 🔤 Coloration syntaxique (Prism.js)
+**Langages essentiels :** HTML, CSS, JavaScript  
+**Langages additionnels :** Python, Java, TypeScript, PHP, Bash, JSON, YAML
+
+### 📦 Téléchargement
+
+OntoWave est disponible pour sites statiques :
+
+- **[📥 Télécharger ontowave.min.js](ontowave.min.js)** (19KB) - Fichier unique à inclure
+- **[📁 Télécharger le dossier dist complet](dist.tar.gz)** (10KB) - Version de développement avec sources
+
+*Pour les sites statiques, il suffit de télécharger `ontowave.min.js` et de l'inclure dans votre HTML.*
+
+### 📝 Licence
+
+![CC BY-NC-SA](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)
+
+OntoWave est publié sous licence **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike).
+
+Pour un usage commercial ou une licence MIT, consultez le [dépôt GitHub](https://github.com/stephane-klein/OntoWave).
+
+</div>
+
+<div id="lang-en" class="lang-content" style="display: none;">
+
+## Micro-application for static sites
+
+**OntoWave** is a lightweight micro-application that transforms your static sites into interactive and modern documentation platforms.
+
+### ✨ Key Features
+
+- **📝 Advanced Markdown rendering** - Full Markdown syntax support with extensions
+- **🧜‍♀️ Mermaid diagrams** - Integrated interactive visualizations
+- **🔍 Smart navigation** - Anchor preservation and smooth navigation
+- **🎨 Modern interface** - Responsive and clean design
+- **⚡ Ultra-lightweight** - Only 19KB, zero dependencies
+- **🚀 One-line installation** - Single script include
+
+### 🎯 Usage
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>My Documentation</title>
+</head>
+<body>
+    <script src="ontowave.min.js"></script>
+</body>
+</html>
+```
+
+*Download the `ontowave.min.js` file below and place it in your site folder.*
+
+### 📚 Progressive Examples
+
+Discover OntoWave with our demos:
+
+- [**01-Minimal**](01-minimal.html) - Basic setup (8 lines of HTML)
+- [**02-Configured**](02-basic-config.html) - With custom options
+- [**03-Themed**](03-dark-theme.html) - Custom styles and colors
+- [**04-Advanced**](04-advanced-config.html) - Advanced features
+- [**05-MkDocs Style**](05-mkdocs-style.html) - Complete MkDocs-like interface
+- [**Gallery**](gallery.html) - Overview of all demos
+
+### 🎨 Supported Syntax and Diagrams
+
+#### 🏭 PlantUML
+UML diagrams with official PlantUML server.
+
+#### 🧜‍♀️ Mermaid  
+Interactive diagrams with Mermaid.js.
+
+#### 🔤 Syntax Highlighting (Prism.js)
+**Essential languages:** HTML, CSS, JavaScript  
+**Additional languages:** Python, Java, TypeScript, PHP, Bash, JSON, YAML
+
+### 📦 Download
+
+OntoWave is available for static sites:
+
+- **[📥 Download ontowave.min.js](ontowave.min.js)** (19KB) - Single file to include
+- **[📁 Download complete dist folder](dist.tar.gz)** (10KB) - Development version with sources
+
+*For static sites, just download `ontowave.min.js` and include it in your HTML.*
+
+### 📝 License
+
+![CC BY-NC-SA](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)
+
+OntoWave is released under **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike) license.
+
+For commercial use or MIT license, check the [GitHub repository](https://github.com/stephane-klein/OntoWave).
+
+</div>
+
 <div class="lang-toggle">
     <button onclick="toggleLang('fr')" id="btn-fr">🇫🇷 Français</button>
     <button onclick="toggleLang('en')" id="btn-en">🇬🇧 English</button>
@@ -7,8 +155,8 @@
 
 <style>
 .lang-toggle {
-    position: absolute;
-    top: 20px;
+    position: fixed;
+    top: 80px;
     right: 20px;
     z-index: 999;
     display: flex;
@@ -79,150 +227,3 @@ document.addEventListener('DOMContentLoaded', function() {
     toggleLang(lang);
 });
 </script>
-
-<div id="lang-fr" class="lang-content">
-
-## Micro-application pour sites statiques
-
-**OntoWave** est une micro-application légère qui transforme vos sites statiques en plateformes de documentation interactives et modernes.
-
-### ✨ Fonctionnalités principales
-
-- **📝 Rendu Markdown avancé** - Support complet de la syntaxe Markdown avec extensions
-- **📊 Diagrammes Mermaid** - Visualisations interactives intégrées
-- **🔍 Navigation intelligente** - Préservation des ancres et navigation fluide
-- **🎨 Interface moderne** - Design responsive et épuré
-- **⚡ Ultra-léger** - Seulement 18KB, aucune dépendance
-- **🚀 Installation en une ligne** - Un seul script à inclure
-
-### 🎯 Utilisation
-
-OntoWave transforme automatiquement vos fichiers Markdown en documentation interactive. Il vous suffit de :
-
-1. **[Télécharger ontowave.min.js](ontowave.min.js)** (18KB)
-2. **Créer** un fichier HTML minimal  
-3. **Ajouter** vos fichiers `.md` dans le même dossier. Le fichier `index.md` est votre point d'entrée par défaut.
-
-**Exemple concret - code HTML de cette page :**
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>OntoWave</title>
-</head>
-<body>
-    <script src="ontowave.min.js"></script>
-</body>
-</html>
-```
-
-**C'est tout !** OntoWave détecte automatiquement `index.md` et génère :
-- 📝 Navigation avec menu flottant
-- 🔗 Liens internes entre pages  
-- 📊 Rendu des diagrammes Mermaid
-- 🎨 Interface moderne et responsive
-- 🔍 Préservation des ancres URL
-
-*Cette page entière fonctionne avec seulement 8 lignes de HTML !*
-
-### 📚 Des options pour une expérience plus riche
-
-Découvrez OntoWave avec nos démos :
-
-- [**01-Minimal**](01-minimal.html) - Configuration basique (8 lignes de HTML)
-- [**02-Configuré**](02-basic-config.html) - Avec options personnalisées
-- [**03-Thématique**](03-dark-theme.html) - Style et couleurs personnalisés
-- [**04-Avancé**](04-advanced-config.html) - Fonctionnalités avancées
-- [**05-Style MkDocs**](05-mkdocs-style.html) - Interface complète type MkDocs
-- [**Galerie**](gallery.html) - Vue d'ensemble de toutes les démos
-
-[![CC BY-NC-SA](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
-
-OntoWave par **Stéphane Denis** est publié sous licence **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike).
-
-Ce logiciel est fourni "tel quel", sans garantie d'aucune sorte, expresse ou implicite. En aucun cas les auteurs ne seront responsables de réclamations, dommages ou autres responsabilités.
-
-**[📁 Code source](https://github.com/stephanedenis/OntoWave)** sur GitHub.
-
-</div>
-
-<div id="lang-en" class="lang-content" style="display: none;">
-
-## Micro-application for static sites
-
-**OntoWave** is a lightweight micro-application that transforms your static sites into interactive and modern documentation platforms.
-
-### ✨ Key Features
-
-- **📝 Advanced Markdown rendering** - Full Markdown syntax support with extensions
-- **📊 Mermaid diagrams** - Integrated interactive visualizations
-- **🔍 Smart navigation** - Anchor preservation and smooth navigation
-- **🎨 Modern interface** - Responsive and clean design
-- **⚡ Ultra-lightweight** - Only 18KB, zero dependencies
-- **🚀 One-line installation** - Single script include
-
-### 🎯 Usage
-
-OntoWave automatically transforms your Markdown files into interactive documentation. Just:
-
-1. **Download** the `ontowave.min.js` file (18KB)
-2. **Create** a minimal HTML file  
-3. **Add** your `.md` files in the same folder. The `index.md` file is your default entry point.
-
-**Real example - HTML code of this page:**
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>OntoWave</title>
-</head>
-<body>
-    <script src="ontowave.min.js"></script>
-</body>
-</html>
-```
-
-**That's it!** OntoWave automatically detects `index.md` and generates:
-- 📝 Navigation with floating menu
-- 🔗 Internal links between pages
-- 📊 Mermaid diagrams rendering
-- 🎨 Modern responsive interface
-- 🔍 URL anchor preservation
-
-*This entire page works with only 8 lines of HTML!*
-
-### 📚 Progressive Examples
-
-Discover OntoWave with our demos:
-
-- [**01-Minimal**](01-minimal.html) - Basic setup (8 lines of HTML)
-- [**02-Configured**](02-basic-config.html) - With custom options
-- [**03-Themed**](03-dark-theme.html) - Custom styles and colors
-- [**04-Advanced**](04-advanced-config.html) - Advanced features
-- [**05-MkDocs Style**](05-mkdocs-style.html) - Complete MkDocs-like interface
-- [**Gallery**](gallery.html) - Overview of all demos
-
-### 📦 Download
-
-OntoWave is available for static sites:
-
-- **[📥 Download ontowave.min.js](ontowave.min.js)** (18KB) - Single file to include
-- **[📁 Download complete dist folder](dist.tar.gz)** (10KB) - JS and minified versions
-
-*For static sites, just download `ontowave.min.js` and include it in your HTML.*
-
-### 📝 License
-
-[![CC BY-NC-SA](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
-
-OntoWave is released under **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike) license.
-
-**MIT Disclaimer:** This software is provided "as is", without warranty of any kind, express or implied. In no event shall the authors be liable for any claim, damages or other liability.
-
-**[📁 Source code](https://github.com/stephanedenis/OntoWave)** on GitHub.
-
-</div>

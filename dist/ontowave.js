@@ -25,6 +25,9 @@
     baseUrl: "/",
     defaultPage: "index.md",
     containerId: "ontowave-container",
+    locales: [], // Langues supportées (ex: ["fr-CA", "fr", "en"])
+    fallbackLocale: "en",
+    showGallery: false, // Gallerie désactivée par défaut
     mermaid: {
       theme: "default",
       startOnLoad: true,
@@ -90,6 +93,10 @@
       white-space: nowrap;
     }
     
+    .ontowave-floating-menu.no-drag {
+      cursor: default;
+    }
+    
     .ontowave-floating-menu.expanded {
       width: auto;
       height: auto;
@@ -152,6 +159,12 @@
       color: #0550ae;
     }
     
+    .org-suffix {
+      font-size: 0.7em;
+      opacity: 0.7;
+      font-weight: normal;
+    }
+    
     .ontowave-menu-options {
       display: flex;
       gap: 8px;
@@ -167,10 +180,24 @@
       cursor: pointer;
       transition: all 0.2s ease;
       white-space: nowrap;
+      pointer-events: auto;
     }
     
     .ontowave-menu-option:hover {
       background: #e2e8f0;
+      transform: translateY(-1px);
+    }
+    
+    .ontowave-menu-option.selected {
+      background: #0969da;
+      color: white;
+      border-color: #0969da;
+      box-shadow: 0 2px 8px rgba(9, 105, 218, 0.3);
+    }
+    
+    .ontowave-menu-option.selected:hover {
+      background: #0550ae;
+      border-color: #0550ae;
       transform: translateY(-1px);
     }
     
@@ -397,6 +424,97 @@
       console.log('🌊 OntoWave initialized with config:', this.config);
     }
 
+    /**
+     * Résout les langues du navigateur par ordre de préférence
+     */
+    getBrowserLocales() {
+      const languages = [];
+      
+      // navigator.languages (préférences utilisateur)
+      if (navigator.languages) {
+        languages.push(...navigator.languages);
+      }
+      
+      // Fallbacks
+      if (navigator.language) {
+        languages.push(navigator.language);
+      }
+      if (navigator.userLanguage) {
+        languages.push(navigator.userLanguage);
+      }
+      
+      return [...new Set(languages)]; // Enlever doublons
+    }
+
+    /**
+     * Trouve la meilleure correspondance entre langues navigateur et config
+     */
+    resolveLocale() {
+      const browserLocales = this.getBrowserLocales();
+      const supportedLocales = this.config.locales || [];
+      
+      console.log('🌐 Browser locales:', browserLocales);
+      console.log('🌐 Supported locales:', supportedLocales);
+      
+      if (supportedLocales.length === 0) {
+        return null; // Mode monolingue
+      }
+      
+      // Recherche exacte d'abord
+      for (const browserLang of browserLocales) {
+        if (supportedLocales.includes(browserLang)) {
+          console.log('🎯 Exact match found:', browserLang);
+          return browserLang;
+        }
+      }
+      
+      // Recherche par préfixe (fr-CA -> fr)
+      for (const browserLang of browserLocales) {
+        const prefix = browserLang.split('-')[0];
+        const match = supportedLocales.find(locale => locale.startsWith(prefix));
+        if (match) {
+          console.log('🎯 Prefix match found:', browserLang, '->', match);
+          return match;
+        }
+      }
+      
+      // Fallback sur la première langue supportée
+      const fallback = supportedLocales[0];
+      console.log('🎯 Using fallback locale:', fallback);
+      return fallback;
+    }
+
+    /**
+     * Génère la liste des fichiers à essayer pour une page donnée
+     */
+    generatePageCandidates(basePage) {
+      const resolvedLocale = this.resolveLocale();
+      const candidates = [];
+      
+      if (!resolvedLocale) {
+        // Mode monolingue - essayer la page directement
+        candidates.push(basePage);
+        return candidates;
+      }
+      
+      const pageName = basePage.replace(/\.md$/, '');
+      
+      // Essayer avec la locale résolue
+      candidates.push(`${pageName}.${resolvedLocale}.md`);
+      
+      // Si c'est une locale composée (fr-CA), essayer le préfixe
+      if (resolvedLocale.includes('-')) {
+        const prefix = resolvedLocale.split('-')[0];
+        candidates.push(`${pageName}.${prefix}.md`);
+      }
+      
+      // Fallback sur la page de base
+      candidates.push(basePage);
+      
+      console.log('📄 Page candidates for', basePage, ':', candidates);
+      return candidates;
+    }
+
     async init() {
       try {
         // Charger la configuration depuis le script JSON si disponible
@@ -496,26 +614,52 @@
         const script = document.createElement('script');
         script.src = 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js';
         script.onload = () => {
-          // Marquer Prism comme chargé dès que le core est disponible
-          this.prismLoaded = true;
           console.log('🎨 Prism core loaded');
           
-          // Charger les composants pour langages populaires en arrière-plan
-          const languages = ['markup', 'html', 'css', 'javascript', 'python', 'java', 'bash', 'json', 'yaml', 'typescript', 'php'];
+          // Charger les langages essentiels et attendre leur chargement
+          const essentialLanguages = ['markup', 'css', 'javascript'];
+          let loadedCount = 0;
           
-          languages.forEach(lang => {
+          const checkComplete = () => {
+            loadedCount++;
+            console.log(`🔤 Essential language loaded: ${loadedCount}/${essentialLanguages.length}`);
+            if (loadedCount >= essentialLanguages.length) {
+              // HTML est un alias de markup dans Prism
+              if (window.Prism.languages.markup) {
+                window.Prism.languages.html = window.Prism.languages.markup;
+                console.log('🔤 HTML alias created from markup');
+              }
+              
+              this.prismLoaded = true;
+              console.log('✅ Prism ready with essential languages');
+              resolve();
+              
+              // Charger les langages supplémentaires en arrière-plan
+              const additionalLanguages = ['python', 'java', 'bash', 'json', 'yaml', 'typescript', 'php'];
+              additionalLanguages.forEach(lang => {
+                const langScript = document.createElement('script');
+                langScript.src = `https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-${lang}.min.js`;
+                langScript.onload = () => {
+                  console.log(`🔤 Additional Prism language loaded: ${lang}`);
+                };
+                langScript.onerror = () => {
+                  console.warn(`⚠️ Failed to load Prism language: ${lang}`);
+                };
+                document.head.appendChild(langScript);
+              });
+            }
+          };
+          
+          essentialLanguages.forEach(lang => {
             const langScript = document.createElement('script');
             langScript.src = `https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-${lang}.min.js`;
-            langScript.onload = () => {
-              console.log(`🔤 Prism language loaded: ${lang}`);
-            };
+            langScript.onload = checkComplete;
             langScript.onerror = () => {
-              console.warn(`⚠️ Failed to load Prism language: ${lang}`);
+              console.warn(`⚠️ Failed to load essential Prism language: ${lang}`);
+              checkComplete(); // Continue même en cas d'erreur
             };
             document.head.appendChild(langScript);
           });
-          
-          resolve();
         };
         script.onerror = () => {
           console.warn('⚠️ Failed to load Prism library');
@@ -536,15 +680,20 @@
 
       this.container.className = 'ontowave-container';
       
+      // Créer les options du menu selon la configuration
+      const galleryOption = this.config.showGallery ? 
+        '<span class="ontowave-menu-option" onclick="window.location.href=\'gallery.html\'">🎨 Galerie</span>' : '';
+      
       // Créer la structure HTML minimaliste
       this.container.innerHTML = `
         <div class="ontowave-floating-menu" id="ontowave-floating-menu" title="OntoWave Menu">
           <span class="ontowave-menu-icon" id="ontowave-menu-icon">&#127754;</span>
           <div class="ontowave-menu-content" id="ontowave-menu-content">
-            <a href="https://ontowave.com/" target="_blank" class="ontowave-menu-brand">OntoWave</a>
+            <a href="https://github.com/stephanedenis/OntoWave" target="_blank" class="ontowave-menu-brand">OntoWave<span class="org-suffix">.org</span></a>
             <div class="ontowave-menu-options">
-              <span class="ontowave-menu-option" onclick="window.OntoWave.loadPage('index.md')">🏠 Accueil</span>
-              <span class="ontowave-menu-option" onclick="window.location.href='gallery.html'">🎨 Galerie</span>
+              <span class="ontowave-menu-option" onclick="window.OntoWave.instance.loadPage('${this.config.defaultPage}')">🏠 Accueil</span>
+              ${galleryOption}
+              <span class="ontowave-menu-option" onclick="event.stopPropagation(); window.OntoWave.instance.toggleConfigurationPanel();">⚙️ Configuration</span>
             </div>
           </div>
         </div>
@@ -590,6 +739,19 @@
       let isDragging = false;
       let dragOffset = { x: 0, y: 0 };
 
+      // Fonction pour mettre à jour l'état de déplacement
+      function updateDragState() {
+        const canDrag = !isExpanded && !document.querySelector('.ontowave-config-panel');
+        if (canDrag) {
+          menu.classList.remove('no-drag');
+        } else {
+          menu.classList.add('no-drag');
+        }
+      }
+
+      // Stocker la référence globalement pour les panneaux de configuration
+      window.ontowaveUpdateDragState = updateDragState;
+
       // Toggle menu au clic sur l'icône
       menuIcon.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -600,6 +762,7 @@
         } else {
           menu.classList.remove('expanded');
         }
+        updateDragState();
       });
 
       // Fermer le menu au clic en dehors
@@ -607,11 +770,17 @@
         if (!menu.contains(e.target) && isExpanded) {
           isExpanded = false;
           menu.classList.remove('expanded');
+          updateDragState();
         }
       });
 
       // Drag & Drop functionality
       menu.addEventListener('mousedown', (e) => {
+        // Ne pas démarrer le drag si le menu est étendu ou si un panneau de config est ouvert
+        if (isExpanded || document.querySelector('.ontowave-config-panel')) {
+          return;
+        }
+        
         // Ne pas démarrer le drag si on clique sur les liens/boutons
         if (e.target.closest('a, .ontowave-menu-option')) return;
         
@@ -622,6 +791,10 @@
         
         menu.style.cursor = 'grabbing';
         document.body.style.userSelect = 'none';
+        
+        // Empêcher l'interception des événements par d'autres éléments
+        e.preventDefault();
+        e.stopPropagation();
       });
 
       document.addEventListener('mousemove', (e) => {
@@ -675,6 +848,25 @@
       document.addEventListener('touchend', () => {
         isDragging = false;
       });
+      
+      // Initialiser l'état de déplacement
+      updateDragState();
+      
+      // Améliorer la gestion des clics sur les options du menu
+      this.enhanceMenuOptionClicks();
+    }
+    
+    enhanceMenuOptionClicks() {
+      // Ajouter des gestionnaires d'événements robustes pour les options du menu
+      const configOption = document.querySelector('.ontowave-menu-option[onclick*="toggleConfigurationPanel"]');
+      if (configOption) {
+        configOption.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('Configuration button clicked via event listener');
+          this.toggleConfigurationPanel(e);
+        }, { capture: true });
+      }
     }
 
     createDefaultNavigation() {
@@ -685,8 +877,8 @@
         { href: 'index.md', icon: '🏠', label: 'Accueil' },
         { href: 'en/index.md', icon: '🇬🇧', label: 'English' },
         { href: 'fr/index.md', icon: '🇫🇷', label: 'Français' },
-        { href: 'demo/mermaid.md', icon: '🎨', label: 'Démo Mermaid' },
-        { href: 'demo/plantuml.md', icon: '📊', label: 'PlantUML' },
+        { href: 'demo/mermaid.md', icon: '🧜‍♀️', label: 'Démo Mermaid' },
+        { href: 'demo/plantuml.md', icon: '🏭', label: 'PlantUML' },
         { href: 'demo/advanced-shapes.md', icon: '🎯', label: 'Formes Avancées' }
       ];
 
@@ -699,7 +891,34 @@
 
     async loadInitialPage() {
       const initialPage = location.hash.replace('#', '') || this.config.defaultPage;
-      await this.loadPage(initialPage);
+      
+      // Si on n'a pas de fichier index, afficher la configuration
+      if (initialPage === 'index.md') {
+        const candidates = this.generatePageCandidates(initialPage);
+        let found = false;
+        
+        for (const candidate of candidates) {
+          try {
+            const response = await fetch(this.config.baseUrl + candidate, { method: 'HEAD' });
+            if (response.ok) {
+              await this.loadPage(candidate);
+              found = true;
+              break;
+            }
+          } catch (error) {
+            // Continue avec le candidat suivant
+            continue;
+          }
+        }
+        
+        if (!found) {
+          console.log('📄 No index file found, showing configuration');
+          this.showConfigurationInterface();
+          return;
+        }
+      } else {
+        await this.loadPage(initialPage);
+      }
     }
 
     async loadPage(pagePath) {
@@ -780,12 +999,15 @@
         
         if (language === 'mermaid') {
           const id = 'mermaid-' + Math.random().toString(36).substr(2, 9);
-          codeBlocks.push(`<div class="ontowave-mermaid mermaid" id="${id}">${trimmedContent}</div>`);
+          codeBlocks.push(`<div class="ontowave-mermaid">
+            <div style="margin-bottom: 8px; font-weight: bold; color: #586069;">🧜‍♀️ Diagramme Mermaid</div>
+            <div class="mermaid" id="${id}">${trimmedContent}</div>
+          </div>`);
         } else if (language === 'plantuml') {
           const id = 'plantuml-' + Math.random().toString(36).substr(2, 9);
           const plantUMLUrl = `${this.config.plantuml.server}/${this.config.plantuml.format}/~1${encodeURIComponent(trimmedContent)}`;
           codeBlocks.push(`<div class="ontowave-plantuml" id="${id}">
-            <div style="margin-bottom: 8px; font-weight: bold; color: #586069;">📊 Diagramme PlantUML</div>
+            <div style="margin-bottom: 8px; font-weight: bold; color: #586069;">🏭 Diagramme PlantUML</div>
             <img src="${plantUMLUrl}" alt="Diagramme PlantUML" style="max-width: 100%; height: auto;" 
                  onerror="this.parentElement.innerHTML='<div style=\\'color: #d73a49; padding: 20px;\\'>❌ Erreur de rendu PlantUML</div>'" />
           </div>`);
@@ -893,26 +1115,70 @@
       }
 
       try {
+        // Vérifier les langages disponibles
+        console.log('🔤 Available Prism languages:', window.Prism.languages ? Object.keys(window.Prism.languages) : 'none');
+        
         // Trouver tous les blocs de code avec des classes de langue
         const codeElements = container.querySelectorAll('code[class*="language-"]');
         console.log('🎨 Found', codeElements.length, 'code blocks with language classes');
         
+        // Debug détaillé de chaque bloc de code
+        codeElements.forEach((el, i) => {
+          console.log(`🔍 Code block ${i}:`);
+          console.log(`  - class: "${el.className}"`);
+          console.log(`  - content length: ${el.textContent?.length}`);
+          console.log(`  - content preview: "${el.textContent?.substring(0, 50)}..."`);
+          console.log(`  - parent visible: ${window.getComputedStyle(el.parentElement).display !== 'none'}`);
+          console.log(`  - element visible: ${window.getComputedStyle(el).display !== 'none'}`);
+        });
+        
         // Aussi chercher les blocs sans classe pour debug
         const allCodeElements = container.querySelectorAll('code');
         console.log('📝 Total code blocks found:', allCodeElements.length);
-        
-        // Log des classes trouvées
-        allCodeElements.forEach((el, i) => {
-          console.log(`Code block ${i}: class="${el.className}", content="${el.textContent?.substring(0, 30)}..."`);
-        });
 
         if (codeElements.length > 0) {
+          // Tenter manuellement sur le premier élément pour debug
+          const firstElement = codeElements[0];
+          console.log('🧪 Testing manual highlighting on first element...');
+          
+          // Vérifier le langage
+          const classList = firstElement.className.split(' ');
+          const langClass = classList.find(cls => cls.startsWith('language-'));
+          const lang = langClass ? langClass.replace('language-', '') : 'unknown';
+          console.log(`🔤 Language detected: "${lang}"`);
+          console.log(`🔤 Language available in Prism: ${!!(window.Prism.languages && window.Prism.languages[lang])}`);
+          
+          // Test manuel
+          if (window.Prism.languages && window.Prism.languages[lang]) {
+            console.log('🧪 Attempting manual highlight...');
+            const originalContent = firstElement.textContent;
+            try {
+              const highlighted = window.Prism.highlight(originalContent, window.Prism.languages[lang], lang);
+              console.log(`🎨 Manual highlight result length: ${highlighted.length}`);
+              console.log(`🎨 Manual highlight preview: "${highlighted.substring(0, 100)}..."`);
+              
+              // Appliquer le résultat
+              firstElement.innerHTML = highlighted;
+              console.log('✅ Manual highlight applied');
+            } catch (manualError) {
+              console.error('❌ Manual highlight failed:', manualError);
+            }
+          }
+          
+          // Puis essayer la méthode normale
           window.Prism.highlightAllUnder(container);
           console.log('✅ Prism syntax highlighting applied to', codeElements.length, 'blocks');
           
           // Vérifier que la coloration a fonctionné
           const tokenElements = container.querySelectorAll('.token');
           console.log('🎨 Tokens created after highlighting:', tokenElements.length);
+          
+          // Debug des tokens créés
+          if (tokenElements.length > 0) {
+            tokenElements.forEach((token, i) => {
+              console.log(`Token ${i}: "${token.textContent}" (class: ${token.className})`);
+            });
+          }
         } else {
           console.log('⚠️ No code blocks with language classes found for Prism');
         }
@@ -921,11 +1187,1247 @@
       }
     }
 
+    showConfigurationInterface() {
+      const contentDiv = document.getElementById('ontowave-content');
+      if (!contentDiv) return;
+
+      const currentConfigString = JSON.stringify(this.config, null, 2)
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      contentDiv.innerHTML = `
+        <div class="ontowave-config-interface">
+          <div class="config-header">
+            <h1>🌊 OntoWave Configuration</h1>
+            <p>Aucun fichier index trouvé. Configurez OntoWave pour votre projet :</p>
+          </div>
+          
+          <div class="config-content">
+            <div class="config-form">
+              <h2>📝 Configuration</h2>
+              
+              <div class="form-group">
+                <label for="config-title">Titre du site :</label>
+                <input type="text" id="config-title" />
+              </div>
+              
+              <div class="form-group">
+                <label for="config-defaultPage">Page par défaut :</label>
+                <input type="text" id="config-defaultPage" />
+              </div>
+              
+              <div class="form-group">
+                <label for="config-locales">Langues supportées (séparées par des virgules) :</label>
+                <input type="text" id="config-locales" placeholder="fr-CA, fr, en" />
+              </div>
+              
+              <div class="form-group">
+                <label>
+                  <input type="checkbox" id="config-showGallery" />
+                  Afficher la galerie d'exemples
+                </label>
+              </div>
+              
+              <div class="form-group">
+                <label for="config-mermaidTheme">Thème Mermaid :</label>
+                <select id="config-mermaidTheme">
+                  <option value="default">Default</option>
+                  <option value="dark">Dark</option>
+                  <option value="forest">Forest</option>
+                  <option value="neutral">Neutral</option>
+                </select>
+              </div>
+              
+              <div class="form-actions">
+                <button onclick="window.OntoWave.instance.updateConfigFromForm()">✅ Appliquer</button>
+                <button onclick="window.OntoWave.instance.downloadConfig()">💾 Télécharger HTML</button>
+                <button onclick="window.OntoWave.instance.resetConfig()">🔄 Reset</button>
+              </div>
+            </div>
+            
+            <div class="config-code">
+              <h2>💻 Code HTML généré</h2>
+              <div class="code-preview">
+                <pre><code id="generated-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;${this.config.title}&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;script src="ontowave.min.js"&gt;&lt;/script&gt;
+    &lt;script type="application/json" id="ontowave-config"&gt;
+${currentConfigString}
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+              </div>
+              
+              <div class="usage-info">
+                <h3>📋 Instructions d'utilisation</h3>
+                <ol>
+                  <li>Configurez les options dans le formulaire</li>
+                  <li>Cliquez sur "Télécharger HTML" pour obtenir votre fichier</li>
+                  <li>Placez vos fichiers .md dans le même dossier</li>
+                  <li>Ouvrez le fichier HTML dans votre navigateur</li>
+                </ol>
+                
+                <h3>🌐 Gestion des langues</h3>
+                <ul>
+                  <li><strong>Monolingue :</strong> Laissez "Langues supportées" vide</li>
+                  <li><strong>Multilingue :</strong> Ajoutez les codes de langue (ex: fr, en, fr-CA)</li>
+                  <li><strong>Fichiers :</strong> index.fr.md, index.en.md, etc.</li>
+                  <li><strong>Fallback :</strong> index.md si aucune langue trouvée</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Ajouter les styles pour l'interface de configuration
+      this.addConfigStyles();
+      
+      // Remplir les valeurs des champs après génération du HTML (une seule fois)
+      this.populateConfigForm();
+      
+      // Générer le code HTML initial
+      this.updateGeneratedCode();
+    }
+    
+    // Méthode pour remplir les valeurs du formulaire
+    populateConfigForm() {
+      const titleField = document.getElementById('config-title');
+      const defaultPageField = document.getElementById('config-defaultPage');
+      const localesField = document.getElementById('config-locales');
+      const showGalleryField = document.getElementById('config-showGallery');
+      const mermaidThemeField = document.getElementById('config-mermaidTheme');
+      
+      if (titleField) titleField.value = this.config.title;
+      if (defaultPageField) defaultPageField.value = this.config.defaultPage;
+      if (localesField) localesField.value = this.config.locales.join(', ');
+      if (showGalleryField) showGalleryField.checked = this.config.showGallery;
+      if (mermaidThemeField) mermaidThemeField.value = this.config.mermaid.theme;
+    }
+
+    addConfigStyles() {
+      if (document.getElementById('ontowave-config-styles')) return;
+
+      const style = document.createElement('style');
+      style.id = 'ontowave-config-styles';
+      style.textContent = `
+        .ontowave-config-interface {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 20px;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .config-header {
+          text-align: center;
+          margin-bottom: 40px;
+        }
+        
+        .config-header h1 {
+          color: #0969da;
+          margin-bottom: 10px;
+        }
+        
+        .config-content {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 40px;
+          align-items: start;
+        }
+        
+        .config-form {
+          background: #f8f9fa;
+          padding: 30px;
+          border-radius: 12px;
+          border: 1px solid #e1e4e8;
+        }
+        
+        .config-code {
+          background: #ffffff;
+          padding: 30px;
+          border-radius: 12px;
+          border: 1px solid #e1e4e8;
+        }
+        
+        .form-group {
+          margin-bottom: 20px;
+        }
+        
+        .form-group label {
+          display: block;
+          font-weight: 600;
+          margin-bottom: 8px;
+          color: #24292e;
+        }
+        
+        .form-group input, .form-group select {
+          width: 100%;
+          padding: 10px;
+          border: 1px solid #d0d7de;
+          border-radius: 6px;
+          font-size: 14px;
+        }
+        
+        .form-group input[type="checkbox"] {
+          width: auto;
+          margin-right: 8px;
+        }
+        
+        .form-actions {
+          display: flex;
+          gap: 10px;
+          margin-top: 30px;
+        }
+        
+        .form-actions button {
+          flex: 1;
+          padding: 12px 20px;
+          border: none;
+          border-radius: 6px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        
+        .form-actions button:first-child {
+          background: #28a745;
+          color: white;
+        }
+        
+        .form-actions button:nth-child(2) {
+          background: #0969da;
+          color: white;
+        }
+        
+        .form-actions button:last-child {
+          background: #6c757d;
+          color: white;
+        }
+        
+        .form-actions button:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .code-preview {
+          background: #f6f8fa;
+          border: 1px solid #e1e4e8;
+          border-radius: 6px;
+          padding: 16px;
+          overflow-x: auto;
+          margin-bottom: 20px;
+        }
+        
+        .code-preview pre {
+          margin: 0;
+          font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+          font-size: 13px;
+          line-height: 1.4;
+        }
+        
+        .usage-info h3 {
+          color: #0969da;
+          margin-top: 25px;
+          margin-bottom: 10px;
+        }
+        
+        .usage-info ul, .usage-info ol {
+          padding-left: 20px;
+        }
+        
+        .usage-info li {
+          margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+          .config-content {
+            grid-template-columns: 1fr;
+            gap: 20px;
+          }
+        }
+      `;
+      
+      document.head.appendChild(style);
+    }
+
+    updateConfigFromForm() {
+      // Mettre à jour la configuration depuis le formulaire
+      const title = document.getElementById('config-title').value;
+      const defaultPage = document.getElementById('config-defaultPage').value;
+      const locales = document.getElementById('config-locales').value
+        .split(',')
+        .map(l => l.trim())
+        .filter(l => l.length > 0);
+      const showGallery = document.getElementById('config-showGallery').checked;
+      const mermaidTheme = document.getElementById('config-mermaidTheme').value;
+
+      this.config.title = title;
+      this.config.defaultPage = defaultPage;
+      this.config.locales = locales;
+      this.config.showGallery = showGallery;
+      this.config.mermaid.theme = mermaidTheme;
+
+      console.log('📝 Configuration updated:', this.config);
+      
+      // Mettre à jour le titre de la page
+      document.title = this.config.title;
+      
+      // Régénérer le code HTML
+      this.updateGeneratedCode();
+      
+      // Afficher notification
+      this.showNotification('✅ Configuration mise à jour');
+    }
+
+    updateGeneratedCode() {
+      // Créer une config simplifiée pour l'affichage
+      const simpleConfig = {
+        title: this.config.title,
+        baseUrl: this.config.baseUrl,
+        defaultPage: this.config.defaultPage,
+        locales: this.config.locales,
+        fallbackLocale: this.config.fallbackLocale,
+        showGallery: this.config.showGallery,
+        mermaid: {
+          theme: this.config.mermaid.theme
+        }
+      };
+
+      const configString = JSON.stringify(simpleConfig, null, 2)
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      const htmlCode = `&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;${this.config.title}&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;script src="ontowave.min.js"&gt;&lt;/script&gt;
+    &lt;script type="application/json" id="ontowave-config"&gt;
+${configString}
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;`;
+
+      const codeElement = document.getElementById('generated-html');
+      if (codeElement) {
+        codeElement.innerHTML = htmlCode;
+      }
+    }
+
+    downloadConfig() {
+      // Utiliser la config simplifiée pour le téléchargement aussi
+      const simpleConfig = {
+        title: this.config.title,
+        baseUrl: this.config.baseUrl,
+        defaultPage: this.config.defaultPage,
+        locales: this.config.locales,
+        fallbackLocale: this.config.fallbackLocale,
+        showGallery: this.config.showGallery,
+        mermaid: {
+          theme: this.config.mermaid.theme
+        }
+      };
+
+      const configString = JSON.stringify(simpleConfig, null, 2);
+      
+      const htmlContent = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>${this.config.title}</title>
+</head>
+<body>
+    <script src="ontowave.min.js"></script>
+    <script type="application/json" id="ontowave-config">
+${configString}
+    </script>
+</body>
+</html>`;
+
+      const blob = new Blob([htmlContent], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'index.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      this.showNotification('💾 Fichier HTML téléchargé');
+    }
+
+    resetConfig() {
+      this.config = { ...DEFAULT_CONFIG };
+      this.showConfigurationInterface();
+      this.showNotification('🔄 Configuration réinitialisée');
+    }
+
+    showNotification(message) {
+      // Créer une notification temporaire
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #28a745;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 6px;
+        z-index: 10000;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        animation: slideIn 0.3s ease;
+      `;
+      notification.textContent = message;
+      
+      // Ajouter animation CSS
+      if (!document.getElementById('notification-styles')) {
+        const style = document.createElement('style');
+        style.id = 'notification-styles';
+        style.textContent = `
+          @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideIn 0.3s ease reverse';
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 300);
+      }, 3000);
+    }
+
     showError(message) {
       const contentDiv = document.getElementById('ontowave-content');
       if (contentDiv) {
         contentDiv.innerHTML = `<div class="ontowave-error">❌ ${message}</div>`;
       }
+    }
+
+    // Panneau de configuration dans le menu flottant
+    toggleConfigurationPanel(event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      
+      const menuContent = document.querySelector('.ontowave-menu-content');
+      if (!menuContent) {
+        console.error('Menu content not found');
+        return;
+      }
+
+      // Trouver le bouton Configuration
+      const configButton = document.querySelector('.ontowave-menu-option[onclick*="toggleConfigurationPanel"]');
+
+      // Vérifier si le panneau existe déjà
+      let configPanel = document.getElementById('ontowave-config-panel');
+      
+      if (configPanel) {
+        // Si le panneau existe, le supprimer (toggle off)
+        configPanel.remove();
+        if (configButton) {
+          configButton.classList.remove('selected');
+        }
+        // Mettre à jour l'état de déplacement après fermeture du panneau
+        if (typeof window.ontowaveUpdateDragState === 'function') {
+          window.ontowaveUpdateDragState();
+        }
+        console.log('Config panel closed');
+        return;
+      }
+
+      // Marquer le bouton comme sélectionné
+      if (configButton) {
+        configButton.classList.add('selected');
+      }
+
+      // Créer le panneau de configuration
+      configPanel = document.createElement('div');
+      configPanel.id = 'ontowave-config-panel';
+      configPanel.className = 'ontowave-config-panel';
+      
+      configPanel.innerHTML = `
+        <div class="config-panel-content">
+          <div class="config-full-panel">
+            <h3>🌊 OntoWave - Configuration Complète</h3>
+            
+            <!-- Section Général -->
+            <div class="config-section">
+              <h4>📖 Général</h4>
+              <div class="config-row">
+                <div class="form-group-full">
+                  <label for="config-title-full">Titre du site :</label>
+                  <input type="text" id="config-title-full" value="${this.config.title}" />
+                </div>
+                <div class="form-group-full">
+                  <label for="config-defaultPage-full">Page par défaut :</label>
+                  <input type="text" id="config-defaultPage-full" value="${this.config.defaultPage}" placeholder="index.md" />
+                </div>
+              </div>
+              <div class="form-group-full">
+                <label for="config-baseUrl-full">URL de base :</label>
+                <input type="text" id="config-baseUrl-full" value="${this.config.baseUrl}" placeholder="/" />
+              </div>
+            </div>
+
+            <!-- Section Langues et Localisation -->
+            <div class="config-section">
+              <h4>🌍 Langues et Localisation</h4>
+              <div class="config-row">
+                <div class="form-group-full">
+                  <label for="config-locales-full">Langues supportées (séparées par des virgules) :</label>
+                  <input type="text" id="config-locales-full" value="${this.config.locales.join(', ')}" placeholder="fr-CA, fr, en" />
+                  <small>Laissez vide pour un site monolingue</small>
+                </div>
+                <div class="form-group-full">
+                  <label for="config-fallbackLocale-full">Langue de fallback :</label>
+                  <select id="config-fallbackLocale-full">
+                    <option value="en" ${this.config.fallbackLocale === 'en' ? 'selected' : ''}>English (en)</option>
+                    <option value="fr" ${this.config.fallbackLocale === 'fr' ? 'selected' : ''}>Français (fr)</option>
+                    <option value="es" ${this.config.fallbackLocale === 'es' ? 'selected' : ''}>Español (es)</option>
+                    <option value="de" ${this.config.fallbackLocale === 'de' ? 'selected' : ''}>Deutsch (de)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section Navigation et Interface -->
+            <div class="config-section">
+              <h4>🧭 Navigation et Interface</h4>
+              <div class="config-row">
+                <div class="form-group-checkbox">
+                  <label>
+                    <input type="checkbox" id="config-showGallery-full" ${this.config.showGallery ? 'checked' : ''} />
+                    🎨 Afficher la galerie d'exemples
+                  </label>
+                </div>
+                <div class="form-group-checkbox">
+                  <label>
+                    <input type="checkbox" id="config-navHome-full" ${this.config.navigation?.showHome !== false ? 'checked' : ''} />
+                    🏠 Bouton Accueil
+                  </label>
+                </div>
+              </div>
+              <div class="config-row">
+                <div class="form-group-checkbox">
+                  <label>
+                    <input type="checkbox" id="config-navBreadcrumb-full" ${this.config.navigation?.showBreadcrumb !== false ? 'checked' : ''} />
+                    📍 Fil d'Ariane (breadcrumb)
+                  </label>
+                </div>
+                <div class="form-group-checkbox">
+                  <label>
+                    <input type="checkbox" id="config-navToc-full" ${this.config.navigation?.showToc !== false ? 'checked' : ''} />
+                    📑 Table des matières
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section Diagrammes Mermaid -->
+            <div class="config-section">
+              <h4>📊 Diagrammes Mermaid</h4>
+              <div class="config-row">
+                <div class="form-group-full">
+                  <label for="config-mermaidTheme-full">Thème Mermaid :</label>
+                  <select id="config-mermaidTheme-full">
+                    <option value="default" ${this.config.mermaid?.theme === 'default' ? 'selected' : ''}>Default (clair)</option>
+                    <option value="dark" ${this.config.mermaid?.theme === 'dark' ? 'selected' : ''}>Dark (sombre)</option>
+                    <option value="forest" ${this.config.mermaid?.theme === 'forest' ? 'selected' : ''}>Forest (vert)</option>
+                    <option value="neutral" ${this.config.mermaid?.theme === 'neutral' ? 'selected' : ''}>Neutral (neutre)</option>
+                  </select>
+                </div>
+                <div class="form-group-checkbox">
+                  <label>
+                    <input type="checkbox" id="config-mermaidStart-full" ${this.config.mermaid?.startOnLoad !== false ? 'checked' : ''} />
+                    🚀 Démarrage automatique
+                  </label>
+                </div>
+              </div>
+              <div class="config-row">
+                <div class="form-group-checkbox">
+                  <label>
+                    <input type="checkbox" id="config-mermaidMaxWidth-full" ${this.config.mermaid?.flowchart?.useMaxWidth !== false ? 'checked' : ''} />
+                    📐 Utiliser la largeur maximale
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section PlantUML -->
+            <div class="config-section">
+              <h4>🌿 Diagrammes PlantUML</h4>
+              <div class="config-row">
+                <div class="form-group-full">
+                  <label for="config-plantumlServer-full">Serveur PlantUML :</label>
+                  <input type="text" id="config-plantumlServer-full" value="${this.config.plantuml?.server || 'https://www.plantuml.com/plantuml'}" />
+                </div>
+                <div class="form-group-full">
+                  <label for="config-plantumlFormat-full">Format de sortie :</label>
+                  <select id="config-plantumlFormat-full">
+                    <option value="svg" ${this.config.plantuml?.format === 'svg' ? 'selected' : ''}>SVG (vectoriel)</option>
+                    <option value="png" ${this.config.plantuml?.format === 'png' ? 'selected' : ''}>PNG (bitmap)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section Coloration Syntaxique -->
+            <div class="config-section">
+              <h4>🎨 Coloration Syntaxique (Prism.js)</h4>
+              <div class="config-row">
+                <div class="form-group-full">
+                  <label for="config-prismTheme-full">Thème Prism :</label>
+                  <select id="config-prismTheme-full">
+                    <option value="default" ${this.config.prism?.theme === 'default' ? 'selected' : ''}>Default (clair)</option>
+                    <option value="dark" ${this.config.prism?.theme === 'dark' ? 'selected' : ''}>Dark (sombre)</option>
+                    <option value="twilight" ${this.config.prism?.theme === 'twilight' ? 'selected' : ''}>Twilight</option>
+                  </select>
+                </div>
+                <div class="form-group-checkbox">
+                  <label>
+                    <input type="checkbox" id="config-prismAutoload-full" ${this.config.prism?.autoload !== false ? 'checked' : ''} />
+                    🔄 Chargement automatique
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section Interface Utilisateur -->
+            <div class="config-section">
+              <h4>💻 Interface Utilisateur</h4>
+              <div class="config-row">
+                <div class="form-group-full">
+                  <label for="config-uiTheme-full">Thème de l'interface :</label>
+                  <select id="config-uiTheme-full">
+                    <option value="default" ${this.config.ui?.theme === 'default' ? 'selected' : ''}>Default (clair)</option>
+                    <option value="dark" ${this.config.ui?.theme === 'dark' ? 'selected' : ''}>Dark (sombre)</option>
+                    <option value="auto" ${this.config.ui?.theme === 'auto' ? 'selected' : ''}>Auto (système)</option>
+                  </select>
+                </div>
+                <div class="form-group-checkbox">
+                  <label>
+                    <input type="checkbox" id="config-uiResponsive-full" ${this.config.ui?.responsive !== false ? 'checked' : ''} />
+                    📱 Design responsive
+                  </label>
+                </div>
+              </div>
+              <div class="config-row">
+                <div class="form-group-checkbox">
+                  <label>
+                    <input type="checkbox" id="config-uiAnimations-full" ${this.config.ui?.animations !== false ? 'checked' : ''} />
+                    ✨ Animations et transitions
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions-full">
+              <button onclick="window.OntoWave.instance.updateConfigFromFullPanel()" class="btn-primary">✅ Appliquer Configuration</button>
+              <button onclick="window.OntoWave.instance.downloadConfigFromPanel()" class="btn-secondary">💾 Télécharger HTML</button>
+              <button onclick="window.OntoWave.instance.downloadOntoWaveScript()" class="btn-secondary">📥 Télécharger ontowave.min.js</button>
+              <button onclick="window.OntoWave.instance.resetConfigToDefaults()" class="btn-warning">🔄 Réinitialiser</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Ajouter les styles du panneau
+      this.addConfigPanelStyles();
+      
+      // Insérer le panneau après le menu
+      menuContent.appendChild(configPanel);
+      
+      // Mettre à jour l'état de déplacement après ouverture du panneau
+      if (typeof window.ontowaveUpdateDragState === 'function') {
+        window.ontowaveUpdateDragState();
+      }
+      
+      // Générer le code HTML initial
+      this.updateGeneratedCodeMini();
+      
+      console.log('Config panel opened');
+    }
+
+    // Méthodes pour le panneau complet
+    updateConfigFromFullPanel() {
+      // Général
+      const title = document.getElementById('config-title-full')?.value || this.config.title;
+      const defaultPage = document.getElementById('config-defaultPage-full')?.value || this.config.defaultPage;
+      const baseUrl = document.getElementById('config-baseUrl-full')?.value || this.config.baseUrl;
+
+      // Langues
+      const locales = document.getElementById('config-locales-full')?.value
+        .split(',')
+        .map(l => l.trim())
+        .filter(l => l.length > 0) || this.config.locales;
+      const fallbackLocale = document.getElementById('config-fallbackLocale-full')?.value || this.config.fallbackLocale;
+
+      // Navigation
+      const showGallery = document.getElementById('config-showGallery-full')?.checked || false;
+      const showHome = document.getElementById('config-navHome-full')?.checked !== false;
+      const showBreadcrumb = document.getElementById('config-navBreadcrumb-full')?.checked !== false;
+      const showToc = document.getElementById('config-navToc-full')?.checked !== false;
+
+      // Mermaid
+      const mermaidTheme = document.getElementById('config-mermaidTheme-full')?.value || 'default';
+      const mermaidStart = document.getElementById('config-mermaidStart-full')?.checked !== false;
+      const mermaidMaxWidth = document.getElementById('config-mermaidMaxWidth-full')?.checked !== false;
+
+      // PlantUML
+      const plantumlServer = document.getElementById('config-plantumlServer-full')?.value || 'https://www.plantuml.com/plantuml';
+      const plantumlFormat = document.getElementById('config-plantumlFormat-full')?.value || 'svg';
+
+      // Prism
+      const prismTheme = document.getElementById('config-prismTheme-full')?.value || 'default';
+      const prismAutoload = document.getElementById('config-prismAutoload-full')?.checked !== false;
+
+      // UI
+      const uiTheme = document.getElementById('config-uiTheme-full')?.value || 'default';
+      const uiResponsive = document.getElementById('config-uiResponsive-full')?.checked !== false;
+      const uiAnimations = document.getElementById('config-uiAnimations-full')?.checked !== false;
+
+      // Mettre à jour la configuration
+      this.config.title = title;
+      this.config.defaultPage = defaultPage;
+      this.config.baseUrl = baseUrl;
+      this.config.locales = locales;
+      this.config.fallbackLocale = fallbackLocale;
+      this.config.showGallery = showGallery;
+      
+      this.config.navigation = {
+        showHome: showHome,
+        showBreadcrumb: showBreadcrumb,
+        showToc: showToc
+      };
+
+      this.config.mermaid = {
+        theme: mermaidTheme,
+        startOnLoad: mermaidStart,
+        flowchart: { useMaxWidth: mermaidMaxWidth },
+        sequence: { useMaxWidth: mermaidMaxWidth },
+        gantt: { useMaxWidth: mermaidMaxWidth },
+        journey: { useMaxWidth: mermaidMaxWidth }
+      };
+
+      this.config.plantuml = {
+        server: plantumlServer,
+        format: plantumlFormat
+      };
+
+      this.config.prism = {
+        theme: prismTheme,
+        autoload: prismAutoload
+      };
+
+      this.config.ui = {
+        theme: uiTheme,
+        responsive: uiResponsive,
+        animations: uiAnimations
+      };
+
+      // Mettre à jour le titre de la page
+      document.title = this.config.title;
+
+      // Afficher une notification
+      this.showNotification('Configuration appliquée avec succès ! 🎉');
+
+      console.log('Configuration mise à jour:', this.config);
+    }
+
+    resetConfigToDefaults() {
+      if (confirm('Voulez-vous vraiment réinitialiser toute la configuration aux valeurs par défaut ?')) {
+        // Réinitialiser avec les valeurs par défaut
+        Object.assign(this.config, {
+          title: "OntoWave Documentation",
+          baseUrl: "/",
+          defaultPage: "index.md",
+          locales: [],
+          fallbackLocale: "en",
+          showGallery: false,
+          mermaid: {
+            theme: "default",
+            startOnLoad: true,
+            flowchart: { useMaxWidth: true },
+            sequence: { useMaxWidth: true },
+            gantt: { useMaxWidth: true },
+            journey: { useMaxWidth: true }
+          },
+          plantuml: {
+            server: "https://www.plantuml.com/plantuml",
+            format: "svg"
+          },
+          prism: {
+            theme: "default",
+            autoload: true
+          },
+          navigation: {
+            showHome: true,
+            showBreadcrumb: true,
+            showToc: true
+          },
+          ui: {
+            theme: "default",
+            responsive: true,
+            animations: true
+          }
+        });
+
+        // Fermer et rouvrir le panneau pour actualiser les valeurs
+        const configPanel = document.getElementById('ontowave-config-panel');
+        if (configPanel) {
+          configPanel.remove();
+          // Mettre à jour l'état de déplacement après suppression du panneau
+          if (typeof window.ontowaveUpdateDragState === 'function') {
+            window.ontowaveUpdateDragState();
+          }
+          setTimeout(() => this.toggleConfigurationPanel(), 100);
+        }
+
+        this.showNotification('Configuration réinitialisée ! 🔄');
+      }
+    }
+
+    // Méthodes pour le panneau compact (compatibilité)
+    updateConfigFromPanel() {
+      const title = document.getElementById('config-title-mini')?.value || this.config.title;
+      const locales = document.getElementById('config-locales-mini')?.value
+        .split(',')
+        .map(l => l.trim())
+        .filter(l => l.length > 0) || this.config.locales;
+      const showGallery = document.getElementById('config-showGallery-mini')?.checked || this.config.showGallery;
+
+      this.config.title = title;
+      this.config.locales = locales;
+      this.config.showGallery = showGallery;
+
+      // Mettre à jour le titre de la page
+      document.title = this.config.title;
+      
+      // Régénérer le code HTML
+      this.updateGeneratedCodeMini();
+      
+      this.showNotification('✅ Configuration mise à jour');
+    }
+
+    downloadConfigFromPanel() {
+      // Utiliser la config simplifiée pour le téléchargement
+      const simpleConfig = {
+        title: this.config.title,
+        baseUrl: this.config.baseUrl,
+        defaultPage: this.config.defaultPage,
+        locales: this.config.locales,
+        fallbackLocale: this.config.fallbackLocale,
+        showGallery: this.config.showGallery,
+        mermaid: {
+          theme: this.config.mermaid.theme
+        }
+      };
+
+      const configString = JSON.stringify(simpleConfig, null, 2);
+      
+      const htmlContent = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>${this.config.title}</title>
+</head>
+<body>
+    <script src="ontowave.min.js"></script>
+    <script type="application/json" id="ontowave-config">
+${configString}
+    </script>
+</body>
+</html>`;
+
+      const blob = new Blob([htmlContent], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'index.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      this.showNotification('💾 Fichier HTML téléchargé');
+    }
+
+    downloadOntoWaveScript() {
+      // Créer un lien de téléchargement vers le fichier ontowave.min.js
+      const a = document.createElement('a');
+      a.href = 'ontowave.min.js';
+      a.download = 'ontowave.min.js';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      
+      this.showNotification('📥 Fichier ontowave.min.js téléchargé');
+    }
+
+    updateGeneratedCodeMini() {
+      // Créer une config simplifiée pour l'affichage
+      const simpleConfig = {
+        title: this.config.title,
+        baseUrl: this.config.baseUrl,
+        defaultPage: this.config.defaultPage,
+        locales: this.config.locales,
+        fallbackLocale: this.config.fallbackLocale,
+        showGallery: this.config.showGallery,
+        mermaid: {
+          theme: this.config.mermaid.theme
+        }
+      };
+
+      const configString = JSON.stringify(simpleConfig, null, 2)
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      const htmlCode = `&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;${this.config.title}&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;script src="ontowave.min.js"&gt;&lt;/script&gt;
+    &lt;script type="application/json" id="ontowave-config"&gt;
+${configString}
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;`;
+
+      const codeElement = document.getElementById('generated-html-mini');
+      if (codeElement) {
+        codeElement.innerHTML = htmlCode;
+      }
+    }
+
+    addConfigPanelStyles() {
+      if (document.getElementById('ontowave-config-panel-styles')) return;
+
+      const style = document.createElement('style');
+      style.id = 'ontowave-config-panel-styles';
+      style.textContent = `
+        /* Panneau de configuration étendu */
+        .ontowave-config-panel {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: white;
+          border: 1px solid #e1e4e8;
+          border-radius: 12px;
+          box-shadow: 0 16px 48px rgba(0,0,0,0.15);
+          z-index: 1001;
+          margin-top: 12px;
+          max-height: 90vh;
+          overflow-y: auto;
+          min-width: 90vw;
+          max-width: 95vw;
+          width: auto;
+        }
+        
+        .config-panel-content {
+          padding: 0;
+        }
+        
+        .config-full-panel {
+          padding: 32px;
+          max-width: none;
+        }
+        
+        .config-full-panel h3 {
+          margin: 0 0 32px 0;
+          color: #0969da;
+          font-size: 24px;
+          font-weight: 700;
+          text-align: center;
+          padding-bottom: 16px;
+          border-bottom: 2px solid #f6f8fa;
+        }
+        
+        /* Sections de configuration */
+        .config-section {
+          margin-bottom: 32px;
+          padding: 24px;
+          background: #f6f8fa;
+          border-radius: 8px;
+          border-left: 4px solid #0969da;
+        }
+        
+        .config-section h4 {
+          margin: 0 0 20px 0;
+          color: #24292e;
+          font-size: 18px;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        
+        /* Disposition en lignes */
+        .config-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+          margin-bottom: 16px;
+        }
+        
+        .config-row:last-child {
+          margin-bottom: 0;
+        }
+        
+        /* Groupes de formulaire */
+        .form-group-full {
+          margin-bottom: 0;
+        }
+        
+        .form-group-full label {
+          display: block;
+          font-weight: 600;
+          margin-bottom: 8px;
+          color: #24292e;
+          font-size: 14px;
+        }
+        
+        .form-group-full input,
+        .form-group-full select {
+          width: 100%;
+          padding: 12px;
+          border: 2px solid #d0d7de;
+          border-radius: 6px;
+          font-size: 14px;
+          transition: border-color 0.2s ease;
+        }
+        
+        .form-group-full input:focus,
+        .form-group-full select:focus {
+          outline: none;
+          border-color: #0969da;
+          box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.1);
+        }
+        
+        .form-group-full small {
+          display: block;
+          margin-top: 4px;
+          font-size: 12px;
+          color: #656d76;
+          font-style: italic;
+        }
+        
+        /* Checkboxes */
+        .form-group-checkbox {
+          display: flex;
+          align-items: center;
+          margin-bottom: 0;
+        }
+        
+        .form-group-checkbox label {
+          display: flex;
+          align-items: center;
+          font-weight: 500;
+          color: #24292e;
+          font-size: 14px;
+          cursor: pointer;
+          margin: 0;
+        }
+        
+        .form-group-checkbox input[type="checkbox"] {
+          width: auto;
+          margin: 0 8px 0 0;
+          transform: scale(1.2);
+          accent-color: #0969da;
+        }
+        
+        /* Actions du formulaire */
+        .form-actions-full {
+          display: flex;
+          gap: 16px;
+          justify-content: center;
+          margin-top: 40px;
+          padding-top: 24px;
+          border-top: 2px solid #f6f8fa;
+          flex-wrap: wrap;
+        }
+        
+        .form-actions-full button {
+          padding: 12px 24px;
+          border: none;
+          border-radius: 8px;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          min-width: 180px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+        }
+        
+        .btn-primary {
+          background: #0969da;
+          color: white;
+        }
+        
+        .btn-primary:hover {
+          background: #0550ae;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(9, 105, 218, 0.3);
+        }
+        
+        .btn-secondary {
+          background: #6f7782;
+          color: white;
+        }
+        
+        .btn-secondary:hover {
+          background: #57606a;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(111, 119, 130, 0.3);
+        }
+        
+        .btn-warning {
+          background: #d73a49;
+          color: white;
+        }
+        
+        .btn-warning:hover {
+          background: #b31d28;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(215, 58, 73, 0.3);
+        }
+        
+        /* Responsive pour petits écrans */
+        @media (max-width: 768px) {
+          .ontowave-config-panel {
+            min-width: 95vw;
+            margin-top: 8px;
+          }
+          
+          .config-full-panel {
+            padding: 20px;
+          }
+          
+          .config-row {
+            grid-template-columns: 1fr;
+            gap: 16px;
+          }
+          
+          .form-actions-full {
+            flex-direction: column;
+            align-items: stretch;
+          }
+          
+          .form-actions-full button {
+            min-width: auto;
+          }
+        }
+        
+        /* Styles pour compatibilité avec l'ancien panneau compact */
+        .config-form-compact h3,
+        .config-preview-compact h3 {
+          margin: 0 0 16px 0;
+          color: #0969da;
+          font-size: 16px;
+          font-weight: 600;
+        }
+        
+        .form-group-compact {
+          margin-bottom: 16px;
+        }
+        
+        .form-group-compact label {
+          display: block;
+          font-weight: 600;
+          margin-bottom: 6px;
+          color: #24292e;
+          font-size: 13px;
+        }
+        
+        .form-group-compact input {
+          width: 100%;
+          padding: 8px;
+          border: 1px solid #d0d7de;
+          border-radius: 4px;
+          font-size: 13px;
+        }
+        
+        .form-group-compact input[type="checkbox"] {
+          width: auto;
+          margin-right: 6px;
+        }
+        
+        .form-actions-compact {
+          display: flex;
+          gap: 10px;
+          margin-top: 20px;
+          flex-wrap: wrap;
+        }
+        
+        .form-actions-compact button {
+          flex: 1;
+          padding: 10px 16px;
+          border: none;
+          border-radius: 6px;
+          background: #0969da;
+          color: white;
+          font-size: 13px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background 0.2s ease;
+          min-width: 120px;
+        }
+        
+        .form-actions-compact button:hover {
+          background: #0550ae;
+        }
+        
+        .config-preview-compact {
+          background: #f6f8fa;
+          border-radius: 6px;
+          padding: 16px;
+        }
+        
+        .code-preview-mini {
+          background: #24292e;
+          color: #f6f8fa;
+          padding: 12px;
+          border-radius: 4px;
+          font-family: 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+          font-size: 11px;
+          line-height: 1.4;
+          overflow-x: auto;
+          max-height: 300px;
+          overflow-y: auto;
+        }
+      `;
+      document.head.appendChild(style);
     }
 
     // API publique
@@ -945,8 +2447,8 @@
 
   // Initialisation automatique au chargement de la page
   document.addEventListener('DOMContentLoaded', () => {
-    window.OntoWave = new OntoWave();
-    window.OntoWave.init();
+    window.OntoWave = { instance: new OntoWave() };
+    window.OntoWave.instance.init();
   });
 
   // Export pour utilisation manuelle si nécessaire
