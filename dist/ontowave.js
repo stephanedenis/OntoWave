@@ -111,6 +111,11 @@
       box-shadow: 0 6px 20px rgba(27,31,35,0.25);
     }
     
+    /* Désactiver le zoom quand le panneau de configuration est ouvert */
+    .ontowave-floating-menu.has-config-panel:hover {
+      transform: none;
+    }
+    
     .ontowave-menu-icon {
       cursor: pointer;
       transition: transform 0.3s ease;
@@ -1649,6 +1654,13 @@ ${configString}
         if (configButton) {
           configButton.classList.remove('selected');
         }
+        
+        // Supprimer la classe pour réactiver le zoom au survol
+        const floatingMenu = document.getElementById('ontowave-floating-menu');
+        if (floatingMenu) {
+          floatingMenu.classList.remove('has-config-panel');
+        }
+        
         // Mettre à jour l'état de déplacement après fermeture du panneau
         if (typeof window.ontowaveUpdateDragState === 'function') {
           window.ontowaveUpdateDragState();
@@ -1859,6 +1871,12 @@ ${configString}
       
       // Insérer le panneau après le menu
       menuContent.appendChild(configPanel);
+      
+      // Ajouter la classe pour désactiver le zoom au survol
+      const floatingMenu = document.getElementById('ontowave-floating-menu');
+      if (floatingMenu) {
+        floatingMenu.classList.add('has-config-panel');
+      }
       
       // Mettre à jour l'état de déplacement après ouverture du panneau
       if (typeof window.ontowaveUpdateDragState === 'function') {
