@@ -1,0 +1,46 @@
+# Configuration Jekyll pour GitHub Pages
+title: "OntoWave - Générateur de diagrammes"
+description: "Bibliothèque JavaScript pour générer des diagrammes PlantUML, Mermaid et autres directement dans le navigateur"
+baseurl: ""
+url: "https://ontowave.com"
+
+# Exclusions
+exclude:
+  - node_modules/
+  - dist/
+  - test-results/
+  - tests/
+  - tools/
+  - "*.md"
+  - package*.json
+  - vite.config.js
+  - playwright.config.js
+
+# Inclusion forcée de certains fichiers
+include:
+  - .nojekyll
+
+# Configuration Markdown
+markdown: kramdown
+highlighter: rouge
+
+# Plugins Jekyll
+plugins:
+  - jekyll-sitemap
+  - jekyll-feed
+
+# Configuration du thème
+theme: minima
+
+# Métadonnées du site
+author: "Stéphane Denis"
+lang: fr
+
+# Configuration des collections
+collections_dir: docs
+
+# Headers sécurisés
+webrick:
+  headers:
+    X-Frame-Options: SAMEORIGIN
+    X-Content-Type-Options: nosniff
