@@ -19,7 +19,7 @@
 
 OntoWave transforme automatiquement vos fichiers Markdown en documentation interactive. Il vous suffit de :
 
-1. **Télécharger** le fichier `ontowave.min.js` (18KB)
+1. **[Télécharger ontowave.min.js](ontowave.min.js)** (18KB)
 2. **Créer** un fichier HTML minimal  
 3. **Ajouter** vos fichiers `.md` dans le même dossier
 
@@ -57,16 +57,6 @@ Découvrez OntoWave avec nos démos :
 - [**04-Avancé**](04-advanced-config.html) - Fonctionnalités avancées
 - [**05-Style MkDocs**](05-mkdocs-style.html) - Interface complète type MkDocs
 - [**Galerie**](gallery.html) - Vue d'ensemble de toutes les démos
-
-### 📦 Téléchargement
-
-OntoWave est disponible pour sites statiques :
-
-- **[📥 Télécharger ontowave.min.js](ontowave.min.js)** (18KB) - Fichier unique à inclure
-
-*Pour les sites statiques, il suffit de télécharger `ontowave.min.js` et de l'inclure dans votre HTML.*
-
-### 📝 Licence
 
 ![CC BY-NC-SA](cc-by-nc-sa.png)
 
