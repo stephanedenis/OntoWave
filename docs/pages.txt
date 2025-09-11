@@ -1,3 +1,4 @@
+DEMOS-GUIDE.md
 demo.md
 demo/admonitions.md
 demo/code.md
@@ -27,8 +28,15 @@ en/demo/plantuml.md
 en/demo/plantuml.md
 en/index.md
 en/index.md
+en/index.md
 fr/demo/overview.md
 fr/demo/overview.md
+fr/index.md
 fr/index.md
 fr/index.md
 index.md
+index/fr-CA.md
+index_backup.md
+index_new.md
+index_old.md
+test-render.md

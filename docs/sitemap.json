@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2025-09-10T19:03:57.542Z",
-  "count": 34,
+  "generatedAt": "2025-09-11T17:31:16.719Z",
+  "count": 42,
   "i18n": {
     "default": "fr",
     "supported": [
@@ -64,6 +64,12 @@
       "base": ""
     },
     {
+      "path": "docs/DEMOS-GUIDE.md",
+      "route": "#/DEMOS-GUIDE",
+      "title": "🎯 OntoWave - Galerie de Démos",
+      "base": ""
+    },
+    {
       "path": "docs/en/demo/admonitions.md",
       "route": "#/en/demo/admonitions",
       "title": "Admonitions",
@@ -184,6 +190,12 @@
       "base": ""
     },
     {
+      "path": "docs/index.en.md",
+      "route": "#/en/index",
+      "title": "Home - English Version",
+      "base": ""
+    },
+    {
       "path": "docs/fr/demo/overview.md",
       "route": "#/fr/demo/overview",
       "title": "Aperçu des fonctionnalités",
@@ -205,12 +217,48 @@
       "path": "docs/fr/index.md",
       "route": "#/fr/index",
       "title": "OntoWave",
+      "base": ""
+    },
+    {
+      "path": "docs/index.fr.md",
+      "route": "#/fr/index",
+      "title": "Accueil - Version Française",
       "base": ""
     },
     {
       "path": "docs/index.md",
       "route": "#/index",
-      "title": "Bienvenue",
+      "title": "OntoWave",
+      "base": ""
+    },
+    {
+      "path": "docs/index_backup.md",
+      "route": "#/index_backup",
+      "title": "OntoWave",
+      "base": ""
+    },
+    {
+      "path": "docs/index_new.md",
+      "route": "#/index_new",
+      "title": "OntoWave",
+      "base": ""
+    },
+    {
+      "path": "docs/index_old.md",
+      "route": "#/index_old",
+      "title": "OntoWave",
+      "base": ""
+    },
+    {
+      "path": "docs/index.fr-CA.md",
+      "route": "#/index/fr-CA",
+      "title": "Accueil - Version Français Canadien",
+      "base": ""
+    },
+    {
+      "path": "docs/test-render.md",
+      "route": "#/test-render",
+      "title": "Test Rendu Markdown",
       "base": ""
     }
   ]
