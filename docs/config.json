@@ -5,7 +5,8 @@
   "roots": [
     { "base": "en", "root": "/en" },
     { "base": "fr", "root": "/fr" },
-    { "base": "", "root": "/" }
+    { "base": "", "root": "/", "defaultFile": "index.md" }
   ],
-  "ui": { "minimal": true }
+  "ui": { "minimal": true },
+  "prism": { "enabled": true }
 }

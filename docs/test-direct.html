@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test OntoWave Direct</title>
+</head>
+<body>
+    <h1>Test de chargement OntoWave</h1>
+    <p>Si OntoWave fonctionne, cette page devrait afficher le contenu de index.md automatiquement.</p>
+    
+    <script>
+    console.log('Script de test chargé');
+    
+    // Vérifier si OntoWave se charge
+    window.addEventListener('load', function() {
+        setTimeout(() => {
+            console.log('OntoWave chargé:', window.OntoWave !== undefined);
+            console.log('Prism chargé:', window.Prism !== undefined);
+            
+            // Vérifier le contenu
+            const body = document.body.textContent;
+            if (body.includes('Micro-application')) {
+                console.log('✅ Contenu markdown chargé');
+            } else {
+                console.log('❌ Contenu markdown NON chargé');
+            }
+            
+            // Vérifier les boutons de langue
+            const langButtons = document.querySelectorAll('.lang-toggle button');
+            console.log('Boutons de langue:', langButtons.length);
+        }, 2000);
+    });
+    </script>
+    
+    <script src="ontowave.min.js"></script>
+</body>
+</html>
