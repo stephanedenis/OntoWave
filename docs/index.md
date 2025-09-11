@@ -63,7 +63,6 @@ Découvrez OntoWave avec nos démos :
 OntoWave est disponible pour sites statiques :
 
 - **[📥 Télécharger ontowave.min.js](ontowave.min.js)** (18KB) - Fichier unique à inclure
-- **[📁 Télécharger le dossier dist complet](dist.tar.gz)** (10KB) - Versions JS et minifiée
 
 *Pour les sites statiques, il suffit de télécharger `ontowave.min.js` et de l'inclure dans votre HTML.*
 
@@ -71,9 +70,9 @@ OntoWave est disponible pour sites statiques :
 
 ![CC BY-NC-SA](cc-by-nc-sa.png)
 
-OntoWave est publié sous licence **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike).
+OntoWave par **Stéphane Denis** est publié sous licence **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike).
 
-**Décharge de responsabilité MIT :** Ce logiciel est fourni "tel quel", sans garantie d'aucune sorte, expresse ou implicite. En aucun cas les auteurs ne seront responsables de réclamations, dommages ou autres responsabilités.
+Ce logiciel est fourni "tel quel", sans garantie d'aucune sorte, expresse ou implicite. En aucun cas les auteurs ne seront responsables de réclamations, dommages ou autres responsabilités.
 
 **[📁 Code source](https://github.com/stephanedenis/OntoWave)** sur GitHub.
 

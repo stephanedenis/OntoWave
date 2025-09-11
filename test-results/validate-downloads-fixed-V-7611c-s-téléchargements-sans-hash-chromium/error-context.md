@@ -1,0 +1,150 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic "OntoWave Menu" [ref=e3]:
+    - generic [ref=e4] [cursor=pointer]: 🌊
+    - generic:
+      - link "OntoWave":
+        - /url: https://ontowave.com/
+      - generic [ref=e5]:
+        - generic [ref=e6] [cursor=pointer]: 🏠 Accueil
+        - generic [ref=e7] [cursor=pointer]: 🎨 Galerie
+  - generic [ref=e8]:
+    - heading "OntoWave" [level=1] [ref=e9]
+    - generic [ref=e10]:
+      - heading "Micro-application pour sites statiques" [level=2]
+      - paragraph:
+        - strong: OntoWave
+        - text: est une micro-application légère qui transforme vos sites statiques en plateformes de documentation interactives et modernes.
+      - heading "✨ Fonctionnalités principales" [level=3]
+      - paragraph:
+        - text: "-"
+        - strong: 📝 Rendu Markdown avancé
+        - text: "- Support complet de la syntaxe Markdown avec extensions"
+        - text: "-"
+        - strong: 📊 Diagrammes Mermaid
+        - text: "- Visualisations interactives intégrées"
+        - text: "-"
+        - strong: 🔍 Navigation intelligente
+        - text: "- Préservation des ancres et navigation fluide"
+        - text: "-"
+        - strong: 🎨 Interface moderne
+        - text: "- Design responsive et épuré"
+        - text: "-"
+        - strong: ⚡ Ultra-léger
+        - text: "- Seulement 18KB, aucune dépendance"
+        - text: "-"
+        - strong: 🚀 Installation en une ligne
+        - text: "- Un seul script à inclure"
+      - heading "🎯 Utilisation" [level=3]
+      - paragraph: "OntoWave transforme automatiquement vos fichiers Markdown en documentation interactive. Il vous suffit de :"
+      - paragraph [ref=e11]:
+        - text: "1."
+        - strong: Télécharger
+        - text: le fichier
+        - code [ref=e12]: ontowave.min.js
+        - text: (18KB)
+        - text: "2."
+        - strong: Créer
+        - text: un fichier HTML minimal
+        - text: "3."
+        - strong: Ajouter
+        - text: vos fichiers
+        - code [ref=e13]: .md
+        - text: dans le même dossier
+      - paragraph:
+        - strong: "Exemple concret - code HTML de cette page :"
+      - paragraph
+      - generic [ref=e14]:
+        - code: OntoWave - Documentation
+      - paragraph
+      - paragraph [ref=e15]:
+        - strong: C'est tout !
+        - text: OntoWave détecte automatiquement
+        - code [ref=e16]: index.md
+        - text: "et génère :"
+        - text: "- 📝 Navigation avec menu flottant"
+        - text: "- 🔗 Liens internes entre pages"
+        - text: "- 📊 Rendu des diagrammes Mermaid"
+        - text: "- 🎨 Interface moderne et responsive"
+        - text: "- 🔍 Préservation des ancres URL"
+      - paragraph:
+        - emphasis: Cette page entière fonctionne avec seulement 8 lignes de HTML !
+      - heading "📚 Exemples progressifs" [level=3]
+      - paragraph: "Découvrez OntoWave avec nos démos :"
+      - paragraph:
+        - text: "-"
+        - link "01-Minimal":
+          - /url: 01-minimal.html
+          - strong: 01-Minimal
+        - text: "- Configuration basique (8 lignes de HTML)"
+        - text: "-"
+        - link "02-Configuré":
+          - /url: 02-basic-config.html
+          - strong: 02-Configuré
+        - text: "- Avec options personnalisées"
+        - text: "-"
+        - link "03-Thématique":
+          - /url: 03-dark-theme.html
+          - strong: 03-Thématique
+        - text: "- Style et couleurs personnalisés"
+        - text: "-"
+        - link "04-Avancé":
+          - /url: 04-advanced-config.html
+          - strong: 04-Avancé
+        - text: "- Fonctionnalités avancées"
+        - text: "-"
+        - link "05-Style MkDocs":
+          - /url: 05-mkdocs-style.html
+          - strong: 05-Style MkDocs
+        - text: "- Interface complète type MkDocs"
+        - text: "-"
+        - link "Galerie":
+          - /url: gallery.html
+          - strong: Galerie
+        - text: "- Vue d'ensemble de toutes les démos"
+      - heading "📦 Téléchargement" [level=3]
+      - paragraph: "OntoWave est disponible pour sites statiques :"
+      - paragraph:
+        - text: "-"
+        - strong:
+          - link "📥 Télécharger ontowave.min.js":
+            - /url: ontowave.min.js
+        - text: (18KB) - Fichier unique à inclure
+        - text: "-"
+        - strong:
+          - link "📁 Télécharger le dossier dist complet":
+            - /url: dist.tar.gz
+        - text: (10KB) - Version de développement avec sources
+      - paragraph [ref=e17]:
+        - emphasis [ref=e18]:
+          - text: Pour les sites statiques, il suffit de télécharger
+          - code [ref=e19]: ontowave.min.js
+          - text: et de l'inclure dans votre HTML.
+      - heading "📝 Licence" [level=3]
+      - paragraph:
+        - text: "!"
+        - link "CC BY-NC-SA":
+          - /url: cc-by-nc-sa.png
+      - paragraph:
+        - text: OntoWave est publié sous licence
+        - strong: CC BY-NC-SA 4.0
+        - text: (Creative Commons Attribution-NonCommercial-ShareAlike).
+      - paragraph:
+        - strong: "Décharge de responsabilité MIT :"
+        - text: Ce logiciel est fourni "tel quel", sans garantie d'aucune sorte, expresse ou implicite. En aucun cas les auteurs ne seront responsables de réclamations, dommages ou autres responsabilités.
+      - paragraph:
+        - strong:
+          - link "📁 Code source":
+            - /url: https://github.com/stephanedenis/OntoWave
+        - text: sur GitHub.
+      - paragraph
+    - paragraph
+    - paragraph
+    - generic [ref=e20]:
+      - button "🇫🇷 Français" [ref=e21]
+      - button "🇬🇧 English" [ref=e22]
+    - paragraph
+    - paragraph
+```
