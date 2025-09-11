@@ -1,5 +1,10 @@
 # OntoWave
 
+<div class="lang-toggle">
+    <button onclick="toggleLang('fr')" id="btn-fr">🇫🇷 Français</button>
+    <button onclick="toggleLang('en')" id="btn-en">🇬🇧 English</button>
+</div>
+
 <div id="lang-fr" class="lang-content">
 
 ## Micro-application pour sites statiques
@@ -147,15 +152,10 @@ OntoWave is released under **CC BY-NC-SA 4.0** (Creative Commons Attribution-Non
 
 </div>
 
-<div class="lang-toggle">
-    <button onclick="toggleLang('fr')" id="btn-fr">🇫🇷 Français</button>
-    <button onclick="toggleLang('en')" id="btn-en">🇬🇧 English</button>
-</div>
-
 <style>
 .lang-toggle {
-    position: fixed;
-    top: 80px;
+    position: absolute;
+    top: 20px;
     right: 20px;
     z-index: 999;
     display: flex;

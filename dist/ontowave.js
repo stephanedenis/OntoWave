@@ -497,7 +497,7 @@
         script.src = 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js';
         script.onload = () => {
           // Charger les composants pour langages populaires
-          const languages = ['markup', 'css', 'javascript', 'python', 'java', 'bash', 'json', 'yaml'];
+          const languages = ['markup', 'html', 'css', 'javascript', 'python', 'java', 'bash', 'json', 'yaml', 'typescript', 'php'];
           let loaded = 0;
           
           languages.forEach(lang => {
