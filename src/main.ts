@@ -9,6 +9,7 @@ import { buildSidebar, buildPrevNext } from './adapters/browser/navigation'
 import { createSearch } from './adapters/browser/search'
 import { renderConfigPage } from './adapters/browser/configPage'
 import { getJsonFromBundle } from './adapters/browser/bundle'
+import { MULTILANG_JS } from './multilang'
 
 ;(async () => {
   // Toggle engine via config.json; fallback v2 par défaut si absent
@@ -336,4 +337,17 @@ import { getJsonFromBundle } from './adapters/browser/bundle'
       } catch {}
     })
   } catch {}
+
+  // Injecter le système multilingue automatiquement
+  if (typeof MULTILANG_JS !== 'undefined') {
+    try {
+      // Créer et exécuter le script multilingue
+      const script = document.createElement('script');
+      script.textContent = MULTILANG_JS;
+      document.head.appendChild(script);
+      console.log('🌐 Système multilingue OntoWave intégré');
+    } catch (error) {
+      console.warn('⚠️ Erreur lors du chargement du système multilingue:', error);
+    }
+  }
 })()

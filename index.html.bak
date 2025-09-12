@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave - Documentation Interactive</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><polygon points='8,4 24,4 30,16 24,28 8,28 2,16' fill='%23F5A623'/><path d='M6 20 C10 14,22 14,26 20 C22 23,10 23,6 20 Z' fill='%230097D1'/><path d='M10 18 C12 16,20 16,22 18 C20 19,12 19,10 18 Z' fill='%23ffffff' opacity='0.9'/></svg>">
+    
+    <!-- Configuration OntoWave -->
+    <script type="application/json" id="ontowave-config">
+    {
+        "title": "OntoWave - Démo Interactive",
+        "defaultPage": "index.md",
+        "mermaid": {
+            "theme": "default"
+        },
+        "plantuml": {
+            "serverUrl": "https://www.plantuml.com/plantuml"
+        },
+        "ui": {
+            "showSidebar": true,
+            "showSearch": true
+        }
+    }
+    </script>
+    
+    <!-- Style de démonstration simple -->
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .demo-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 2rem;
+        }
+        
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin: 0 0 1rem 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .feature {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 1rem;
+            transition: transform 0.2s ease;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .code-example {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: left;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+        
+        .loading-message {
+            margin-top: 2rem;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="demo-container">
+        <div class="logo">🌊</div>
+        <h1>OntoWave</h1>
+        <p class="subtitle">Documentation Interactive - Package Ultra-Simple</p>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <strong>Zero Config</strong><br>
+                Un seul include suffit !
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🎨</div>
+                <strong>Mermaid + PlantUML</strong><br>
+                Diagrammes intégrés
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📱</div>
+                <strong>Responsive</strong><br>
+                Mobile-friendly
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔗</div>
+                <strong>Hash Navigation</strong><br>
+                URLs partageables
+            </div>
+        </div>
+        
+        <div class="code-example">
+<strong>Installation CDN :</strong><br><br>
+&lt;script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"&gt;&lt;/script&gt;
+        </div>
+        
+        <a href="#" class="cta-button" onclick="initOntoWave()">🚀 Démarrer la Démo</a>
+        <a href="https://github.com/stephanedenis/OntoWave" class="cta-button">📁 Code Source</a>
+        
+        <div id="loading" class="loading-message" style="display: none;">
+            Initialisation d'OntoWave...
+        </div>
+    </div>
+
+    <!-- OntoWave Package -->
+    <script>
+        let ontowaveInstance = null;
+        
+        function initOntoWave() {
+            document.getElementById('loading').style.display = 'block';
+            
+            // Remplacer le contenu par l'interface OntoWave
+            setTimeout(() => {
+                // Remplacer le contenu avec le container OntoWave
+                // La configuration existante dans le <head> sera automatiquement lue par OntoWave
+                document.body.innerHTML = '<div id="ontowave-container"></div>';
+                
+                // Charger OntoWave
+                const script = document.createElement('script');
+                script.src = './dist/ontowave.min.js';
+                script.onload = () => {
+                    console.log('🌊 OntoWave chargé avec succès !');
+                    // Initialiser OntoWave après chargement
+                    if (window.OntoWave) {
+                        ontowaveInstance = new window.OntoWave();
+                        ontowaveInstance.init().then(() => {
+                            console.log('✅ OntoWave initialisé avec succès !');
+                        }).catch(err => {
+                            console.error('❌ Erreur initialisation OntoWave:', err);
+                        });
+                    }
+                };
+                script.onerror = () => {
+                    console.error('❌ Erreur de chargement OntoWave');
+                    document.body.innerHTML = '<div style="padding: 2rem; text-align: center; color: red;">Erreur de chargement OntoWave</div>';
+                };
+                document.head.appendChild(script);
+            }, 1000);
+        }
+        
+        // Auto-démarrage après 5 secondes pour la démo
+        setTimeout(() => {
+            const button = document.querySelector('.cta-button');
+            if (button) {
+                button.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+                button.textContent = '🔄 Démarrage automatique...';
+                setTimeout(initOntoWave, 2000);
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
+        canvas = document.createElement('canvas');
+        canvas.id = 'hex-bg-canvas';
+        Object.assign(canvas.style, {
+          position:'fixed',
+          inset:'0',
+          width:'100%',
+          height:'100%',
+          zIndex:'-1',
+          pointerEvents:'none'
+        });
+        document.body.prepend(canvas);
+        ctx = canvas.getContext('2d');
+      }
+      function draw(){
+        ensure();
+        const w = canvas.width = window.innerWidth * devicePixelRatio;
+        const h = canvas.height = window.innerHeight * devicePixelRatio;
+        ctx.scale(devicePixelRatio, devicePixelRatio);
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.lineWidth = 1;
+        ctx.lineJoin = 'miter';
+        const horiz = r * 1.5; // distance entre centres horizontaux
+        const vert = a * 2;    // distance entre centres verticaux
+        const cols = Math.ceil(window.innerWidth / horiz) + 2;
+        const rows = Math.ceil(window.innerHeight / vert) + 2;
+        for(let row=0; row<rows; row++){
+          for(let col=0; col<cols; col++){
+            const cx = col * horiz + (row % 2 ? horiz/2 : 0) - r;
+            const cy = row * vert * 0.5 - a; // utiliser half-row shift for tight packing
+            if(cx < -r || cy < -a || cx > window.innerWidth + r || cy > window.innerHeight + a) continue;
+            const pts = [
+              [cx - r/2, cy - a],
+              [cx + r/2, cy - a],
+              [cx + r, cy],
+              [cx + r/2, cy + a],
+              [cx - r/2, cy + a],
+              [cx - r, cy]
+            ];
+            ctx.beginPath();
+            ctx.moveTo(pts[0][0], pts[0][1]);
+            for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i][0], pts[i][1]);
+            ctx.closePath();
+            ctx.fillStyle = fill;
+            ctx.fill();
+            ctx.strokeStyle = stroke;
+            ctx.stroke();
+          }
+        }
+      }
+      let resizeTid = 0;
+      window.addEventListener('resize', ()=>{
+        if(resizeTid) cancelAnimationFrame(resizeTid);
+        resizeTid = requestAnimationFrame(()=>{
+          if(canvas){ ctx.setTransform(1,0,0,1,0,0); }
+          draw();
+        });
+      });
+      if(document.readyState === 'complete' || document.readyState === 'interactive') {
+        draw();
+      } else {
+        document.addEventListener('DOMContentLoaded', draw);
+      }
+    })();
+  </script>
+  <header id="site-header">
+  <div class="container row">
+        <a id="brand" class="brand" href="#/" title="OntoWave">
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 32 32" style="vertical-align:middle; margin-right:.4rem">
+            <polygon points="8,4 24,4 30,16 24,28 8,28 2,16" fill="#F5A623"/>
+            <defs>
+              <linearGradient id="waveGradBrand" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#00B7FF"/>
+                <stop offset="100%" stop-color="#007ACC"/>
+              </linearGradient>
+            </defs>
+            <path d="M6 20 C9 15,23 15,26 20 C22 23.5,10 23.5,6 20 Z" fill="url(#waveGradBrand)"/>
+            <path d="M7 19.2 C11 16.2,21 16.2,25 19.2 C21.5 21.2,10.5 21.2,7 19.2 Z" fill="#e6f6ff" opacity="0.9"/>
+            <path d="M10 18.3 C12.2 16.4,19.8 16.4,22 18.3 C20 19.2,12 19.2,10 18.3 Z" fill="#ffffff" opacity="0.95"/>
+          </svg>
+          OntoWave
+        </a>
+        <div class="search">
+          <input id="search" type="search" placeholder="Rechercher…" autocomplete="off" />
+          <div id="search-results" class="hidden"></div>
+        </div>
+        <nav class="ml-auto">
+          <a href="#/">Accueil</a>
+        </nav>
+        <details class="opts ml-auto">
+          <summary>Options</summary>
+          <div class="panel">
+            <label class="row gap-sm ai-center"><input type="checkbox" id="opt-search" /> Activer la recherche (opt-in)</label>
+            <div class="mt-sm">
+              <small>Importer pages.txt</small>
+              <input type="file" id="opt-pages" accept="text/plain" />
+            </div>
+            <div class="mt-sm">
+              <button id="opt-download-pages" type="button">Télécharger pages.txt</button>
+            </div>
+            <div class="mt-sm">
+              <button id="opt-export-index">Exporter l’index JSON</button>
+            </div>
+            <div id="opt-state" class="mt-sm muted small"></div>
+          </div>
+        </details>
+      </div>
+    </header>
+  <main class="container layout">
+      <aside id="sidebar" class="sidebar"></aside>
+      <div id="app" class="content">Chargement…</div>
+      <aside id="toc" class="toc"></aside>
+    </main>
+  <div class="floating-menu" id="floating-menu">
+    <details>
+      <summary title="Navigateur sémantique" aria-label="Ouvrir le menu du navigateur sémantique" data-test-id="fm-opener">
+        <!-- Icône hexagonale avec vague (logo principal) -->
+        <svg class="fm-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+          <!-- Fond hexagonal -->
+          <polygon points="8,4 24,4 30,16 24,28 8,28 2,16" fill="#F5A623"/>
+          <!-- Vague stylisée -->
+          <defs>
+            <linearGradient id="waveGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#00B7FF"/>
+              <stop offset="100%" stop-color="#007ACC"/>
+            </linearGradient>
+          </defs>
+          <!-- Vague principale plus épaisse -->
+          <path d="M6 20 C9 15,23 15,26 20 C22 23.5,10 23.5,6 20 Z" fill="url(#waveGrad)"/>
+          <!-- Sous-couche pour éviter l'effet de 'trou' -->
+          <path d="M7 19.2 C11 16.2,21 16.2,25 19.2 C21.5 21.2,10.5 21.2,7 19.2 Z" fill="#e6f6ff" opacity="0.9"/>
+          <!-- Crête blanche adoucie -->
+          <path d="M10 18.3 C12.2 16.4,19.8 16.4,22 18.3 C20 19.2,12 19.2,10 18.3 Z" fill="#ffffff" opacity="0.95"/>
+        </svg>
+      </summary>
+      <ul>
+        <li>
+          <div class="view-toggles" id="view-toggles">
+            <button type="button" data-view="md" class="pill" title="Voir la source Markdown">MD</button>
+            <button type="button" data-view="html" class="pill" title="Voir le rendu HTML/SVG">HTML</button>
+            <button type="button" data-view="split" class="pill" title="Source + Rendu côte à côte">SBS</button>
+          </div>
+        </li>
+        <li><a href="#/config">Configuration</a></li>
+      </ul>
+    </details>
+  </div>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+  </html>

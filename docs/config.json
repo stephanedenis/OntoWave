@@ -3,10 +3,8 @@
   "brand": "OntoWave",
   "i18n": { "default": "fr", "supported": ["en", "fr"] },
   "roots": [
-    { "base": "en", "root": "/en" },
-    { "base": "fr", "root": "/fr" },
-    { "base": "", "root": "/", "defaultFile": "index.md" }
+    { "base": "en", "root": "/content/en" },
+    { "base": "fr", "root": "/content/fr" }
   ],
-  "ui": { "minimal": false },
-  "prism": { "enabled": true }
+  "ui": { "minimal": true }
 }
