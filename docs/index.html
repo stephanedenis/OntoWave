@@ -108,6 +108,19 @@
         
         // Initialiser la langue
         const savedLang = localStorage.getItem('ontowave-lang') || detectLanguage();
+        
+        // Configurer OntoWave pour la langue
+        if (window.OntoWave && window.OntoWave.config) {
+            console.log('⚙️ Configuration OntoWave pour langue:', savedLang);
+            window.OntoWave.config.i18n = { 
+                default: savedLang, 
+                lang: savedLang,
+                supported: ['fr', 'en']
+            };
+            window.OntoWave.config.ui = window.OntoWave.config.ui || {};
+            window.OntoWave.config.ui.lang = savedLang;
+        }
+        
         toggleLang(savedLang);
         
         // Forcer Prism à recolorer après le chargement du contenu
@@ -129,6 +142,58 @@
     function detectLanguage() {
         const userLang = navigator.language || navigator.userLanguage;
         return userLang.startsWith('fr') ? 'fr' : 'en';
+    }
+    
+    // Mise à jour des textes OntoWave selon la langue
+    function updateOntoWaveTexts(lang) {
+        console.log('🌐 Mise à jour textes OntoWave:', lang);
+        
+        const texts = {
+            fr: {
+                config: 'Configuration',
+                theme: 'Thème', 
+                search: 'Rechercher',
+                menu: 'Menu',
+                close: 'Fermer',
+                copy: 'Copier',
+                fullscreen: 'Plein écran',
+                download: 'Télécharger',
+                print: 'Imprimer'
+            },
+            en: {
+                config: 'Configuration',
+                theme: 'Theme',
+                search: 'Search', 
+                menu: 'Menu',
+                close: 'Close',
+                copy: 'Copy',
+                fullscreen: 'Fullscreen',
+                download: 'Download',
+                print: 'Print'
+            }
+        };
+        
+        const currentTexts = texts[lang] || texts.en;
+        
+        // Mettre à jour les éléments de l'interface OntoWave
+        setTimeout(() => {
+            // Boutons et éléments par titre/aria-label
+            const elements = document.querySelectorAll('[title], [aria-label]');
+            elements.forEach(el => {
+                const title = el.getAttribute('title');
+                const ariaLabel = el.getAttribute('aria-label');
+                
+                // Mapper les textes anglais vers la langue courante
+                if (title && currentTexts[title.toLowerCase()]) {
+                    el.setAttribute('title', currentTexts[title.toLowerCase()]);
+                }
+                if (ariaLabel && currentTexts[ariaLabel.toLowerCase()]) {
+                    el.setAttribute('aria-label', currentTexts[ariaLabel.toLowerCase()]);
+                }
+            });
+            
+            console.log('✅ Textes OntoWave mis à jour');
+        }, 200);
     }
 
     // Fonction pour changer de langue
@@ -160,12 +225,36 @@
         // Sauvegarder la préférence
         localStorage.setItem('ontowave-lang', lang);
         
-        // Recolorer Prism après changement de langue
+        // Mettre à jour les textes de l'interface OntoWave
+        updateOntoWaveTexts(lang);
+        
+        // Forcer plusieurs recolorations Prism (le problème principal)
+        console.log('🎨 Recoloration Prism immédiate');
+        if (window.Prism && window.Prism.highlightAll) {
+            window.Prism.highlightAll();
+        }
+        
+        // Recoloration différée pour s'assurer que ça marche
         setTimeout(() => {
             if (window.Prism && window.Prism.highlightAll) {
+                console.log('🎨 Recoloration Prism différée 1');
                 window.Prism.highlightAll();
             }
         }, 100);
+        
+        setTimeout(() => {
+            if (window.Prism && window.Prism.highlightAll) {
+                console.log('🎨 Recoloration Prism différée 2');
+                window.Prism.highlightAll();
+            }
+        }, 500);
+        
+        setTimeout(() => {
+            if (window.Prism && window.Prism.highlightAll) {
+                console.log('🎨 Recoloration Prism différée 3');
+                window.Prism.highlightAll();
+            }
+        }, 1000);
     }
     </script>
 </body>

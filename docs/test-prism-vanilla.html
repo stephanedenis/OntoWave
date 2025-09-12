@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Prism Vanilla</title>
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css" rel="stylesheet" />
+</head>
+<body>
+    <h1>Test Prism Vanilla</h1>
+    
+    <h2>HTML Code:</h2>
+    <pre><code class="language-html">&lt;div&gt;
+    &lt;h1&gt;Hello World&lt;/h1&gt;
+    &lt;p&gt;This is a test.&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+
+    <h2>JavaScript Code:</h2>
+    <pre><code class="language-javascript">function hello() {
+    console.log("Hello World");
+    return true;
+}</code></pre>
+
+    <div id="results"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-markup.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+    
+    <script>
+        window.addEventListener('load', () => {
+            const results = document.getElementById('results');
+            
+            function log(message) {
+                results.innerHTML += `<div>${message}</div>`;
+                console.log(message);
+            }
+            
+            log('🔍 Page loaded');
+            log('🔍 Prism available: ' + !!window.Prism);
+            log('🔍 Languages: ' + (window.Prism.languages ? Object.keys(window.Prism.languages).join(', ') : 'none'));
+            
+            // Créer l'alias HTML
+            if (window.Prism.languages.markup) {
+                window.Prism.languages.html = window.Prism.languages.markup;
+                log('🔤 HTML alias created');
+            }
+            
+            // Appliquer Prism
+            setTimeout(() => {
+                log('🎨 Applying Prism...');
+                window.Prism.highlightAll();
+                
+                // Vérifier les tokens
+                const tokens = document.querySelectorAll('.token');
+                log('🎨 Tokens found: ' + tokens.length);
+                
+                tokens.forEach((token, i) => {
+                    log(`Token ${i}: "${token.textContent.substring(0, 20)}..." (${token.className})`);
+                });
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

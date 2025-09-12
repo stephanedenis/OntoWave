@@ -7,6 +7,6 @@
     { "base": "fr", "root": "/fr" },
     { "base": "", "root": "/", "defaultFile": "index.md" }
   ],
-  "ui": { "minimal": true },
+  "ui": { "minimal": false },
   "prism": { "enabled": true }
 }

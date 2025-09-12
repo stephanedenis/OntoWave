@@ -1,0 +1,19 @@
+{
+  "engine": "v2",
+  "brand": "OntoWave",
+  "i18n": { "default": "fr", "lang": "fr" },
+  "ui": { 
+    "minimal": false,
+    "lang": "fr",
+    "texts": {
+      "config": "Configuration",
+      "theme": "Thème",
+      "search": "Rechercher",
+      "menu": "Menu",
+      "close": "Fermer",
+      "copy": "Copier",
+      "fullscreen": "Plein écran"
+    }
+  },
+  "prism": { "enabled": true }
+}
