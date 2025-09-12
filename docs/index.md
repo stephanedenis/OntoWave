@@ -6,16 +6,17 @@
 
 **OntoWave** est une micro-application légère qui transforme vos sites statiques en plateformes de documentation interactives et modernes.
 
-### ✨ Fonctionnalités principales
+### Fonctionnalités principales
 
-- **📝 Rendu Markdown avancé** - Support complet de la syntaxe Markdown avec extensions
-- **🧜‍♀️ Diagrammes Mermaid** - Visualisations interactives intégrées
-- **🔍 Navigation intelligente** - Préservation des ancres et navigation fluide
-- **🎨 Interface moderne** - Design responsive et épuré
-- **⚡ Ultra-léger** - Seulement 19KB, aucune dépendance
-- **🚀 Installation en une ligne** - Un seul script à inclure
+- **Rendu Markdown avancé** - Support complet de la syntaxe Markdown avec extensions
+- **Diagrammes [Mermaid](https://mermaid.js.org/)** - Visualisations interactives intégrées
+- **Diagrammes [PlantUML](https://plantuml.com/)** - Diagrammes UML via serveur officiel
+- **Navigation intelligente** - Préservation des ancres et navigation fluide
+- **Interface moderne** - Design responsive et épuré
+- **Ultra-léger** - Seulement 19KB, aucune dépendance
+- **Installation en une ligne** - Un seul script à inclure
 
-### 🎯 Utilisation
+### Utilisation
 
 ```html
 &lt;!DOCTYPE html&gt;
@@ -30,26 +31,17 @@
 &lt;/html&gt;
 ```
 
-*Cliquez sur l'icône OntoWave 🌊 en bas à droite pour ouvrir le panneau de configuration et découvrir toutes les options disponibles. C'est également là que vous pouvez télécharger le fichier `ontowave.min.js` et construire dynamiquement votre page HTML complète.*
+*Cliquez sur l'icône OntoWave dans le coin supérieur gauche pour ouvrir le panneau de configuration et découvrir toutes les options disponibles. C'est également là que vous pouvez télécharger le fichier `ontowave.min.js` et construire dynamiquement votre page HTML complète.*
 
-### 📚 Exemples progressifs
-
-Découvrez OntoWave avec nos démos :
-
-- [**01-Minimal**](01-minimal.html) - Configuration basique (8 lignes de HTML)
-- [**02-Configuré**](02-basic-config.html) - Avec options personnalisées
-- [**03-Thématique**](03-dark-theme.html) - Style et couleurs personnalisés
-- [**04-Avancé**](04-advanced-config.html) - Fonctionnalités avancées
-- [**05-Style MkDocs**](05-mkdocs-style.html) - Interface complète type MkDocs
-- [**Galerie**](gallery.html) - Vue d'ensemble de toutes les démos
-
-### 📝 Licence
+### Licence
 
 ![CC BY-NC-SA](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png) **Stéphane Denis**
 
 OntoWave est publié sous licence **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike).
 
 Ce logiciel est fourni "tel quel", sans garantie d'aucune sorte, expresse ou implicite. En aucun cas les auteurs ne seront responsables de réclamations, dommages ou autres responsabilités.
+
+**Code source :** [GitHub - OntoWave](https://github.com/stephanedenis/OntoWave)
 
 </div>
 
@@ -59,16 +51,17 @@ Ce logiciel est fourni "tel quel", sans garantie d'aucune sorte, expresse ou imp
 
 **OntoWave** is a lightweight micro-application that transforms your static sites into interactive and modern documentation platforms.
 
-### ✨ Key Features
+### Key Features
 
-- **📝 Advanced Markdown rendering** - Full Markdown syntax support with extensions
-- **🧜‍♀️ Mermaid diagrams** - Integrated interactive visualizations
-- **🔍 Smart navigation** - Anchor preservation and smooth navigation
-- **🎨 Modern interface** - Responsive and clean design
-- **⚡ Ultra-lightweight** - Only 19KB, zero dependencies
-- **🚀 One-line installation** - Single script include
+- **Advanced Markdown rendering** - Full Markdown syntax support with extensions
+- **[Mermaid](https://mermaid.js.org/) diagrams** - Integrated interactive visualizations
+- **[PlantUML](https://plantuml.com/) diagrams** - UML diagrams via official server
+- **Smart navigation** - Anchor preservation and smooth navigation
+- **Modern interface** - Responsive and clean design
+- **Ultra-lightweight** - Only 19KB, zero dependencies
+- **One-line installation** - Single script include
 
-### 🎯 Usage
+### Usage
 
 ```html
 &lt;!DOCTYPE html&gt;
@@ -83,25 +76,16 @@ Ce logiciel est fourni "tel quel", sans garantie d'aucune sorte, expresse ou imp
 &lt;/html&gt;
 ```
 
-*Click on the OntoWave icon 🌊 in the bottom right to open the configuration panel and discover all available options. This is also where you can download the `ontowave.min.js` file and dynamically build your complete HTML page.*
+*Click on the OntoWave icon in the top left corner to open the configuration panel and discover all available options. This is also where you can download the `ontowave.min.js` file and dynamically build your complete HTML page.*
 
-### 📚 Progressive Examples
-
-Discover OntoWave with our demos:
-
-- [**01-Minimal**](01-minimal.html) - Basic setup (8 lines of HTML)
-- [**02-Configured**](02-basic-config.html) - With custom options
-- [**03-Themed**](03-dark-theme.html) - Custom styles and colors
-- [**04-Advanced**](04-advanced-config.html) - Advanced features
-- [**05-MkDocs Style**](05-mkdocs-style.html) - Complete MkDocs-like interface
-- [**Gallery**](gallery.html) - Overview of all demos
-
-### 📝 License
+### License
 
 ![CC BY-NC-SA](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png) **Stéphane Denis**
 
 OntoWave is released under **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike) license.
 
 This software is provided "as is", without warranty of any kind, express or implied. In no event shall the authors be liable for any claims, damages or other liability.
+
+**Source code:** [GitHub - OntoWave](https://github.com/stephanedenis/OntoWave)
 
 </div>
