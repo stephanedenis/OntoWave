@@ -18,16 +18,16 @@
 ### 🎯 Utilisation
 
 ```html
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Ma Documentation</title>
-</head>
-<body>
-    <script src="ontowave.min.js"></script>
-</body>
-</html>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Ma Documentation&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;script src="ontowave.min.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 ```
 
 *Téléchargez le fichier `ontowave.min.js` ci-dessous et placez-le dans votre dossier de site.*
@@ -92,16 +92,16 @@ Pour un usage commercial ou une licence MIT, consultez le [dépôt GitHub](https
 ### 🎯 Usage
 
 ```html
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>My Documentation</title>
-</head>
-<body>
-    <script src="ontowave.min.js"></script>
-</body>
-</html>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;My Documentation&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;script src="ontowave.min.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 ```
 
 *Download the `ontowave.min.js` file below and place it in your site folder.*
@@ -147,83 +147,3 @@ OntoWave is released under **CC BY-NC-SA 4.0** (Creative Commons Attribution-Non
 For commercial use or MIT license, check the [GitHub repository](https://github.com/stephane-klein/OntoWave).
 
 </div>
-
-<div class="lang-toggle">
-    <button onclick="toggleLang('fr')" id="btn-fr">🇫🇷 Français</button>
-    <button onclick="toggleLang('en')" id="btn-en">🇬🇧 English</button>
-</div>
-
-<style>
-.lang-toggle {
-    position: fixed;
-    top: 80px;
-    right: 20px;
-    z-index: 999;
-    display: flex;
-    gap: 8px;
-}
-
-.lang-toggle button {
-    padding: 8px 12px;
-    border: 1px solid #d0d7de;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    cursor: pointer;
-    font-size: 0.8em;
-    transition: all 0.2s ease;
-}
-
-.lang-toggle button:hover {
-    background: #f8f9fa;
-    transform: translateY(-1px);
-}
-
-.lang-toggle button.active {
-    background: #0969da;
-    color: white;
-    border-color: #0969da;
-}
-
-.lang-content {
-    transition: opacity 0.3s ease;
-}
-</style>
-
-<script>
-// Détection automatique de la langue du navigateur
-function detectLanguage() {
-    const userLang = navigator.language || navigator.userLanguage;
-    return userLang.startsWith('fr') ? 'fr' : 'en';
-}
-
-// Fonction pour changer de langue
-function toggleLang(lang) {
-    // Masquer tous les contenus
-    document.querySelectorAll('.lang-content').forEach(el => {
-        el.style.display = 'none';
-    });
-    
-    // Afficher le contenu de la langue sélectionnée
-    document.getElementById('lang-' + lang).style.display = 'block';
-    
-    // Mettre à jour les boutons
-    document.querySelectorAll('.lang-toggle button').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    document.getElementById('btn-' + lang).classList.add('active');
-    
-    // Sauvegarder la préférence
-    localStorage.setItem('ontowave-lang', lang);
-}
-
-// Initialisation au chargement
-document.addEventListener('DOMContentLoaded', function() {
-    // Récupérer la langue sauvegardée ou détecter automatiquement
-    const savedLang = localStorage.getItem('ontowave-lang');
-    const lang = savedLang || detectLanguage();
-    
-    // Appliquer la langue
-    toggleLang(lang);
-});
-</script>
