@@ -123,6 +123,34 @@
         
         toggleLang(savedLang);
         
+        // Observer les changements DOM pour mettre à jour les nouveaux éléments OntoWave
+        const observer = new MutationObserver(function(mutations) {
+            let shouldUpdate = false;
+            mutations.forEach(function(mutation) {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.nodeType === 1 && (
+                        node.classList?.contains('ontowave-menu-option') ||
+                        node.querySelector?.('.ontowave-menu-option') ||
+                        node.classList?.contains('ontowave-floating-menu')
+                    )) {
+                        shouldUpdate = true;
+                    }
+                });
+            });
+            if (shouldUpdate) {
+                console.log('🔄 Nouveaux éléments OntoWave détectés, mise à jour des textes');
+                const currentLang = localStorage.getItem('ontowave-lang') || 'fr';
+                updateOntoWaveTexts(currentLang);
+            }
+        });
+        
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+        
+        console.log('👁️ Observer DOM installé pour les mises à jour multilingues');
+        
         // Forcer Prism à recolorer après le chargement du contenu
         if (window.Prism && window.Prism.highlightAll) {
             console.log('🎨 Recoloration Prism forcée');
@@ -150,7 +178,9 @@
         
         const texts = {
             fr: {
-                config: 'Configuration',
+                configuration: 'Configuration',
+                accueil: 'Accueil',
+                galerie: 'Galerie',
                 theme: 'Thème', 
                 search: 'Rechercher',
                 menu: 'Menu',
@@ -158,10 +188,13 @@
                 copy: 'Copier',
                 fullscreen: 'Plein écran',
                 download: 'Télécharger',
-                print: 'Imprimer'
+                print: 'Imprimer',
+                home: 'Accueil'
             },
             en: {
-                config: 'Configuration',
+                configuration: 'Configuration',
+                accueil: 'Home',
+                galerie: 'Gallery', 
                 theme: 'Theme',
                 search: 'Search', 
                 menu: 'Menu',
@@ -169,30 +202,54 @@
                 copy: 'Copy',
                 fullscreen: 'Fullscreen',
                 download: 'Download',
-                print: 'Print'
+                print: 'Print',
+                home: 'Home'
             }
         };
         
         const currentTexts = texts[lang] || texts.en;
         
-        // Mettre à jour les éléments de l'interface OntoWave
+        // Mettre à jour les éléments du menu OntoWave spécifiquement
         setTimeout(() => {
-            // Boutons et éléments par titre/aria-label
+            // Menu flottant OntoWave - Configuration
+            const configOption = document.querySelector('.ontowave-menu-option[onclick*="toggleConfigurationPanel"]');
+            if (configOption) {
+                configOption.innerHTML = '⚙️ ' + currentTexts.configuration;
+                console.log('✅ Bouton Configuration mis à jour:', currentTexts.configuration);
+            }
+            
+            // Menu flottant OntoWave - Accueil
+            const homeOption = document.querySelector('.ontowave-menu-option[onclick*="loadPage"]');
+            if (homeOption) {
+                homeOption.innerHTML = '🏠 ' + currentTexts.home;
+                console.log('✅ Bouton Accueil mis à jour:', currentTexts.home);
+            }
+            
+            // Menu flottant OntoWave - Galerie (si présente)
+            const galleryOption = document.querySelector('.ontowave-menu-option[onclick*="gallery"]');
+            if (galleryOption) {
+                galleryOption.innerHTML = '🎨 ' + currentTexts.galerie;
+                console.log('✅ Bouton Galerie mis à jour:', currentTexts.galerie);
+            }
+            
+            // Autres éléments génériques par titre/aria-label
             const elements = document.querySelectorAll('[title], [aria-label]');
             elements.forEach(el => {
                 const title = el.getAttribute('title');
                 const ariaLabel = el.getAttribute('aria-label');
                 
                 // Mapper les textes anglais vers la langue courante
-                if (title && currentTexts[title.toLowerCase()]) {
-                    el.setAttribute('title', currentTexts[title.toLowerCase()]);
-                }
-                if (ariaLabel && currentTexts[ariaLabel.toLowerCase()]) {
-                    el.setAttribute('aria-label', currentTexts[ariaLabel.toLowerCase()]);
-                }
+                Object.keys(currentTexts).forEach(key => {
+                    if (title && title.toLowerCase().includes(key)) {
+                        el.setAttribute('title', currentTexts[key]);
+                    }
+                    if (ariaLabel && ariaLabel.toLowerCase().includes(key)) {
+                        el.setAttribute('aria-label', currentTexts[key]);
+                    }
+                });
             });
             
-            console.log('✅ Textes OntoWave mis à jour');
+            console.log('✅ Textes OntoWave mis à jour pour', lang);
         }, 200);
     }
 
@@ -227,6 +284,15 @@
         
         // Mettre à jour les textes de l'interface OntoWave
         updateOntoWaveTexts(lang);
+        
+        // Forcer la mise à jour des menus OntoWave après un délai supplémentaire
+        setTimeout(() => {
+            updateOntoWaveTexts(lang);
+        }, 300);
+        
+        setTimeout(() => {
+            updateOntoWaveTexts(lang);
+        }, 800);
         
         // Forcer plusieurs recolorations Prism (le problème principal)
         console.log('🎨 Recoloration Prism immédiate');
