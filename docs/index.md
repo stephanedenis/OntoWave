@@ -70,7 +70,7 @@ OntoWave est disponible pour sites statiques :
 
 OntoWave est publié sous licence **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike).
 
-Pour un usage commercial ou une licence MIT, consultez le site [ontowave.org](https://ontowave.org).
+Pour un usage commercial ou une licence MIT, consultez le [dépôt GitHub](https://github.com/stephane-klein/OntoWave).
 
 </div>
 
@@ -144,6 +144,6 @@ OntoWave is available for static sites:
 
 OntoWave is released under **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike) license.
 
-For commercial use or MIT license, check the site [ontowave.org](https://ontowave.org).
+For commercial use or MIT license, check the [GitHub repository](https://github.com/stephane-klein/OntoWave).
 
 </div>
