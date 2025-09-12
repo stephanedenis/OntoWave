@@ -694,7 +694,7 @@
         <div class="ontowave-floating-menu" id="ontowave-floating-menu" title="OntoWave Menu">
           <span class="ontowave-menu-icon" id="ontowave-menu-icon">&#127754;</span>
           <div class="ontowave-menu-content" id="ontowave-menu-content">
-            <a href="https://github.com/stephanedenis/OntoWave" target="_blank" class="ontowave-menu-brand">OntoWave<span class="org-suffix">.org</span></a>
+            <a href="https://ontowave.org/" target="_blank" class="ontowave-menu-brand">OntoWave<span class="org-suffix">.org</span></a>
             <div class="ontowave-menu-options">
               <span class="ontowave-menu-option" onclick="window.OntoWave.instance.loadPage('${this.config.defaultPage}')">🏠 Accueil</span>
               ${galleryOption}
