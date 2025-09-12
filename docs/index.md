@@ -45,13 +45,13 @@ Découvrez OntoWave avec nos démos :
 
 ### 🎨 Syntaxe et diagrammes supportés
 
-#### 🏭 PlantUML
+**🏭 PlantUML**  
 Diagrammes UML avec le serveur officiel PlantUML.
 
-#### 🧜‍♀️ Mermaid  
+**🧜‍♀️ Mermaid**  
 Diagrammes interactifs avec Mermaid.js.
 
-#### 🔤 Coloration syntaxique (Prism.js)
+**🔤 Coloration syntaxique (Prism.js)**  
 **Langages essentiels :** HTML, CSS, JavaScript  
 **Langages additionnels :** Python, Java, TypeScript, PHP, Bash, JSON, YAML
 
@@ -119,13 +119,13 @@ Discover OntoWave with our demos:
 
 ### 🎨 Supported Syntax and Diagrams
 
-#### 🏭 PlantUML
+**🏭 PlantUML**  
 UML diagrams with official PlantUML server.
 
-#### 🧜‍♀️ Mermaid  
+**🧜‍♀️ Mermaid**  
 Interactive diagrams with Mermaid.js.
 
-#### 🔤 Syntax Highlighting (Prism.js)
+**🔤 Syntax Highlighting (Prism.js)**  
 **Essential languages:** HTML, CSS, JavaScript  
 **Additional languages:** Python, Java, TypeScript, PHP, Bash, JSON, YAML
 
