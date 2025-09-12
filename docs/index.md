@@ -30,7 +30,7 @@
 &lt;/html&gt;
 ```
 
-*Téléchargez le fichier `ontowave.min.js` ci-dessous et placez-le dans votre dossier de site.*
+*Cliquez sur l'icône OntoWave 🌊 en bas à droite pour ouvrir le panneau de configuration et découvrir toutes les options disponibles.*
 
 ### 📚 Exemples progressifs
 
@@ -43,34 +43,13 @@ Découvrez OntoWave avec nos démos :
 - [**05-Style MkDocs**](05-mkdocs-style.html) - Interface complète type MkDocs
 - [**Galerie**](gallery.html) - Vue d'ensemble de toutes les démos
 
-### 🎨 Syntaxe et diagrammes supportés
-
-**🏭 PlantUML**  
-Diagrammes UML avec le serveur officiel PlantUML.
-
-**🧜‍♀️ Mermaid**  
-Diagrammes interactifs avec Mermaid.js.
-
-**🔤 Coloration syntaxique (Prism.js)**  
-**Langages essentiels :** HTML, CSS, JavaScript  
-**Langages additionnels :** Python, Java, TypeScript, PHP, Bash, JSON, YAML
-
-### 📦 Téléchargement
-
-OntoWave est disponible pour sites statiques :
-
-- **[📥 Télécharger ontowave.min.js](ontowave.min.js)** (19KB) - Fichier unique à inclure
-- **[📁 Télécharger le dossier dist complet](dist.tar.gz)** (10KB) - Version de développement avec sources
-
-*Pour les sites statiques, il suffit de télécharger `ontowave.min.js` et de l'inclure dans votre HTML.*
-
 ### 📝 Licence
 
-![CC BY-NC-SA](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)
+![CC BY-NC-SA](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png) **Stéphane Denis**
 
 OntoWave est publié sous licence **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike).
 
-Pour un usage commercial ou une licence MIT, consultez le [dépôt GitHub](https://github.com/stephane-klein/OntoWave).
+Ce logiciel est fourni "tel quel", sans garantie d'aucune sorte, expresse ou implicite. En aucun cas les auteurs ne seront responsables de réclamations, dommages ou autres responsabilités.
 
 </div>
 
@@ -104,7 +83,7 @@ Pour un usage commercial ou une licence MIT, consultez le [dépôt GitHub](https
 &lt;/html&gt;
 ```
 
-*Download the `ontowave.min.js` file below and place it in your site folder.*
+*Click on the OntoWave icon 🌊 in the bottom right to open the configuration panel and discover all available options.*
 
 ### 📚 Progressive Examples
 
@@ -117,33 +96,12 @@ Discover OntoWave with our demos:
 - [**05-MkDocs Style**](05-mkdocs-style.html) - Complete MkDocs-like interface
 - [**Gallery**](gallery.html) - Overview of all demos
 
-### 🎨 Supported Syntax and Diagrams
-
-**🏭 PlantUML**  
-UML diagrams with official PlantUML server.
-
-**🧜‍♀️ Mermaid**  
-Interactive diagrams with Mermaid.js.
-
-**🔤 Syntax Highlighting (Prism.js)**  
-**Essential languages:** HTML, CSS, JavaScript  
-**Additional languages:** Python, Java, TypeScript, PHP, Bash, JSON, YAML
-
-### 📦 Download
-
-OntoWave is available for static sites:
-
-- **[📥 Download ontowave.min.js](ontowave.min.js)** (19KB) - Single file to include
-- **[📁 Download complete dist folder](dist.tar.gz)** (10KB) - Development version with sources
-
-*For static sites, just download `ontowave.min.js` and include it in your HTML.*
-
 ### 📝 License
 
-![CC BY-NC-SA](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)
+![CC BY-NC-SA](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png) **Stéphane Denis**
 
 OntoWave is released under **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike) license.
 
-For commercial use or MIT license, check the [GitHub repository](https://github.com/stephane-klein/OntoWave).
+This software is provided "as is", without warranty of any kind, express or implied. In no event shall the authors be liable for any claims, damages or other liability.
 
 </div>
