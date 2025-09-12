@@ -19,6 +19,90 @@
 (function(window) {
   'use strict';
 
+  // Traductions pour l'interface
+  const TRANSLATIONS = {
+    fr: {
+      // Menu
+      menuHome: "Accueil",
+      menuGallery: "Galerie", 
+      menuConfiguration: "Configuration",
+      
+      // Panneau de configuration
+      configTitle: "OntoWave - Configuration Complète",
+      configGeneral: "Général",
+      configSiteTitle: "Titre du site :",
+      configDefaultPage: "Page par défaut :",
+      configBaseUrl: "URL de base :",
+      configLanguages: "Langues et Localisation",
+      configSupportedLanguages: "Langues supportées (séparées par des virgules) :",
+      configFallbackLanguage: "Langue de fallback :",
+      configNavigation: "Navigation et Interface",
+      configShowGallery: "Afficher la galerie d'exemples",
+      configHomeButton: "Bouton Accueil",
+      configBreadcrumb: "Fil d'Ariane (breadcrumb)",
+      configToc: "Table des matières",
+      configMermaid: "Diagrammes Mermaid",
+      configMermaidTheme: "Thème Mermaid :",
+      configMermaidAuto: "Démarrage automatique",
+      configMermaidMaxWidth: "Utiliser la largeur maximale",
+      configPlantuml: "Diagrammes PlantUML",
+      configPlantumlServer: "Serveur PlantUML :",
+      configPlantumlFormat: "Format de sortie :",
+      configPrism: "Coloration Syntaxique (Prism.js)",
+      configPrismTheme: "Thème Prism :",
+      configPrismAutoload: "Chargement automatique",
+      configUI: "Interface Utilisateur",
+      configUITheme: "Thème de l'interface :",
+      configUIResponsive: "Design responsive",
+      configUIAnimations: "Animations et transitions",
+      configApply: "Appliquer Configuration",
+      configDownloadHTML: "Télécharger HTML",
+      configDownloadJS: "Télécharger ontowave.min.js",
+      configReset: "Réinitialiser",
+      configLanguageNote: "Laissez vide pour un site monolingue"
+    },
+    en: {
+      // Menu
+      menuHome: "Home",
+      menuGallery: "Gallery",
+      menuConfiguration: "Configuration",
+      
+      // Configuration Panel
+      configTitle: "OntoWave - Complete Configuration",
+      configGeneral: "General",
+      configSiteTitle: "Site title:",
+      configDefaultPage: "Default page:",
+      configBaseUrl: "Base URL:",
+      configLanguages: "Languages and Localization",
+      configSupportedLanguages: "Supported languages (comma separated):",
+      configFallbackLanguage: "Fallback language:",
+      configNavigation: "Navigation and Interface",
+      configShowGallery: "Show examples gallery",
+      configHomeButton: "Home button",
+      configBreadcrumb: "Breadcrumb navigation",
+      configToc: "Table of contents",
+      configMermaid: "Mermaid Diagrams",
+      configMermaidTheme: "Mermaid theme:",
+      configMermaidAuto: "Auto start",
+      configMermaidMaxWidth: "Use maximum width",
+      configPlantuml: "PlantUML Diagrams",
+      configPlantumlServer: "PlantUML server:",
+      configPlantumlFormat: "Output format:",
+      configPrism: "Syntax Highlighting (Prism.js)",
+      configPrismTheme: "Prism theme:",
+      configPrismAutoload: "Auto loading",
+      configUI: "User Interface",
+      configUITheme: "Interface theme:",
+      configUIResponsive: "Responsive design",
+      configUIAnimations: "Animations and transitions",
+      configApply: "Apply Configuration",
+      configDownloadHTML: "Download HTML",
+      configDownloadJS: "Download ontowave.min.js",
+      configReset: "Reset",
+      configLanguageNote: "Leave empty for monolingual site"
+    }
+  };
+
   // Configuration par défaut
   const DEFAULT_CONFIG = {
     title: "OntoWave Documentation",
@@ -430,6 +514,91 @@
     }
 
     /**
+     * Détecte la langue actuelle de l'interface
+     */
+    getCurrentLanguage() {
+      // Vérifier s'il y a une langue sélectionnée dans l'interface
+      const langFr = document.getElementById('lang-fr');
+      const langEn = document.getElementById('lang-en');
+      
+      if (langFr && langEn) {
+        // Système multilingue détecté
+        if (langFr.style.display !== 'none') {
+          return 'fr';
+        } else if (langEn.style.display !== 'none') {
+          return 'en';
+        }
+      }
+      
+      // Fallback sur les préférences du navigateur
+      return this.resolveLocale() || 'en';
+    }
+
+    /**
+     * Obtient une traduction pour la langue actuelle
+     */
+    t(key) {
+      const currentLang = this.getCurrentLanguage();
+      const translations = TRANSLATIONS[currentLang] || TRANSLATIONS['en'];
+      return translations[key] || key;
+    }
+
+    /**
+     * Met à jour tous les textes de l'interface selon la langue actuelle
+     */
+    updateInterfaceTexts() {
+      // Mettre à jour les textes du menu
+      const homeOption = document.querySelector('.ontowave-menu-option[onclick*="loadPage"]');
+      if (homeOption) {
+        homeOption.innerHTML = `🏠 ${this.t('menuHome')}`;
+      }
+
+      const galleryOption = document.querySelector('.ontowave-menu-option[onclick*="gallery.html"]');
+      if (galleryOption) {
+        galleryOption.innerHTML = `🎨 ${this.t('menuGallery')}`;
+      }
+
+      const configOption = document.querySelector('.ontowave-menu-option[onclick*="toggleConfigurationPanel"]');
+      if (configOption) {
+        configOption.innerHTML = `⚙️ ${this.t('menuConfiguration')}`;
+      }
+
+      // Si le panneau de configuration est ouvert, le recréer avec les nouveaux textes
+      const configPanel = document.getElementById('ontowave-config-panel');
+      if (configPanel) {
+        // Sauvegarder l'état des champs avant de recréer le panneau
+        const titleValue = document.getElementById('config-title-full')?.value || this.config.title;
+        const defaultPageValue = document.getElementById('config-defaultPage-full')?.value || this.config.defaultPage;
+        const baseUrlValue = document.getElementById('config-baseUrl-full')?.value || this.config.baseUrl;
+        
+        // Fermer et rouvrir le panneau pour le mettre à jour
+        configPanel.remove();
+        const configButton = document.querySelector('.ontowave-menu-option[onclick*="toggleConfigurationPanel"]');
+        if (configButton) {
+          configButton.classList.remove('selected');
+        }
+        
+        // Rouvrir avec les nouvelles traductions
+        setTimeout(() => {
+          this.toggleConfigurationPanel();
+          
+          // Restaurer les valeurs des champs
+          setTimeout(() => {
+            const titleField = document.getElementById('config-title-full');
+            const defaultPageField = document.getElementById('config-defaultPage-full');
+            const baseUrlField = document.getElementById('config-baseUrl-full');
+            
+            if (titleField) titleField.value = titleValue;
+            if (defaultPageField) defaultPageField.value = defaultPageValue;
+            if (baseUrlField) baseUrlField.value = baseUrlValue;
+          }, 100);
+        }, 50);
+      }
+
+      console.log('🌐 Interface texts updated for language:', this.getCurrentLanguage());
+    }
+
+    /**
      * Résout les langues du navigateur par ordre de préférence
      */
     getBrowserLocales() {
@@ -687,7 +856,7 @@
       
       // Créer les options du menu selon la configuration
       const galleryOption = this.config.showGallery ? 
-        '<span class="ontowave-menu-option" onclick="window.location.href=\'gallery.html\'">🎨 Galerie</span>' : '';
+        `<span class="ontowave-menu-option" onclick="window.location.href='gallery.html'">🎨 ${this.t('menuGallery')}</span>` : '';
       
       // Créer la structure HTML minimaliste
       this.container.innerHTML = `
@@ -696,9 +865,9 @@
           <div class="ontowave-menu-content" id="ontowave-menu-content">
             <a href="https://ontowave.org/" target="_blank" class="ontowave-menu-brand">OntoWave<span class="org-suffix">.org</span></a>
             <div class="ontowave-menu-options">
-              <span class="ontowave-menu-option" onclick="window.OntoWave.instance.loadPage('${this.config.defaultPage}')">🏠 Accueil</span>
+              <span class="ontowave-menu-option" onclick="window.OntoWave.instance.loadPage('${this.config.defaultPage}')">🏠 ${this.t('menuHome')}</span>
               ${galleryOption}
-              <span class="ontowave-menu-option" onclick="event.stopPropagation(); window.OntoWave.instance.toggleConfigurationPanel();">⚙️ Configuration</span>
+              <span class="ontowave-menu-option" onclick="event.stopPropagation(); window.OntoWave.instance.toggleConfigurationPanel();">⚙️ ${this.t('menuConfiguration')}</span>
             </div>
           </div>
         </div>
@@ -1682,38 +1851,38 @@ ${configString}
       configPanel.innerHTML = `
         <div class="config-panel-content">
           <div class="config-full-panel">
-            <h3>🌊 OntoWave - Configuration Complète</h3>
+            <h3>🌊 ${this.t('configTitle')}</h3>
             
             <!-- Section Général -->
             <div class="config-section">
-              <h4>📖 Général</h4>
+              <h4>📖 ${this.t('configGeneral')}</h4>
               <div class="config-row">
                 <div class="form-group-full">
-                  <label for="config-title-full">Titre du site :</label>
+                  <label for="config-title-full">${this.t('configSiteTitle')}</label>
                   <input type="text" id="config-title-full" value="${this.config.title}" />
                 </div>
                 <div class="form-group-full">
-                  <label for="config-defaultPage-full">Page par défaut :</label>
+                  <label for="config-defaultPage-full">${this.t('configDefaultPage')}</label>
                   <input type="text" id="config-defaultPage-full" value="${this.config.defaultPage}" placeholder="index.md" />
                 </div>
               </div>
               <div class="form-group-full">
-                <label for="config-baseUrl-full">URL de base :</label>
+                <label for="config-baseUrl-full">${this.t('configBaseUrl')}</label>
                 <input type="text" id="config-baseUrl-full" value="${this.config.baseUrl}" placeholder="/" />
               </div>
             </div>
 
             <!-- Section Langues et Localisation -->
             <div class="config-section">
-              <h4>🌍 Langues et Localisation</h4>
+              <h4>🌍 ${this.t('configLanguages')}</h4>
               <div class="config-row">
                 <div class="form-group-full">
-                  <label for="config-locales-full">Langues supportées (séparées par des virgules) :</label>
+                  <label for="config-locales-full">${this.t('configSupportedLanguages')}</label>
                   <input type="text" id="config-locales-full" value="${this.config.locales.join(', ')}" placeholder="fr-CA, fr, en" />
-                  <small>Laissez vide pour un site monolingue</small>
+                  <small>${this.t('configLanguageNote')}</small>
                 </div>
                 <div class="form-group-full">
-                  <label for="config-fallbackLocale-full">Langue de fallback :</label>
+                  <label for="config-fallbackLocale-full">${this.t('configFallbackLanguage')}</label>
                   <select id="config-fallbackLocale-full">
                     <option value="en" ${this.config.fallbackLocale === 'en' ? 'selected' : ''}>English (en)</option>
                     <option value="fr" ${this.config.fallbackLocale === 'fr' ? 'selected' : ''}>Français (fr)</option>
@@ -1726,18 +1895,18 @@ ${configString}
 
             <!-- Section Navigation et Interface -->
             <div class="config-section">
-              <h4>🧭 Navigation et Interface</h4>
+              <h4>🧭 ${this.t('configNavigation')}</h4>
               <div class="config-row">
                 <div class="form-group-checkbox">
                   <label>
                     <input type="checkbox" id="config-showGallery-full" ${this.config.showGallery ? 'checked' : ''} />
-                    🎨 Afficher la galerie d'exemples
+                    🎨 ${this.t('configShowGallery')}
                   </label>
                 </div>
                 <div class="form-group-checkbox">
                   <label>
                     <input type="checkbox" id="config-navHome-full" ${this.config.navigation?.showHome !== false ? 'checked' : ''} />
-                    🏠 Bouton Accueil
+                    🏠 ${this.t('configHomeButton')}
                   </label>
                 </div>
               </div>
@@ -1745,13 +1914,13 @@ ${configString}
                 <div class="form-group-checkbox">
                   <label>
                     <input type="checkbox" id="config-navBreadcrumb-full" ${this.config.navigation?.showBreadcrumb !== false ? 'checked' : ''} />
-                    📍 Fil d'Ariane (breadcrumb)
+                    📍 ${this.t('configBreadcrumb')}
                   </label>
                 </div>
                 <div class="form-group-checkbox">
                   <label>
                     <input type="checkbox" id="config-navToc-full" ${this.config.navigation?.showToc !== false ? 'checked' : ''} />
-                    📑 Table des matières
+                    📑 ${this.t('configToc')}
                   </label>
                 </div>
               </div>
@@ -1759,10 +1928,10 @@ ${configString}
 
             <!-- Section Diagrammes Mermaid -->
             <div class="config-section">
-              <h4>📊 Diagrammes Mermaid</h4>
+              <h4>📊 ${this.t('configMermaid')}</h4>
               <div class="config-row">
                 <div class="form-group-full">
-                  <label for="config-mermaidTheme-full">Thème Mermaid :</label>
+                  <label for="config-mermaidTheme-full">${this.t('configMermaidTheme')}</label>
                   <select id="config-mermaidTheme-full">
                     <option value="default" ${this.config.mermaid?.theme === 'default' ? 'selected' : ''}>Default (clair)</option>
                     <option value="dark" ${this.config.mermaid?.theme === 'dark' ? 'selected' : ''}>Dark (sombre)</option>
@@ -1773,7 +1942,7 @@ ${configString}
                 <div class="form-group-checkbox">
                   <label>
                     <input type="checkbox" id="config-mermaidStart-full" ${this.config.mermaid?.startOnLoad !== false ? 'checked' : ''} />
-                    🚀 Démarrage automatique
+                    🚀 ${this.t('configMermaidAuto')}
                   </label>
                 </div>
               </div>
@@ -1781,7 +1950,7 @@ ${configString}
                 <div class="form-group-checkbox">
                   <label>
                     <input type="checkbox" id="config-mermaidMaxWidth-full" ${this.config.mermaid?.flowchart?.useMaxWidth !== false ? 'checked' : ''} />
-                    📐 Utiliser la largeur maximale
+                    📐 ${this.t('configMermaidMaxWidth')}
                   </label>
                 </div>
               </div>
@@ -1789,14 +1958,14 @@ ${configString}
 
             <!-- Section PlantUML -->
             <div class="config-section">
-              <h4>🌿 Diagrammes PlantUML</h4>
+              <h4>🌿 ${this.t('configPlantuml')}</h4>
               <div class="config-row">
                 <div class="form-group-full">
-                  <label for="config-plantumlServer-full">Serveur PlantUML :</label>
+                  <label for="config-plantumlServer-full">${this.t('configPlantumlServer')}</label>
                   <input type="text" id="config-plantumlServer-full" value="${this.config.plantuml?.server || 'https://www.plantuml.com/plantuml'}" />
                 </div>
                 <div class="form-group-full">
-                  <label for="config-plantumlFormat-full">Format de sortie :</label>
+                  <label for="config-plantumlFormat-full">${this.t('configPlantumlFormat')}</label>
                   <select id="config-plantumlFormat-full">
                     <option value="svg" ${this.config.plantuml?.format === 'svg' ? 'selected' : ''}>SVG (vectoriel)</option>
                     <option value="png" ${this.config.plantuml?.format === 'png' ? 'selected' : ''}>PNG (bitmap)</option>
@@ -1807,10 +1976,10 @@ ${configString}
 
             <!-- Section Coloration Syntaxique -->
             <div class="config-section">
-              <h4>🎨 Coloration Syntaxique (Prism.js)</h4>
+              <h4>🎨 ${this.t('configPrism')}</h4>
               <div class="config-row">
                 <div class="form-group-full">
-                  <label for="config-prismTheme-full">Thème Prism :</label>
+                  <label for="config-prismTheme-full">${this.t('configPrismTheme')}</label>
                   <select id="config-prismTheme-full">
                     <option value="default" ${this.config.prism?.theme === 'default' ? 'selected' : ''}>Default (clair)</option>
                     <option value="dark" ${this.config.prism?.theme === 'dark' ? 'selected' : ''}>Dark (sombre)</option>
@@ -1820,7 +1989,7 @@ ${configString}
                 <div class="form-group-checkbox">
                   <label>
                     <input type="checkbox" id="config-prismAutoload-full" ${this.config.prism?.autoload !== false ? 'checked' : ''} />
-                    🔄 Chargement automatique
+                    🔄 ${this.t('configPrismAutoload')}
                   </label>
                 </div>
               </div>
@@ -1828,10 +1997,10 @@ ${configString}
 
             <!-- Section Interface Utilisateur -->
             <div class="config-section">
-              <h4>💻 Interface Utilisateur</h4>
+              <h4>💻 ${this.t('configUI')}</h4>
               <div class="config-row">
                 <div class="form-group-full">
-                  <label for="config-uiTheme-full">Thème de l'interface :</label>
+                  <label for="config-uiTheme-full">${this.t('configUITheme')}</label>
                   <select id="config-uiTheme-full">
                     <option value="default" ${this.config.ui?.theme === 'default' ? 'selected' : ''}>Default (clair)</option>
                     <option value="dark" ${this.config.ui?.theme === 'dark' ? 'selected' : ''}>Dark (sombre)</option>
@@ -1841,7 +2010,7 @@ ${configString}
                 <div class="form-group-checkbox">
                   <label>
                     <input type="checkbox" id="config-uiResponsive-full" ${this.config.ui?.responsive !== false ? 'checked' : ''} />
-                    📱 Design responsive
+                    📱 ${this.t('configUIResponsive')}
                   </label>
                 </div>
               </div>
@@ -1849,7 +2018,7 @@ ${configString}
                 <div class="form-group-checkbox">
                   <label>
                     <input type="checkbox" id="config-uiAnimations-full" ${this.config.ui?.animations !== false ? 'checked' : ''} />
-                    ✨ Animations et transitions
+                    ✨ ${this.t('configUIAnimations')}
                   </label>
                 </div>
               </div>
@@ -1857,10 +2026,10 @@ ${configString}
 
             <!-- Actions -->
             <div class="form-actions-full">
-              <button onclick="window.OntoWave.instance.updateConfigFromFullPanel()" class="btn-primary">✅ Appliquer Configuration</button>
-              <button onclick="window.OntoWave.instance.downloadConfigFromPanel()" class="btn-secondary">💾 Télécharger HTML</button>
-              <button onclick="window.OntoWave.instance.downloadOntoWaveScript()" class="btn-secondary">📥 Télécharger ontowave.min.js</button>
-              <button onclick="window.OntoWave.instance.resetConfigToDefaults()" class="btn-warning">🔄 Réinitialiser</button>
+              <button onclick="window.OntoWave.instance.updateConfigFromFullPanel()" class="btn-primary">✅ ${this.t('configApply')}</button>
+              <button onclick="window.OntoWave.instance.downloadConfigFromPanel()" class="btn-secondary">💾 ${this.t('configDownloadHTML')}</button>
+              <button onclick="window.OntoWave.instance.downloadOntoWaveScript()" class="btn-secondary">📥 ${this.t('configDownloadJS')}</button>
+              <button onclick="window.OntoWave.instance.resetConfigToDefaults()" class="btn-warning">🔄 ${this.t('configReset')}</button>
             </div>
           </div>
         </div>

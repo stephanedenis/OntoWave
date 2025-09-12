@@ -285,13 +285,27 @@
         // Mettre à jour les textes de l'interface OntoWave
         updateOntoWaveTexts(lang);
         
+        // Appeler la méthode de mise à jour de l'interface OntoWave si disponible
+        if (window.OntoWave && window.OntoWave.instance && window.OntoWave.instance.updateInterfaceTexts) {
+            console.log('🔄 Mise à jour interface OntoWave avec méthode intégrée');
+            window.OntoWave.instance.updateInterfaceTexts();
+        }
+        
         // Forcer la mise à jour des menus OntoWave après un délai supplémentaire
         setTimeout(() => {
             updateOntoWaveTexts(lang);
+            // Appeler aussi la méthode interne OntoWave
+            if (window.OntoWave && window.OntoWave.instance && window.OntoWave.instance.updateInterfaceTexts) {
+                window.OntoWave.instance.updateInterfaceTexts();
+            }
         }, 300);
         
         setTimeout(() => {
             updateOntoWaveTexts(lang);
+            // Appeler aussi la méthode interne OntoWave
+            if (window.OntoWave && window.OntoWave.instance && window.OntoWave.instance.updateInterfaceTexts) {
+                window.OntoWave.instance.updateInterfaceTexts();
+            }
         }, 800);
         
         // Forcer plusieurs recolorations Prism (le problème principal)
