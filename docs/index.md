@@ -30,7 +30,7 @@
 &lt;/html&gt;
 ```
 
-*Cliquez sur l'icône OntoWave 🌊 en bas à droite pour ouvrir le panneau de configuration et découvrir toutes les options disponibles.*
+*Cliquez sur l'icône OntoWave 🌊 en bas à droite pour ouvrir le panneau de configuration et découvrir toutes les options disponibles. C'est également là que vous pouvez télécharger le fichier `ontowave.min.js` et construire dynamiquement votre page HTML complète.*
 
 ### 📚 Exemples progressifs
 
@@ -83,7 +83,7 @@ Ce logiciel est fourni "tel quel", sans garantie d'aucune sorte, expresse ou imp
 &lt;/html&gt;
 ```
 
-*Click on the OntoWave icon 🌊 in the bottom right to open the configuration panel and discover all available options.*
+*Click on the OntoWave icon 🌊 in the bottom right to open the configuration panel and discover all available options. This is also where you can download the `ontowave.min.js` file and dynamically build your complete HTML page.*
 
 ### 📚 Progressive Examples
 
