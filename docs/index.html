@@ -21,6 +21,8 @@
         border-radius: 12px;
         box-shadow: 0 2px 12px rgba(0,0,0,0.1);
         border: 1px solid #e1e4e8;
+        cursor: default; /* Curseur normal, pas de déplacement */
+        user-select: none; /* Pas de sélection de texte */
     }
 
     .lang-toggle button {
@@ -34,6 +36,7 @@
         text-align: center;
         transition: all 0.2s ease;
         white-space: nowrap;
+        pointer-events: auto; /* S'assurer que les événements fonctionnent */
     }
 
     .lang-toggle button:hover {
@@ -68,9 +71,23 @@
     <script>
     // Attendre que OntoWave ait fini de charger le contenu
     document.addEventListener('DOMContentLoaded', function() {
-        // Attendre un peu plus pour que OntoWave termine
-        setTimeout(initializeMultilang, 2000);
+        // Attendre que OntoWave charge complètement avant d'initialiser le multilingue
+        setTimeout(initializeMultilang, 3000); // Augmenté à 3 secondes
     });
+    
+    // Observer OntoWave pour détecter quand il est prêt
+    function waitForOntoWave() {
+        if (window.OntoWave && window.OntoWave.instance) {
+            console.log('✅ OntoWave détecté, initialisation multilingue');
+            setTimeout(initializeMultilang, 500);
+        } else {
+            console.log('⏳ Attente OntoWave...');
+            setTimeout(waitForOntoWave, 1000);
+        }
+    }
+    
+    // Démarrer l'attente d'OntoWave en parallèle
+    setTimeout(waitForOntoWave, 1000);
     
     function initializeMultilang() {
         console.log('🌐 Initialisation du système multilingue');
@@ -104,6 +121,23 @@
             `;
             document.body.appendChild(langToggle);
             console.log('✅ Boutons de langue créés');
+            
+            // Ajouter des événements de secours au cas où onclick ne fonctionne pas
+            document.getElementById('btn-fr').addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🔧 Event listener FR déclenché');
+                toggleLang('fr');
+            });
+            
+            document.getElementById('btn-en').addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🔧 Event listener EN déclenché');
+                toggleLang('en');
+            });
+            
+            console.log('✅ Event listeners de secours ajoutés');
         }
         
         // Initialiser la langue
@@ -153,15 +187,23 @@
         
         // Forcer Prism à recolorer après le chargement du contenu
         if (window.Prism && window.Prism.highlightAll) {
-            console.log('🎨 Recoloration Prism forcée');
-            window.Prism.highlightAll();
+            try {
+                console.log('🎨 Recoloration Prism forcée');
+                window.Prism.highlightAll();
+            } catch (error) {
+                console.warn('⚠️ Erreur Prism initiale:', error.message);
+            }
         }
         
         // Recolorer encore après un délai au cas où le contenu se charge tardivement
         setTimeout(() => {
             if (window.Prism && window.Prism.highlightAll) {
-                console.log('🎨 Recoloration Prism différée');
-                window.Prism.highlightAll();
+                try {
+                    console.log('🎨 Recoloration Prism différée');
+                    window.Prism.highlightAll();
+                } catch (error) {
+                    console.warn('⚠️ Erreur Prism différée:', error.message);
+                }
             }
         }, 1000);
     }
@@ -255,7 +297,13 @@
 
     // Fonction pour changer de langue
     function toggleLang(lang) {
-        console.log('🔄 Bascule vers:', lang);
+        console.log('🔄 toggleLang appelé avec:', lang);
+        
+        // Test de diagnostic
+        console.log('🧪 État avant changement:', {
+            'lang-fr': document.getElementById('lang-fr')?.style.display,
+            'lang-en': document.getElementById('lang-en')?.style.display
+        });
         
         // Masquer tous les contenus
         document.querySelectorAll('.lang-content').forEach(el => {
@@ -268,6 +316,40 @@
         if (targetContent) {
             targetContent.classList.remove('hidden');
             targetContent.classList.add('visible');
+            console.log('✅ Contenu affiché pour:', lang);
+        } else {
+            console.error('❌ Élément lang-' + lang + ' non trouvé');
+        }
+        
+        // Mettre à jour les boutons
+        document.querySelectorAll('.lang-toggle button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        const activeLangBtn = document.getElementById('btn-' + lang);
+        if (activeLangBtn) {
+            activeLangBtn.classList.add('active');
+            console.log('✅ Bouton activé:', lang);
+        }
+        
+        // Sauvegarder la préférence
+        localStorage.setItem('ontowave-lang', lang);
+        
+        // Mettre à jour les textes de l'interface OntoWave
+        updateOntoWaveTexts(lang);
+        
+        // Test pour voir si les boutons répondent
+        console.log('🔧 TEST: Bouton cliqué, lang =', lang);
+        
+        // Appeler la méthode de mise à jour de l'interface OntoWave si disponible
+        if (window.OntoWave && window.OntoWave.instance && window.OntoWave.instance.updateInterfaceTexts) {
+            console.log('🔄 Mise à jour interface OntoWave avec méthode intégrée');
+            window.OntoWave.instance.updateInterfaceTexts();
+        } else {
+            console.log('⚠️ OntoWave.instance ou updateInterfaceTexts non disponible', {
+                OntoWave: !!window.OntoWave,
+                instance: !!(window.OntoWave && window.OntoWave.instance),
+                method: !!(window.OntoWave && window.OntoWave.instance && window.OntoWave.instance.updateInterfaceTexts)
+            });
         }
         
         // Mettre à jour les boutons
@@ -289,6 +371,12 @@
         if (window.OntoWave && window.OntoWave.instance && window.OntoWave.instance.updateInterfaceTexts) {
             console.log('🔄 Mise à jour interface OntoWave avec méthode intégrée');
             window.OntoWave.instance.updateInterfaceTexts();
+        } else {
+            console.log('⚠️ OntoWave.instance ou updateInterfaceTexts non disponible', {
+                OntoWave: !!window.OntoWave,
+                instance: !!(window.OntoWave && window.OntoWave.instance),
+                method: !!(window.OntoWave && window.OntoWave.instance && window.OntoWave.instance.updateInterfaceTexts)
+            });
         }
         
         // Forcer la mise à jour des menus OntoWave après un délai supplémentaire
@@ -296,7 +384,10 @@
             updateOntoWaveTexts(lang);
             // Appeler aussi la méthode interne OntoWave
             if (window.OntoWave && window.OntoWave.instance && window.OntoWave.instance.updateInterfaceTexts) {
+                console.log('🔄 (300ms) Mise à jour OntoWave.instance');
                 window.OntoWave.instance.updateInterfaceTexts();
+            } else {
+                console.log('⚠️ (300ms) OntoWave.instance non disponible');
             }
         }, 300);
         
@@ -304,38 +395,81 @@
             updateOntoWaveTexts(lang);
             // Appeler aussi la méthode interne OntoWave
             if (window.OntoWave && window.OntoWave.instance && window.OntoWave.instance.updateInterfaceTexts) {
+                console.log('🔄 (800ms) Mise à jour OntoWave.instance');
                 window.OntoWave.instance.updateInterfaceTexts();
+            } else {
+                console.log('⚠️ (800ms) OntoWave.instance non disponible');
             }
         }, 800);
         
         // Forcer plusieurs recolorations Prism (le problème principal)
         console.log('🎨 Recoloration Prism immédiate');
-        if (window.Prism && window.Prism.highlightAll) {
-            window.Prism.highlightAll();
+        try {
+            if (window.Prism && window.Prism.highlightAll) {
+                window.Prism.highlightAll();
+            }
+        } catch (error) {
+            console.warn('⚠️ Erreur Prism immédiate:', error.message);
         }
         
         // Recoloration différée pour s'assurer que ça marche
         setTimeout(() => {
-            if (window.Prism && window.Prism.highlightAll) {
-                console.log('🎨 Recoloration Prism différée 1');
-                window.Prism.highlightAll();
+            try {
+                if (window.Prism && window.Prism.highlightAll) {
+                    console.log('🎨 Recoloration Prism différée 1');
+                    window.Prism.highlightAll();
+                }
+            } catch (error) {
+                console.warn('⚠️ Erreur Prism différée 1:', error.message);
             }
         }, 100);
         
         setTimeout(() => {
-            if (window.Prism && window.Prism.highlightAll) {
-                console.log('🎨 Recoloration Prism différée 2');
-                window.Prism.highlightAll();
+            try {
+                if (window.Prism && window.Prism.highlightAll) {
+                    console.log('🎨 Recoloration Prism différée 2');
+                    window.Prism.highlightAll();
+                }
+            } catch (error) {
+                console.warn('⚠️ Erreur Prism différée 2:', error.message);
             }
         }, 500);
         
         setTimeout(() => {
-            if (window.Prism && window.Prism.highlightAll) {
-                console.log('🎨 Recoloration Prism différée 3');
-                window.Prism.highlightAll();
+            try {
+                if (window.Prism && window.Prism.highlightAll) {
+                    console.log('🎨 Recoloration Prism différée 3');
+                    window.Prism.highlightAll();
+                }
+            } catch (error) {
+                console.warn('⚠️ Erreur Prism différée 3:', error.message);
             }
         }, 1000);
     }
+    
+    // Fonction de test globale accessible depuis la console
+    window.testMultilang = function() {
+        console.log('🧪 TEST MULTILINGUE MANUEL');
+        console.log('OntoWave disponible:', !!window.OntoWave);
+        console.log('OntoWave.instance disponible:', !!(window.OntoWave && window.OntoWave.instance));
+        console.log('updateInterfaceTexts disponible:', !!(window.OntoWave && window.OntoWave.instance && window.OntoWave.instance.updateInterfaceTexts));
+        
+        console.log('Éléments DOM:');
+        console.log('- lang-fr:', !!document.getElementById('lang-fr'));
+        console.log('- lang-en:', !!document.getElementById('lang-en'));
+        console.log('- btn-fr:', !!document.getElementById('btn-fr'));
+        console.log('- btn-en:', !!document.getElementById('btn-en'));
+        
+        console.log('Test changement FR...');
+        toggleLang('fr');
+        
+        setTimeout(() => {
+            console.log('Test changement EN...');
+            toggleLang('en');
+        }, 1000);
+    };
+    
+    console.log('🔧 Fonction testMultilang() disponible dans la console');
     </script>
 </body>
 </html>
