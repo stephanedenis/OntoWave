@@ -920,6 +920,10 @@
           menu.classList.remove('no-drag');
         } else {
           menu.classList.add('no-drag');
+          // Sécurité : forcer l'arrêt du drag
+          isDragging = false;
+          document.body.style.userSelect = '';
+          document.body.style.cursor = '';
         }
       }
 
@@ -992,6 +996,22 @@
           document.body.style.userSelect = '';
         }
       });
+
+      // Solution de sécurité : Remettre l'état normal après un délai
+      function resetDragState() {
+        isDragging = false;
+        menu.style.cursor = 'move';
+        document.body.style.userSelect = '';
+        document.body.style.cursor = '';
+      }
+
+      // Reset automatique après perte de focus ou changement de page
+      document.addEventListener('visibilitychange', resetDragState);
+      window.addEventListener('blur', resetDragState);
+      window.addEventListener('focus', resetDragState);
+      
+      // Fonction globale accessible pour reset manuel
+      window.resetOntoWaveDragState = resetDragState;
 
       // Support tactile pour mobile
       menu.addEventListener('touchstart', (e) => {
@@ -1101,6 +1121,11 @@
 
       console.log('📄 Loading page:', pagePath);
       this.currentPage = pagePath;
+      
+      // Sécurité : Reset de l'état de drag au changement de page
+      if (window.resetOntoWaveDragState) {
+        window.resetOntoWaveDragState();
+      }
       
       // Mettre à jour le hash
       if (location.hash !== '#' + pagePath) {

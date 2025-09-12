@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostic Curseur OntoWave</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .diagnostic-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .status.ok { background: #d4edda; color: #155724; }
+        .status.warning { background: #fff3cd; color: #856404; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-warning { background: #ffc107; color: black; }
+        .btn-danger { background: #dc3545; color: white; }
+        .lang-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .lang-toggle button {
+            padding: 8px 16px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+        }
+        .lang-toggle button.active {
+            background: #007bff;
+            color: white;
+        }
+        #output {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Diagnostic Curseur OntoWave</h1>
+    
+    <div class="lang-toggle">
+        <button id="btn-fr" onclick="changeLang('fr')" class="active">🇫🇷 FR</button>
+        <button id="btn-en" onclick="changeLang('en')">🇬🇧 EN</button>
+    </div>
+    
+    <div class="diagnostic-panel">
+        <h2>État du Curseur</h2>
+        <div id="cursor-status" class="status"></div>
+        
+        <h3>Tests de Diagnostic</h3>
+        <button class="btn-primary" onclick="checkCursorState()">Vérifier État Curseur</button>
+        <button class="btn-success" onclick="resetDragState()">Reset État Drag</button>
+        <button class="btn-warning" onclick="simulateDragProblem()">Simuler Problème</button>
+        <button class="btn-danger" onclick="forceReset()">Reset Forcé</button>
+    </div>
+    
+    <div class="diagnostic-panel">
+        <h2>OntoWave</h2>
+        <div id="ontowave-status" class="status"></div>
+    </div>
+    
+    <div class="diagnostic-panel">
+        <h2>Log de Diagnostic</h2>
+        <div id="output"></div>
+        <button class="btn-primary" onclick="clearLog()">Effacer Log</button>
+    </div>
+
+    <!-- Inclure OntoWave -->
+    <script src="ontowave.min.js"></script>
+    
+    <script>
+        let currentLang = 'fr';
+        
+        function log(message) {
+            const output = document.getElementById('output');
+            const timestamp = new Date().toLocaleTimeString();
+            output.innerHTML += `[${timestamp}] ${message}<br>`;
+            output.scrollTop = output.scrollHeight;
+            console.log(message);
+        }
+        
+        function updateStatus(elementId, message, type = 'ok') {
+            const element = document.getElementById(elementId);
+            element.className = `status ${type}`;
+            element.textContent = message;
+        }
+        
+        function checkCursorState() {
+            log('🔍 Vérification de l\'état du curseur...');
+            
+            const body = document.body;
+            const computed = window.getComputedStyle(body);
+            
+            const state = {
+                bodyCursor: body.style.cursor || 'default',
+                bodyUserSelect: body.style.userSelect || 'auto',
+                computedCursor: computed.cursor,
+                computedUserSelect: computed.userSelect
+            };
+            
+            log(`💻 Body cursor: ${state.bodyCursor}`);
+            log(`👆 Body userSelect: ${state.bodyUserSelect}`);
+            log(`🖱️ Computed cursor: ${state.computedCursor}`);
+            log(`📝 Computed userSelect: ${state.computedUserSelect}`);
+            
+            // Vérifier l'état du menu OntoWave
+            const menu = document.getElementById('ontowave-floating-menu');
+            if (menu) {
+                const menuCursor = window.getComputedStyle(menu).cursor;
+                log(`🌊 Menu OntoWave cursor: ${menuCursor}`);
+            }
+            
+            // Déterminer le statut
+            const isNormal = state.bodyUserSelect !== 'none' && 
+                           !state.bodyCursor.includes('grab') &&
+                           !state.computedCursor.includes('grab');
+            
+            updateStatus('cursor-status', 
+                isNormal ? '✅ Curseur normal' : '❌ Curseur en mode drag', 
+                isNormal ? 'ok' : 'error'
+            );
+        }
+        
+        function resetDragState() {
+            log('🔄 Reset de l\'état de drag...');
+            
+            // Appeler la fonction de reset d'OntoWave si disponible
+            if (window.resetOntoWaveDragState) {
+                window.resetOntoWaveDragState();
+                log('✅ resetOntoWaveDragState() appelée');
+            } else {
+                log('⚠️ resetOntoWaveDragState() non disponible');
+            }
+            
+            // Reset manuel
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+            
+            const menu = document.getElementById('ontowave-floating-menu');
+            if (menu) {
+                menu.style.cursor = 'move';
+            }
+            
+            log('✅ Reset manuel effectué');
+            
+            // Vérifier l'état après reset
+            setTimeout(checkCursorState, 100);
+        }
+        
+        function simulateDragProblem() {
+            log('⚠️ Simulation d\'un problème de drag...');
+            
+            document.body.style.cursor = 'grabbing';
+            document.body.style.userSelect = 'none';
+            
+            log('🚨 Problème simulé: body en mode grabbing');
+            checkCursorState();
+        }
+        
+        function forceReset() {
+            log('🚨 Reset forcé de tous les états...');
+            
+            // Reset complet de tous les styles
+            document.body.style.cssText = '';
+            
+            // Reset de tous les éléments avec curseur
+            document.querySelectorAll('*').forEach(el => {
+                if (el.style.cursor) el.style.cursor = '';
+                if (el.style.userSelect) el.style.userSelect = '';
+            });
+            
+            log('✅ Reset forcé terminé');
+            checkCursorState();
+        }
+        
+        function changeLang(lang) {
+            log(`🌐 Changement de langue: ${currentLang} → ${lang}`);
+            currentLang = lang;
+            
+            // Mettre à jour les boutons
+            document.querySelectorAll('.lang-toggle button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`btn-${lang}`).classList.add('active');
+            
+            // Appeler la fonction de reset au changement de langue
+            resetDragState();
+        }
+        
+        function clearLog() {
+            document.getElementById('output').innerHTML = '';
+        }
+        
+        // Initialisation
+        window.addEventListener('load', () => {
+            log('🚀 Page chargée, diagnostic initialisé');
+            
+            // Vérifier OntoWave
+            setTimeout(() => {
+                if (window.OntoWave) {
+                    updateStatus('ontowave-status', '✅ OntoWave chargé', 'ok');
+                    log('✅ OntoWave détecté');
+                    
+                    if (window.resetOntoWaveDragState) {
+                        log('✅ Fonction resetOntoWaveDragState disponible');
+                    } else {
+                        log('❌ Fonction resetOntoWaveDragState non disponible');
+                    }
+                } else {
+                    updateStatus('ontowave-status', '❌ OntoWave non chargé', 'error');
+                    log('❌ OntoWave non détecté');
+                }
+                
+                checkCursorState();
+            }, 1000);
+        });
+        
+        // Surveiller les changements de curseur
+        const observer = new MutationObserver(() => {
+            // Vérification silencieuse pour détecter les changements
+            const body = document.body;
+            if (body.style.userSelect === 'none' || body.style.cursor.includes('grab')) {
+                log('⚠️ Changement de curseur détecté automatiquement');
+                checkCursorState();
+            }
+        });
+        
+        observer.observe(document.body, {
+            attributes: true,
+            attributeFilter: ['style']
+        });
+    </script>
+</body>
+</html>

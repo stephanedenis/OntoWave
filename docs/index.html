@@ -299,6 +299,11 @@
     function toggleLang(lang) {
         console.log('🔄 toggleLang appelé avec:', lang);
         
+        // Sécurité : Reset l'état de drag au changement de langue
+        if (window.resetOntoWaveDragState) {
+            window.resetOntoWaveDragState();
+        }
+        
         // Test de diagnostic
         console.log('🧪 État avant changement:', {
             'lang-fr': document.getElementById('lang-fr')?.style.display,
