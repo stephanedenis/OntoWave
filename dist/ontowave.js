@@ -290,6 +290,24 @@
       transform: translateY(-1px);
     }
     
+    /* Styles pour les boutons de langue */
+    .ontowave-lang-btn {
+      font-weight: bold;
+      font-size: 11px;
+    }
+    
+    .ontowave-lang-btn.active {
+      background: #28a745;
+      color: white;
+      border-color: #28a745;
+      box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+    }
+    
+    .ontowave-lang-btn.active:hover {
+      background: #1e7e34;
+      border-color: #1e7e34;
+    }
+    
     /* Pas d'en-tête - supprimé */
     .ontowave-header {
       display: none;
@@ -625,6 +643,33 @@
     }
 
     /**
+     * Change la langue de l'interface et recharge le contenu approprié
+     */
+    switchLanguage(targetLang) {
+      console.log('🌐 Switching to language:', targetLang);
+      
+      // Mettre à jour les boutons de langue
+      document.querySelectorAll('.ontowave-lang-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.textContent.includes(targetLang.toUpperCase())) {
+          btn.classList.add('active');
+        }
+      });
+      
+      // Mettre à jour l'interface
+      this.updateInterfaceTexts(targetLang);
+      
+      // Recharger la page avec la bonne langue
+      const sources = this.config.sources || {};
+      const targetPage = sources[targetLang] || this.config.defaultPage;
+      
+      if (targetPage) {
+        console.log('🌐 Loading page for language:', targetLang, '->', targetPage);
+        this.loadPage(targetPage);
+      }
+    }
+
+    /**
      * Résout les langues du navigateur par ordre de préférence
      */
     getBrowserLocales() {
@@ -648,27 +693,36 @@
 
     /**
      * Trouve la meilleure correspondance entre langues navigateur et config
+     * Respecte maintenant defaultLocale au lieu de forcer la détection navigateur
      */
     resolveLocale() {
       const browserLocales = this.getBrowserLocales();
       const supportedLocales = this.config.locales || [];
+      const defaultLocale = this.config.defaultLocale || this.config.fallbackLocale;
       
       console.log('🌐 Browser locales:', browserLocales);
       console.log('🌐 Supported locales:', supportedLocales);
+      console.log('🌐 Default locale:', defaultLocale);
       
       if (supportedLocales.length === 0) {
         return null; // Mode monolingue
       }
       
-      // Recherche exacte d'abord
+      // PRIORITÉ 1 : Utiliser defaultLocale si défini et supporté
+      if (defaultLocale && supportedLocales.includes(defaultLocale)) {
+        console.log('🎯 Using configured default locale:', defaultLocale);
+        return defaultLocale;
+      }
+      
+      // PRIORITÉ 2 : Recherche exacte dans les langues navigateur
       for (const browserLang of browserLocales) {
         if (supportedLocales.includes(browserLang)) {
-          console.log('🎯 Exact match found:', browserLang);
+          console.log('🎯 Exact browser match found:', browserLang);
           return browserLang;
         }
       }
       
-      // Recherche par préfixe (fr-CA -> fr)
+      // PRIORITÉ 3 : Recherche par préfixe (fr-CA -> fr)
       for (const browserLang of browserLocales) {
         const prefix = browserLang.split('-')[0];
         const match = supportedLocales.find(locale => locale.startsWith(prefix));
@@ -678,7 +732,7 @@
         }
       }
       
-      // Fallback sur la première langue supportée
+      // PRIORITÉ 4 : Fallback sur la première langue supportée
       const fallback = supportedLocales[0];
       console.log('🎯 Using fallback locale:', fallback);
       return fallback;
@@ -884,6 +938,14 @@
       const galleryOption = this.config.showGallery ? 
         `<span class="ontowave-menu-option" onclick="window.location.href='gallery.html'">🎨 ${this.t('menuGallery', locale)}</span>` : '';
       
+      // Créer les boutons de langue si multilingue
+      const languageButtons = this.config.locales && this.config.locales.length > 1 ?
+        this.config.locales.map(lang => {
+          const isActive = (locale || this.getCurrentLanguage()) === lang;
+          const activeClass = isActive ? ' active' : '';
+          return `<span class="ontowave-menu-option ontowave-lang-btn${activeClass}" onclick="event.stopPropagation(); window.OntoWave.instance.switchLanguage('${lang}');">🌐 ${lang.toUpperCase()}</span>`;
+        }).join('') : '';
+      
       // Créer la structure HTML minimaliste
       this.container.innerHTML = `
         <div class="ontowave-floating-menu" id="ontowave-floating-menu" title="OntoWave Menu">
@@ -893,6 +955,7 @@
             <div class="ontowave-menu-options">
               <span class="ontowave-menu-option" onclick="window.OntoWave.instance.loadPage('${this.config.defaultPage}')">🏠 ${this.t('menuHome', locale)}</span>
               ${galleryOption}
+              ${languageButtons}
               <span class="ontowave-menu-option" onclick="event.stopPropagation(); window.OntoWave.instance.toggleConfigurationPanel(event, '${locale || this.getCurrentLanguage()}');">⚙️ ${this.t('menuConfiguration', locale)}</span>
             </div>
           </div>

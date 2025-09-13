@@ -4,65 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OntoWave - Générateur de diagrammes pour sites statiques</title>
-    <style>
-        .lang-toggle {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 10000;
-            display: flex;
-            gap: 10px;
-        }
-        .lang-btn {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            background: white;
-            cursor: pointer;
-            border-radius: 4px;
-            text-decoration: none;
-            color: #333;
-        }
-        .lang-btn.active {
-            background: #007acc;
-            color: white;
-            border-color: #007acc;
-        }
-        .lang-fr { display: block; }
-        .lang-en { display: none; }
-        body.lang-en .lang-fr { display: none; }
-        body.lang-en .lang-en { display: block; }
-    </style>
 </head>
 <body>
-    <!-- Boutons de basculement de langue -->
-    <div class="lang-toggle">
-        <button class="lang-btn active" onclick="switchLanguage('fr')">FR</button>
-        <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
-    </div>
-
     <script>
-        function switchLanguage(lang) {
-            // Mettre à jour la classe du body
-            document.body.className = 'lang-' + lang;
-            
-            // Mettre à jour les boutons actifs
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            // Mettre à jour OntoWave si disponible
-            if (window.OntoWave && OntoWave.instance) {
-                OntoWave.instance.updateInterfaceTexts(lang);
-            }
-        }
+        // Configuration personnalisée pour OntoWave
+        window.OntoWaveConfig = {
+            locales: ['fr', 'en'],
+            defaultLocale: 'fr',  // Forcer le français par défaut
+            sources: {
+                'fr': 'index.fr.md',
+                'en': 'index.en.md'
+            },
+            title: 'OntoWave - Documentation'
+        };
         
         // Initialiser OntoWave quand il est chargé
         window.addEventListener('DOMContentLoaded', function() {
             if (window.OntoWave) {
-                OntoWave.instance = new OntoWave();
+                OntoWave.instance = new OntoWave(window.OntoWaveConfig);
                 OntoWave.instance.init();
-                console.log('🌊 OntoWave initialisé manuellement');
+                console.log('🌊 OntoWave initialisé avec config personnalisée');
             }
         });
     </script>
