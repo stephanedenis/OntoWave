@@ -218,6 +218,24 @@
     function updateOntoWaveTexts(lang) {
         console.log('🌐 Mise à jour textes OntoWave:', lang);
         
+        // D'abord appeler la méthode native OntoWave si disponible
+        if (window.OntoWave && window.OntoWave.instance && window.OntoWave.instance.updateInterfaceTexts) {
+            console.log('🔄 Appel updateInterfaceTexts() OntoWave');
+            window.OntoWave.instance.updateInterfaceTexts();
+            return; // La méthode OntoWave gère tout
+        }
+        
+        // Retry avec délai si OntoWave n'est pas encore prêt
+        setTimeout(() => {
+            if (window.OntoWave && window.OntoWave.instance && window.OntoWave.instance.updateInterfaceTexts) {
+                console.log('🔄 Appel différé updateInterfaceTexts() OntoWave');
+                window.OntoWave.instance.updateInterfaceTexts();
+                return;
+            }
+            console.log('⚠️ OntoWave.updateInterfaceTexts() non disponible, utilisation du fallback');
+        }, 200);
+        
+        // Fallback manuel pour compatibilité
         const texts = {
             fr: {
                 configuration: 'Configuration',
