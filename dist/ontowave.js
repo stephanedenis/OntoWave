@@ -109,7 +109,7 @@
     baseUrl: "/",
     defaultPage: "index.md",
     containerId: "ontowave-container",
-    locales: [], // Langues supportées (ex: ["fr-CA", "fr", "en"])
+    locales: ["fr", "en"], // Langues supportées par défaut
     fallbackLocale: "en",
     showGallery: false, // Gallerie désactivée par défaut
     mermaid: {
@@ -505,6 +505,17 @@
   class OntoWave {
     constructor(config = {}) {
       this.config = { ...DEFAULT_CONFIG, ...config };
+      
+      // Support pour le format i18n (compatibilité avec config.json)
+      if (config.i18n) {
+        if (config.i18n.supported) {
+          this.config.locales = config.i18n.supported;
+        }
+        if (config.i18n.default) {
+          this.config.fallbackLocale = config.i18n.default;
+        }
+      }
+      
       this.container = null;
       this.mermaidLoaded = false;
       this.prismLoaded = false;
@@ -522,10 +533,22 @@
       const langEn = document.getElementById('lang-en');
       
       if (langFr && langEn) {
-        // Système multilingue détecté
-        if (langFr.style.display !== 'none') {
+        // Système multilingue détecté - vérifier les classes visible/hidden
+        if (langFr.classList.contains('visible') || (!langFr.classList.contains('hidden') && langFr.style.display !== 'none')) {
           return 'fr';
-        } else if (langEn.style.display !== 'none') {
+        } else if (langEn.classList.contains('visible') || (!langEn.classList.contains('hidden') && langEn.style.display !== 'none')) {
+          return 'en';
+        }
+      }
+      
+      // Fallback - vérifier les boutons actifs
+      const btnFr = document.getElementById('btn-fr');
+      const btnEn = document.getElementById('btn-en');
+      
+      if (btnFr && btnEn) {
+        if (btnFr.classList.contains('active')) {
+          return 'fr';
+        } else if (btnEn.classList.contains('active')) {
           return 'en';
         }
       }
@@ -535,32 +558,35 @@
     }
 
     /**
-     * Obtient une traduction pour la langue actuelle
+     * Obtient une traduction pour une langue spécifique ou la langue actuelle
      */
-    t(key) {
-      const currentLang = this.getCurrentLanguage();
-      const translations = TRANSLATIONS[currentLang] || TRANSLATIONS['en'];
+    t(key, locale = null) {
+      const targetLang = locale || this.getCurrentLanguage();
+      const translations = TRANSLATIONS[targetLang] || TRANSLATIONS['en'];
       return translations[key] || key;
     }
 
     /**
-     * Met à jour tous les textes de l'interface selon la langue actuelle
+     * Met à jour tous les textes de l'interface selon une langue spécifique
      */
-    updateInterfaceTexts() {
+    updateInterfaceTexts(locale = null) {
+      const targetLang = locale || this.getCurrentLanguage();
+      console.log('🌐 Interface texts updating for language:', targetLang);
+      
       // Mettre à jour les textes du menu
       const homeOption = document.querySelector('.ontowave-menu-option[onclick*="loadPage"]');
       if (homeOption) {
-        homeOption.innerHTML = `🏠 ${this.t('menuHome')}`;
+        homeOption.innerHTML = `🏠 ${this.t('menuHome', targetLang)}`;
       }
 
       const galleryOption = document.querySelector('.ontowave-menu-option[onclick*="gallery.html"]');
       if (galleryOption) {
-        galleryOption.innerHTML = `🎨 ${this.t('menuGallery')}`;
+        galleryOption.innerHTML = `🎨 ${this.t('menuGallery', targetLang)}`;
       }
 
       const configOption = document.querySelector('.ontowave-menu-option[onclick*="toggleConfigurationPanel"]');
       if (configOption) {
-        configOption.innerHTML = `⚙️ ${this.t('menuConfiguration')}`;
+        configOption.innerHTML = `⚙️ ${this.t('menuConfiguration', targetLang)}`;
       }
 
       // Si le panneau de configuration est ouvert, le recréer avec les nouveaux textes
@@ -578,9 +604,9 @@
           configButton.classList.remove('selected');
         }
         
-        // Rouvrir avec les nouvelles traductions
+        // Rouvrir avec les nouvelles traductions et la langue spécifiée
         setTimeout(() => {
-          this.toggleConfigurationPanel();
+          this.toggleConfigurationPanel(null, targetLang);
           
           // Restaurer les valeurs des champs
           setTimeout(() => {
@@ -595,7 +621,7 @@
         }, 50);
       }
 
-      console.log('🌐 Interface texts updated for language:', this.getCurrentLanguage());
+      console.log('🌐 Interface texts updated for language:', targetLang);
     }
 
     /**
@@ -843,7 +869,7 @@
       });
     }
 
-    createInterface() {
+    createInterface(locale = null) {
       // Trouver ou créer le conteneur
       this.container = document.getElementById(this.config.containerId);
       if (!this.container) {
@@ -856,7 +882,7 @@
       
       // Créer les options du menu selon la configuration
       const galleryOption = this.config.showGallery ? 
-        `<span class="ontowave-menu-option" onclick="window.location.href='gallery.html'">🎨 ${this.t('menuGallery')}</span>` : '';
+        `<span class="ontowave-menu-option" onclick="window.location.href='gallery.html'">🎨 ${this.t('menuGallery', locale)}</span>` : '';
       
       // Créer la structure HTML minimaliste
       this.container.innerHTML = `
@@ -865,9 +891,9 @@
           <div class="ontowave-menu-content" id="ontowave-menu-content">
             <a href="https://ontowave.org/" target="_blank" class="ontowave-menu-brand">OntoWave<span class="org-suffix">.org</span></a>
             <div class="ontowave-menu-options">
-              <span class="ontowave-menu-option" onclick="window.OntoWave.instance.loadPage('${this.config.defaultPage}')">🏠 ${this.t('menuHome')}</span>
+              <span class="ontowave-menu-option" onclick="window.OntoWave.instance.loadPage('${this.config.defaultPage}')">🏠 ${this.t('menuHome', locale)}</span>
               ${galleryOption}
-              <span class="ontowave-menu-option" onclick="event.stopPropagation(); window.OntoWave.instance.toggleConfigurationPanel();">⚙️ ${this.t('menuConfiguration')}</span>
+              <span class="ontowave-menu-option" onclick="event.stopPropagation(); window.OntoWave.instance.toggleConfigurationPanel(event, '${locale || this.getCurrentLanguage()}');">⚙️ ${this.t('menuConfiguration', locale)}</span>
             </div>
           </div>
         </div>
@@ -1824,11 +1850,14 @@ ${configString}
     }
 
     // Panneau de configuration dans le menu flottant
-    toggleConfigurationPanel(event) {
+    toggleConfigurationPanel(event, locale = null) {
       if (event) {
         event.preventDefault();
         event.stopPropagation();
       }
+      
+      const targetLang = locale || this.getCurrentLanguage();
+      console.log('⚙️ Opening config panel with locale:', targetLang);
       
       const menuContent = document.querySelector('.ontowave-menu-content');
       if (!menuContent) {
@@ -1876,38 +1905,38 @@ ${configString}
       configPanel.innerHTML = `
         <div class="config-panel-content">
           <div class="config-full-panel">
-            <h3>🌊 ${this.t('configTitle')}</h3>
+            <h3>🌊 ${this.t('configTitle', targetLang)}</h3>
             
             <!-- Section Général -->
             <div class="config-section">
-              <h4>📖 ${this.t('configGeneral')}</h4>
+              <h4>📖 ${this.t('configGeneral', targetLang)}</h4>
               <div class="config-row">
                 <div class="form-group-full">
-                  <label for="config-title-full">${this.t('configSiteTitle')}</label>
+                  <label for="config-title-full">${this.t('configSiteTitle', targetLang)}</label>
                   <input type="text" id="config-title-full" value="${this.config.title}" />
                 </div>
                 <div class="form-group-full">
-                  <label for="config-defaultPage-full">${this.t('configDefaultPage')}</label>
+                  <label for="config-defaultPage-full">${this.t('configDefaultPage', targetLang)}</label>
                   <input type="text" id="config-defaultPage-full" value="${this.config.defaultPage}" placeholder="index.md" />
                 </div>
               </div>
               <div class="form-group-full">
-                <label for="config-baseUrl-full">${this.t('configBaseUrl')}</label>
+                <label for="config-baseUrl-full">${this.t('configBaseUrl', targetLang)}</label>
                 <input type="text" id="config-baseUrl-full" value="${this.config.baseUrl}" placeholder="/" />
               </div>
             </div>
 
             <!-- Section Langues et Localisation -->
             <div class="config-section">
-              <h4>🌍 ${this.t('configLanguages')}</h4>
+              <h4>🌍 ${this.t('configLanguages', targetLang)}</h4>
               <div class="config-row">
                 <div class="form-group-full">
-                  <label for="config-locales-full">${this.t('configSupportedLanguages')}</label>
+                  <label for="config-locales-full">${this.t('configSupportedLanguages', targetLang)}</label>
                   <input type="text" id="config-locales-full" value="${this.config.locales.join(', ')}" placeholder="fr-CA, fr, en" />
-                  <small>${this.t('configLanguageNote')}</small>
+                  <small>${this.t('configLanguageNote', targetLang)}</small>
                 </div>
                 <div class="form-group-full">
-                  <label for="config-fallbackLocale-full">${this.t('configFallbackLanguage')}</label>
+                  <label for="config-fallbackLocale-full">${this.t('configFallbackLanguage', targetLang)}</label>
                   <select id="config-fallbackLocale-full">
                     <option value="en" ${this.config.fallbackLocale === 'en' ? 'selected' : ''}>English (en)</option>
                     <option value="fr" ${this.config.fallbackLocale === 'fr' ? 'selected' : ''}>Français (fr)</option>
@@ -1920,18 +1949,18 @@ ${configString}
 
             <!-- Section Navigation et Interface -->
             <div class="config-section">
-              <h4>🧭 ${this.t('configNavigation')}</h4>
+              <h4>🧭 ${this.t('configNavigation', targetLang)}</h4>
               <div class="config-row">
                 <div class="form-group-checkbox">
                   <label>
                     <input type="checkbox" id="config-showGallery-full" ${this.config.showGallery ? 'checked' : ''} />
-                    🎨 ${this.t('configShowGallery')}
+                    🎨 ${this.t('configShowGallery', targetLang)}
                   </label>
                 </div>
                 <div class="form-group-checkbox">
                   <label>
                     <input type="checkbox" id="config-navHome-full" ${this.config.navigation?.showHome !== false ? 'checked' : ''} />
-                    🏠 ${this.t('configHomeButton')}
+                    🏠 ${this.t('configHomeButton', targetLang)}
                   </label>
                 </div>
               </div>
@@ -1939,13 +1968,13 @@ ${configString}
                 <div class="form-group-checkbox">
                   <label>
                     <input type="checkbox" id="config-navBreadcrumb-full" ${this.config.navigation?.showBreadcrumb !== false ? 'checked' : ''} />
-                    📍 ${this.t('configBreadcrumb')}
+                    📍 ${this.t('configBreadcrumb', targetLang)}
                   </label>
                 </div>
                 <div class="form-group-checkbox">
                   <label>
                     <input type="checkbox" id="config-navToc-full" ${this.config.navigation?.showToc !== false ? 'checked' : ''} />
-                    📑 ${this.t('configToc')}
+                    📑 ${this.t('configToc', targetLang)}
                   </label>
                 </div>
               </div>
@@ -1953,10 +1982,10 @@ ${configString}
 
             <!-- Section Diagrammes Mermaid -->
             <div class="config-section">
-              <h4>📊 ${this.t('configMermaid')}</h4>
+              <h4>📊 ${this.t('configMermaid', targetLang)}</h4>
               <div class="config-row">
                 <div class="form-group-full">
-                  <label for="config-mermaidTheme-full">${this.t('configMermaidTheme')}</label>
+                  <label for="config-mermaidTheme-full">${this.t('configMermaidTheme', targetLang)}</label>
                   <select id="config-mermaidTheme-full">
                     <option value="default" ${this.config.mermaid?.theme === 'default' ? 'selected' : ''}>Default (clair)</option>
                     <option value="dark" ${this.config.mermaid?.theme === 'dark' ? 'selected' : ''}>Dark (sombre)</option>
@@ -1967,7 +1996,7 @@ ${configString}
                 <div class="form-group-checkbox">
                   <label>
                     <input type="checkbox" id="config-mermaidStart-full" ${this.config.mermaid?.startOnLoad !== false ? 'checked' : ''} />
-                    🚀 ${this.t('configMermaidAuto')}
+                    🚀 ${this.t('configMermaidAuto', targetLang)}
                   </label>
                 </div>
               </div>
@@ -1975,7 +2004,7 @@ ${configString}
                 <div class="form-group-checkbox">
                   <label>
                     <input type="checkbox" id="config-mermaidMaxWidth-full" ${this.config.mermaid?.flowchart?.useMaxWidth !== false ? 'checked' : ''} />
-                    📐 ${this.t('configMermaidMaxWidth')}
+                    📐 ${this.t('configMermaidMaxWidth', targetLang)}
                   </label>
                 </div>
               </div>
@@ -1983,14 +2012,14 @@ ${configString}
 
             <!-- Section PlantUML -->
             <div class="config-section">
-              <h4>🌿 ${this.t('configPlantuml')}</h4>
+              <h4>🌿 ${this.t('configPlantuml', targetLang)}</h4>
               <div class="config-row">
                 <div class="form-group-full">
-                  <label for="config-plantumlServer-full">${this.t('configPlantumlServer')}</label>
+                  <label for="config-plantumlServer-full">${this.t('configPlantumlServer', targetLang)}</label>
                   <input type="text" id="config-plantumlServer-full" value="${this.config.plantuml?.server || 'https://www.plantuml.com/plantuml'}" />
                 </div>
                 <div class="form-group-full">
-                  <label for="config-plantumlFormat-full">${this.t('configPlantumlFormat')}</label>
+                  <label for="config-plantumlFormat-full">${this.t('configPlantumlFormat', targetLang)}</label>
                   <select id="config-plantumlFormat-full">
                     <option value="svg" ${this.config.plantuml?.format === 'svg' ? 'selected' : ''}>SVG (vectoriel)</option>
                     <option value="png" ${this.config.plantuml?.format === 'png' ? 'selected' : ''}>PNG (bitmap)</option>
@@ -2001,10 +2030,10 @@ ${configString}
 
             <!-- Section Coloration Syntaxique -->
             <div class="config-section">
-              <h4>🎨 ${this.t('configPrism')}</h4>
+              <h4>🎨 ${this.t('configPrism', targetLang)}</h4>
               <div class="config-row">
                 <div class="form-group-full">
-                  <label for="config-prismTheme-full">${this.t('configPrismTheme')}</label>
+                  <label for="config-prismTheme-full">${this.t('configPrismTheme', targetLang)}</label>
                   <select id="config-prismTheme-full">
                     <option value="default" ${this.config.prism?.theme === 'default' ? 'selected' : ''}>Default (clair)</option>
                     <option value="dark" ${this.config.prism?.theme === 'dark' ? 'selected' : ''}>Dark (sombre)</option>
@@ -2014,7 +2043,7 @@ ${configString}
                 <div class="form-group-checkbox">
                   <label>
                     <input type="checkbox" id="config-prismAutoload-full" ${this.config.prism?.autoload !== false ? 'checked' : ''} />
-                    🔄 ${this.t('configPrismAutoload')}
+                    🔄 ${this.t('configPrismAutoload', targetLang)}
                   </label>
                 </div>
               </div>
@@ -2022,10 +2051,10 @@ ${configString}
 
             <!-- Section Interface Utilisateur -->
             <div class="config-section">
-              <h4>💻 ${this.t('configUI')}</h4>
+              <h4>💻 ${this.t('configUI', targetLang)}</h4>
               <div class="config-row">
                 <div class="form-group-full">
-                  <label for="config-uiTheme-full">${this.t('configUITheme')}</label>
+                  <label for="config-uiTheme-full">${this.t('configUITheme', targetLang)}</label>
                   <select id="config-uiTheme-full">
                     <option value="default" ${this.config.ui?.theme === 'default' ? 'selected' : ''}>Default (clair)</option>
                     <option value="dark" ${this.config.ui?.theme === 'dark' ? 'selected' : ''}>Dark (sombre)</option>
@@ -2035,7 +2064,7 @@ ${configString}
                 <div class="form-group-checkbox">
                   <label>
                     <input type="checkbox" id="config-uiResponsive-full" ${this.config.ui?.responsive !== false ? 'checked' : ''} />
-                    📱 ${this.t('configUIResponsive')}
+                    📱 ${this.t('configUIResponsive', targetLang)}
                   </label>
                 </div>
               </div>
@@ -2043,7 +2072,7 @@ ${configString}
                 <div class="form-group-checkbox">
                   <label>
                     <input type="checkbox" id="config-uiAnimations-full" ${this.config.ui?.animations !== false ? 'checked' : ''} />
-                    ✨ ${this.t('configUIAnimations')}
+                    ✨ ${this.t('configUIAnimations', targetLang)}
                   </label>
                 </div>
               </div>
@@ -2051,10 +2080,10 @@ ${configString}
 
             <!-- Actions -->
             <div class="form-actions-full">
-              <button onclick="window.OntoWave.instance.updateConfigFromFullPanel()" class="btn-primary">✅ ${this.t('configApply')}</button>
-              <button onclick="window.OntoWave.instance.downloadConfigFromPanel()" class="btn-secondary">💾 ${this.t('configDownloadHTML')}</button>
-              <button onclick="window.OntoWave.instance.downloadOntoWaveScript()" class="btn-secondary">📥 ${this.t('configDownloadJS')}</button>
-              <button onclick="window.OntoWave.instance.resetConfigToDefaults()" class="btn-warning">🔄 ${this.t('configReset')}</button>
+              <button onclick="window.OntoWave.instance.updateConfigFromFullPanel()" class="btn-primary">✅ ${this.t('configApply', targetLang)}</button>
+              <button onclick="window.OntoWave.instance.downloadConfigFromPanel()" class="btn-secondary">💾 ${this.t('configDownloadHTML', targetLang)}</button>
+              <button onclick="window.OntoWave.instance.downloadOntoWaveScript()" class="btn-secondary">📥 ${this.t('configDownloadJS', targetLang)}</button>
+              <button onclick="window.OntoWave.instance.resetConfigToDefaults()" class="btn-warning">🔄 ${this.t('configReset', targetLang)}</button>
             </div>
           </div>
         </div>
@@ -2657,9 +2686,25 @@ ${configString}
     }
   }
 
+  // Fonction pour charger la configuration depuis config.json
+  async function loadConfigFromFile() {
+    try {
+      const response = await fetch('./config.json');
+      if (response.ok) {
+        const config = await response.json();
+        console.log('📁 Configuration chargée depuis config.json:', config);
+        return config;
+      }
+    } catch (error) {
+      console.log('📁 Pas de config.json trouvé, utilisation de la configuration par défaut');
+    }
+    return {};
+  }
+
   // Initialisation automatique au chargement de la page
-  document.addEventListener('DOMContentLoaded', () => {
-    window.OntoWave = { instance: new OntoWave() };
+  document.addEventListener('DOMContentLoaded', async () => {
+    const config = await loadConfigFromFile();
+    window.OntoWave = { instance: new OntoWave(config) };
     window.OntoWave.instance.init();
   });
 

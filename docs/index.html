@@ -220,16 +220,16 @@
         
         // D'abord appeler la méthode native OntoWave si disponible
         if (window.OntoWave && window.OntoWave.instance && window.OntoWave.instance.updateInterfaceTexts) {
-            console.log('🔄 Appel updateInterfaceTexts() OntoWave');
-            window.OntoWave.instance.updateInterfaceTexts();
+            console.log('🔄 Appel updateInterfaceTexts() OntoWave avec locale:', lang);
+            window.OntoWave.instance.updateInterfaceTexts(lang);
             return; // La méthode OntoWave gère tout
         }
         
         // Retry avec délai si OntoWave n'est pas encore prêt
         setTimeout(() => {
             if (window.OntoWave && window.OntoWave.instance && window.OntoWave.instance.updateInterfaceTexts) {
-                console.log('🔄 Appel différé updateInterfaceTexts() OntoWave');
-                window.OntoWave.instance.updateInterfaceTexts();
+                console.log('🔄 Appel différé updateInterfaceTexts() OntoWave avec locale:', lang);
+                window.OntoWave.instance.updateInterfaceTexts(lang);
                 return;
             }
             console.log('⚠️ OntoWave.updateInterfaceTexts() non disponible, utilisation du fallback');
