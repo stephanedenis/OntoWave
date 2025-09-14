@@ -538,14 +538,18 @@
       this.mermaidLoaded = false;
       this.prismLoaded = false;
       this.currentPage = null;
-      
-      console.log('🌊 OntoWave initialized with config:', this.config);
+      this.currentLanguage = null; // Langue courante stockée
     }
 
     /**
      * Détecte la langue actuelle de l'interface
      */
     getCurrentLanguage() {
+      // Si une langue a été explicitement définie, l'utiliser
+      if (this.currentLanguage) {
+        return this.currentLanguage;
+      }
+      
       // Vérifier s'il y a une langue sélectionnée dans l'interface
       const langFr = document.getElementById('lang-fr');
       const langEn = document.getElementById('lang-en');
@@ -592,7 +596,7 @@
       console.log('🌐 Interface texts updating for language:', targetLang);
       
       // Mettre à jour les textes du menu
-      const homeOption = document.querySelector('.ontowave-menu-option[onclick*="loadPage"]');
+      const homeOption = document.querySelector('.ontowave-menu-option[onclick*="goHome"]');
       if (homeOption) {
         homeOption.innerHTML = `🏠 ${this.t('menuHome', targetLang)}`;
       }
@@ -646,7 +650,8 @@
      * Change la langue de l'interface et recharge le contenu approprié
      */
     switchLanguage(targetLang) {
-      console.log('🌐 Switching to language:', targetLang);
+      // Stocker la langue courante
+      this.currentLanguage = targetLang;
       
       // Mettre à jour les boutons de langue
       document.querySelectorAll('.ontowave-lang-btn').forEach(btn => {
@@ -664,9 +669,18 @@
       const targetPage = sources[targetLang] || this.config.defaultPage;
       
       if (targetPage) {
-        console.log('🌐 Loading page for language:', targetLang, '->', targetPage);
         this.loadPage(targetPage);
       }
+    }
+
+    /**
+     * Charge la page d'accueil dans la langue courante
+     */
+    goHome() {
+      const currentLang = this.getCurrentLanguage();
+      const sources = this.config.sources || {};
+      const homePage = sources[currentLang] || this.config.defaultPage;
+      this.loadPage(homePage);
     }
 
     /**
@@ -785,6 +799,9 @@
         
         // Créer l'interface
         this.createInterface();
+        
+        // Initialiser la langue courante
+        this.currentLanguage = this.resolveLocale();
         
         // Initialiser la navigation
         this.initializeNavigation();
@@ -953,7 +970,7 @@
           <div class="ontowave-menu-content" id="ontowave-menu-content">
             <a href="https://ontowave.org/" target="_blank" class="ontowave-menu-brand">OntoWave<span class="org-suffix">.org</span></a>
             <div class="ontowave-menu-options">
-              <span class="ontowave-menu-option" onclick="window.OntoWave.instance.loadPage('${this.config.defaultPage}')">🏠 ${this.t('menuHome', locale)}</span>
+              <span class="ontowave-menu-option" onclick="window.OntoWave.instance.goHome()">🏠 ${this.t('menuHome', locale)}</span>
               ${galleryOption}
               ${languageButtons}
               <span class="ontowave-menu-option" onclick="event.stopPropagation(); window.OntoWave.instance.toggleConfigurationPanel(event, '${locale || this.getCurrentLanguage()}');">⚙️ ${this.t('menuConfiguration', locale)}</span>
@@ -2766,9 +2783,19 @@ ${configString}
 
   // Initialisation automatique au chargement de la page
   document.addEventListener('DOMContentLoaded', async () => {
-    const config = await loadConfigFromFile();
+    // Utiliser window.OntoWaveConfig si disponible, sinon charger depuis config.json
+    let config = window.OntoWaveConfig || {};
+    if (!window.OntoWaveConfig) {
+      config = await loadConfigFromFile();
+    } else {
+      // Merger avec config.json si les deux existent
+      const fileConfig = await loadConfigFromFile();
+      config = { ...fileConfig, ...window.OntoWaveConfig };
+    }
+    
     window.OntoWave = { instance: new OntoWave(config) };
-    window.OntoWave.instance.init();
+    await window.OntoWave.instance.init();
+    console.log('🌊 OntoWave initialisé automatiquement');
   });
 
   // Export pour utilisation manuelle si nécessaire

@@ -17,15 +17,6 @@
             },
             title: 'OntoWave - Documentation'
         };
-        
-        // Initialiser OntoWave quand il est chargé
-        window.addEventListener('DOMContentLoaded', function() {
-            if (window.OntoWave) {
-                OntoWave.instance = new OntoWave(window.OntoWaveConfig);
-                OntoWave.instance.init();
-                console.log('🌊 OntoWave initialisé avec config personnalisée');
-            }
-        });
     </script>
 
     <script src="ontowave.min.js"></script>
