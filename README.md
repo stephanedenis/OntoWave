@@ -1,68 +1,117 @@
-# 🚀 OntoWave - Package de Documentation Interactive
+# 🌊 OntoWave - Interactive Documentation Framework
 
-**OntoWave** transforme votre documentation en site interactif avec un seul include !
+**OntoWave** is a powerful, zero-config framework that transforms your static documentation into an interactive website with just one script include!
 
-## ⚡ Installation Ultra-Simple
+🌐 **Visit**: [ontowave.org](https://ontowave.org) for complete documentation and live examples.
 
-### Via CDN (Recommandé)
+## ⚡ Quick Start
+
+### CDN Integration (Recommended)
 
 ```html
 <!DOCTYPE html>
 <html>
-<head><title>Ma Docs</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>My Documentation</title>
+</head>
 <body>
-    <!-- Un seul include suffit ! -->
+    <!-- Single include - that's it! -->
     <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
 </body>
 </html>
 ```
 
-### Via NPM
+### NPM Installation
 
 ```bash
 npm install ontowave
 ```
 
-## 🎯 Fonctionnalités
+```javascript
+import 'ontowave';
+// OntoWave automatically initializes
+```
 
-- ✅ **Zero Config** - Fonctionne immédiatement
-- ✅ **Un seul include** - Pas de dépendances externes
-- ✅ **Mermaid intégré** - Diagrammes automatiques
-- ✅ **PlantUML support** - Via serveur public
-- ✅ **Navigation hash** - URLs partageables
-- ✅ **Responsive design** - Mobile-friendly
-- ✅ **Configuration JSON** - Optionnelle et flexible
+## ✨ Key Features
 
-## 📝 Configuration Optionnelle
+- 🚀 **Zero Configuration** - Works out of the box
+- 🌍 **Multilingual Support** - Built-in French/English interface
+- 🎨 **Syntax Highlighting** - Prism.js integration
+- 📊 **Mermaid Diagrams** - Automatic diagram rendering
+- 📱 **Responsive Design** - Mobile-optimized interface
+- 🔍 **Smart Navigation** - Hash-based routing
+- ⚙️ **Configurable** - Optional JSON configuration
+- 📦 **Self-contained** - No external dependencies
+
+## � Configuration (Optional)
+
+OntoWave works without configuration, but you can customize it:
 
 ```html
-<script type="application/json" id="ontowave-config">
-{
-    "title": "Ma Documentation",
-    "defaultPage": "index.md",
-    "mermaid": { "theme": "default" }
-}
+<script>
+window.OntoWaveConfig = {
+    locales: ['en', 'fr'],
+    theme: 'auto',
+    prism: { theme: 'tomorrow' },
+    mermaid: { theme: 'default' }
+};
 </script>
 <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
 ```
 
 ## 🎨 Support Diagrammes
 
-### Mermaid
-```markdown
-```mermaid
+## 📊 Diagram Support
+
+### Mermaid Diagrams
+````mermaid
 graph TD
-    A --> B
-```
+    A[Start] --> B[Process]
+    B --> C[End]
+````
+
+### Code Highlighting
+```javascript
+// Automatic syntax highlighting with Prism.js
+const config = {
+    locales: ['en', 'fr'],
+    theme: 'auto'
+};
 ```
 
-### PlantUML
-```markdown
-```plantuml
-@startuml
-Alice -> Bob
-@enduml
-```
+## 📦 Package Size
+
+- **66KB minified** - Complete framework
+- **18KB gzipped** - Optimized delivery
+- **Zero dependencies** - Self-contained
+
+## 🔗 Learn More
+
+- 📖 **Complete Documentation**: [ontowave.org](https://ontowave.org)
+- 🚀 **Live Examples**: Visit the website for interactive demos
+- 🐛 **Issues & Support**: [GitHub Issues](https://github.com/stephanedenis/OntoWave/issues)
+- 📦 **NPM Package**: [npmjs.com/package/ontowave](https://www.npmjs.com/package/ontowave)
+
+## 🌍 Multilingual Support
+
+OntoWave includes built-in support for multilingual documentation:
+
+- **English/French interface** out of the box
+- **Language switching** with preserved state
+- **Configurable locales** via `OntoWaveConfig`
+
+## 🤝 Contributing
+
+We welcome contributions! Please visit [ontowave.org](https://ontowave.org) for development guidelines and contribution instructions.
+
+---
+
+## 📄 License
+
+Released under CC BY-NC-SA License - see [ontowave.org](https://ontowave.org) for details.
+
+**Created by Stéphane Denis** - Making documentation interactive and beautiful! 🌊
 ```
 
 ## 📦 Taille
@@ -98,9 +147,11 @@ npm run preview
 
 - `dist/ontowave.js`: Package distributable principal
 - `dist/ontowave.min.js`: Version minifiée pour production
-- `example-*.html`: Exemples d'utilisation du package
-- `src/`: Code source de l'application Vite complète
-- `content/`: Fichiers Markdown d'exemple
+## 📄 License
+
+Released under CC BY-NC-SA License - see [ontowave.org](https://ontowave.org) for details.
+
+**Created by Stéphane Denis** - Making documentation interactive and beautiful! 🌊
 
 ### Intégration submodules
 

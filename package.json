@@ -1,7 +1,7 @@
 {
   "name": "ontowave",
   "version": "1.0.1-0",
-  "description": "OntoWave - Documentation Interactive Package for easy HTML integration",
+  "description": "OntoWave - Interactive Documentation Framework for Static Sites with Multilingual Support and Syntax Highlighting",
   "main": "dist/ontowave.js",
   "unpkg": "dist/ontowave.min.js",
   "jsdelivr": "dist/ontowave.min.js",
@@ -13,21 +13,25 @@
   ],
   "keywords": [
     "documentation",
+    "interactive",
+    "multilingual",
     "markdown",
     "mermaid",
-    "plantuml",
-    "interactive",
+    "prism",
+    "syntax-highlighting",
+    "static-site",
     "spa",
+    "framework",
     "cdn",
     "browser"
   ],
   "author": "Stéphane Denis",
-  "license": "MIT",
+  "license": "CC-BY-NC-SA-4.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/stephanedenis/OntoWave.git"
   },
-  "homepage": "https://github.com/stephanedenis/OntoWave",
+  "homepage": "https://ontowave.org",
   "bugs": {
     "url": "https://github.com/stephanedenis/OntoWave/issues"
   },
