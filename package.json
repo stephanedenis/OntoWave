@@ -1,6 +1,6 @@
 {
   "name": "ontowave",
-  "version": "1.0.0",
+  "version": "1.0.1-0",
   "description": "OntoWave - Documentation Interactive Package for easy HTML integration",
   "main": "dist/ontowave.js",
   "unpkg": "dist/ontowave.min.js",
