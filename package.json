@@ -25,7 +25,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/stephanedenis/OntoWave.git"
+    "url": "git+https://github.com/stephanedenis/OntoWave.git"
   },
   "homepage": "https://github.com/stephanedenis/OntoWave",
   "bugs": {
@@ -58,6 +58,8 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
     "release": "standard-version",
+    "publish:npm": "./scripts/publish.sh",
+    "prepublishOnly": "npm run build:package",
     "prepare": "npm run build:package"
   },
   "dependencies": {
