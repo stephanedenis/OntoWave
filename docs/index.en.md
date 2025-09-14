@@ -37,17 +37,56 @@ Explore our different configurations:
 - **[Advanced configuration](demo/advanced.html)** - With complete multilingual system  
 - **[Full configuration](demo/full-config.html)** - All features enabled
 
-### 🏗️ File structure
+### 🏗️ OntoWave Architecture
 
-```
+```plantuml
 @startuml
 !theme plain
 skinparam backgroundColor transparent
-skinparam defaultFontSize 12
 
-folder "📁 docs/" {
-  file "📄 index.html" as index
-  file "📄 index.fr.md" as fr
+[Website] --> [OntoWave] : loads ontowave.min.js
+[OntoWave] --> [Interface] : creates floating menu
+[OntoWave] --> [Markdown] : processes .md files
+[OntoWave] --> [Prism] : syntax highlighting
+[OntoWave] --> [Mermaid] : generates diagrams
+
+note right of [OntoWave]
+  🌊 18KB all included
+  🌐 Multilingual FR/EN
+  📱 Responsive interface
+end note
+@enduml
+```
+
+### 📊 Supported diagrams
+
+OntoWave natively integrates **Mermaid** and **PlantUML** for your diagrams:
+
+**Mermaid:**
+```mermaid
+graph LR
+    A[User] --> B[OntoWave]
+    B --> C[Interface]
+    B --> D[Diagrams]
+    C --> E[Menu 🌊]
+    D --> F[Mermaid]
+    D --> G[PlantUML]
+```
+
+**PlantUML:**
+```plantuml
+@startuml
+participant User
+participant OntoWave
+participant "PlantUML Server"
+
+User -> OntoWave : Loads page
+OntoWave -> OntoWave : Detects diagrams
+OntoWave -> "PlantUML Server" : Generates image
+"PlantUML Server" --> OntoWave : Returns diagram
+OntoWave --> User : Displays complete page
+@enduml
+```
   file "📄 index.en.md" as en
   file "📄 ontowave.min.js" as js
   file "📄 config.json" as config
