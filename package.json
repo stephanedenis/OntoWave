@@ -1,6 +1,6 @@
 {
   "name": "ontowave",
-  "version": "1.0.1-0",
+  "version": "1.0.1-1",
   "description": "OntoWave - Interactive Documentation Framework for Static Sites with Multilingual Support and Syntax Highlighting",
   "main": "dist/ontowave.js",
   "unpkg": "dist/ontowave.min.js",
