@@ -13,7 +13,7 @@ OntoWave is a lightweight JavaScript diagram generator (18KB) designed for stati
 - **📦 Lightweight**: Only 18KB minified
 - **🚀 Ready to use**: One-line integration
 
-### 🎯 Usage
+### 🎯 Usage (HTML)
 
 ```html
 <!DOCTYPE html>
@@ -27,7 +27,18 @@ OntoWave is a lightweight JavaScript diagram generator (18KB) designed for stati
 </html>
 ```
 
-That's it! OntoWave loads automatically and displays its interface.
+**That's it!** OntoWave loads automatically and displays its **floating menu** with the 🌊 icon at the bottom right of the page.
+
+#### 🌊 Floating menu and configuration panel
+
+- **Click the 🌊 icon** to access the OntoWave menu
+- **Integrated configuration panel** with advanced options
+- **Direct download** of the `ontowave.min.js` file
+- **Complete HTML export** with your custom configuration
+- **Multilingual interface** (FR/EN) with language buttons
+- **Dynamic construction** of your optimized HTML page
+
+This is also where you can download the `ontowave.min.js` file and dynamically build your complete HTML page.
 
 ### 📊 Demos and examples
 
@@ -58,120 +69,10 @@ end note
 @enduml
 ```
 
-### 📊 Supported diagrams
-
-OntoWave natively integrates **Mermaid** and **PlantUML** for your diagrams:
-
-**Mermaid:**
-```mermaid
-graph LR
-    A[User] --> B[OntoWave]
-    B --> C[Interface]
-    B --> D[Diagrams]
-    C --> E[Menu 🌊]
-    D --> F[Mermaid]
-    D --> G[PlantUML]
-```
-
-**PlantUML:**
-```plantuml
-@startuml
-participant User
-participant OntoWave
-participant "PlantUML Server"
-
-User -> OntoWave : Loads page
-OntoWave -> OntoWave : Detects diagrams
-OntoWave -> "PlantUML Server" : Generates image
-"PlantUML Server" --> OntoWave : Returns diagram
-OntoWave --> User : Displays complete page
-@enduml
-```
-  file "📄 index.en.md" as en
-  file "📄 ontowave.min.js" as js
-  file "📄 config.json" as config
-  
-  folder "📁 demo/" {
-    file "📄 minimal.html" as minimal
-    file "📄 advanced.html" as advanced  
-    file "📄 full-config.html" as full
-  }
-}
-
-index --> js : loads
-index --> fr : content FR
-index --> en : content EN
-js --> config : configuration
-
-demo --> js : examples
-@enduml
-```
-
-### 🛠️ Configuration
-
-The `config.json` file allows you to customize OntoWave:
-
-```json
-{
-  "locales": ["fr", "en"],
-  "defaultLocale": "fr",
-  "sources": {
-    "fr": "index.fr.md",
-    "en": "index.en.md"
-  }
-}
-```
-
-### 📥 Download
-
-Get OntoWave from the configuration panel:
-
-1. Click on the 🌊 icon at bottom right
-2. Select "Configuration"  
-3. Use the download options
-
-### 🎨 Customization
-
-OntoWave automatically adapts to your site's style. For advanced customization, check the examples in the `demo/` folder.
-
-### 📜 License
-
-Creative Commons Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)
-
-*Created by Stéphane Denis* • [Source code on GitHub](https://github.com/stephanedenis/OntoWave)
-
----
-
-*OntoWave transforms your static sites into interactive documentation in seconds!*
-- **[PlantUML](https://plantuml.com/) diagrams** - UML diagrams via official server
-- **Smart navigation** - Anchor preservation and smooth navigation
-- **Modern interface** - Responsive and clean design
-- **Ultra-lightweight** - Only 19KB, no dependencies
-- **One-line installation** - Single script to include
-
-### Usage
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>My Documentation</title>
-</head>
-<body>
-    <script src="ontowave.min.js"></script>
-</body>
-</html>
-```
-
-*Click on the 🌊 OntoWave icon in the top left corner to open the configuration panel and discover all available options. This is also where you can download the `ontowave.min.js` file and dynamically build your complete HTML page.*
-
-### License
+###  License
 
 ![CC BY-NC-SA](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png) **Stéphane Denis**
 
-OntoWave is published under the **CC BY-NC-SA 4.0** license (Creative Commons Attribution-NonCommercial-ShareAlike).
-
-This software is provided "as is", without warranty of any kind, express or implied. In no event shall the authors be liable for any claims, damages or other liability.
+OntoWave is released under **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike) license.
 
 **Source code:** [GitHub - OntoWave](https://github.com/stephanedenis/OntoWave)
