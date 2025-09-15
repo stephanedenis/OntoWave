@@ -1,6 +1,6 @@
 # OntoWave - Générateur de diagrammes pour sites statiques
 
-## 🌊 Micro-application pour sites statiques
+## Micro-application pour sites statiques
 
 OntoWave est un générateur de diagrammes JavaScript léger (18KB) conçu pour les sites statiques. Il permet d'ajouter facilement un système de documentation interactive avec menu flottant et interface multilingue.
 
@@ -29,7 +29,7 @@ OntoWave est un générateur de diagrammes JavaScript léger (18KB) conçu pour 
 
 C'est tout ! OntoWave se charge automatiquement et affiche son interface.
 
-### 📊 Diagrammes supportés
+### Diagrammes supportés
 
 OntoWave intègre nativement **Mermaid** et **PlantUML** pour vos diagrammes :
 
@@ -59,7 +59,7 @@ OntoWave --> Utilisateur : Affiche page complète
 @enduml
 ```
 
-### 📊 Démos et exemples
+### Démos et exemples
 
 Explorez nos différentes configurations :
 
@@ -67,7 +67,7 @@ Explorez nos différentes configurations :
 - **[Configuration avancée](demo/advanced.html)** - Avec système multilingue complet  
 - **[Configuration complète](demo/full-config.html)** - Toutes les fonctionnalités activées
 
-### 🏗️ Architecture OntoWave
+### Architecture OntoWave
 
 ```plantuml
 @startuml
@@ -82,8 +82,8 @@ skinparam backgroundColor transparent
 
 note right of [OntoWave]
   🌊 18KB tout inclus
-  🌐 Multilingue FR/EN
-  📱 Interface responsive
+  Multilingue FR/EN
+  Interface responsive
 end note
 @enduml
 ```

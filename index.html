@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave - Générateur de diagrammes pour sites statiques</title>
+</head>
+<body>
+    <script>
+        // Configuration personnalisée pour OntoWave
+        window.OntoWaveConfig = {
+            locales: ['fr', 'en'],
+            defaultLocale: 'fr',  // Forcer le français par défaut
+            sources: {
+                'fr': 'docs/index.fr.md',
+                'en': 'docs/index.en.md'
+            },
+            title: 'OntoWave - Documentation'
+        };
+    </script>
+
+    <!-- OntoWave depuis CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/ontowave@1.0.1-1/dist/ontowave.min.js"></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # OntoWave - Diagram generator for static sites
 
-## 🌊 Micro-application for static sites
+## Micro-application for static sites
 
 OntoWave is a lightweight JavaScript diagram generator (18KB) designed for static sites. It makes it easy to add an interactive documentation system with floating menu and multilingual interface.
 
@@ -29,7 +29,7 @@ OntoWave is a lightweight JavaScript diagram generator (18KB) designed for stati
 
 That's it! OntoWave loads automatically and displays its interface.
 
-### 📊 Demos and examples
+### Demos and examples
 
 Explore our different configurations:
 
@@ -37,7 +37,7 @@ Explore our different configurations:
 - **[Advanced configuration](demo/advanced.html)** - With complete multilingual system  
 - **[Full configuration](demo/full-config.html)** - All features enabled
 
-### 🏗️ OntoWave Architecture
+### OntoWave Architecture
 
 ```plantuml
 @startuml
@@ -52,13 +52,13 @@ skinparam backgroundColor transparent
 
 note right of [OntoWave]
   🌊 18KB all included
-  🌐 Multilingual FR/EN
-  📱 Responsive interface
+  Multilingual FR/EN
+  Responsive interface
 end note
 @enduml
 ```
 
-### 📊 Supported diagrams
+### Supported diagrams
 
 OntoWave natively integrates **Mermaid** and **PlantUML** for your diagrams:
 
@@ -87,14 +87,14 @@ OntoWave -> "PlantUML Server" : Generates image
 OntoWave --> User : Displays complete page
 @enduml
 ```
-  file "📄 index.en.md" as en
-  file "📄 ontowave.min.js" as js
-  file "📄 config.json" as config
+  file "index.en.md" as en
+  file "ontowave.min.js" as js
+  file "config.json" as config
   
-  folder "📁 demo/" {
-    file "📄 minimal.html" as minimal
-    file "📄 advanced.html" as advanced  
-    file "📄 full-config.html" as full
+  folder "demo/" {
+    file "minimal.html" as minimal
+    file "advanced.html" as advanced  
+    file "full-config.html" as full
   }
 }
 
