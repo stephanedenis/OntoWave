@@ -8,5 +8,25 @@
 <body>
     <!-- OntoWave depuis fichier local -->
     <script src="ontowave.min.js"></script>
+    <script>
+        // Configuration OntoWave inline
+        window.ontoWaveConfig = {
+            locales: ["fr", "en"],
+            defaultLocale: "fr",
+            sources: {
+                fr: "index.fr.md",
+                en: "index.en.md"
+            },
+            enablePrism: true,
+            enableMermaid: true,
+            enablePlantUML: true,
+            enableSearch: true
+        };
+        
+        // Redirection automatique vers le contenu français si pas de hash
+        if (!window.location.hash) {
+            window.location.hash = '#index.fr.md';
+        }
+    </script>
 </body>
 </html>

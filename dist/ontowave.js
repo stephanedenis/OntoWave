@@ -797,6 +797,9 @@
         // Charger Prism si nécessaire
         await this.loadPrism();
         
+        // Charger Pako pour PlantUML si nécessaire
+        await this.loadPako();
+        
         // Créer l'interface
         this.createInterface();
         
@@ -934,6 +937,28 @@
         };
         script.onerror = () => {
           console.warn('⚠️ Failed to load Prism library');
+          resolve();
+        };
+        document.head.appendChild(script);
+      });
+    }
+
+    async loadPako() {
+      return new Promise((resolve) => {
+        if (window.pako) {
+          console.log('📦 Pako already loaded');
+          return resolve();
+        }
+
+        console.log('📦 Loading Pako for PlantUML compression...');
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js';
+        script.onload = () => {
+          console.log('✅ Pako loaded successfully for PlantUML');
+          resolve();
+        };
+        script.onerror = () => {
+          console.warn('⚠️ Failed to load Pako library - PlantUML will use fallback encoding');
           resolve();
         };
         document.head.appendChild(script);
@@ -1313,9 +1338,31 @@
           
           // Fonction d'encodage PlantUML simplifiée
           function encodePlantUML(text) {
-            // Encodage base64 adapté pour PlantUML
-            const base64 = btoa(unescape(encodeURIComponent(text)));
-            // Remplacer les caractères pour PlantUML
+            // Implémentation de l'encodage PlantUML correct (DEFLATE + base64 + substitutions)
+            // Basé sur la spécification officielle PlantUML
+            
+            // Étape 1: Encoder en UTF-8
+            const utf8Bytes = new TextEncoder().encode(text);
+            
+            // Étape 2: Compression DEFLATE
+            // Pour une implémentation simple, on utilise pako si disponible, sinon base64 brut temporairement
+            let compressed;
+            if (typeof pako !== 'undefined') {
+              compressed = pako.deflate(utf8Bytes);
+            } else {
+              // Fallback: utiliser une compression simple pour les tests
+              // En production, il faudrait charger la bibliothèque pako
+              compressed = utf8Bytes; // Temporaire sans compression
+            }
+            
+            // Étape 3: Conversion en base64
+            let binary = '';
+            for (let i = 0; i < compressed.length; i++) {
+              binary += String.fromCharCode(compressed[i]);
+            }
+            const base64 = btoa(binary);
+            
+            // Étape 4: Substitutions de caractères spécifiques à PlantUML
             return base64
               .replace(/\+/g, '-')
               .replace(/\//g, '_')

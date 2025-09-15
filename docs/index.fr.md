@@ -111,12 +111,6 @@ Récupérez OntoWave depuis le panneau de configuration :
 2. Sélectionnez "Configuration"  
 3. Utilisez les options de téléchargement
 
-### Personnalisation
-
-OntoWave s'adapte automatiquement au style de votre site. Pour une personnalisation avancée, consultez les exemples dans le dossier `demo/`.
-
-### 📜 Licence
-
 ### 📜 Licence
 
 ![CC BY-NC-SA](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png) **Stéphane Denis**
