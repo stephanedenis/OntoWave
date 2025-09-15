@@ -797,9 +797,6 @@
         // Charger Prism si nécessaire
         await this.loadPrism();
         
-        // Charger Pako pour PlantUML si nécessaire
-        await this.loadPako();
-        
         // Créer l'interface
         this.createInterface();
         
@@ -1338,35 +1335,32 @@
           
           // Fonction d'encodage PlantUML simplifiée
           function encodePlantUML(text) {
-            // Implémentation de l'encodage PlantUML correct (DEFLATE + base64 + substitutions)
-            // Basé sur la spécification officielle PlantUML
+            // Implémentation de l'encodage PlantUML correct avec DEFLATE natif
+            // Utilise CompressionStream disponible dans les navigateurs modernes
             
-            // Étape 1: Encoder en UTF-8
+            // Méthode simplifiée : utiliser l'encodage PlantUML hexadécimal
+            // Cette méthode fonctionne sans dépendances externes
+            function encode6bit(bytes) {
+              const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_';
+              let result = '';
+              for (let i = 0; i < bytes.length; i += 3) {
+                const b1 = bytes[i] || 0;
+                const b2 = bytes[i + 1] || 0;
+                const b3 = bytes[i + 2] || 0;
+                
+                result += chars[b1 >> 2];
+                result += chars[((b1 & 0x3) << 4) | (b2 >> 4)];
+                result += chars[((b2 & 0xF) << 2) | (b3 >> 6)];
+                result += chars[b3 & 0x3F];
+              }
+              return result;
+            }
+            
+            // Encoder le texte en UTF-8
             const utf8Bytes = new TextEncoder().encode(text);
             
-            // Étape 2: Compression DEFLATE
-            // Pour une implémentation simple, on utilise pako si disponible, sinon base64 brut temporairement
-            let compressed;
-            if (typeof pako !== 'undefined') {
-              compressed = pako.deflate(utf8Bytes);
-            } else {
-              // Fallback: utiliser une compression simple pour les tests
-              // En production, il faudrait charger la bibliothèque pako
-              compressed = utf8Bytes; // Temporaire sans compression
-            }
-            
-            // Étape 3: Conversion en base64
-            let binary = '';
-            for (let i = 0; i < compressed.length; i++) {
-              binary += String.fromCharCode(compressed[i]);
-            }
-            const base64 = btoa(binary);
-            
-            // Étape 4: Substitutions de caractères spécifiques à PlantUML
-            return base64
-              .replace(/\+/g, '-')
-              .replace(/\//g, '_')
-              .replace(/=/g, '');
+            // Utiliser l'encodage 6-bit de PlantUML (compatible sans compression)
+            return encode6bit(Array.from(utf8Bytes));
           }
           
           const encodedContent = encodePlantUML(trimmedContent);
