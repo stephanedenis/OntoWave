@@ -4,16 +4,16 @@
 
 OntoWave est un générateur de diagrammes JavaScript léger (18KB) conçu pour les sites statiques. Il permet d'ajouter facilement un système de documentation interactive avec menu flottant et interface multilingue.
 
-### ✨ Fonctionnalités principales
+### Fonctionnalités principales
 
-- **🎯 Interface simple** : Menu flottant avec icône 🌊
-- **🌐 Multilingue** : Support français/anglais automatique  
-- **📱 Responsive** : Adaptation mobile et desktop
-- **⚙️ Configurable** : Panneau de configuration intégré
-- **📦 Léger** : Seulement 18KB minifié
-- **🚀 Prêt à l'emploi** : Integration en une ligne
+- **Interface simple** : Menu flottant avec icône 🌊
+- **Multilingue** : Support français/anglais automatique  
+- **Responsive** : Adaptation mobile et desktop
+- **Configurable** : Panneau de configuration intégré
+- **Léger** : Seulement 18KB minifié
+- **Prêt à l'emploi** : Integration en une ligne
 
-### 🎯 Utilisation (HTML)
+### Utilisation
 
 ```html
 <!DOCTYPE html>
@@ -27,18 +27,37 @@ OntoWave est un générateur de diagrammes JavaScript léger (18KB) conçu pour 
 </html>
 ```
 
-**C'est tout !** OntoWave se charge automatiquement et affiche son **menu flottant** avec l'icône 🌊 en bas à droite de la page.
+C'est tout ! OntoWave se charge automatiquement et affiche son interface.
 
-#### 🌊 Menu flottant et panneau de configuration
+### 📊 Diagrammes supportés
 
-- **Cliquez sur l'icône 🌊** pour accéder au menu OntoWave
-- **Panneau de configuration intégré** avec options avancées
-- **Téléchargement direct** du fichier `ontowave.min.js` 
-- **Export HTML complet** avec votre configuration personnalisée
-- **Interface multilingue** (FR/EN) avec boutons de langue
-- **Construction dynamique** de votre page HTML optimisée
+OntoWave intègre nativement **Mermaid** et **PlantUML** pour vos diagrammes :
 
-C'est également là que vous pouvez télécharger le fichier `ontowave.min.js` et construire dynamiquement votre page HTML complète.
+**Mermaid :**
+```mermaid
+graph LR
+    A[Utilisateur] --> B[OntoWave]
+    B --> C[Interface]
+    B --> D[Diagrammes]
+    C --> E[Menu 🌊]
+    D --> F[Mermaid]
+    D --> G[PlantUML]
+```
+
+**PlantUML :**
+```plantuml
+@startuml
+participant Utilisateur
+participant OntoWave
+participant "Serveur PlantUML"
+
+Utilisateur -> OntoWave : Charge la page
+OntoWave -> OntoWave : Détecte diagrammes
+OntoWave -> "Serveur PlantUML" : Génère image
+"Serveur PlantUML" --> OntoWave : Retourne diagramme
+OntoWave --> Utilisateur : Affiche page complète
+@enduml
+```
 
 ### 📊 Démos et exemples
 
@@ -69,10 +88,41 @@ end note
 @enduml
 ```
 
-###  Licence
+### Configuration
+
+Le fichier `config.json` permet de personnaliser OntoWave :
+
+```json
+{
+  "locales": ["fr", "en"],
+  "defaultLocale": "fr",
+  "sources": {
+    "fr": "index.fr.md",
+    "en": "index.en.md"
+  }
+}
+```
+
+### 📥 Téléchargement
+
+Récupérez OntoWave depuis le panneau de configuration :
+
+1. Cliquez sur l'icône 🌊 en bas à droite
+2. Sélectionnez "Configuration"  
+3. Utilisez les options de téléchargement
+
+### Personnalisation
+
+OntoWave s'adapte automatiquement au style de votre site. Pour une personnalisation avancée, consultez les exemples dans le dossier `demo/`.
+
+### 📜 Licence
+
+### 📜 Licence
 
 ![CC BY-NC-SA](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png) **Stéphane Denis**
 
 OntoWave est publié sous licence **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike).
+
+Ce logiciel est fourni "tel quel", sans garantie d'aucune sorte, expresse ou implicite. En aucun cas les auteurs ne seront responsables de réclamations, dommages ou autres responsabilités.
 
 **Code source :** [GitHub - OntoWave](https://github.com/stephanedenis/OntoWave)
