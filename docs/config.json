@@ -4,5 +4,8 @@
   "sources": {
     "fr": "index.fr.md",
     "en": "index.en.md"
-  }
+  },
+  "enablePrism": true,
+  "enableMermaid": true,
+  "enablePlantUML": true
 }
