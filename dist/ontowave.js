@@ -906,7 +906,7 @@
               resolve();
               
               // Charger les langages supplémentaires en arrière-plan
-              const additionalLanguages = ['python', 'java', 'bash', 'json', 'yaml', 'typescript', 'php'];
+              const additionalLanguages = ['python', 'java', 'bash', 'json', 'yaml', 'typescript'];
               additionalLanguages.forEach(lang => {
                 const langScript = document.createElement('script');
                 langScript.src = `https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-${lang}.min.js`;
