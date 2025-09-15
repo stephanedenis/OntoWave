@@ -1332,7 +1332,16 @@
         } else {
           const codeClass = this.prismLoaded ? `language-${language}` : '';
           console.log(`📝 Processing code block: language="${language}", prismLoaded=${this.prismLoaded}, class="${codeClass}"`);
-          codeBlocks.push(`<pre class="ontowave-code"><code class="${codeClass}">${trimmedContent}</code></pre>`);
+          
+          // Échapper le HTML pour que Prism puisse le colorer correctement
+          const escapedContent = trimmedContent
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+          
+          codeBlocks.push(`<pre class="ontowave-code"><code class="${codeClass}">${escapedContent}</code></pre>`);
         }
         
         return placeholder;
