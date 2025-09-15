@@ -1310,7 +1310,20 @@
           </div>`);
         } else if (language === 'plantuml') {
           const id = 'plantuml-' + Math.random().toString(36).substr(2, 9);
-          const plantUMLUrl = `${this.config.plantuml.server}/${this.config.plantuml.format}/~1${encodeURIComponent(trimmedContent)}`;
+          
+          // Fonction d'encodage PlantUML simplifiée
+          function encodePlantUML(text) {
+            // Encodage base64 adapté pour PlantUML
+            const base64 = btoa(unescape(encodeURIComponent(text)));
+            // Remplacer les caractères pour PlantUML
+            return base64
+              .replace(/\+/g, '-')
+              .replace(/\//g, '_')
+              .replace(/=/g, '');
+          }
+          
+          const encodedContent = encodePlantUML(trimmedContent);
+          const plantUMLUrl = `${this.config.plantuml.server}/${this.config.plantuml.format}/~1${encodedContent}`;
           codeBlocks.push(`<div class="ontowave-plantuml" id="${id}">
             <div style="margin-bottom: 8px; font-weight: bold; color: #586069;">🏭 Diagramme PlantUML</div>
             <img src="${plantUMLUrl}" alt="Diagramme PlantUML" style="max-width: 100%; height: auto;" 
