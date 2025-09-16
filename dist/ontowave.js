@@ -724,21 +724,8 @@
       // Stocker la langue courante
       this.currentLanguage = targetLang;
       
-      // Mettre à jour les boutons de langue dans le menu
-      document.querySelectorAll('.ontowave-lang-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.textContent.includes(targetLang.toUpperCase())) {
-          btn.classList.add('active');
-        }
-      });
-      
-      // Mettre à jour les boutons de langue fixés
-      document.querySelectorAll('.ontowave-fixed-lang-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.textContent.includes(targetLang.toUpperCase())) {
-          btn.classList.add('active');
-        }
-      });
+      // Mettre à jour l'état des boutons de langue
+      this.updateLanguageButtonsState(targetLang);
       
       // Mettre à jour l'interface
       this.updateInterfaceTexts(targetLang);
@@ -750,6 +737,31 @@
       if (targetPage) {
         this.loadPage(targetPage);
       }
+    }
+
+    /**
+     * Met à jour l'état visuel des boutons de langue pour refléter la langue actuelle
+     */
+    updateLanguageButtonsState(currentLang = null) {
+      const lang = currentLang || this.getCurrentLanguage();
+      
+      // Mettre à jour les boutons de langue dans le menu
+      document.querySelectorAll('.ontowave-lang-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.textContent.includes(lang.toUpperCase())) {
+          btn.classList.add('active');
+        }
+      });
+      
+      // Mettre à jour les boutons de langue fixés
+      document.querySelectorAll('.ontowave-fixed-lang-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.textContent.includes(lang.toUpperCase())) {
+          btn.classList.add('active');
+        }
+      });
+      
+      console.log('🌐 État des boutons de langue mis à jour pour:', lang);
     }
 
     /**
@@ -786,7 +798,7 @@
 
     /**
      * Trouve la meilleure correspondance entre langues navigateur et config
-     * Respecte maintenant defaultLocale au lieu de forcer la détection navigateur
+     * Priorise maintenant les préférences du navigateur sur defaultLocale
      */
     resolveLocale() {
       const browserLocales = this.getBrowserLocales();
@@ -801,13 +813,7 @@
         return null; // Mode monolingue
       }
       
-      // PRIORITÉ 1 : Utiliser defaultLocale si défini et supporté
-      if (defaultLocale && supportedLocales.includes(defaultLocale)) {
-        console.log('🎯 Using configured default locale:', defaultLocale);
-        return defaultLocale;
-      }
-      
-      // PRIORITÉ 2 : Recherche exacte dans les langues navigateur
+      // PRIORITÉ 1 : Recherche exacte dans les langues navigateur
       for (const browserLang of browserLocales) {
         if (supportedLocales.includes(browserLang)) {
           console.log('🎯 Exact browser match found:', browserLang);
@@ -815,7 +821,23 @@
         }
       }
       
-      // PRIORITÉ 3 : Recherche par préfixe (fr-CA -> fr)
+      // PRIORITÉ 2 : Recherche par préfixe (fr-CA -> fr)
+      for (const browserLang of browserLocales) {
+        const prefix = browserLang.split('-')[0];
+        const match = supportedLocales.find(locale => locale.startsWith(prefix));
+        if (match) {
+          console.log('🎯 Prefix match found:', browserLang, '->', match);
+          return match;
+        }
+      }
+      
+      // PRIORITÉ 3 : Utiliser defaultLocale si défini et supporté
+      if (defaultLocale && supportedLocales.includes(defaultLocale)) {
+        console.log('🎯 Using configured default locale:', defaultLocale);
+        return defaultLocale;
+      }
+      
+      // PRIORITÉ 4 : Fallback sur la première langue supportée
       for (const browserLang of browserLocales) {
         const prefix = browserLang.split('-')[0];
         const match = supportedLocales.find(locale => locale.startsWith(prefix));
@@ -891,6 +913,9 @@
         
         // Initialiser la navigation
         this.initializeNavigation();
+        
+        // Mettre à jour l'état des boutons de langue après la création du menu
+        this.updateLanguageButtonsState();
         
         // Charger la page initiale
         await this.loadInitialPage();
