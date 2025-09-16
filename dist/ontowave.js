@@ -1479,14 +1479,14 @@
         } else if (language === 'plantuml') {
           const id = 'plantuml-' + Math.random().toString(36).substr(2, 9);
           
-          // Fonction d'encodage PlantUML simplifiée
+          // Fonction d'encodage PlantUML avec support UTF-8
           function encodePlantUML(text) {
-            // Utiliser le format HEX simple de PlantUML (avec préfixe ~h)
-            // Plus simple et fiable que DEFLATE
+            // Encoder le texte en UTF-8 puis en hexadécimal
+            const utf8Encoder = new TextEncoder();
+            const utf8Bytes = utf8Encoder.encode(text);
             let hex = '';
-            for (let i = 0; i < text.length; i++) {
-              const code = text.charCodeAt(i);
-              hex += code.toString(16).padStart(2, '0');
+            for (let i = 0; i < utf8Bytes.length; i++) {
+              hex += utf8Bytes[i].toString(16).padStart(2, '0');
             }
             return 'h' + hex; // Le préfixe ~h sera ajouté dans l'URL
           }

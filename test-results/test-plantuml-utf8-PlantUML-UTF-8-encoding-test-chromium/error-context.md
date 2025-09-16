@@ -1,0 +1,146 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic "OntoWave Menu" [ref=e3]:
+    - generic [ref=e4] [cursor=pointer]: 🌊
+    - generic:
+      - link "OntoWave.org":
+        - /url: https://ontowave.org/
+        - text: OntoWave
+        - generic: .org
+      - generic [ref=e5]:
+        - generic [ref=e6] [cursor=pointer]: 🏠 Accueil
+        - generic [ref=e7] [cursor=pointer]: 🌐 FR
+        - generic [ref=e8] [cursor=pointer]: 🌐 EN
+        - generic [ref=e9] [cursor=pointer]: ⚙️ Configuration
+  - generic [ref=e10]:
+    - heading "OntoWave - Générateur de diagrammes pour sites statiques" [level=1] [ref=e11]
+    - heading "Micro-application pour sites statiques" [level=2]
+    - paragraph: OntoWave est un générateur de diagrammes JavaScript léger (18KB) conçu pour les sites statiques. Il permet d'ajouter facilement un système de documentation interactive avec menu flottant et interface multilingue.
+    - heading "Fonctionnalités principales" [level=3]
+    - paragraph:
+      - text: "-"
+      - strong: Interface simple
+      - text: ": Menu flottant avec icône 🌊"
+      - text: "-"
+      - strong: Multilingue
+      - text: ": Support français/anglais automatique"
+      - text: "-"
+      - strong: Responsive
+      - text: ": Adaptation mobile et desktop"
+      - text: "-"
+      - strong: Configurable
+      - text: ": Panneau de configuration intégré"
+      - text: "-"
+      - strong: Léger
+      - text: ": Seulement 18KB minifié"
+      - text: "-"
+      - strong: Prêt à l'emploi
+      - text: ": Integration en une ligne"
+    - heading "Utilisation" [level=3]
+    - paragraph
+    - generic [ref=e12]:
+      - code:
+        - generic:
+          - generic: <!
+          - generic: DOCTYPE
+          - generic: html
+          - generic: ">"
+        - generic:
+          - generic:
+            - generic: <
+            - text: html
+          - generic: ">"
+        - generic:
+          - generic:
+            - generic: <
+            - text: head
+          - generic: ">"
+        - generic:
+          - generic:
+            - generic: <
+            - text: title
+          - generic: ">"
+        - text: Mon Site avec OntoWave
+        - generic:
+          - generic:
+            - generic: </
+            - text: title
+          - generic: ">"
+        - generic:
+          - generic:
+            - generic: </
+            - text: head
+          - generic: ">"
+        - generic:
+          - generic:
+            - generic: <
+            - text: body
+          - generic: ">"
+        - generic:
+          - generic:
+            - generic: <
+            - text: script
+          - generic: src
+          - generic:
+            - generic: =
+            - generic: "\""
+            - text: ontowave.min.js
+            - generic: "\""
+          - generic: ">"
+        - generic:
+          - generic:
+            - generic: </
+            - text: script
+          - generic: ">"
+        - generic:
+          - generic:
+            - generic: </
+            - text: body
+          - generic: ">"
+        - generic:
+          - generic:
+            - generic: </
+            - text: html
+          - generic: ">"
+    - paragraph
+    - paragraph: C'est tout ! OntoWave se charge automatiquement et affiche son interface. Cliquez sur l'icône 🌊 en haut à gauche pour accéder au panneau de configuration et générer une page html configurée selon vos besoins, puis télécharger.
+    - heading "Démos et exemples" [level=3]
+    - paragraph: "Explorez nos différentes configurations :"
+    - paragraph:
+      - text: "-"
+      - strong:
+        - link "Configuration minimale":
+          - /url: demo/minimal.html
+      - text: "- L'intégration la plus simple possible"
+      - text: "-"
+      - strong:
+        - link "Configuration avancée":
+          - /url: demo/advanced.html
+      - text: "- Avec système multilingue complet"
+      - text: "-"
+      - strong:
+        - link "Configuration complète":
+          - /url: demo/full-config.html
+      - text: "- Toutes les fonctionnalités activées"
+    - heading "Architecture OntoWave" [level=3]
+    - paragraph
+    - generic [ref=e13]:
+      - generic: 🏭 Diagramme PlantUML
+      - img "Diagramme PlantUML" [ref=e14]
+    - paragraph
+    - heading "Licence" [level=3]
+    - paragraph [ref=e15]:
+      - img "CC BY-NC-SA" [ref=e16]
+      - strong: Stéphane Denis
+    - paragraph:
+      - text: OntoWave est publié sous licence
+      - strong: CC BY-NC-SA 4.0
+      - text: (Creative Commons Attribution-NonCommercial-ShareAlike).
+    - paragraph: Ce logiciel est fourni "tel quel", sans garantie d'aucune sorte, expresse ou implicite. En aucun cas les auteurs ne seront responsables de réclamations, dommages ou autres responsabilités.
+    - paragraph:
+      - strong: "Code source :"
+      - link "GitHub - OntoWave":
+        - /url: https://github.com/stephanedenis/OntoWave
+```

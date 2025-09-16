@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Test validation boutons menu</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .result { padding: 15px; margin: 10px 0; border-radius: 8px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test des boutons de langue - Mode menu uniquement</h1>
+    
+    <div id="test-results"></div>
+    
+    <div id="ontowave-container"></div>
+    
+    <script src="ontowave.min.js"></script>
+    <script>
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('test-results');
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.innerHTML = message;
+            results.appendChild(div);
+        }
+        
+        // Configuration pour test
+        const config = {
+            locales: ["fr", "en"],
+            content: `# Test Configuration des Boutons
+            
+Cette page teste que les boutons de langue sont uniquement dans le menu.
+
+## Vérifications
+
+1. **Pas de boutons fixes** : Les boutons ne doivent PAS apparaître en haut à droite
+2. **Boutons dans le menu** : Cliquez sur le menu (☰) pour voir les boutons FR/EN
+
+### Instructions de test
+
+1. Regardez en haut à droite : il ne devrait Y AVOIR AUCUN bouton fixe
+2. Cliquez sur l'icône OntoWave 🌊 en bas à droite 
+3. Dans le menu qui s'ouvre, vous devriez voir les boutons FR/EN
+            `
+        };
+        
+        try {
+            window.OntoWave.create('ontowave-container', config);
+            addResult('✅ OntoWave chargé avec succès', 'success');
+            
+            // Test après chargement
+            setTimeout(() => {
+                // Vérifier absence de boutons fixes
+                const fixedButtons = document.querySelectorAll('.ontowave-fixed-lang-buttons .ontowave-lang-btn');
+                if (fixedButtons.length === 0) {
+                    addResult(`✅ Aucun bouton fixe trouvé (${fixedButtons.length})`, 'success');
+                } else {
+                    addResult(`❌ Boutons fixes encore présents : ${fixedButtons.length}`, 'error');
+                }
+                
+                // Vérifier présence du menu
+                const menuButton = document.querySelector('.ontowave-menu-button');
+                if (menuButton) {
+                    addResult('✅ Bouton de menu OntoWave trouvé', 'success');
+                    
+                    // Simuler l'ouverture du menu pour vérifier les boutons
+                    setTimeout(() => {
+                        menuButton.click();
+                        
+                        setTimeout(() => {
+                            const menuLangButtons = document.querySelectorAll('.ontowave-menu .ontowave-lang-btn');
+                            if (menuLangButtons.length === 2) {
+                                addResult(`✅ Boutons de langue dans le menu : ${menuLangButtons.length}`, 'success');
+                                
+                                // Afficher les textes des boutons
+                                const texts = Array.from(menuLangButtons).map(btn => btn.textContent).join(', ');
+                                addResult(`📝 Textes des boutons : ${texts}`, 'info');
+                                
+                                addResult('🎉 TEST RÉUSSI ! Boutons uniquement dans le menu', 'success');
+                            } else {
+                                addResult(`❌ Mauvais nombre de boutons menu : ${menuLangButtons.length}`, 'error');
+                            }
+                        }, 500);
+                    }, 1000);
+                } else {
+                    addResult('❌ Bouton de menu OntoWave non trouvé', 'error');
+                }
+            }, 2000);
+            
+        } catch (error) {
+            addResult(`❌ Erreur lors du chargement : ${error.message}`, 'error');
+        }
+    </script>
+</body>
+</html>
