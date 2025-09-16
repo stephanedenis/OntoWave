@@ -753,6 +753,13 @@
     }
 
     /**
+     * Détermine si OntoWave est en mode multilingue
+     */
+    isMultilingualMode() {
+      return this.config.locales && this.config.locales.length > 0 && this.config.sources;
+    }
+
+    /**
      * Génère la liste des fichiers à essayer pour une page donnée
      */
     generatePageCandidates(basePage) {
@@ -818,12 +825,22 @@
     }
 
     async loadConfigFromScript() {
+      // Priorité 1: Chercher dans window.ontoWaveConfig
+      if (window.ontoWaveConfig) {
+        this.config = { ...this.config, ...window.ontoWaveConfig };
+        console.log('📄 Configuration loaded from window.ontoWaveConfig');
+        console.log('📄 Final config:', this.config);
+        return;
+      }
+      
+      // Priorité 2: Chercher dans script tag
       const configScript = document.getElementById('ontowave-config');
       if (configScript && configScript.type === 'application/json') {
         try {
           const userConfig = JSON.parse(configScript.textContent);
           this.config = { ...this.config, ...userConfig };
           console.log('📄 Configuration loaded from script tag');
+          console.log('📄 Final config:', this.config);
         } catch (error) {
           console.warn('⚠️ Invalid JSON in ontowave-config script tag:', error);
         }
@@ -934,28 +951,6 @@
         };
         script.onerror = () => {
           console.warn('⚠️ Failed to load Prism library');
-          resolve();
-        };
-        document.head.appendChild(script);
-      });
-    }
-
-    async loadPako() {
-      return new Promise((resolve) => {
-        if (window.pako) {
-          console.log('📦 Pako already loaded');
-          return resolve();
-        }
-
-        console.log('📦 Loading Pako for PlantUML compression...');
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js';
-        script.onload = () => {
-          console.log('✅ Pako loaded successfully for PlantUML');
-          resolve();
-        };
-        script.onerror = () => {
-          console.warn('⚠️ Failed to load Pako library - PlantUML will use fallback encoding');
           resolve();
         };
         document.head.appendChild(script);
@@ -1212,7 +1207,24 @@
     }
 
     async loadInitialPage() {
-      const initialPage = location.hash.replace('#', '') || this.config.defaultPage;
+      const currentHash = location.hash.replace('#', '');
+      
+      // Mode multilingue : redirection automatique si pas de hash
+      if (this.isMultilingualMode() && !currentHash) {
+        const defaultSource = this.config.sources[this.config.defaultLocale];
+        console.log('🌐 Multilingual mode detected');
+        console.log('🌐 Default locale:', this.config.defaultLocale);
+        console.log('🌐 Default source:', defaultSource);
+        console.log('🌐 Sources config:', this.config.sources);
+        
+        if (defaultSource) {
+          console.log('🌐 Multilingual mode: redirecting to', defaultSource);
+          location.hash = '#' + defaultSource;
+          return;
+        }
+      }
+      
+      const initialPage = currentHash || this.config.defaultPage;
       
       // Si on n'a pas de fichier index, afficher la configuration
       if (initialPage === 'index.md') {
@@ -1335,36 +1347,18 @@
           
           // Fonction d'encodage PlantUML simplifiée
           function encodePlantUML(text) {
-            // Implémentation de l'encodage PlantUML correct avec DEFLATE natif
-            // Utilise CompressionStream disponible dans les navigateurs modernes
-            
-            // Méthode simplifiée : utiliser l'encodage PlantUML hexadécimal
-            // Cette méthode fonctionne sans dépendances externes
-            function encode6bit(bytes) {
-              const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_';
-              let result = '';
-              for (let i = 0; i < bytes.length; i += 3) {
-                const b1 = bytes[i] || 0;
-                const b2 = bytes[i + 1] || 0;
-                const b3 = bytes[i + 2] || 0;
-                
-                result += chars[b1 >> 2];
-                result += chars[((b1 & 0x3) << 4) | (b2 >> 4)];
-                result += chars[((b2 & 0xF) << 2) | (b3 >> 6)];
-                result += chars[b3 & 0x3F];
-              }
-              return result;
+            // Utiliser le format HEX simple de PlantUML (avec préfixe ~h)
+            // Plus simple et fiable que DEFLATE
+            let hex = '';
+            for (let i = 0; i < text.length; i++) {
+              const code = text.charCodeAt(i);
+              hex += code.toString(16).padStart(2, '0');
             }
-            
-            // Encoder le texte en UTF-8
-            const utf8Bytes = new TextEncoder().encode(text);
-            
-            // Utiliser l'encodage 6-bit de PlantUML (compatible sans compression)
-            return encode6bit(Array.from(utf8Bytes));
+            return 'h' + hex; // Le préfixe ~h sera ajouté dans l'URL
           }
           
           const encodedContent = encodePlantUML(trimmedContent);
-          const plantUMLUrl = `${this.config.plantuml.server}/${this.config.plantuml.format}/~1${encodedContent}`;
+          const plantUMLUrl = `${this.config.plantuml.server}/${this.config.plantuml.format}/~${encodedContent}`;
           codeBlocks.push(`<div class="ontowave-plantuml" id="${id}">
             <div style="margin-bottom: 8px; font-weight: bold; color: #586069;">🏭 Diagramme PlantUML</div>
             <img src="${plantUMLUrl}" alt="Diagramme PlantUML" style="max-width: 100%; height: auto;" 

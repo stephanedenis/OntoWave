@@ -27,7 +27,7 @@ OntoWave is a lightweight JavaScript diagram generator (18KB) designed for stati
 </html>
 ```
 
-That's it! OntoWave loads automatically and displays its interface.
+That's it! OntoWave loads automatically and displays its interface. Click on the 🌊 icon at the top left to access the configuration panel and generate an HTML page configured to your needs, then download.
 
 ### Demos and examples
 
@@ -57,78 +57,6 @@ note right of [OntoWave]
 end note
 @enduml
 ```
-
-### Supported diagrams
-
-OntoWave natively integrates **Mermaid** and **PlantUML** for your diagrams:
-
-**Mermaid:**
-```mermaid
-graph LR
-    A[User] --> B[OntoWave]
-    B --> C[Interface]
-    B --> D[Diagrams]
-    C --> E[Menu 🌊]
-    D --> F[Mermaid]
-    D --> G[PlantUML]
-```
-
-**PlantUML:**
-```plantuml
-@startuml
-participant User
-participant OntoWave
-participant "PlantUML Server"
-
-User -> OntoWave : Loads page
-OntoWave -> OntoWave : Detects diagrams
-OntoWave -> "PlantUML Server" : Generates image
-"PlantUML Server" --> OntoWave : Returns diagram
-OntoWave --> User : Displays complete page
-@enduml
-```
-  file "index.en.md" as en
-  file "ontowave.min.js" as js
-  file "config.json" as config
-  
-  folder "demo/" {
-    file "minimal.html" as minimal
-    file "advanced.html" as advanced  
-    file "full-config.html" as full
-  }
-}
-
-index --> js : loads
-index --> fr : content FR
-index --> en : content EN
-js --> config : configuration
-
-demo --> js : examples
-@enduml
-```
-
-### Configuration
-
-The `config.json` file allows you to customize OntoWave:
-
-```json
-{
-  "locales": ["fr", "en"],
-  "defaultLocale": "fr",
-  "sources": {
-    "fr": "index.fr.md",
-    "en": "index.en.md"
-  }
-}
-```
-
-### 📥 Download
-
-Get OntoWave from the configuration panel:
-
-1. Click on the 🌊 icon at bottom right
-2. Select "Configuration"  
-3. Use the download options
 
 ### Customization
 
