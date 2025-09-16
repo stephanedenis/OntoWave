@@ -6,9 +6,8 @@
 
 - **`src/`** - Code source principal
 - **`dist/`** - Fichiers de distribution (build)
-- **`docs/`** - Documentation complète (site web + technique)
-- **`tests/`** - Tests automatisés et scripts de validation
-- **`examples/`** - Exemples d'utilisation
+- **`docs/`** - Documentation complète (site web + technique + exemples)
+- **`tests/`** - Tests automatisés, scripts de validation et exemples de test
 - **`archive/`** - Fichiers temporaires et de debug
 
 ### 📋 Détail des Dossiers
@@ -24,11 +23,14 @@ docs/
 ├── sitemap.json        # Plan du site
 ├── CNAME               # Configuration domaine personnalisé
 ├── 404.html            # Page d'erreur
-├── demo/               # Exemples démonstratifs
+├── demo/               # Exemples démonstratifs ET tests intégrés
+│   ├── basic/          # Exemples de base (minimal, simple, avec config)
+│   ├── advanced/       # Exemples avancés (diagnostic, multilang, drag-disable)
+│   ├── testing/        # Tests intégrés pour validation continue
 │   ├── minimal.html
 │   ├── advanced.html
 │   ├── full-config.html
-│   └── *.md            # Contenu des exemples
+│   └── *.md            # Contenu et documentation des exemples
 └── technical/          # Documentation technique
     ├── development/    # Documentation de développement
     │   ├── api.md
@@ -60,38 +62,13 @@ docs/
         └── issue-prism-intermittent.md
 ```
 
-#### `examples/`
-```
-examples/
-├── basic/           # Exemples de base
-│   ├── cdn-example.html
-│   ├── example-minimal.html
-│   ├── example-simple.html
-│   ├── minimal.html
-│   └── with-config.html
-├── advanced/        # Exemples avancés
-│   ├── demo-drag-disable.html
-│   ├── diagnostic-multilang.html
-│   ├── hybrid-loading.html
-│   ├── test-multilingual-config.html
-│   └── test-prism-multilang.html
-└── tests/           # Fichiers de test HTML
-    ├── debug-test.html
-    ├── test-direct.html
-    ├── test-drag-disable.html
-    ├── test-drag-simple.html
-    ├── test-hover-fix.html
-    ├── test-language-buttons.html
-    ├── test-logos-update.html
-    ├── test-simple.html
-    ├── test-validation-menu.html
-    └── validation-drag.html
-```
-
 #### `tests/`
 ```
 tests/
-├── e2e/             # Tests end-to-end Playwright (existant)
+├── e2e/             # Tests end-to-end Playwright
+├── examples/        # Exemples migrés (sauvegarde)
+│   ├── advanced/    # Exemples avancés pour tests
+│   └── testing/     # Fichiers de test HTML
 ├── cleanup-drag-tests.sh
 ├── restore-ontowave.sh
 ├── test_fix_verification.py
@@ -170,7 +147,37 @@ La racine du projet ne contient maintenant que les fichiers essentiels :
 - **Toute la documentation** est centralisée dans `docs/` :
   - Site web public dans `docs/` (racine)
   - Documentation technique dans `docs/technical/`
-- Les exemples sont classés par difficulté dans `examples/`
-- Les fichiers temporaires sont archivés mais conservés dans `archive/`
+## 🎯 Bénéfices de la Structure Optimisée
+
+### ✅ Racine Propre et Professionnelle
+- Suppression des fichiers obsolètes (`index.html`, `index.md`)
+- Élimination des doublons (dossier `public/` supprimé)
+- Structure conforme aux standards GitHub
+
+### 📚 Documentation Centralisée dans `docs/`
+- **Toute** la documentation (utilisateur + technique) dans `docs/`
+- Exemples exhaustifs dans `docs/demo/` servant à la fois de :
+  - 🎨 **Démonstrations** pour les utilisateurs
+  - 🧪 **Tests intégrés** pour validation continue
+- Optimisation GitHub Pages native
+
+### 🧪 Tests et Exemples Unifiés
+- `docs/demo/` contient des exemples qui servent également de tests
+- Garantie du bon fonctionnement des démonstrations
+- `tests/examples/` sauvegarde les anciens exemples
+- Réduction de la duplication de code
+
+### 🌐 Structure GitHub Pages Optimale
+- `docs/` contient tout ce qui doit être publié
+- Navigation intuitive pour les utilisateurs
+- Maintenance simplifiée
+- Conformité aux bonnes pratiques open source
+
+## 📋 Règles d'Organisation
+
+- Les exemples de base sont classés dans `docs/demo/basic/`
+- Les exemples avancés sont dans `docs/demo/advanced/`
+- Les tests intégrés sont dans `docs/demo/testing/`
+- Les fichiers temporaires sont archivés dans `archive/`
 - Cette organisation respecte les conventions des projets open source
 - La structure `docs/` est optimisée pour GitHub Pages

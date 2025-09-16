@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validation Drag Disable</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .pass { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .fail { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Validation des Modifications</h1>
+    <div id="results"></div>
+
+    <!-- Fichier OntoWave -->
+    <script>
+        const results = document.getElementById('results');
+        
+        function addResult(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.textContent = message;
+            results.appendChild(div);
+        }
+
+        // Test 1: Vérifier que le fichier OntoWave se charge
+        const script = document.createElement('script');
+        script.src = 'dist/ontowave.js';
+        script.onload = function() {
+            addResult('✅ OntoWave se charge correctement', 'pass');
+            
+            // Test 2: Vérifier la présence de la classe OntoWave
+            if (typeof OntoWave !== 'undefined') {
+                addResult('✅ Classe OntoWave disponible', 'pass');
+                
+                // Créer une instance pour tester
+                const ontowave = new OntoWave({
+                    title: "Test",
+                    defaultPage: "index.md",
+                    baseUrl: "./",
+                    pages: ["index.md"]
+                });
+                
+                addResult('✅ Instance OntoWave créée', 'pass');
+                
+                // Test 3: Vérifier que le CSS contient les nouvelles classes
+                setTimeout(() => {
+                    const cssText = document.querySelector('style')?.textContent || '';
+                    if (cssText.includes('.ontowave-floating-menu.no-drag')) {
+                        addResult('✅ CSS .no-drag trouvé dans le code', 'pass');
+                    } else {
+                        addResult('❌ CSS .no-drag non trouvé', 'fail');
+                    }
+                    
+                    // Test 4: Vérifier la fonction updateDragState
+                    if (typeof window.ontowaveUpdateDragState === 'function') {
+                        addResult('✅ Fonction ontowaveUpdateDragState disponible', 'pass');
+                    } else {
+                        addResult('⚠️ Fonction ontowaveUpdateDragState non disponible (normale si menu pas initialisé)', 'info');
+                    }
+                    
+                    // Test 5: Initialiser et vérifier le comportement
+                    ontowave.loadPage = function() {
+                        return Promise.resolve();
+                    };
+                    
+                    ontowave.init().then(() => {
+                        addResult('✅ OntoWave initialisé avec succès', 'pass');
+                        
+                        setTimeout(() => {
+                            const menu = document.getElementById('ontowave-floating-menu');
+                            if (menu) {
+                                addResult('✅ Menu flottant créé', 'pass');
+                                
+                                // Vérifier l'état initial
+                                const hasNoDrag = menu.classList.contains('no-drag');
+                                const cursor = window.getComputedStyle(menu).cursor;
+                                
+                                addResult(`État initial: no-drag=${hasNoDrag}, cursor=${cursor}`, 'info');
+                                
+                                if (typeof window.ontowaveUpdateDragState === 'function') {
+                                    addResult('✅ Fonction ontowaveUpdateDragState maintenant disponible', 'pass');
+                                    
+                                    // Test de base
+                                    window.ontowaveUpdateDragState();
+                                    addResult('✅ Fonction ontowaveUpdateDragState exécutée', 'pass');
+                                }
+                            } else {
+                                addResult('❌ Menu flottant non créé', 'fail');
+                            }
+                        }, 1000);
+                        
+                    }).catch(err => {
+                        addResult('❌ Erreur initialisation: ' + err.message, 'fail');
+                    });
+                    
+                }, 500);
+                
+            } else {
+                addResult('❌ Classe OntoWave non disponible', 'fail');
+            }
+        };
+        
+        script.onerror = function() {
+            addResult('❌ Erreur lors du chargement de OntoWave', 'fail');
+        };
+        
+        document.head.appendChild(script);
+    </script>
+</body>
+</html>

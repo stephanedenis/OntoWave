@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Correction du zoom hover</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+        }
+        
+        .test-content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .test-instructions {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        pre {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-content">
+        <h1>🔧 Test de correction du zoom hover</h1>
+        
+        <div class="test-instructions">
+            <h3>Instructions de test :</h3>
+            <ol>
+                <li><strong>Étape 1</strong> : Passez la souris sur le menu flottant OntoWave → Le menu doit zoomer (comportement normal)</li>
+                <li><strong>Étape 2</strong> : Cliquez sur le bouton "Configuration" pour ouvrir le panneau</li>
+                <li><strong>Étape 3</strong> : Passez maintenant la souris sur le menu flottant → <strong>Le zoom ne doit PAS se produire</strong></li>
+                <li><strong>Étape 4</strong> : Fermez le panneau de configuration → Le zoom doit redevenir actif</li>
+            </ol>
+            <p><strong>Résultat attendu :</strong> Quand le panneau de configuration est ouvert, le survol du menu ne provoque plus de zoom, évitant que les boutons sortent de l'écran.</p>
+        </div>
+
+        <h2>Code de test :</h2>
+        <pre><code>
+# PlantUML simple pour activer OntoWave
+@startuml
+Alice -> Bob: Hello
+@enduml
+        </code></pre>
+        
+        <h3>Modifications apportées :</h3>
+        <ol>
+            <li><strong>CSS :</strong> Ajout de la règle <code>.ontowave-floating-menu.has-config-panel:hover { transform: none; }</code></li>
+            <li><strong>JavaScript :</strong> Ajout/suppression de la classe <code>has-config-panel</code> lors de l'ouverture/fermeture du panneau</li>
+        </ol>
+    </div>
+
+    <!-- OntoWave JS -->
+    <script src="docs/ontowave.min.js"></script>
+</body>
+</html>

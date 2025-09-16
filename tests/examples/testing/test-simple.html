@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Test rapide OntoWave</title>
+</head>
+<body>
+    <h1>🚀 Test OntoWave avec boutons de langue améliorés</h1>
+    <div id="ontowave-container"></div>
+    
+    <script src="dist/ontowave.js"></script>
+    <script>
+        const config = {
+            locales: ["fr", "en"],
+            content: `# Bonjour ! 👋
+
+## Fonctionnalités testées
+
+- ✅ PlantUML avec encodage HEX
+- ✅ Système multilingue 
+- ✅ Boutons de langue fixes (nouveau!)
+
+### Boutons de langue
+
+Regardez en haut à droite, vous devriez voir:
+- 🇫🇷 FR 
+- 🇬🇧 EN
+
+Ces boutons sont maintenant **fixes** et **toujours visibles** !
+
+\`\`\`plantuml
+@startuml
+Alice -> Bob: Bonjour
+Bob -> Alice: Salut !
+@enduml
+\`\`\`
+            `
+        };
+        
+        window.OntoWave.create('ontowave-container', config);
+        
+        // Vérification après 2 secondes
+        setTimeout(() => {
+            const fixedButtons = document.querySelectorAll('.ontowave-fixed-lang-buttons .ontowave-lang-btn');
+            console.log('🔍 Boutons fixes trouvés:', fixedButtons.length);
+            
+            if (fixedButtons.length === 2) {
+                console.log('✅ Système de boutons fixes fonctionne !');
+                fixedButtons.forEach((btn, i) => {
+                    console.log(`   Bouton ${i + 1}: ${btn.textContent}`);
+                });
+            } else {
+                console.log('❌ Problème avec les boutons fixes');
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
