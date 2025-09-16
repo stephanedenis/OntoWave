@@ -69,7 +69,7 @@ test.describe('Test du système OntoWave unifié', () => {
         await page.waitForTimeout(2000);
         
         console.log('🎉 SYSTÈME UNIFIÉ FONCTIONNEL !');
-        console.log('📦 Un seul fichier: ontowave.min.js (151KB)');
+        console.log('📦 Un seul fichier: ontowave.min.js (69KB)');
         console.log('🌐 Multilingue intégré automatiquement');
         console.log('⚙️ Configuration simple dans le HTML');
     });

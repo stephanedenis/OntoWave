@@ -50,7 +50,7 @@ test.describe('Test simple du système unifié', () => {
         }
         
         console.log('🎉 SYSTÈME UNIFIÉ TESTÉ !');
-        console.log('📦 Fichier unique: ontowave.min.js (151KB)');
+        console.log('📦 Fichier unique: ontowave.min.js (69KB)');
         console.log('🌐 Configuration bilingue intégrée');
         console.log('⚙️ HTML ultra-simplifié (34 lignes)');
     });

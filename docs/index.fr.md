@@ -2,7 +2,7 @@
 
 ## Micro-application pour sites statiques
 
-OntoWave est un générateur de diagrammes JavaScript léger (18KB) conçu pour les sites statiques. Il permet d'ajouter facilement un système de documentation interactive avec menu flottant et interface multilingue.
+OntoWave est un générateur de diagrammes JavaScript léger (69KB) conçu pour les sites statiques. Il permet d'ajouter facilement un système de documentation interactive avec menu flottant et interface multilingue.
 
 ### Fonctionnalités principales
 
@@ -10,7 +10,7 @@ OntoWave est un générateur de diagrammes JavaScript léger (18KB) conçu pour 
 - **Multilingue** : Support français/anglais automatique  
 - **Responsive** : Adaptation mobile et desktop
 - **Configurable** : Panneau de configuration intégré
-- **Léger** : Seulement 18KB minifié
+- **Léger** : Seulement 69KB minifié
 - **Prêt à l'emploi** : Integration en une ligne
 
 ### Utilisation

@@ -48,7 +48,7 @@ Explorez les sections suivantes :
 | Fonctionnalité | Description |
 |---|---|
 | **Zero Config** | Fonctionne immédiatement |
-| **Léger** | Seulement 12KB minifié |
+| **Léger** | Seulement 69KB minifié |
 | **Responsive** | S'adapte à tous les écrans |
 | **Interactif** | Navigation fluide |
 

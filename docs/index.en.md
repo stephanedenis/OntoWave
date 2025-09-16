@@ -2,7 +2,7 @@
 
 ## Micro-application for static sites
 
-OntoWave is a lightweight JavaScript diagram generator (18KB) designed for static sites. It makes it easy to add an interactive documentation system with floating menu and multilingual interface.
+OntoWave is a lightweight JavaScript diagram generator (69KB) designed for static sites. It makes it easy to add an interactive documentation system with floating menu and multilingual interface.
 
 ### Main features
 
@@ -10,7 +10,7 @@ OntoWave is a lightweight JavaScript diagram generator (18KB) designed for stati
 - **Multilingual**: Automatic French/English support  
 - **Responsive**: Mobile and desktop adaptation
 - **Configurable**: Integrated configuration panel
-- **Lightweight**: Only 18KB minified
+- **Lightweight**: Only 69KB minified
 - **Ready to use**: One-line integration
 
 ### Usage
@@ -51,7 +51,7 @@ skinparam backgroundColor transparent
 [OntoWave] --> [Mermaid] : generates diagrams
 
 note right of [OntoWave]
-  🌊 18KB all included
+  🌊 69KB all included
   Multilingual FR/EN
   Responsive interface
 end note
@@ -74,7 +74,7 @@ Creative Commons Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)
 - **[PlantUML](https://plantuml.com/) diagrams** - UML diagrams via official server
 - **Smart navigation** - Anchor preservation and smooth navigation
 - **Modern interface** - Responsive and clean design
-- **Ultra-lightweight** - Only 19KB, no dependencies
+- **Ultra-lightweight** - Only 69KB, no dependencies
 - **One-line installation** - Single script to include
 
 ### Usage

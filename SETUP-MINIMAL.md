@@ -129,7 +129,7 @@ Markdown -> User: Affiche docs
 |--------|----------|
 | **Simplicité** | Une seule ligne HTML |
 | **Zéro config** | Fonctionne immédiatement |
-| **Léger** | 12KB minifié |
+| **Léger** | 69KB minifié |
 | **Complet** | Toutes les fonctionnalités |
 | **Moderne** | Interface responsive |
 | **Rapide** | Chargement instantané |
