@@ -136,7 +136,8 @@
     ui: {
       theme: "default",
       responsive: true,
-      animations: true
+      animations: true,
+      languageButtons: "menu" // "fixed", "menu", "both"
     }
   };
 
@@ -306,6 +307,76 @@
     .ontowave-lang-btn.active:hover {
       background: #1e7e34;
       border-color: #1e7e34;
+    }
+    
+    /* Boutons de langue fixés - nouveaux styles */
+    .ontowave-fixed-lang-buttons {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 999;
+      display: flex;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 8px 12px;
+      border-radius: 25px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Responsive : adaptation mobile */
+    @media (max-width: 768px) {
+      .ontowave-fixed-lang-buttons {
+        top: 10px;
+        right: 10px;
+        padding: 6px 8px;
+        gap: 4px;
+      }
+    }
+    
+    .ontowave-fixed-lang-btn {
+      background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 15px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      min-width: 40px;
+      justify-content: center;
+    }
+    
+    /* Responsive : boutons plus petits sur mobile */
+    @media (max-width: 768px) {
+      .ontowave-fixed-lang-btn {
+        padding: 4px 8px;
+        font-size: 11px;
+        min-width: 35px;
+        gap: 2px;
+      }
+    }
+    
+    .ontowave-fixed-lang-btn:hover {
+      background: linear-gradient(135deg, #5a6268 0%, #343a40 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .ontowave-fixed-lang-btn.active {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+    }
+    
+    .ontowave-fixed-lang-btn.active:hover {
+      background: linear-gradient(135deg, #1e7e34 0%, #198754 100%);
+      transform: translateY(-2px);
     }
     
     /* Pas d'en-tête - supprimé */
@@ -653,8 +724,16 @@
       // Stocker la langue courante
       this.currentLanguage = targetLang;
       
-      // Mettre à jour les boutons de langue
+      // Mettre à jour les boutons de langue dans le menu
       document.querySelectorAll('.ontowave-lang-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.textContent.includes(targetLang.toUpperCase())) {
+          btn.classList.add('active');
+        }
+      });
+      
+      // Mettre à jour les boutons de langue fixés
+      document.querySelectorAll('.ontowave-fixed-lang-btn').forEach(btn => {
         btn.classList.remove('active');
         if (btn.textContent.includes(targetLang.toUpperCase())) {
           btn.classList.add('active');
@@ -972,8 +1051,11 @@
       const galleryOption = this.config.showGallery ? 
         `<span class="ontowave-menu-option" onclick="window.location.href='gallery.html'">🎨 ${this.t('menuGallery', locale)}</span>` : '';
       
-      // Créer les boutons de langue si multilingue
-      const languageButtons = this.config.locales && this.config.locales.length > 1 ?
+      // Créer les boutons de langue si multilingue et selon la configuration
+      const languageButtonsMode = this.config.ui?.languageButtons || "menu";
+      const shouldCreateMenuButtons = (languageButtonsMode === "menu" || languageButtonsMode === "both");
+      
+      const languageButtons = this.config.locales && this.config.locales.length > 1 && shouldCreateMenuButtons ?
         this.config.locales.map(lang => {
           const isActive = (locale || this.getCurrentLanguage()) === lang;
           const activeClass = isActive ? ' active' : '';
@@ -1010,6 +1092,58 @@
           </ul>
         </div>
       `;
+      
+      // Créer les boutons de langue fixés si multilingue
+      this.createFixedLanguageButtons(locale);
+    }
+
+    createFixedLanguageButtons(locale = null) {
+      // Supprimer les boutons existants s'ils existent
+      const existingButtons = document.getElementById('ontowave-fixed-lang-buttons');
+      if (existingButtons) {
+        existingButtons.remove();
+      }
+      
+      // Créer les boutons de langue fixés seulement si multilingue et si configuré
+      const languageButtonsMode = this.config.ui?.languageButtons || "menu";
+      const shouldCreateFixed = (languageButtonsMode === "fixed" || languageButtonsMode === "both");
+      
+      if (this.config.locales && this.config.locales.length > 1 && shouldCreateFixed) {
+        const currentLang = locale || this.getCurrentLanguage();
+        
+        const fixedLangContainer = document.createElement('div');
+        fixedLangContainer.id = 'ontowave-fixed-lang-buttons';
+        fixedLangContainer.className = 'ontowave-fixed-lang-buttons';
+        
+        // Créer les boutons pour chaque langue
+        const buttonsHtml = this.config.locales.map(lang => {
+          const isActive = currentLang === lang;
+          const activeClass = isActive ? ' active' : '';
+          const flag = this.getLanguageFlag(lang);
+          return `<button class="ontowave-fixed-lang-btn${activeClass}" onclick="window.OntoWave.instance.switchLanguage('${lang}')" title="Changer en ${lang.toUpperCase()}">${flag} ${lang.toUpperCase()}</button>`;
+        }).join('');
+        
+        fixedLangContainer.innerHTML = buttonsHtml;
+        document.body.appendChild(fixedLangContainer);
+        
+        console.log('🌐 Boutons de langue fixés créés:', this.config.locales, 'Mode:', languageButtonsMode);
+      }
+    }
+    
+    getLanguageFlag(lang) {
+      const flags = {
+        'fr': '🇫🇷',
+        'en': '🇬🇧',
+        'es': '🇪🇸',
+        'de': '🇩🇪',
+        'it': '🇮🇹',
+        'pt': '🇵🇹',
+        'zh': '🇨🇳',
+        'ja': '🇯🇵',
+        'ko': '🇰🇷',
+        'ru': '🇷🇺'
+      };
+      return flags[lang] || '🌐';
     }
 
     initializeNavigation() {
