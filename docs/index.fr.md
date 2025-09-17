@@ -12,89 +12,10 @@ Micro-application JavaScript légère (~18KB) pour sites statiques avec support 
 - **Léger**: ~18KB minifié, aucune dépendance
 - **Configuration Simple**: Script à intégrer avec initialisation automatique
 
-## Démarrage Rapide
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Ma Documentation</title>
-</head>
-<body>
-    <script src="ontowave.min.js"></script>
-</body>
-</html>
-```
-
-## Configuration
-
-```javascript
-window.ontoWaveConfig = {
-    locales: ["fr", "en"],
-    defaultLocale: "fr",
-    sources: {
-        fr: "docs.fr.md",
-        en: "docs.en.md"
-    },
-    enablePrism: true,
-    enableMermaid: true,
-    enablePlantUML: true
-};
-```
-
 ### Utilisation
 
 **Téléchargement direct :**
 Téléchargez `ontowave.min.js` et incluez-le dans votre projet.
-
-### Exemples de diagrammes
-
-#### Mermaid
-
-```mermaid
-graph TD
-    A[OntoWave v1.0] --> B[Analyseur Markdown]
-    B --> C[Coloration Syntaxique Prism]
-    C --> D[Diagrammes Mermaid]
-    D --> E[Support PlantUML]
-    E --> F[Sortie Multilingue]
-```
-
-#### PlantUML
-
-```plantuml
-@startuml
-!define RECTANGLE class
-RECTANGLE OntoWave {
-  +analyserMarkdown()
-  +activerPrism()
-  +renduMermaid()
-  +traiterPlantUML()
-  +changerLangue()
-}
-@enduml
-```
-
-### Licence
-
-**CC BY-NC-SA** - Stéphane Denis  
-[![Creative Commons](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)](https://github.com/stephanedenis/OntoWave)
-
-OntoWave v1.0 est distribué sous licence Creative Commons Attribution - Pas d'Utilisation Commerciale - Partage dans les Mêmes Conditions 4.0. Cette licence vous permet de partager et adapter le contenu pour des usages non-commerciaux, à condition de mentionner l'auteur et de conserver la même licence pour les œuvres dérivées.
-
-**Licence commerciale disponible** - Contactez-nous pour les licences d'usage commercial.
-
-Une bibliothèque JavaScript puissante pour créer de la documentation interactive et élégante à partir de sources Markdown.
-
-## Fonctionnalités
-
-- **Basé sur Markdown**: Rédigez la documentation dans la syntaxe Markdown familière
-- **Multilingue**: Support d'internationalisation intégré
-- **Personnalisable**: Apparence et style personnalisables
-- **Responsive**: Design adapté mobile
-- **Rapide**: Optimisé pour les performances
-
-### Utilisation
 
 ```html
 <!DOCTYPE html>
@@ -108,15 +29,7 @@ Une bibliothèque JavaScript puissante pour créer de la documentation interacti
 </html>
 ```
 
-C'est tout ! OntoWave se charge automatiquement et affiche son interface. Cliquez sur l'icône 🌊 en haut à gauche pour accéder au panneau de configuration et générer une page html configurée selon vos besoins, puis télécharger.
-
-### Démos et exemples
-
-Explorez nos différentes configurations :
-
-- **[Configuration minimale](demo/minimal-demo.html)** - L'intégration la plus simple possible
-- **[Configuration avancée](demo/advanced-demo.html)** - Avec système multilingue complet  
-- **[Configuration complète](demo/full-config.html)** - Toutes les fonctionnalités activées
+C'est tout ! OntoWave se charge automatiquement et affiche son interface. Cliquez sur l'icône 🌊 en bas à droite pour accéder au panneau de configuration et générer une page html configurée selon vos besoins, puis télécharger.
 
 ### Architecture OntoWave
 
@@ -125,16 +38,28 @@ Explorez nos différentes configurations :
 !theme plain
 skinparam backgroundColor transparent
 
-[Site Web] --> [OntoWave] : charge ontowave.min.js
-[OntoWave] --> [Interface] : crée menu flottant
-[OntoWave] --> [Markdown] : traite fichiers .md
-[OntoWave] --> [Prism] : coloration syntaxique
-[OntoWave] --> [Mermaid] : génère diagrammes
+package "OntoWave v1.0 (~18KB)" {
+  [Chargeur] --> [Interface UI]
+  [Interface UI] --> [Menu Flottant]
+  [Interface UI] --> [Panneau Config]
+  
+  [Processeur Markdown] --> [Prism.js]
+  [Processeur Markdown] --> [Mermaid]
+  [Processeur Markdown] --> [PlantUML]
+  
+  [Système I18n] --> [FR/EN]
+}
 
-note right of [OntoWave]
-  🌊 18KB tout inclus
-  Multilingue FR/EN
-  Interface responsive
+[Site Statique] --> [ontowave.min.js] : charge
+[ontowave.min.js] --> [Chargeur] : initialise
+[Menu Flottant] --> [Processeur Markdown] : active
+[Panneau Config] --> [Système I18n] : bascule
+
+note right of [OntoWave v1.0 (~18KB)]
+  ✨ Micro-application autonome
+  🌊 Interface responsive
+  ⚙️ Configuration interactive
+  📊 Export HTML disponible
 end note
 @enduml
 ```
