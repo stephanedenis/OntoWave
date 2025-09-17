@@ -10,23 +10,6 @@ Une bibliothèque JavaScript puissante pour créer de la documentation interacti
 - **Responsive**: Design adapté mobile
 - **Rapide**: Optimisé pour les performances
 
-## Démarrage Rapide
-
-```html
-<script src="ontowave.min.js"></script>
-<script>
-window.ontoWaveConfig = {
-    sources: { fr: "documentation.md" }
-};
-</script>
-```
-
-## Démonstrations
-
-- **[Démo Minimale](demo/minimal-demo.html)** - Configuration simple, monolingue
-- **[Démo Avancée](demo/advanced-demo.html)** - Interface complète similaire à MkDocs
-- **[Configuration Complète](demo/full-config.html)** - Exemple avec toutes les options
-
 ### Utilisation
 
 ```html
