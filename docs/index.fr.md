@@ -35,87 +35,79 @@ C'est tout ! OntoWave se charge automatiquement et affiche son interface. Clique
 !theme plain
 
 package "Site Web Statique" {
-  artifact "<<html>>\nindex.html\n📄" as HTML {
-    note right
-      Contient config JSON inline
-      Point d'entrée unique
-    end note
-  }
-  artifact "<<markdown>>\nindex.fr.md\n📝" as DocFR
-  artifact "<<markdown>>\nindex.en.md\n📝" as DocEN
+  artifact "index.html" as HTML
+  artifact "index.fr.md" as DocFR
+  artifact "index.en.md" as DocEN
 }
 
 package "OntoWave (~18KB)" {
-  artifact "<<javascript>>\nontowave.min.js\n⚙️" as Core
-  
-  package "Architecture Interne" {
-    class Loader {
-      +init()
-      +loadContent()
-    }
-    class UIManager {
-      +createInterface()
-      +handleEvents()
-    }
-    class FloatingMenu {
-      +show()
-      +hide()
-      +toggle()
-    }
-    class ConfigPanel {
-      +open()
-      +close()
-      +saveSettings()
-    }
-    class MarkdownProcessor {
-      +parse()
-      +render()
-    }
-    class I18nSystem {
-      +setLanguage()
-      +translate()
-    }
-    
-    package "Plugins" <<folder>> {
-      interface SyntaxHighlighter
-      interface DiagramRenderer
-      
-      class PrismPlugin implements SyntaxHighlighter
-      class MermaidPlugin implements DiagramRenderer  
-      class PlantUMLPlugin implements DiagramRenderer
-    }
-  }
+  artifact "ontowave.min.js" as Core
 }
 
-' Relations UML précises
-HTML *-- Core : composition\n(charge et contient)
-Core ..> DocFR : dependency\n(charge selon locale)
-Core ..> DocEN : dependency\n(charge selon locale)
+' Classes OntoWave (hors package pour éviter erreur PlantUML)
+class Loader {
+  +init()
+  +loadContent()
+}
+class UIManager {
+  +createInterface()
+  +handleEvents()
+}
+class FloatingMenu {
+  +show()
+  +hide()
+  +toggle()
+}
+class ConfigPanel {
+  +open()
+  +close()
+  +saveSettings()
+}
+class MarkdownProcessor {
+  +parse()
+  +render()
+}
+class I18nSystem {
+  +setLanguage()
+  +translate()
+}
+
+' Plugins
+interface SyntaxHighlighter
+interface DiagramRenderer
+class PrismPlugin implements SyntaxHighlighter
+class MermaidPlugin implements DiagramRenderer  
+class PlantUMLPlugin implements DiagramRenderer
+
+' Relations principales
+HTML --> Core : charge et contient
+Core --> DocFR : charge selon locale
+Core --> DocEN : charge selon locale
 
 ' Architecture interne
-Core *-- Loader : composition
-Core *-- UIManager : composition
-Core *-- I18nSystem : composition
+Core --> Loader : contient
+Core --> UIManager : contient
+Core --> I18nSystem : contient
 
-UIManager --> FloatingMenu : aggregation
-UIManager --> ConfigPanel : aggregation
-UIManager --> MarkdownProcessor : aggregation
+UIManager --> FloatingMenu : gere
+UIManager --> ConfigPanel : gere
+UIManager --> MarkdownProcessor : gere
 
-MarkdownProcessor --> PrismPlugin : uses
-MarkdownProcessor --> MermaidPlugin : uses  
-MarkdownProcessor --> PlantUMLPlugin : uses
+MarkdownProcessor --> PrismPlugin : utilise
+MarkdownProcessor --> MermaidPlugin : utilise  
+MarkdownProcessor --> PlantUMLPlugin : utilise
 
 note top of Core
-  🌊 **OntoWave Core**
-  ✨ Micro-application autonome
-  📱 Interface responsive
-  ⚙️ Configuration interactive
-  📊 Export HTML disponible
+  OntoWave Core
+  Micro-application autonome
+  Interface responsive
+  Configuration interactive
+  Export HTML disponible
 end note
 
 note bottom of HTML
-  📄 **Point d'entrée unique**
-  Configuration JSON intégrée
+  Point d'entree unique
+  Configuration JSON integree
   Charge OntoWave automatiquement
 end note
 
