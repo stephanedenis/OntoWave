@@ -1,17 +1,32 @@
-# OntoWave - Diagram generator for static sites
+# OntoWave
 
-## Micro-application for static sites
+A powerful JavaScript library for creating beautiful, interactive documentation from Markdown sources.
 
-OntoWave is a lightweight JavaScript diagram generator (69KB) designed for static sites. It makes it easy to add an interactive documentation system with floating menu and multilingual interface.
+## Features
 
-### Main features
+- **Markdown-based**: Write documentation in familiar Markdown syntax
+- **Multilingual**: Built-in internationalization support
+- **Themeable**: Customizable appearance and styling
+- **Responsive**: Mobile-friendly design
+- **Fast**: Optimized for performance
 
-- **Simple interface**: Floating menu with 🌊 icon
-- **Multilingual**: Automatic French/English support  
-- **Responsive**: Mobile and desktop adaptation
-- **Configurable**: Integrated configuration panel
-- **Lightweight**: Only 69KB minified
-- **Ready to use**: One-line integration
+## Quick Start
+
+```html
+<script src="ontowave.min.js"></script>
+<script>
+window.ontoWaveConfig = {
+    sources: { en: "documentation.md" }
+};
+</script>
+```
+
+## Demos
+
+- **[Minimal Demo](demo/minimal-demo.html)** - Simple, single-language setup
+- **[Advanced Demo](demo/advanced-demo.html)** - Full-featured with MkDocs-like interface
+- [Legacy Examples](demo/basic/) - Original example collection
+- [Testing Suite](demo/testing/)
 
 ### Usage
 

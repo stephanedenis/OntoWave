@@ -1,17 +1,32 @@
-# OntoWave - Générateur de diagrammes pour sites statiques
+# OntoWave
 
-## Micro-application pour sites statiques
+Une bibliothèque JavaScript puissante pour créer de la documentation interactive et élégante à partir de sources Markdown.
 
-OntoWave est un générateur de diagrammes JavaScript léger (69KB) conçu pour les sites statiques. Il permet d'ajouter facilement un système de documentation interactive avec menu flottant et interface multilingue.
+## Fonctionnalités
 
-### Fonctionnalités principales
+- **Basé sur Markdown**: Rédigez la documentation dans la syntaxe Markdown familière
+- **Multilingue**: Support d'internationalisation intégré
+- **Personnalisable**: Apparence et style personnalisables
+- **Responsive**: Design adapté mobile
+- **Rapide**: Optimisé pour les performances
 
-- **Interface simple** : Menu flottant avec icône 🌊
-- **Multilingue** : Support français/anglais automatique  
-- **Responsive** : Adaptation mobile et desktop
-- **Configurable** : Panneau de configuration intégré
-- **Léger** : Seulement 69KB minifié
-- **Prêt à l'emploi** : Integration en une ligne
+## Démarrage Rapide
+
+```html
+<script src="ontowave.min.js"></script>
+<script>
+window.ontoWaveConfig = {
+    sources: { fr: "documentation.md" }
+};
+</script>
+```
+
+## Démonstrations
+
+- **[Démo Minimale](demo/minimal-demo.html)** - Configuration simple, monolingue
+- **[Démo Avancée](demo/advanced-demo.html)** - Interface complète similaire à MkDocs
+- [Exemples Hérités](demo/basic/) - Collection d'exemples originaux
+- [Suite de Tests](demo/testing/)
 
 ### Utilisation
 
