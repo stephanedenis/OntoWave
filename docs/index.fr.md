@@ -28,88 +28,108 @@ Micro-application JavaScript légère (~18KB) pour sites statiques avec support 
 
 C'est tout ! OntoWave se charge automatiquement et affiche son interface. Cliquez sur l'icône 🌊 en bas à droite pour accéder au panneau de configuration et générer une page HTML configurée selon vos besoins, puis télécharger le fichier `ontowave.min.js` pour votre projet.
 
-### Architecture OntoWave
+### 🏗️ Architecture OntoWave
+
+#### Vue d'ensemble des composants
 
 ```plantuml
-@startuml OntoWave_Architecture
+@startuml Vue_Ensemble
 !theme plain
 
-package "Site Web Statique" {
-  artifact "index.html" as HTML
-  artifact "index.fr.md" as DocFR
-  artifact "index.en.md" as DocEN
-}
+component "index.html" as HTML
+component "ontowave.min.js" as Core
+component "index.fr.md" as DocFR
+component "index.en.md" as DocEN
 
-package "OntoWave (~18KB)" {
-  artifact "ontowave.min.js" as Core
-}
+HTML --> Core : charge
+Core --> DocFR : selon locale FR
+Core --> DocEN : selon locale EN
 
-' Classes OntoWave (hors package pour éviter erreur PlantUML)
+note bottom of HTML : Point d'entrée unique\nConfiguration JSON intégrée
+note bottom of Core : Cœur OntoWave\n18KB minifié
+note bottom of DocFR : Documentation française
+note bottom of DocEN : Documentation anglaise
+
+@enduml
+```
+
+#### Classes principales
+
+```plantuml
+@startuml Classes_Principales
+!theme plain
+
 class Loader {
   +init()
   +loadContent()
 }
+
 class UIManager {
   +createInterface()
   +handleEvents()
 }
+
 class FloatingMenu {
   +show()
   +hide()
   +toggle()
 }
+
 class ConfigPanel {
   +open()
   +close()
   +saveSettings()
 }
+
 class MarkdownProcessor {
   +parse()
   +render()
 }
+
 class I18nSystem {
   +setLanguage()
   +translate()
 }
 
-' Plugins
-interface SyntaxHighlighter
-interface DiagramRenderer
-class PrismPlugin implements SyntaxHighlighter
-class MermaidPlugin implements DiagramRenderer  
-class PlantUMLPlugin implements DiagramRenderer
+Loader --> UIManager : utilise
+Loader --> I18nSystem : utilise
+UIManager --> FloatingMenu : gère
+UIManager --> ConfigPanel : gère
+UIManager --> MarkdownProcessor : gère
 
-' Relations principales
-HTML --> Core : charge et contient
-Core --> DocFR : charge selon locale
-Core --> DocEN : charge selon locale
+@enduml
+```
 
-' Architecture interne
-Core --> Loader : contient
-Core --> UIManager : contient
-Core --> I18nSystem : contient
+#### Système de plugins
 
-UIManager --> FloatingMenu : gere
-UIManager --> ConfigPanel : gere
-UIManager --> MarkdownProcessor : gere
+```plantuml
+@startuml Systeme_Plugins
+!theme plain
+
+interface SyntaxHighlighter {
+  +highlight()
+}
+
+interface DiagramRenderer {
+  +render()
+}
+
+class PrismPlugin
+class MermaidPlugin
+class PlantUMLPlugin
+
+SyntaxHighlighter <|.. PrismPlugin
+DiagramRenderer <|.. MermaidPlugin
+DiagramRenderer <|.. PlantUMLPlugin
+
+class MarkdownProcessor {
+  +parse()
+  +render()
+}
 
 MarkdownProcessor --> PrismPlugin : utilise
-MarkdownProcessor --> MermaidPlugin : utilise  
+MarkdownProcessor --> MermaidPlugin : utilise
 MarkdownProcessor --> PlantUMLPlugin : utilise
-
-note top of Core
-  OntoWave Core
-  Micro-application autonome
-  Interface responsive
-  Configuration interactive
-  Export HTML disponible
-end note
-
-note bottom of HTML
-  Point d'entree unique
-  Configuration JSON integree
-  Charge OntoWave automatiquement
-end note
 
 @enduml
 ```

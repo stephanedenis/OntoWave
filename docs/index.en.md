@@ -28,88 +28,108 @@ Lightweight JavaScript micro-application (~18KB) for static sites with multiling
 
 That's it! OntoWave loads automatically and displays its interface. Click the 🌊 icon in the bottom right to access the configuration panel and generate an HTML page configured to your needs, then download the `ontowave.min.js` file for your project.
 
-### OntoWave Architecture
+### 🏗️ OntoWave Architecture
+
+#### Component Overview
 
 ```plantuml
-@startuml OntoWave_Architecture
+@startuml Component_Overview
 !theme plain
 
-package "Static Website" {
-  artifact "index.html" as HTML
-  artifact "index.fr.md" as DocFR
-  artifact "index.en.md" as DocEN
-}
+component "index.html" as HTML
+component "ontowave.min.js" as Core
+component "index.fr.md" as DocFR
+component "index.en.md" as DocEN
 
-package "OntoWave (~18KB)" {
-  artifact "ontowave.min.js" as Core
-}
+HTML --> Core : loads
+Core --> DocFR : by locale FR
+Core --> DocEN : by locale EN
 
-' OntoWave Classes (outside package to avoid PlantUML error)
+note bottom of HTML : Single entry point\nIntegrated JSON configuration
+note bottom of Core : OntoWave Core\n18KB minified
+note bottom of DocFR : French documentation
+note bottom of DocEN : English documentation
+
+@enduml
+```
+
+#### Main Classes
+
+```plantuml
+@startuml Main_Classes
+!theme plain
+
 class Loader {
   +init()
   +loadContent()
 }
+
 class UIManager {
   +createInterface()
   +handleEvents()
 }
+
 class FloatingMenu {
   +show()
   +hide()
   +toggle()
 }
+
 class ConfigPanel {
   +open()
   +close()
   +saveSettings()
 }
+
 class MarkdownProcessor {
   +parse()
   +render()
 }
+
 class I18nSystem {
   +setLanguage()
   +translate()
 }
 
-' Plugins
-interface SyntaxHighlighter
-interface DiagramRenderer
-class PrismPlugin implements SyntaxHighlighter
-class MermaidPlugin implements DiagramRenderer  
-class PlantUMLPlugin implements DiagramRenderer
-
-' Main relationships
-HTML --> Core : loads and contains
-Core --> DocFR : loads by locale
-Core --> DocEN : loads by locale
-
-' Internal architecture
-Core --> Loader : contains
-Core --> UIManager : contains
-Core --> I18nSystem : contains
-
+Loader --> UIManager : uses
+Loader --> I18nSystem : uses
 UIManager --> FloatingMenu : manages
 UIManager --> ConfigPanel : manages
 UIManager --> MarkdownProcessor : manages
 
+@enduml
+```
+
+#### Plugin System
+
+```plantuml
+@startuml Plugin_System
+!theme plain
+
+interface SyntaxHighlighter {
+  +highlight()
+}
+
+interface DiagramRenderer {
+  +render()
+}
+
+class PrismPlugin
+class MermaidPlugin
+class PlantUMLPlugin
+
+SyntaxHighlighter <|.. PrismPlugin
+DiagramRenderer <|.. MermaidPlugin
+DiagramRenderer <|.. PlantUMLPlugin
+
+class MarkdownProcessor {
+  +parse()
+  +render()
+}
+
 MarkdownProcessor --> PrismPlugin : uses
-MarkdownProcessor --> MermaidPlugin : uses  
+MarkdownProcessor --> MermaidPlugin : uses
 MarkdownProcessor --> PlantUMLPlugin : uses
-
-note top of Core
-  OntoWave Core
-  Self-contained micro-app
-  Responsive interface
-  Interactive configuration
-  HTML export available
-end note
-
-note bottom of HTML
-  Single entry point
-  Integrated JSON configuration
-  Loads OntoWave automatically
-end note
 
 @enduml
 ```
