@@ -15,7 +15,7 @@ test.describe('Test Manuel du Système Multilingue', () => {
     
     // Vérifier contenu français
     const frenchContent = await page.textContent('body');
-    expect(frenchContent).toContain('Générateur de diagrammes pour sites statiques');
+    expect(frenchContent).toContain('Micro-application pour sites statiques');
     console.log('✅ Contenu français chargé');
     
     // Tester navigation vers anglais

@@ -170,7 +170,7 @@ window.OntoWave.updateConfig({
 ## 📦 Taille du Package
 
 - **ontowave.js**: ~102KB (non compressé)
-- **ontowave.min.js**: ~69KB (minifié)
+- **ontowave.min.js**: ~18KB (minifié)
 - **Gzipped**: ~15KB (estimé)
 
 ## 🔗 Liens
