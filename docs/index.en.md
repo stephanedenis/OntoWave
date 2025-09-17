@@ -35,50 +35,88 @@ That's it! OntoWave loads automatically and displays its interface. Click the �
 !theme plain
 
 package "Static Website" {
-  [index.html] as HTML
-  [config.json] as Config
-  [index.fr.md] as DocFR
-  [index.en.md] as DocEN
+  artifact "<<html>>\nindex.html\n📄" as HTML {
+    note right
+      Contains inline JSON config
+      Single entry point
+    end note
+  }
+  artifact "<<markdown>>\nindex.fr.md\n📝" as DocFR
+  artifact "<<markdown>>\nindex.en.md\n📝" as DocEN
 }
 
 package "OntoWave (~18KB)" {
-  [ontowave.min.js] as Core
+  artifact "<<javascript>>\nontowave.min.js\n⚙️" as Core
   
-  package "Internal Components" {
-    [Loader] as Loader
-    [UI Interface] as UI
-    [Floating Menu] as Menu
-    [Config Panel] as Panel
-    [Markdown Processor] as Markdown
-    [I18n System] as I18n
+  package "Internal Architecture" {
+    class Loader {
+      +init()
+      +loadContent()
+    }
+    class UIManager {
+      +createInterface()
+      +handleEvents()
+    }
+    class FloatingMenu {
+      +show()
+      +hide()
+      +toggle()
+    }
+    class ConfigPanel {
+      +open()
+      +close()
+      +saveSettings()
+    }
+    class MarkdownProcessor {
+      +parse()
+      +render()
+    }
+    class I18nSystem {
+      +setLanguage()
+      +translate()
+    }
     
-    package "Plugins" {
-      [Prism.js] as Prism
-      [Mermaid] as Mermaid
-      [PlantUML] as PlantUML
+    package "Plugins" <<folder>> {
+      interface SyntaxHighlighter
+      interface DiagramRenderer
+      
+      class PrismPlugin implements SyntaxHighlighter
+      class MermaidPlugin implements DiagramRenderer  
+      class PlantUMLPlugin implements DiagramRenderer
     }
   }
 }
 
-HTML --> Core : loads
-Core --> Config : reads configuration
-Core --> DocFR : displays (locale=fr)
-Core --> DocEN : displays (locale=en)
+' Precise UML relationships
+HTML *-- Core : composition\n(loads and contains)
+Core ..> DocFR : dependency\n(loads by locale)
+Core ..> DocEN : dependency\n(loads by locale)
 
-Core ||--|| Loader : contains
-Loader --> UI : initializes
-UI --> Menu : creates
-UI --> Panel : creates
-UI --> I18n : configures
-Markdown --> Prism : highlighting
-Markdown --> Mermaid : diagrams
-Markdown --> PlantUML : UML diagrams
+' Internal architecture
+Core *-- Loader : composition
+Core *-- UIManager : composition
+Core *-- I18nSystem : composition
 
-note right of Core
+UIManager --> FloatingMenu : aggregation
+UIManager --> ConfigPanel : aggregation
+UIManager --> MarkdownProcessor : aggregation
+
+MarkdownProcessor --> PrismPlugin : uses
+MarkdownProcessor --> MermaidPlugin : uses  
+MarkdownProcessor --> PlantUMLPlugin : uses
+
+note top of Core
+  🌊 **OntoWave Core**
   ✨ Self-contained micro-app
-  🌊 Responsive interface
+  📱 Responsive interface
   ⚙️ Interactive configuration
   📊 HTML export available
+end note
+
+note bottom of HTML
+  📄 **Single entry point**
+  Integrated JSON configuration
+  Loads OntoWave automatically
 end note
 
 @enduml
