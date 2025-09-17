@@ -14,9 +14,6 @@ Lightweight JavaScript micro-application (~18KB) for static sites with multiling
 
 ### Usage
 
-**Direct Download:**
-Download `ontowave.min.js` and include it in your project.
-
 ```html
 <!DOCTYPE html>
 <html>
@@ -29,7 +26,7 @@ Download `ontowave.min.js` and include it in your project.
 </html>
 ```
 
-That's it! OntoWave loads automatically and displays its interface. Click the 🌊 icon in the bottom right to access the configuration panel and generate an HTML page configured to your needs, then download.
+That's it! OntoWave loads automatically and displays its interface. Click the 🌊 icon in the bottom right to access the configuration panel and generate an HTML page configured to your needs, then download the `ontowave.min.js` file for your project.
 
 ### OntoWave Architecture
 

@@ -14,9 +14,6 @@ Micro-application JavaScript légère (~18KB) pour sites statiques avec support 
 
 ### Utilisation
 
-**Téléchargement direct :**
-Téléchargez `ontowave.min.js` et incluez-le dans votre projet.
-
 ```html
 <!DOCTYPE html>
 <html>
@@ -29,7 +26,7 @@ Téléchargez `ontowave.min.js` et incluez-le dans votre projet.
 </html>
 ```
 
-C'est tout ! OntoWave se charge automatiquement et affiche son interface. Cliquez sur l'icône 🌊 en bas à droite pour accéder au panneau de configuration et générer une page html configurée selon vos besoins, puis télécharger.
+C'est tout ! OntoWave se charge automatiquement et affiche son interface. Cliquez sur l'icône 🌊 en bas à droite pour accéder au panneau de configuration et générer une page HTML configurée selon vos besoins, puis télécharger le fichier `ontowave.min.js` pour votre projet.
 
 ### Architecture OntoWave
 
