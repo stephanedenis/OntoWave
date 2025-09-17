@@ -18,7 +18,7 @@ test.describe('🎯 Production 100% - OntoWave', () => {
       contentRendered: false,
       configValid: false,
       multilingualWorking: false,
-      demosAccessible: false,
+      coreFilesAccessible: false,
       prismActive: false,
       menuVisible: false,
       performanceGood: false
@@ -167,26 +167,28 @@ test.describe('🎯 Production 100% - OntoWave', () => {
       passedCriteria++;
       console.log(`✅ RÉUSSI: Système multilingue configuré (${langConfig.locales.join(', ')}) - locale actuelle: ${langConfig.currentLocale}`);
       
-      // CRITÈRE 7: Démos accessibles
-      console.log('\n🎮 Test 7/10: Démos accessibles');
-      const demosToTest = ['minimal-demo.html', 'advanced-demo.html', 'full-config.html'];
-      let workingDemos = 0;
+      // CRITÈRE 7: Version minimale sans démos (v1.0)
+      console.log('\n🎮 Test 7/10: Version minimale v1.0');
       
-      for (const demo of demosToTest) {
+      // Pour la version 1.0, on ne teste plus les démos mais la version minimale
+      const coreFiles = ['config.json', 'ontowave.min.js', 'index.md', 'index.fr.md', 'index.en.md'];
+      let workingFiles = 0;
+      
+      for (const file of coreFiles) {
         try {
-          const demoResponse = await page.request.get(`http://localhost:8080/demo/${demo}`);
-          if (demoResponse.status() === 200) {
-            workingDemos++;
+          const fileResponse = await page.request.get(`http://localhost:8080/${file}`);
+          if (fileResponse.status() === 200) {
+            workingFiles++;
           }
         } catch (error) {
-          console.log(`⚠️  Démo ${demo} non accessible: ${error.message}`);
+          console.log(`⚠️  Fichier ${file} non accessible: ${error.message}`);
         }
       }
       
-      expect(workingDemos).toBeGreaterThanOrEqual(2);
-      productionCriteria.demosAccessible = true;
+      expect(workingFiles).toBeGreaterThanOrEqual(4); // Au moins 4 fichiers core
+      productionCriteria.coreFilesAccessible = true;
       passedCriteria++;
-      console.log(`✅ RÉUSSI: ${workingDemos}/${demosToTest.length} démos accessibles`);
+      console.log(`✅ RÉUSSI: ${workingFiles}/${coreFiles.length} fichiers core accessibles (version minimale v1.0)`);
       
       // CRITÈRE 8: Prism actif pour la coloration syntaxique
       console.log('\n🎨 Test 8/10: Prism coloration syntaxique');

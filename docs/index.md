@@ -1,165 +1,175 @@
-# OntoWave
+# OntoWave v1.0
 
 <div lang="en">
-A powerful JavaScript library for creating beautiful, interactive documentation from Markdown sources.
+A lightweight JavaScript library for creating beautiful, interactive documentation from Markdown sources with multilingual support and diagram rendering.
 
 ## Features
 
-- **Markdown-based**: Write documentation in familiar Markdown syntax
-- **Multilingual**: Built-in internationalization support
-- **Themeable**: Customizable appearance and styling
-- **Responsive**: Mobile-friendly design
-- **Fast**: Optimized for performance
+- **Markdown Processing**: Parse and render Markdown with syntax highlighting
+- **Multilingual Support**: Built-in internationalization (i18n) 
+- **Prism Integration**: Automatic syntax highlighting for code blocks
+- **Mermaid Diagrams**: Render flowcharts, sequence diagrams, and more
+- **PlantUML Support**: UML diagrams with online rendering
+- **Lightweight**: ~18KB minified, no dependencies
+- **Easy Setup**: Drop-in script with automatic initialization
 
 ## Quick Start
 
 ```html
-<script src="ontowave.min.js"></script>
-<script>
-window.ontoWaveConfig = {
-    sources: { en: "documentation.md" }
-};
-</script>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Documentation</title>
+</head>
+<body>
+    <script src="https://unpkg.com/ontowave@1.0.0/dist/ontowave.min.js"></script>
+</body>
+</html>
 ```
 
-## Demos
+## Configuration
 
-- **[Minimal Demo](demo/minimal-demo.html)** - Simple, single-language setup
-- **[Advanced Demo](demo/advanced-demo.html)** - Full-featured with MkDocs-like interface
-- **[Full Configuration Demo](demo/full-config.html)** - Complete configuration example
-- [All Demo Files](demo/) - Browse all available demos
+```javascript
+window.ontoWaveConfig = {
+    locales: ["en", "fr"],
+    defaultLocale: "en",
+    sources: {
+        en: "docs.en.md",
+        fr: "docs.fr.md"
+    },
+    enablePrism: true,
+    enableMermaid: true,
+    enablePlantUML: true
+};
+```
 </div>
 
 <div lang="fr">
-Une bibliothèque JavaScript puissante pour créer de la documentation interactive et élégante à partir de sources Markdown.
+Une bibliothèque JavaScript légère pour créer de la documentation interactive et élégante à partir de sources Markdown avec support multilingue et rendu de diagrammes.
 
 ## Fonctionnalités
 
-- **Basé sur Markdown**: Rédigez la documentation dans la syntaxe Markdown familière
-- **Multilingue**: Support d'internationalisation intégré
-- **Personnalisable**: Apparence et style personnalisables
-- **Responsive**: Design adapté mobile
-- **Rapide**: Optimisé pour les performances
+- **Traitement Markdown**: Analyse et rendu Markdown avec coloration syntaxique
+- **Support Multilingue**: Internationalisation (i18n) intégrée
+- **Intégration Prism**: Coloration syntaxique automatique pour les blocs de code
+- **Diagrammes Mermaid**: Rendu de graphiques, diagrammes de séquence, etc.
+- **Support PlantUML**: Diagrammes UML avec rendu en ligne
+- **Léger**: ~18KB minifié, aucune dépendance
+- **Configuration Simple**: Script à intégrer avec initialisation automatique
 
 ## Démarrage Rapide
 
 ```html
-<script src="ontowave.min.js"></script>
-<script>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ma Documentation</title>
+</head>
+<body>
+    <script src="https://unpkg.com/ontowave@1.0.0/dist/ontowave.min.js"></script>
+</body>
+</html>
+```
+
+## Configuration
+
+```javascript
 window.ontoWaveConfig = {
-    sources: { fr: "documentation.md" }
+    locales: ["fr", "en"],
+    defaultLocale: "fr",
+    sources: {
+        fr: "docs.fr.md",
+        en: "docs.en.md"
+    },
+    enablePrism: true,
+    enableMermaid: true,
+    enablePlantUML: true
 };
-</script>
 ```
-
-## Démonstrations
-
-- **[Démo Minimale](demo/minimal-demo.html)** - Configuration simple, monolingue
-- **[Démo Avancée](demo/advanced-demo.html)** - Interface complète similaire à MkDocs
-- **[Démo Configuration Complète](demo/full-config.html)** - Exemple de configuration complète
-- [Tous les Fichiers de Démo](demo/) - Parcourir toutes les démos disponibles
 </div>
 
-### Utilisation
+### Installation
 
 <div lang="en">
+### Installation
 
-### Usage
+**Via NPM:**
+```bash
+npm install ontowave
+```
 
-</div>
-
+**Via CDN:**
 ```html
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Mon Site avec OntoWave</title>
-</head>
-<body>
-    <script src="ontowave.min.js"></script>
-</body>
-</html>
+<script src="https://unpkg.com/ontowave@1.0.0/dist/ontowave.min.js"></script>
 ```
 
-C'est tout ! OntoWave se charge automatiquement et affiche son interface. Cliquez sur l'icône 🌊 en haut à gauche pour accéder au panneau de configuration et générer une page html configurée selon vos besoins, puis télécharger.
-
-<div lang="en">
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <title>My Site with OntoWave</title>
-</head>
-<body>
-    <script src="ontowave.min.js"></script>
-</body>
-</html>
-```
-
-That's it! OntoWave loads automatically and displays its interface. Click on the 🌊 icon at the top left to access the configuration panel and generate an HTML page configured to your needs, then download.
-
+**Direct Download:**
+Download `ontowave.min.js` and include it in your project.
 </div>
 
-### Diagrammes supportés
+**Via NPM :**
+```bash
+npm install ontowave
+```
+
+**Via CDN :**
+```html
+<script src="https://unpkg.com/ontowave@1.0.0/dist/ontowave.min.js"></script>
+```
+
+**Téléchargement direct :**
+Téléchargez `ontowave.min.js` et incluez-le dans votre projet.
+
+### Exemples de diagrammes
 
 <div lang="en">
-
-### Supported diagrams
-
+### Diagram Examples
 </div>
 
 #### Mermaid
 
 ```mermaid
 graph TD
-    A[OntoWave] --> B[Interface]
-    B --> C[Configuration]
-    C --> D[Export HTML]
+    A[OntoWave v1.0] --> B[Markdown Parser]
+    B --> C[Prism Syntax Highlighting]
+    C --> D[Mermaid Diagrams]
+    D --> E[PlantUML Support]
+    E --> F[Multilingual Output]
 ```
 
 #### PlantUML
 
 ```plantuml
 @startuml
-User -> OntoWave: Utilise
-OntoWave -> Browser: Affiche
-Browser -> User: Interface
+!define RECTANGLE class
+RECTANGLE OntoWave {
+  +parseMarkdown()
+  +enablePrism()
+  +renderMermaid()
+  +processPlantUML()
+  +switchLanguage()
+}
 @enduml
 ```
-
-### Configuration avancée
-
-<div lang="en">
-
-### Advanced configuration
-
-</div>
-
-C'est également là que vous pouvez télécharger le fichier ontowave.min.js et construire dynamiquement votre page HTML complète.
-
-<div lang="en">
-
-This is also where you can download the ontowave.min.js file and dynamically build your complete HTML page.
-
-</div>
 
 ### Licence
 
 <div lang="en">
-
 ### License
 
+**CC BY-NC-SA** - Stéphane Denis  
+[![Creative Commons](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)](https://github.com/stephanedenis/OntoWave)
+
+OntoWave v1.0 is distributed under Creative Commons Attribution - Non Commercial - Share Alike 4.0 license. This license allows you to share and adapt the content for non-commercial use, provided you mention the author and keep the same license for derivative works.
+
+**Commercial licensing available** - Contact for commercial use licenses.
 </div>
 
 **CC BY-NC-SA** - Stéphane Denis  
 [![Creative Commons](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)](https://github.com/stephanedenis/OntoWave)
 
-OntoWave est distribué sous licence Creative Commons Attribution - Pas d'Utilisation Commerciale - Partage dans les Mêmes Conditions 4.0. Cette licence vous permet de partager et adapter le contenu pour des usages non-commerciaux, à condition de mentionner l'auteur et de conserver la même licence pour les œuvres dérivées.
+OntoWave v1.0 est distribué sous licence Creative Commons Attribution - Pas d'Utilisation Commerciale - Partage dans les Mêmes Conditions 4.0. Cette licence vous permet de partager et adapter le contenu pour des usages non-commerciaux, à condition de mentionner l'auteur et de conserver la même licence pour les œuvres dérivées.
 
-<div lang="en">
-
-OntoWave is distributed under Creative Commons Attribution - Non Commercial - Share Alike 4.0 license. This license allows you to share and adapt the content for non-commercial use, provided you mention the author and keep the same license for derivative works.
-
-</div>
+**Licence commerciale disponible** - Contactez-nous pour les licences d'usage commercial.
 
 

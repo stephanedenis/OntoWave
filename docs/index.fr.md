@@ -1,4 +1,98 @@
-# OntoWave
+# OntoWave v1.0
+
+Une bibliothèque JavaScript légère pour créer de la documentation interactive et élégante à partir de sources Markdown avec support multilingue et rendu de diagrammes.
+
+## Fonctionnalités
+
+- **Traitement Markdown**: Analyse et rendu Markdown avec coloration syntaxique
+- **Support Multilingue**: Internationalisation (i18n) intégrée
+- **Intégration Prism**: Coloration syntaxique automatique pour les blocs de code
+- **Diagrammes Mermaid**: Rendu de graphiques, diagrammes de séquence, etc.
+- **Support PlantUML**: Diagrammes UML avec rendu en ligne
+- **Léger**: ~18KB minifié, aucune dépendance
+- **Configuration Simple**: Script à intégrer avec initialisation automatique
+
+## Démarrage Rapide
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ma Documentation</title>
+</head>
+<body>
+    <script src="https://unpkg.com/ontowave@1.0.0/dist/ontowave.min.js"></script>
+</body>
+</html>
+```
+
+## Configuration
+
+```javascript
+window.ontoWaveConfig = {
+    locales: ["fr", "en"],
+    defaultLocale: "fr",
+    sources: {
+        fr: "docs.fr.md",
+        en: "docs.en.md"
+    },
+    enablePrism: true,
+    enableMermaid: true,
+    enablePlantUML: true
+};
+```
+
+### Installation
+
+**Via NPM :**
+```bash
+npm install ontowave
+```
+
+**Via CDN :**
+```html
+<script src="https://unpkg.com/ontowave@1.0.0/dist/ontowave.min.js"></script>
+```
+
+**Téléchargement direct :**
+Téléchargez `ontowave.min.js` et incluez-le dans votre projet.
+
+### Exemples de diagrammes
+
+#### Mermaid
+
+```mermaid
+graph TD
+    A[OntoWave v1.0] --> B[Analyseur Markdown]
+    B --> C[Coloration Syntaxique Prism]
+    C --> D[Diagrammes Mermaid]
+    D --> E[Support PlantUML]
+    E --> F[Sortie Multilingue]
+```
+
+#### PlantUML
+
+```plantuml
+@startuml
+!define RECTANGLE class
+RECTANGLE OntoWave {
+  +analyserMarkdown()
+  +activerPrism()
+  +renduMermaid()
+  +traiterPlantUML()
+  +changerLangue()
+}
+@enduml
+```
+
+### Licence
+
+**CC BY-NC-SA** - Stéphane Denis  
+[![Creative Commons](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)](https://github.com/stephanedenis/OntoWave)
+
+OntoWave v1.0 est distribué sous licence Creative Commons Attribution - Pas d'Utilisation Commerciale - Partage dans les Mêmes Conditions 4.0. Cette licence vous permet de partager et adapter le contenu pour des usages non-commerciaux, à condition de mentionner l'auteur et de conserver la même licence pour les œuvres dérivées.
+
+**Licence commerciale disponible** - Contactez-nous pour les licences d'usage commercial.
 
 Une bibliothèque JavaScript puissante pour créer de la documentation interactive et élégante à partir de sources Markdown.
 
