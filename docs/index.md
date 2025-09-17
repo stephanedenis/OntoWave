@@ -1,7 +1,7 @@
 # OntoWave v1.0
 
 <div lang="en">
-A lightweight JavaScript library for creating beautiful, interactive documentation from Markdown sources with multilingual support and diagram rendering.
+Lightweight JavaScript micro-application (~18KB) for static sites with multilingual support, syntax highlighting and diagrams.
 
 ## Features
 
@@ -22,7 +22,7 @@ A lightweight JavaScript library for creating beautiful, interactive documentati
     <title>My Documentation</title>
 </head>
 <body>
-    <script src="https://unpkg.com/ontowave@1.0.0/dist/ontowave.min.js"></script>
+    <script src="ontowave.min.js"></script>
 </body>
 </html>
 ```
@@ -66,7 +66,7 @@ Une bibliothèque JavaScript légère pour créer de la documentation interactiv
     <title>Ma Documentation</title>
 </head>
 <body>
-    <script src="https://unpkg.com/ontowave@1.0.0/dist/ontowave.min.js"></script>
+    <script src="ontowave.min.js"></script>
 </body>
 </html>
 ```
@@ -93,29 +93,9 @@ window.ontoWaveConfig = {
 <div lang="en">
 ### Installation
 
-**Via NPM:**
-```bash
-npm install ontowave
-```
-
-**Via CDN:**
-```html
-<script src="https://unpkg.com/ontowave@1.0.0/dist/ontowave.min.js"></script>
-```
-
 **Direct Download:**
 Download `ontowave.min.js` and include it in your project.
 </div>
-
-**Via NPM :**
-```bash
-npm install ontowave
-```
-
-**Via CDN :**
-```html
-<script src="https://unpkg.com/ontowave@1.0.0/dist/ontowave.min.js"></script>
-```
 
 **Téléchargement direct :**
 Téléchargez `ontowave.min.js` et incluez-le dans votre projet.
