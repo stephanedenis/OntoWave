@@ -25,8 +25,7 @@ window.ontoWaveConfig = {
 
 - **[Démo Minimale](demo/minimal-demo.html)** - Configuration simple, monolingue
 - **[Démo Avancée](demo/advanced-demo.html)** - Interface complète similaire à MkDocs
-- [Exemples Hérités](demo/basic/) - Collection d'exemples originaux
-- [Suite de Tests](demo/testing/)
+- **[Configuration Complète](demo/full-config.html)** - Exemple avec toutes les options
 
 ### Utilisation
 
