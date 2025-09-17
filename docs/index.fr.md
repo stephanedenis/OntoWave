@@ -30,8 +30,8 @@ C'est tout ! OntoWave se charge automatiquement et affiche son interface. Clique
 
 Explorez nos différentes configurations :
 
-- **[Configuration minimale](demo/minimal.html)** - L'intégration la plus simple possible
-- **[Configuration avancée](demo/advanced.html)** - Avec système multilingue complet  
+- **[Configuration minimale](demo/minimal-demo.html)** - L'intégration la plus simple possible
+- **[Configuration avancée](demo/advanced-demo.html)** - Avec système multilingue complet  
 - **[Configuration complète](demo/full-config.html)** - Toutes les fonctionnalités activées
 
 ### Architecture OntoWave

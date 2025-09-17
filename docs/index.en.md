@@ -30,8 +30,8 @@ That's it! OntoWave loads automatically and displays its interface. Click on the
 
 Explore our different configurations:
 
-- **[Minimal configuration](demo/minimal.html)** - The simplest possible integration
-- **[Advanced configuration](demo/advanced.html)** - With complete multilingual system  
+- **[Minimal configuration](demo/minimal-demo.html)** - The simplest possible integration
+- **[Advanced configuration](demo/advanced-demo.html)** - With complete multilingual system  
 - **[Full configuration](demo/full-config.html)** - All features enabled
 
 ### OntoWave Architecture
