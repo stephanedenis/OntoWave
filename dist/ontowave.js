@@ -467,6 +467,30 @@
       font-weight: 600;
     }
     
+    .ontowave-content h4 {
+      color: #24292e;
+      margin-top: 16px;
+      margin-bottom: 10px;
+      font-size: 1.1em;
+      font-weight: 600;
+    }
+    
+    .ontowave-content h5 {
+      color: #24292e;
+      margin-top: 14px;
+      margin-bottom: 8px;
+      font-size: 1em;
+      font-weight: 600;
+    }
+    
+    .ontowave-content h6 {
+      color: #24292e;
+      margin-top: 12px;
+      margin-bottom: 6px;
+      font-size: 0.9em;
+      font-weight: 600;
+    }
+    
     /* Séparateurs hr */
     .ontowave-content hr {
       border: none;
@@ -1553,7 +1577,10 @@
       
       // Transformations markdown principales
       html = html
-        // Headers - corriger l'ordre et la syntaxe
+        // Headers - corriger l'ordre et la syntaxe (du plus spécifique au plus général)
+        .replace(/^###### (.+)$/gm, '<h6>$1</h6>')
+        .replace(/^##### (.+)$/gm, '<h5>$1</h5>')
+        .replace(/^#### (.+)$/gm, '<h4>$1</h4>')
         .replace(/^### (.+)$/gm, '<h3>$1</h3>')
         .replace(/^## (.+)$/gm, '<h2>$1</h2>')
         .replace(/^# (.+)$/gm, '<h1>$1</h1>')
