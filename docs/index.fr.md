@@ -34,33 +34,56 @@ C'est tout ! OntoWave se charge automatiquement et affiche son interface. Clique
 ### Architecture OntoWave
 
 ```plantuml
-@startuml
+@startuml OntoWave_Architecture
 !theme plain
-skinparam backgroundColor transparent
 
-package "OntoWave v1.0 (~18KB)" {
-  [Chargeur] --> [Interface UI]
-  [Interface UI] --> [Menu Flottant]
-  [Interface UI] --> [Panneau Config]
-  
-  [Processeur Markdown] --> [Prism.js]
-  [Processeur Markdown] --> [Mermaid]
-  [Processeur Markdown] --> [PlantUML]
-  
-  [Système I18n] --> [FR/EN]
+package "Site Web Statique" {
+  [index.html] as HTML
+  [config.json] as Config
+  [index.fr.md] as DocFR
+  [index.en.md] as DocEN
 }
 
-[Site Statique] --> [ontowave.min.js] : charge
-[ontowave.min.js] --> [Chargeur] : initialise
-[Menu Flottant] --> [Processeur Markdown] : active
-[Panneau Config] --> [Système I18n] : bascule
+package "OntoWave (~18KB)" {
+  [ontowave.min.js] as Core
+  
+  package "Composants Internes" {
+    [Chargeur] as Loader
+    [Interface UI] as UI
+    [Menu Flottant] as Menu
+    [Panneau Config] as Panel
+    [Processeur Markdown] as Markdown
+    [Système I18n] as I18n
+    
+    package "Plugins" {
+      [Prism.js] as Prism
+      [Mermaid] as Mermaid
+      [PlantUML] as PlantUML
+    }
+  }
+}
 
-note right of [OntoWave v1.0 (~18KB)]
+HTML --> Core : charge
+Core --> Config : lit configuration
+Core --> DocFR : affiche (locale=fr)
+Core --> DocEN : affiche (locale=en)
+
+Core ||--|| Loader : contient
+Loader --> UI : initialise
+UI --> Menu : crée
+UI --> Panel : crée
+UI --> I18n : configure
+Markdown --> Prism : coloration
+Markdown --> Mermaid : diagrammes
+Markdown --> PlantUML : diagrammes UML
+
+note right of Core
   ✨ Micro-application autonome
   🌊 Interface responsive
   ⚙️ Configuration interactive
   📊 Export HTML disponible
 end note
+
 @enduml
 ```
 
