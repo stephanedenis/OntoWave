@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OntoWave - Plugin System Demo</title>
+</head>
+<body>
+  <!-- 
+    Configuration OntoWave avec Plugins
+    Philosophie : Tout dans le HTML, aucun fichier de configuration externe
+  -->
+  
+  <!-- Méthode 1: Configuration via data-plugins (recommandée) -->
+  <div id="ontowave-container" 
+       data-plugins='[
+         {
+           "name": "analytics",
+           "enabled": true,
+           "config": {
+             "trackingId": "GA-XXXXXXXXX"
+           }
+         },
+         {
+           "name": "darkmode",
+           "enabled": true,
+           "config": {
+             "auto": true
+           }
+         },
+         {
+           "name": "readingtime",
+           "enabled": true
+         }
+       ]'>
+  </div>
+
+  <!-- Méthode 2: Configuration via script JSON (alternative) -->
+  <script type="application/json" id="ontowave-config">
+  {
+    "title": "OntoWave Plugin Demo",
+    "defaultPage": "index.md",
+    "plugins": [
+      {
+        "name": "analytics",
+        "enabled": true,
+        "config": {
+          "trackingId": "GA-XXXXXXXXX"
+        }
+      },
+      {
+        "name": "darkmode",
+        "enabled": true,
+        "config": {
+          "auto": true
+        }
+      },
+      {
+        "name": "readingtime",
+        "enabled": true
+      }
+    ]
+  }
+  </script>
+
+  <!-- Méthode 3: Configuration via window.ontoWaveConfig (alternative) -->
+  <script>
+    window.ontoWaveConfig = {
+      title: "OntoWave Plugin Demo",
+      defaultPage: "index.md",
+      plugins: [
+        {
+          name: "analytics",
+          enabled: true,
+          config: {
+            trackingId: "GA-XXXXXXXXX"
+          }
+        },
+        {
+          name: "darkmode", 
+          enabled: true,
+          config: {
+            auto: true
+          }
+        },
+        {
+          name: "readingtime",
+          enabled: true
+        }
+      ]
+    };
+  </script>
+
+  <!-- 
+    OntoWave avec système de plugins intégré
+    Philosophie : Un seul fichier .min.js contient tout
+  -->
+  <script src="../dist/ontowave.min.js"></script>
+  
+  <!-- Initialisation OntoWave avec plugins -->
+  <script>
+    // OntoWave détecte et active automatiquement les plugins configurés
+    document.addEventListener('DOMContentLoaded', async () => {
+      const app = new OntoWave({
+        containerId: 'ontowave-container'
+      });
+      
+      // Le système de plugins est automatiquement initialisé
+      await app.init();
+      
+      console.log('🔌 OntoWave avec plugins initialisé !');
+      console.log('🔌 Plugins actifs:', app.pluginManager?.getActivePlugins());
+    });
+  </script>
+
+  <!-- Exemple de contenu Markdown -->
+  <script type="text/markdown" data-src="index.md">
+# Demo du Système de Plugins OntoWave
+
+## Fonctionnalités Actives
+
+### 📊 Plugin Analytics
+- Suivi automatique des pages visitées
+- Tracking des clics sur liens externes  
+- Analyse des interactions avec les diagrammes
+
+### 🌙 Plugin Dark Mode
+- Basculement automatique clair/sombre
+- Détection des préférences système
+- Sauvegarde des préférences utilisateur
+- Bouton de basculement en haut à droite
+
+### 📖 Plugin Reading Time  
+- Calcul automatique du temps de lecture
+- Comptage des mots
+- Affichage multilingue (FR/EN)
+
+## Architecture du Système
+
+Le système de plugins OntoWave respecte la philosophie **"un fichier, tout dans le HTML"** :
+
+1. **Configuration HTML uniquement** - Pas de fichiers .json externes
+2. **Plugins intégrés** dans le .min.js 
+3. **Auto-enregistrement** des plugins disponibles
+4. **Chargement dynamique** selon la configuration
+
+## Exemples de Configuration
+
+### Via data-plugins (Recommandé)
+```html
+<div id="ontowave-container" 
+     data-plugins='[{"name":"analytics","enabled":true}]'>
+</div>
+```
+
+### Via window.ontoWaveConfig  
+```javascript
+window.ontoWaveConfig = {
+  plugins: [
+    { name: "darkmode", enabled: true }
+  ]
+};
+```
+
+### Via script JSON
+```html
+<script type="application/json" id="ontowave-config">
+{
+  "plugins": [{"name":"readingtime","enabled":true}]
+}
+</script>
+```
+
+## Développement de Plugins
+
+Les plugins OntoWave sont intégrés directement dans le code source et s'auto-enregistrent :
+
+```typescript
+class MonPlugin implements OntoWavePlugin {
+  readonly name = 'monplugin';
+  readonly version = '1.0.0';
+  enabled = false;
+
+  async initialize(context: PluginContext): Promise<void> {
+    // Initialisation du plugin
+    context.hooks.afterPageRender((element: HTMLElement) => {
+      // Actions après rendu
+    });
+  }
+
+  async destroy(): Promise<void> {
+    // Nettoyage
+  }
+}
+
+// Auto-enregistrement
+PluginRegistry.register(new MonPlugin());
+```
+
+## Hooks Disponibles
+
+- `beforePageRender` - Avant le rendu d'une page
+- `afterPageRender` - Après le rendu d'une page  
+- `beforeInit` - Avant l'initialisation OntoWave
+- `afterInit` - Après l'initialisation OntoWave
+
+Cette approche garantit la simplicité et la cohérence de OntoWave !
+  </script>
+
+</body>
+</html>

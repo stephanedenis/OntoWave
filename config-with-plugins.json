@@ -1,0 +1,30 @@
+{
+  "engine": "v2",
+  "brand": "OntoWave with Plugins",
+  "roots": [
+    { "base": "fr", "root": "/content/fr" },
+    { "base": "", "root": "/content" }
+  ],
+  "plugins": {
+    "enabled": [
+      "custom-syntax-highlighter",
+      "analytics"
+    ],
+    "config": {
+      "analytics": {
+        "trackingId": "GA_MEASUREMENT_ID"
+      }
+    }
+  },
+  "ui": {
+    "header": true,
+    "sidebar": true,
+    "toc": true,
+    "menu": true,
+    "minimal": false
+  },
+  "i18n": {
+    "default": "fr",
+    "supported": ["fr", "en"]
+  }
+}

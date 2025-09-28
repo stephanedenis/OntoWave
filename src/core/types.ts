@@ -6,6 +6,10 @@ export type AppConfig = {
   engine?: 'legacy' | 'v2'
   i18n?: { default: string; supported: string[] }
   ui?: { header?: boolean; sidebar?: boolean; toc?: boolean; footer?: boolean; minimal?: boolean; menu?: boolean }
+  plugins?: {
+    enabled: string[]
+    config?: Record<string, any>
+  }
 }
 
 export interface ConfigService {
