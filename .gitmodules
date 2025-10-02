@@ -1,0 +1,3 @@
+[submodule ".specify/shared"]
+	path = .specify/shared
+	url = https://github.com/stephanedenis/PaniniFS-SpecKit-Shared.git

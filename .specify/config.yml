@@ -1,0 +1,38 @@
+# Configuration Spec-Kit pour Panini-OntoWave
+# Intégration avec PaniniFS-SpecKit-Shared
+
+# Constitutions
+shared_constitution: .specify/shared/constitutions/panini-universal-constitution.md
+project_constitution: .specify/memory/constitution.md
+
+# Règles partagées
+rules:
+  - .specify/shared/rules/code-standards.yml
+  - .specify/shared/rules/conventional-commits.yml
+  - .specify/shared/rules/pull-requests.yml
+
+# Templates partagés
+templates:
+  feature: .specify/shared/templates/feature-spec-template.md
+  # api: .specify/shared/templates/api-spec-template.md  # À venir
+
+# Configuration projet spécifique
+project:
+  name: Panini-OntoWave
+  type: research
+  domain: semantic_wave_analysis
+  languages:
+    - python
+    - markdown
+  
+# Workflows automatisés
+automation:
+  tests:
+    - unit
+    - integration
+  ci_cd:
+    provider: github_actions
+    branches:
+      - main
+      - dev
+      - feature/*
