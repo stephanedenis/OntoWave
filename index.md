@@ -1,80 +1,90 @@
-# 🌊 OntoWave - Test Complet des Tableaux
+# 🌊 OntoWave - Démonstration Complète des Tableaux
 
-## ✅ Fix des Tableaux Validé
+OntoWave supporte maintenant **TOUS** les alignements de tableaux markdown avec un rendu professionnel.
 
-OntoWave intègre maintenant le support complet des tableaux Markdown avec injection CSS automatique.
+## 1. Tableau avec Tous les Types d'Alignement
 
-## 1. Tableau Simple Basique
+| Gauche (défaut) | Centre | Droite | Justifié |
+|:----------------|:------:|-------:|:---------|
+| Texte normal aligné à gauche | 🎯 Centré | 123.45€ | Ce texte long sera justifié automatiquement sur plusieurs lignes pour montrer l'effet |
+| Court | Médium | Long texte | Justification avec césure automatique pour un rendu optimal |
+| Item A | Item B | Item C | Dernier texte justifié |
 
-| Nom | Age | Ville |
-|-----|-----|-------|
-| Alice | 30 | Paris |
-| Bob | 25 | Lyon |
-| Charlie | 35 | Marseille |
+## 2. Tableau Financier avec Alignement Numérique
 
-## 2. Tableau avec Alignement des Colonnes
-
-| Élément | Quantité | Prix unitaire | Total |
+| Produit | Quantité | Prix Unitaire | Total |
 |:--------|:--------:|:-------------:|------:|
-| Pommes | 5 | 2.50€ | 12.50€ |
-| Oranges | 3 | 3.00€ | 9.00€ |
-| Bananes | 8 | 1.80€ | 14.40€ |
-| **TOTAL** | **16** | **-** | **35.90€** |
+| Ordinateur Portable | 2 | 899.99€ | 1799.98€ |
+| Souris Sans Fil | 5 | 25.50€ | 127.50€ |
+| Clavier Mécanique | 3 | 75.00€ | 225.00€ |
+| Écran 4K | 1 | 450.00€ | 450.00€ |
+| **TOTAL COMMANDE** | **11** | | **2602.48€** |
 
-## 3. Tableau de Validation du Fix
+## 3. Tableau de Compatibilité avec Icônes
 
-| **Fonctionnalité** | **Statut** | **Priorité** | **Description** |
-|:-------------------|:----------:|:------------:|:----------------|
-| _Tableaux CSS_ | ✅ **Terminé** | 🔥 Haute | Bordures et styles appliqués |
-| _Headers gras_ | ✅ **Terminé** | 📈 Moyenne | Mise en forme des en-têtes |
-| _Zebra striping_ | ✅ **Terminé** | 🎨 Haute | Alternance couleurs lignes |
-| _Responsive_ | ✅ **Terminé** | 📱 Critique | Adaptation écrans mobiles |
+| Fonctionnalité | Windows | macOS | Linux | Android | iOS |
+|:---------------|:-------:|:-----:|:-----:|:-------:|:---:|
+| Installation | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Synchronisation | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Mode Hors-ligne | ⚠️ | ✅ | ✅ | ✅ | ❌ |
+| Sauvegarde Auto | ✅ | ✅ | ⚠️ | ⚠️ | ❌ |
+| Support Touch | ❌ | ⚠️ | ❌ | ✅ | ✅ |
 
-## 4. Tableau avec Émojis
+## 4. Données Techniques avec Alignement Mixte
 
-| 🌟 Feature | 📊 Progress | 🎯 Impact | 📝 Notes |
-|:-----------|:-----------:|:---------:|:---------|
-| 🔧 Fix CSS | 100% | 🔥🔥🔥 | Styles automatiques |
-| 🎨 Design | 95% | 🔥🔥 | Zebra + responsive |
-| 📱 Mobile | 90% | 🔥🔥🔥 | Tests requis |
-| 🌙 Dark Mode | 85% | 🔥 | En cours |
+| Paramètre | Valeur Min | Valeur Max | Unité | Description Détaillée |
+|:----------|----------:|----------:|:-----:|:----------------------|
+| Température | -40 | +85 | °C | Plage de fonctionnement optimal en conditions extrêmes |
+| Tension | 3.0 | 5.5 | V | Alimentation requise pour fonctionnement stable |
+| Fréquence | 1 | 100 | MHz | Bande passante de traitement des signaux |
+| Consommation | 10 | 250 | mW | Puissance électrique consommée en mode actif |
+| Précision | 0.1 | 1.0 | % | Marge d'erreur acceptable dans les mesures |
 
-## 5. Tableau Minimal
+## 5. Tableau Simple Centré
 
-| Oui | Non |
-|-----|-----|
-| ✅ | ❌ |
-| 👍 | 👎 |
+| Status | Code |
+|:------:|:----:|
+| ✅ | 200 |
+| ⚠️ | 404 |
+| ❌ | 500 |
+
+## 6. Liste de Prix Alignée à Droite
+
+| Article | Prix |
+|:--------|-----:|
+| Café | 2.50€ |
+| Croissant | 1.80€ |
+| Sandwich | 6.90€ |
+| Boisson | 3.20€ |
+| Menu Complet | 12.50€ |
+
+## 7. Tableau Complexe avec Cellules Vides
+
+| Feature | Alpha | Beta | Stable | Notes |
+|:--------|:-----:|:----:|:------:|:------|
+| API v1 | ✅ | ✅ | ✅ | Production ready |
+| API v2 | ✅ | ✅ | | En développement |
+| WebSocket | ✅ | | | Phase test |
+| GraphQL | | | | Planifié |
 
 ---
 
-**🎉 Fix des tableaux OntoWave complètement validé !**
+## 🎯 Syntaxes Markdown Supportées
 
-### 🔧 Détails Techniques
-
-- **MarkdownIt** : `tables: true` activé explicitement
-- **CSS** : Injection automatique via `injectTableStyles()`
-- **Styles** : Bordures, headers, zebra striping, responsive
-- **Tests** : Validation Playwright complète
-- **Preuve** : Capture d'écran générée automatiquement
-| Valeur A  | Valeur B  | Valeur C  |
-| Test 1    | Test 2    | Test 3    |
-
-## Tableau avec alignement
-
+```markdown
 | Gauche | Centre | Droite |
 |:-------|:------:|-------:|
-| Aligné gauche | Aligné centre | Aligné droite |
-| Long texte à gauche | Centre | 123 |
+| :---   | :---:  |   ---: |
+```
+
+## ✅ Fonctionnalités Validées
+
+- **Parsing automatique** : Détection syntaxe `| Header |`
+- **Alignements complets** : `:---`, `:---:`, `---:`
+- **Styles CSS avancés** : Bordures, hover, responsive
+- **Cellules vides** : Gestion automatique avec tirets
+- **Contenu mixte** : Texte, nombres, icônes, prix
 
 ---
 
-**🎉 Fix des tableaux OntoWave complètement validé !**
-
-### 🔧 Détails Techniques
-
-- **MarkdownIt** : `tables: true` activé explicitement
-- **CSS** : Injection automatique via `injectTableStyles()`
-- **Styles** : Bordures, headers, zebra striping, responsive
-- **Tests** : Validation Playwright complète
-- **Preuve** : Capture d'écran générée automatiquement
+*🎉 OntoWave - Rendu markdown professionnel avec support complet des tableaux !*

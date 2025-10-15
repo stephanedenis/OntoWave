@@ -1,19 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-    <meta charset="utf-8">
-    <title>OntoWave - Test Tableaux</title>
-    <script type="module" src="/src/main.ts"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave</title>
 </head>
 <body>
-    <div id="content"></div>
-    <script>
-        // Attendre que OntoWave soit chargé puis charger index.md
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                window.location.hash = '#/index.md';
-            }, 500);
-        });
-    </script>
+    <script src="dist/ontowave.js"></script>
 </body>
 </html>

@@ -1,14 +1,7 @@
-/**
- * Rendu avancé des tableaux markdown avec markdown-it
- * Support complet: alignement (:---:, ---:, :---), justification, échappement
- */
 
 import MarkdownIt from 'markdown-it';
 import multimdTable from 'markdown-it-multimd-table';
 
-/**
- * Configuration markdown-it avec support complet des tableaux
- */
 export function createMarkdownRenderer() {
     const md = new MarkdownIt({
         html: true,
@@ -29,12 +22,8 @@ export function createMarkdownRenderer() {
     return md;
 }
 
-/**
- * Styles CSS complets pour les tableaux avec alignements
- */
 export const ADVANCED_TABLE_STYLES = `
 <style>
-/* Styles de base pour tous les tableaux */
 table {
     border-collapse: collapse;
     width: 100%;
@@ -48,7 +37,6 @@ table {
     overflow: hidden;
 }
 
-/* Headers */
 thead th, th {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     font-weight: 600;
@@ -60,7 +48,6 @@ thead th, th {
     letter-spacing: 0.5px;
 }
 
-/* Cellules de données */
 tbody td, td {
     border: 1px solid #dee2e6;
     padding: 12px 16px;
@@ -68,7 +55,6 @@ tbody td, td {
     transition: background-color 0.2s ease;
 }
 
-/* Alternance des lignes */
 tbody tr:nth-child(even), tr:nth-child(even) {
     background-color: #f8f9fa;
 }
@@ -77,7 +63,6 @@ tbody tr:hover, tr:hover {
     background-color: #e3f2fd;
 }
 
-/* Alignements - Support syntaxe markdown */
 .text-left, th[style*="text-align: left"], td[style*="text-align: left"] {
     text-align: left !important;
 }
@@ -90,14 +75,12 @@ tbody tr:hover, tr:hover {
     text-align: right !important;
 }
 
-/* Justification pour les cellules avec beaucoup de texte */
 .text-justify {
     text-align: justify;
     hyphens: auto;
     word-break: break-word;
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
     table {
         font-size: 12px;
@@ -112,7 +95,6 @@ tbody tr:hover, tr:hover {
     }
 }
 
-/* Tableaux compacts pour les données denses */
 .table-compact {
     font-size: 12px;
 }
@@ -121,14 +103,12 @@ tbody tr:hover, tr:hover {
     padding: 6px 8px;
 }
 
-/* Support des cellules vides */
 td:empty::before {
     content: "—";
     color: #6c757d;
     font-style: italic;
 }
 
-/* Bordures spéciales pour les tableaux complexes */
 .table-bordered {
     border: 2px solid #495057;
 }
@@ -137,13 +117,11 @@ td:empty::before {
     border: 1px solid #495057;
 }
 
-/* Highlight pour colonnes importantes */
 .col-highlight {
     background-color: #fff3cd !important;
     border-left: 3px solid #ffc107;
 }
 
-/* Support pour les cellules de spans multiples */
 td[colspan], th[colspan] {
     font-weight: 600;
     background-color: #e9ecef;
@@ -157,9 +135,6 @@ td[rowspan], th[rowspan] {
 </style>
 `;
 
-/**
- * Convertit le markdown en HTML avec support complet des tableaux
- */
 export function renderAdvancedMarkdown(markdownText) {
     const md = createMarkdownRenderer();
     
@@ -173,9 +148,6 @@ export function renderAdvancedMarkdown(markdownText) {
     return html;
 }
 
-/**
- * Améliore l'alignement des tableaux basé sur la syntaxe markdown
- */
 function enhanceTableAlignment(html) {
     // Détection et application des alignements
     return html.replace(/<table[^>]*>/g, (match) => {
@@ -183,16 +155,10 @@ function enhanceTableAlignment(html) {
     });
 }
 
-/**
- * Ajoute des wrappers responsive aux tableaux
- */
 function addTableResponsiveWrapper(html) {
     return html.replace(/<table([^>]*)>/g, '<div class="table-responsive"><table$1>').replace(/<\/table>/g, '</table></div>');
 }
 
-/**
- * Exemple d'utilisation avec tous les types d'alignement
- */
 export const DEMO_MARKDOWN_ADVANCED = `
 # Démonstration Tableaux Avancés OntoWave
 
