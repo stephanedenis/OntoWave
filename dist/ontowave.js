@@ -1600,9 +1600,55 @@
         .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
         .replace(/\*(.+?)\*/g, '<em>$1</em>')
         // Code inline
-        .replace(/`([^`]+)`/g, '<code>$1</code>')
-        // Paragraphes
-        .split('\n\n')
+        .replace(/`([^`]+)`/g, '<code>$1</code>');
+      
+      // Traitement des tableaux markdown
+      html = html.replace(/(\|[^|\n]*\|[^|\n]*\|[^\n]*\n\|[-:| ]+\|[^\n]*\n(?:\|[^\n]*\n?)*)/g, (match) => {
+        const lines = match.trim().split('\n');
+        if (lines.length < 2) return match;
+        
+        const headerLine = lines[0];
+        const separatorLine = lines[1];
+        const dataLines = lines.slice(2);
+        
+        // Vérifier que c'est un tableau valide
+        if (!headerLine.includes('|') || !separatorLine.includes('|')) return match;
+        
+        // Parser les en-têtes
+        const headers = headerLine.split('|').map(h => h.trim()).filter(h => h);
+        
+        // Parser les données
+        const rows = dataLines.map(line => 
+          line.split('|').map(cell => cell.trim()).filter(cell => cell)
+        ).filter(row => row.length > 0);
+        
+        // Construire le tableau HTML avec styles
+        let tableHtml = '<table style="border-collapse: collapse; width: 100%; margin: 16px 0;">';
+        
+        // En-têtes
+        tableHtml += '<thead><tr>';
+        headers.forEach(header => {
+          tableHtml += `<th style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2; font-weight: bold; text-align: left;">${header}</th>`;
+        });
+        tableHtml += '</tr></thead>';
+        
+        // Corps du tableau
+        tableHtml += '<tbody>';
+        rows.forEach((row, i) => {
+          const bgColor = i % 2 === 0 ? '#fff' : '#f9f9f9';
+          tableHtml += `<tr style="background-color: ${bgColor};">`;
+          row.forEach(cell => {
+            tableHtml += `<td style="border: 1px solid #ddd; padding: 8px;">${cell}</td>`;
+          });
+          tableHtml += '</tr>';
+        });
+        tableHtml += '</tbody></table>';
+        
+        return tableHtml;
+      });
+      
+      // Paragraphes
+      html = html.split('\n\n')
         .map(para => para.trim())
         .filter(para => para.length > 0)
         .map(para => {
