@@ -1768,10 +1768,98 @@ td:empty::before {
       
       // Ajouter les styles seulement si on a des tableaux
       if (hasTables) {
-        html = tableStyles + html;
+        // Injecter les styles directement dans le DOM
+        this.injectTableStyles();
       }
       
       return html;
+    }
+    
+    /**
+     * Injecte les styles CSS des tableaux directement dans le DOM
+     */
+    injectTableStyles() {
+      // Vérifier si les styles sont déjà injectés
+      if (document.getElementById('ontowave-table-styles')) {
+        return; // Déjà injectés
+      }
+      
+      const styleSheet = document.createElement('style');
+      styleSheet.id = 'ontowave-table-styles';
+      styleSheet.textContent = `
+/* OntoWave - Styles de base pour tous les tableaux */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 16px 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* Headers */
+thead th, th {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    font-weight: 600;
+    color: #495057;
+    border: 1px solid #dee2e6;
+    padding: 12px 16px;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+/* Cellules de données */
+tbody td, td {
+    border: 1px solid #dee2e6;
+    padding: 12px 16px;
+    background-color: white;
+    transition: background-color 0.2s ease;
+}
+
+/* Alternance des lignes */
+tbody tr:nth-child(even), tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+tbody tr:hover, tr:hover {
+    background-color: #e3f2fd;
+}
+
+/* Alignements complets - IMPORTANT ! */
+.text-left { text-align: left !important; }
+.text-center { text-align: center !important; }
+.text-right { text-align: right !important; }
+.text-justify { text-align: justify !important; hyphens: auto; }
+
+/* Support des cellules vides */
+td:empty::before {
+    content: "—";
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    table {
+        font-size: 12px;
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    th, td {
+        padding: 8px 12px;
+        min-width: 100px;
+    }
+}`;
+      
+      // Ajouter au head du document
+      document.head.appendChild(styleSheet);
+      console.log('✅ Styles CSS tableaux injectés dans le DOM');
     }
 
     async processDiagrams(container) {
