@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Correction CSS Injection</title>
+</head>
+<body>
+    <h1>Test de la Correction - Injection CSS dans DOM</h1>
+    
+    <div id="content">
+        <h2>Tableau avec Alignements</h2>
+        
+| Gauche | Centre | Droite |
+|:-------|:------:|-------:|
+| ABC    | DEF    | GHI    |
+| Texte long à gauche | Centré | 999 |
+| Test | OK | ✅ |
+    </div>
+    
+    <div id="debug"></div>
+    
+    <script src="dist/ontowave.js"></script>
+    <script>
+        setTimeout(() => {
+            console.log('=== TEST INJECTION CSS ===');
+            
+            // Vérifier si le style a été injecté
+            const injectedStyle = document.getElementById('ontowave-table-styles');
+            console.log('Style injecté trouvé:', !!injectedStyle);
+            
+            if (injectedStyle) {
+                console.log('✅ Style CSS injecté avec succès!');
+                console.log('Contenu style (début):', injectedStyle.textContent.substring(0, 200));
+            } else {
+                console.log('❌ Style CSS NOT injecté!');
+            }
+            
+            // Vérifier les tables générées
+            const tables = document.querySelectorAll('table');
+            console.log('Tables trouvées:', tables.length);
+            
+            if (tables.length > 0) {
+                const firstTable = tables[0];
+                const cells = firstTable.querySelectorAll('td, th');
+                console.log('Cellules trouvées:', cells.length);
+                
+                cells.forEach((cell, i) => {
+                    const className = cell.className;
+                    const computedAlign = window.getComputedStyle(cell).textAlign;
+                    console.log(`Cellule ${i}: classe="${className}", text-align="${computedAlign}"`);
+                });
+            }
+            
+            // Afficher info debug
+            document.getElementById('debug').innerHTML = `
+                <h3>Debug Info</h3>
+                <p><strong>Style CSS injecté:</strong> ${injectedStyle ? '✅ Oui' : '❌ Non'}</p>
+                <p><strong>Tables générées:</strong> ${tables.length}</p>
+                <p><strong>Console:</strong> Voir la console pour les détails</p>
+            `;
+        }, 2000);
+    </script>
+</body>
+</html>

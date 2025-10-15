@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Test Debug CSS Alignement</title>
+</head>
+<body>
+    <div id="content">
+        <h1>Test Alignement Tableaux OntoWave</h1>
+        
+        <h2>1. Tableau Test Simple</h2>
+        
+        | Colonne Gauche | Colonne Centre | Colonne Droite |
+        |:---------------|:--------------:|---------------:|
+        | Texte à gauche | Texte centré   | Texte à droite |
+        | 123            | 456            | 789            |
+        | ABC            | DEF            | GHI            |
+        
+        <h2>2. État des CSS après traitement</h2>
+        <div id="debug-info"></div>
+    </div>
+    
+    <script src="dist/ontowave.js"></script>
+    <script>
+        // Debug CSS injection
+        setTimeout(() => {
+            console.log('=== DEBUG CSS ALIGNEMENT ===');
+            
+            // Vérifier si les styles sont injectés
+            const styles = document.querySelectorAll('style');
+            console.log('Nombre de <style> trouvés:', styles.length);
+            
+            styles.forEach((style, index) => {
+                console.log(`Style ${index}:`, style.textContent.substring(0, 200) + '...');
+                if (style.textContent.includes('text-align')) {
+                    console.log('✅ CSS text-align trouvé!');
+                }
+            });
+            
+            // Vérifier les classes sur les cellules
+            const cells = document.querySelectorAll('td, th');
+            console.log('Cellules trouvées:', cells.length);
+            
+            cells.forEach((cell, index) => {
+                const classes = cell.className;
+                const computedStyle = window.getComputedStyle(cell);
+                console.log(`Cellule ${index}: classes="${classes}", text-align="${computedStyle.textAlign}"`);
+            });
+            
+            // Afficher les infos de debug dans la page
+            const debugDiv = document.getElementById('debug-info');
+            debugDiv.innerHTML = `
+                <p><strong>Styles injectés:</strong> ${styles.length}</p>
+                <p><strong>Cellules avec classes:</strong> ${Array.from(cells).map(c => c.className).filter(c => c).length}</p>
+                <p><strong>CSS text-align détecté:</strong> ${Array.from(styles).some(s => s.textContent.includes('text-align')) ? '✅ Oui' : '❌ Non'}</p>
+            `;
+        }, 2000);
+    </script>
+</body>
+</html>

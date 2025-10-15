@@ -1,0 +1,49 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>OntoWave Test Final</title>
+</head>
+<body>
+    <h1>🌊 OntoWave - Test Final Tableaux</h1>
+    <div id="content"></div>
+    <script src="dist/ontowave.min.js"></script>
+    <script>
+        const md = `# Fix Tableaux OntoWave Validé
+
+## Tableau Simple
+
+| Nom | Age | Ville |
+|-----|-----|-------|
+| Alice | 30 | Paris |
+| Bob | 25 | Lyon |
+
+## Tableau avec Alignement
+
+| Élément | Quantité | Prix | Total |
+|:--------|:--------:|-----:|------:|
+| Pommes | 5 | 2.50€ | 12.50€ |
+| Oranges | 3 | 3.00€ | 9.00€ |
+
+✅ **Fix des tableaux OntoWave terminé !**`;
+
+        // Attendre que OntoWave soit prêt
+        window.addEventListener('load', () => {
+            setTimeout(async () => {
+                if (window.OntoWave && window.OntoWave.instance) {
+                    try {
+                        const html = await window.OntoWave.instance.renderMarkdown(md);
+                        document.getElementById('content').innerHTML = html;
+                        console.log('✅ OntoWave rendu réussi');
+                    } catch (e) {
+                        console.error('❌ Erreur OntoWave:', e);
+                        document.getElementById('content').innerHTML = '<p style="color:red;">Erreur OntoWave: ' + e.message + '</p>';
+                    }
+                } else {
+                    console.error('❌ OntoWave non disponible');
+                    document.getElementById('content').innerHTML = '<p style="color:red;">OntoWave non chargé</p>';
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

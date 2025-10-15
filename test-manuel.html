@@ -1,0 +1,32 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <div id="content"></div>
+    <script src="dist/ontowave.min.js"></script>
+    <script>
+        // Empêcher l'auto-initialisation
+        window.ontoWaveConfig = { autoInit: false };
+        
+        const md = `# Test Tableaux OntoWave
+
+| Nom | Age | Ville |
+|-----|-----|-------|
+| Alice | 30 | Paris |
+| Bob | 25 | Lyon |
+| Charlie | 35 | Marseille |
+
+## Tableau avec alignement
+
+| Élément | Quantité | Prix | Total |
+|:--------|:--------:|-----:|------:|
+| Pommes | 5 | 2.50€ | 12.50€ |
+| Oranges | 3 | 3.00€ | 9.00€ |`;
+
+        // Utiliser directement le renderer
+        const renderer = OntoWave.createRenderer();
+        document.getElementById('content').innerHTML = renderer.render(md);
+    </script>
+</body>
+</html>
