@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave v1.0.1 - Démo Tableaux depuis NPM</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+        .header h1 {
+            color: #667eea;
+            margin: 0 0 10px 0;
+        }
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #10b981;
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .info {
+            background: #f0f9ff;
+            border-left: 4px solid #0ea5e9;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        #content {
+            margin-top: 30px;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 18px;
+        }
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f4f6;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌊 OntoWave v1.0.1</h1>
+            <span class="badge">📦 Via NPM</span>
+            <p style="color: #64748b; margin-top: 10px;">
+                Démonstration des tableaux markdown avec alignements
+            </p>
+        </div>
+
+        <div class="info">
+            <strong>📋 Cette page utilise :</strong>
+            <ul style="margin: 10px 0 0 0;">
+                <li>OntoWave v1.0.1 depuis <code>https://unpkg.com/ontowave@1.0.1/dist/ontowave.min.js</code></li>
+                <li>Chargement automatique du fichier <code>index.md</code></li>
+                <li>Support complet des alignements de tableaux (left/center/right)</li>
+            </ul>
+        </div>
+
+        <div class="loading">
+            <div class="spinner"></div>
+            <div>Chargement du contenu markdown...</div>
+        </div>
+
+        <div id="content"></div>
+    </div>
+
+    <!-- OntoWave depuis NPM via unpkg.com -->
+    <script src="https://unpkg.com/ontowave@1.0.1/dist/ontowave.min.js"></script>
+    
+    <script>
+        // OntoWave se charge automatiquement au DOMContentLoaded
+        // Il cherche un élément #content et charge index.md par défaut
+        
+        // Attendons simplement que le chargement soit terminé
+        window.addEventListener('load', function() {
+            const loadingDiv = document.querySelector('.loading');
+            const contentDiv = document.getElementById('content');
+            
+            // Vérifier si du contenu a été chargé
+            const checkContent = setInterval(() => {
+                if (contentDiv && contentDiv.innerHTML.trim()) {
+                    loadingDiv.style.display = 'none';
+                    clearInterval(checkContent);
+                    
+                    console.log('✅ OntoWave v1.0.1 chargé avec succès depuis NPM');
+                    console.log('📦 Package: https://www.npmjs.com/package/ontowave');
+                    console.log('📊 Tableaux avec alignements rendus automatiquement');
+                    
+                    // Log des statistiques
+                    const tables = contentDiv.querySelectorAll('table');
+                    const leftCells = contentDiv.querySelectorAll('.text-left');
+                    const centerCells = contentDiv.querySelectorAll('.text-center');
+                    const rightCells = contentDiv.querySelectorAll('.text-right');
+                    
+                    console.log(`📊 Statistiques:`);
+                    console.log(`   Tableaux: ${tables.length}`);
+                    console.log(`   Cellules alignées à gauche: ${leftCells.length}`);
+                    console.log(`   Cellules centrées: ${centerCells.length}`);
+                    console.log(`   Cellules alignées à droite: ${rightCells.length}`);
+                }
+            }, 100);
+            
+            // Timeout après 10 secondes
+            setTimeout(() => {
+                if (loadingDiv.style.display !== 'none') {
+                    clearInterval(checkContent);
+                    loadingDiv.innerHTML = `
+                        <div style="color: #ef4444;">
+                            ❌ Timeout: Le contenu n'a pas pu être chargé
+                        </div>
+                    `;
+                }
+            }, 10000);
+        });
+    </script>
+</body>
+</html>
