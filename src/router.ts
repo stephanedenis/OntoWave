@@ -22,6 +22,12 @@ export function onRouteChange(cb: (_r: Route) => void) {
       const clean = href.replace(/\.md$/i, '')
       location.hash = '#'+ (clean.startsWith('/') ? clean : ('/' + clean))
     }
+    // Liens internes vers .puml → convertir en route
+    if (href.endsWith('.puml')) {
+      e.preventDefault()
+      const path = href.startsWith('/') ? href : ('/' + href)
+      location.hash = '#' + path
+    }
     // Liens internes relatifs sans protocole et sans .md → laisser au navigateur
   }, true)
   return () => window.removeEventListener('hashchange', handler)

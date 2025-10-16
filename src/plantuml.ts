@@ -86,15 +86,29 @@ export async function renderPlantUMLSVG(
  * Charge un fichier .puml depuis les racines de contenu configurées
  */
 export async function loadPlantUML(roots: Root[], routePath: string): Promise<string | null> {
-  // Essayer avec le chemin exact
+  // S'assurer que le chemin se termine par .puml
   const directPath = routePath.endsWith('.puml') ? routePath : routePath + '.puml'
+  
   for (const r of roots) {
+    // Nettoyer le root (enlever trailing slash)
     const prefix = r.root.replace(/\/$/, '')
-    const url = prefix + directPath
+    // Construire l'URL en gérant les slashes (éviter les doubles //)
+    const url = prefix === '' || prefix === '/' 
+      ? directPath  // Si root est "/", utiliser directement le path
+      : prefix + directPath  // Sinon, concaténer
+    
+    console.log('[loadPlantUML] Trying URL:', url)
+    
     try {
       const res = await fetch(url, { cache: 'no-cache' })
-      if (res.ok) return await res.text()
-    } catch {}
+      if (res.ok) {
+        console.log('[loadPlantUML] Success:', url)
+        return await res.text()
+      }
+    } catch (error) {
+      console.log('[loadPlantUML] Fetch error:', error)
+    }
   }
+  console.log('[loadPlantUML] File not found:', routePath)
   return null
 }
