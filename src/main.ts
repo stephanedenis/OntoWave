@@ -235,9 +235,10 @@ import { getJsonFromBundle } from './adapters/browser/bundle'
     } catch {}
   } else {
     // Legacy path: import legacy modules dynamically to keep bundle small if unused
-    const [{ getCurrentRoute, onRouteChange }, { createMd, rewriteLinks }] = await Promise.all([
+    const [{ getCurrentRoute, onRouteChange }, { createMd, rewriteLinks }, { loadPlantUML, renderPlantUMLSVG }] = await Promise.all([
       import('./router'),
       import('./markdown'),
+      import('./plantuml'),
     ])
     type Root = { base: string; root: string }
     const appEl = document.getElementById('app')!
@@ -266,12 +267,39 @@ import { getJsonFromBundle } from './adapters/browser/bundle'
     const cfg2 = cfg
     async function renderRoute() {
       const { path } = getCurrentRoute()
+      
+      console.log('[renderRoute] Path:', path, '| Ends with .puml:', path.endsWith('.puml'))
+      
+      // Gestion des fichiers .puml
+      if (path.endsWith('.puml')) {
+        console.log('[renderRoute] Loading .puml file...')
+        const pumlContent = await loadPlantUML(cfg2.roots, path)
+        if (pumlContent) {
+          console.log('[renderRoute] .puml content loaded, rendering SVG...')
+          const fileName = path.split('/').pop() || 'diagram.puml'
+          const server = cfg2.plantuml?.server || 'https://www.plantuml.com/plantuml'
+          const html = await renderPlantUMLSVG(pumlContent, fileName, server)
+          appEl.innerHTML = html
+          document.title = `${fileName} — OntoWave`
+          console.log('[renderRoute] .puml rendered successfully!')
+          return
+        }
+        console.log('[renderRoute] .puml file not found')
+        // 404 si fichier .puml non trouvé
+        appEl.innerHTML = `<div style="padding: 20px;"><h1>404 — Fichier non trouvé</h1><p>Le fichier PlantUML <code>${path}</code> n'existe pas.</p><a href="#" onclick="history.back(); return false;">← Retour</a></div>`
+        document.title = '404 — OntoWave'
+        return
+      }
+      
+      console.log('[renderRoute] Loading markdown...')
+      // Gestion classique des fichiers .md
       const mdSrc = await loadMarkdown(cfg2.roots, path)
       const html = md.render(mdSrc)
       appEl.innerHTML = html
       rewriteLinks(appEl)
       const h1 = appEl.querySelector('h1')?.textContent?.trim()
       if (h1) document.title = `${h1} — OntoWave`
+      console.log('[renderRoute] Markdown rendered')
     }
     await renderRoute()
     onRouteChange(() => { void renderRoute() })
