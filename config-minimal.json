@@ -1,5 +1,5 @@
 {
-  "engine": "v2",
+  "engine": "v1",
   "locales": ["fr"],
   "defaultLocale": "fr",
   "sources": {

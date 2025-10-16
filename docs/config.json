@@ -3,12 +3,12 @@
   "locales": ["fr"],
   "defaultLocale": "fr",
   "sources": {
-    "fr": "index-minimal.md"
+    "fr": "index.md"
   },
   "roots": [
     {
       "base": "/",
-      "root": "/"
+      "root": "."
     }
   ],
   "plantuml": {

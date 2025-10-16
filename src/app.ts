@@ -9,6 +9,7 @@ import type {
   PostRenderEnhancer,
 } from './core/types'
 import { resolveCandidates as defaultResolve } from './core/logic'
+import { loadPlantUML, renderPlantUMLSVG } from './adapters/browser/plantuml'
 
 async function loadMarkdown(roots: AppConfig['roots'], path: string, content: ContentService, resolver: ContentPathStrategy): Promise<string> {
   // Ignore any query string / directives when resolving content path
@@ -42,7 +43,27 @@ export function createApp(deps: {
     const [routePath, queryStr] = route.split('?')
     const params = new URLSearchParams(queryStr || '')
     const viewMode = params.get('view') || ''
-  const mdSrc = await loadMarkdown(cfg.roots, routePath, deps.content, resolver)
+
+    // Check if this is a PlantUML file
+    if (routePath.endsWith('.puml')) {
+      const pumlContent = await loadPlantUML(cfg.roots, routePath, deps.content)
+      if (pumlContent) {
+        const fileName = routePath.split('/').pop() || 'diagram.puml'
+        const html = await renderPlantUMLSVG(pumlContent, fileName, cfg.plantuml?.server)
+        deps.view.setHtml(html)
+        deps.view.setTitle(`${fileName} — OntoWave`)
+        return
+      } else {
+        // PlantUML file not found
+        const html = deps.md.render(`# 404 — PlantUML non trouvé\n\nLe fichier \`${routePath}\` n'existe pas.`)
+        deps.view.setHtml(html)
+        deps.view.setTitle('404 — OntoWave')
+        return
+      }
+    }
+
+    // Regular Markdown rendering
+    const mdSrc = await loadMarkdown(cfg.roots, routePath, deps.content, resolver)
     const html = deps.md.render(mdSrc)
   const mode = viewMode.toLowerCase()
   // Split view: show Markdown source and its rendered HTML side-by-side

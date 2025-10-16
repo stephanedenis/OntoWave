@@ -17,10 +17,17 @@ export const browserRouter = {
       const a = (e.target as HTMLElement)?.closest?.('a[href]') as HTMLAnchorElement | null
       if (!a) return
       const href = a.getAttribute('href') || ''
+      // Handle .md links
       if (href.endsWith('.md') && !/^(https?:)?\/\//.test(href)) {
         e.preventDefault()
         const clean = href.replace(/\.md$/i, '')
         location.hash = '#' + (clean.startsWith('/') ? clean : ('/' + clean))
+      }
+      // Handle .puml links
+      if (href.endsWith('.puml') && !/^(https?:)?\/\//.test(href)) {
+        e.preventDefault()
+        const path = href.startsWith('/') ? href : ('/' + href)
+        location.hash = '#' + path
       }
     }
     document.addEventListener('click', onClick, true)
