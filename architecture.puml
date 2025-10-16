@@ -1,0 +1,48 @@
+@startuml
+!theme plain
+skinparam backgroundColor transparent
+
+title Architecture OntoWave - Support .puml
+
+package "OntoWave Core" {
+  [Router] as router
+  [Content Loader] as loader
+  [Markdown Renderer] as mdRenderer
+  [PlantUML Renderer] as pumlRenderer
+}
+
+package "Fichiers Sources" {
+  [index.md] as indexMd
+  [architecture.puml] as archPuml
+  [demo.md] as demoMd
+}
+
+actor Utilisateur as user
+
+user --> router : Clic sur lien
+router --> loader : Charger fichier
+
+loader --> indexMd : Si .md
+loader --> archPuml : Si .puml
+
+indexMd --> mdRenderer : Traiter markdown
+archPuml --> pumlRenderer : Encoder & Render
+
+mdRenderer --> [Vue HTML] : Afficher contenu
+pumlRenderer --> [Vue SVG] : Afficher diagramme
+
+note right of pumlRenderer
+  Encodage UTF-8 → Hexadécimal
+  Envoi à plantuml.com/plantuml/svg/~h...
+  Récupération du SVG
+  Affichage avec hyperliens fonctionnels
+end note
+
+note right of router
+  Navigation transparente
+  .md → Markdown
+  .puml → PlantUML
+  Historique préservé
+end note
+
+@enduml

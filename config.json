@@ -1,0 +1,17 @@
+{
+  "locales": ["fr"],
+  "defaultLocale": "fr",
+  "sources": {
+    "fr": "test-puml.md"
+  },
+  "roots": [
+    {
+      "base": "/",
+      "root": "/"
+    }
+  ],
+  "plantuml": {
+    "server": "https://www.plantuml.com/plantuml",
+    "format": "svg"
+  }
+}
