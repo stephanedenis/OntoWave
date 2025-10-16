@@ -39,6 +39,13 @@ jobs:
           npm run build
           npm run build:package
           
+      - name: Commit build artifacts
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git diff --staged --quiet || git commit -m "chore: build artifacts [skip ci]"
+          
       - name: Bump version (patch)
         run: |
           git config --local user.email "action@github.com"
