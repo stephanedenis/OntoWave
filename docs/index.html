@@ -3,25 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OntoWave - Générateur de diagrammes pour sites statiques</title>
+    <title>OntoWave</title>
 </head>
 <body>
-    <!-- OntoWave depuis NPM/unpkg - Version automatique -->
-    <script src="https://unpkg.com/ontowave/dist/ontowave.min.js"></script>
-    <script>
-        // Configuration OntoWave inline
-        window.ontoWaveConfig = {
-            locales: ["fr", "en"],
-            defaultLocale: "fr",
-            sources: {
-                fr: "index.fr.md",
-                en: "index.en.md"
-            },
-            enablePrism: true,
-            enableMermaid: true,
-            enablePlantUML: true,
-            enableSearch: true
-        };
-    </script>
+    <script src="dist/ontowave.js"></script>
 </body>
 </html>
