@@ -31,6 +31,14 @@ test('Navigation .puml - Test simple', async ({ page }) => {
   
   if (svgCount > 0) {
     console.log('✅ TEST RÉUSSI : SVG PlantUML affiché !');
+    
+    // Capture d'écran pour validation visuelle
+    await page.screenshot({ 
+      path: 'test-results/preuve-puml-fonctionnel.png', 
+      fullPage: true 
+    });
+    console.log('📸 Capture sauvegardée: test-results/preuve-puml-fonctionnel.png');
+    
     expect(svgCount).toBeGreaterThan(0);
   } else {
     console.log('❌ Aucun SVG trouvé');
