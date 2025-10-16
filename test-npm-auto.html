@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>OntoWave NPM Test</title>
+</head>
+<body>
+    <div id="content"></div>
+    <script src="https://unpkg.com/ontowave@1.0.1/dist/ontowave.min.js"></script>
+    <script>
+        fetch('index.md').then(r => r.text()).then(md => {
+            document.getElementById('content').innerHTML = marked.parse(md);
+        });
+    </script>
+</body>
+</html>
