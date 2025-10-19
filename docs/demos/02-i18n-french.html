@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo 02 - i18n French</title>
+</head>
+<body>
+    <div id="app"></div>
+    
+    <!-- Simulate French browser -->
+    <script>
+        Object.defineProperty(navigator, 'language', {
+            get: function() { return 'fr-FR'; }
+        });
+    </script>
+    
+    <!-- OntoWave CONFIG -->
+    <script>
+        window.ontoWaveConfig = {
+            locales: ["fr", "en"],
+            defaultLocale: "fr",
+            sources: {
+                fr: "docs/demos/test-i18n-french.md",
+                en: "docs/demos/test-i18n-english.md"
+            }
+        };
+    </script>
+    
+    <!-- OntoWave -->
+    <script src="../../dist/ontowave.min.js"></script>
+</body>
+</html>
