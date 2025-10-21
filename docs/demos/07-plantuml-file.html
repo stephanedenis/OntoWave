@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OntoWave - Démo Fichier PlantUML (.puml)</title>
+  <script src="../ontowave.min.js"></script>
+</head>
+<body>
+  <div id="ontowave"></div>
+
+  <script>
+    // Forcer le hash pour bypass détection automatique langue
+    location.hash = '#test-navigation.puml';
+    
+    // Configuration OntoWave (API v0.x)
+    window.ontoWaveConfig = {
+      baseUrl: '/demos/',
+      defaultPage: 'test-navigation.puml'
+    };
+  </script>
+</body>
+</html>

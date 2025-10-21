@@ -1,3 +1,20 @@
+/**
+ * OntoWave - Documentation Interactive Package
+ * Version: 1.0.0
+ * URL: https://github.com/stephanedenis/OntoWave
+ * 
+ * Usage simple:
+ * <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+ * <script type="application/json" id="ontowave-config">
+ * {
+ *   "title": "Ma Documentation",
+ *   "baseUrl": "/",
+ *   "defaultPage": "index.md",
+ *   "mermaid": { "theme": "default" },
+ *   "plantuml": { "server": "https://www.plantuml.com/plantuml" }
+ * }
+ * </script>
+ */
 
 (function(window) {
   'use strict';
@@ -136,7 +153,7 @@
       min-height: 100vh;
     }
     
-    
+    /* Menu flottant minimal déplaçable */
     .ontowave-floating-menu {
       position: fixed;
       top: 20px;
@@ -179,7 +196,7 @@
       box-shadow: 0 6px 20px rgba(27,31,35,0.25);
     }
     
-    
+    /* Désactiver le zoom quand le panneau de configuration est ouvert */
     .ontowave-floating-menu.has-config-panel:hover {
       transform: none;
     }
@@ -274,7 +291,7 @@
       transform: translateY(-1px);
     }
     
-    
+    /* Styles pour les boutons de langue */
     .ontowave-lang-btn {
       font-weight: bold;
       font-size: 11px;
@@ -292,7 +309,7 @@
       border-color: #1e7e34;
     }
     
-    
+    /* Boutons de langue fixés - nouveaux styles */
     .ontowave-fixed-lang-buttons {
       position: fixed;
       top: 20px;
@@ -308,7 +325,7 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
-    
+    /* Responsive : adaptation mobile */
     @media (max-width: 768px) {
       .ontowave-fixed-lang-buttons {
         top: 10px;
@@ -336,7 +353,7 @@
       justify-content: center;
     }
     
-    
+    /* Responsive : boutons plus petits sur mobile */
     @media (max-width: 768px) {
       .ontowave-fixed-lang-btn {
         padding: 4px 8px;
@@ -362,7 +379,7 @@
       transform: translateY(-2px);
     }
     
-    
+    /* Pas d'en-tête - supprimé */
     .ontowave-header {
       display: none;
     }
@@ -424,7 +441,7 @@
       margin-right: auto;
     }
     
-    
+    /* Headers corrigés */
     .ontowave-content h1 {
       color: #24292e;
       border-bottom: 2px solid #e1e4e8;
@@ -474,14 +491,14 @@
       font-weight: 600;
     }
     
-    
+    /* Séparateurs hr */
     .ontowave-content hr {
       border: none;
       border-top: 1px solid #e1e4e8;
       margin: 24px 0;
     }
     
-    
+    /* Mermaid diagrams */
     .ontowave-mermaid {
       margin: 20px 0;
       padding: 20px;
@@ -775,6 +792,9 @@
       console.log(`🗑️ Cache SVG vidé (${count} entrées supprimées)`);
     }
 
+    /**
+     * Détecte la langue actuelle de l'interface
+     */
     getCurrentLanguage() {
       // Si une langue a été explicitement définie, l'utiliser
       if (this.currentLanguage) {
@@ -810,12 +830,18 @@
       return this.resolveLocale() || 'en';
     }
 
+    /**
+     * Obtient une traduction pour une langue spécifique ou la langue actuelle
+     */
     t(key, locale = null) {
       const targetLang = locale || this.getCurrentLanguage();
       const translations = TRANSLATIONS[targetLang] || TRANSLATIONS['en'];
       return translations[key] || key;
     }
 
+    /**
+     * Met à jour tous les textes de l'interface selon une langue spécifique
+     */
     updateInterfaceTexts(locale = null) {
       const targetLang = locale || this.getCurrentLanguage();
       console.log('🌐 Interface texts updating for language:', targetLang);
@@ -871,6 +897,9 @@
       console.log('🌐 Interface texts updated for language:', targetLang);
     }
 
+    /**
+     * Change la langue de l'interface et recharge le contenu approprié
+     */
     switchLanguage(targetLang) {
       // Stocker la langue courante
       this.currentLanguage = targetLang;
@@ -890,6 +919,9 @@
       }
     }
 
+    /**
+     * Met à jour l'état visuel des boutons de langue pour refléter la langue actuelle
+     */
     updateLanguageButtonsState(currentLang = null) {
       const lang = currentLang || this.getCurrentLanguage();
       
@@ -912,6 +944,9 @@
       console.log('🌐 État des boutons de langue mis à jour pour:', lang);
     }
 
+    /**
+     * Charge la page d'accueil dans la langue courante
+     */
     goHome() {
       const currentLang = this.getCurrentLanguage();
       const sources = this.config.sources || {};
@@ -919,6 +954,9 @@
       this.loadPage(homePage);
     }
 
+    /**
+     * Résout les langues du navigateur par ordre de préférence
+     */
     getBrowserLocales() {
       const languages = [];
       
@@ -938,6 +976,10 @@
       return [...new Set(languages)]; // Enlever doublons
     }
 
+    /**
+     * Trouve la meilleure correspondance entre langues navigateur et config
+     * Priorise maintenant le contexte de la page, puis les préférences du navigateur
+     */
     resolveLocale() {
       const browserLocales = this.getBrowserLocales();
       const supportedLocales = this.config.locales || [];
@@ -1001,10 +1043,16 @@
       return fallback;
     }
 
+    /**
+     * Détermine si OntoWave est en mode multilingue
+     */
     isMultilingualMode() {
       return this.config.locales && this.config.locales.length > 0 && this.config.sources;
     }
 
+    /**
+     * Génère la liste des fichiers à essayer pour une page donnée
+     */
     generatePageCandidates(basePage) {
       const resolvedLocale = this.resolveLocale();
       const candidates = [];
@@ -1896,13 +1944,9 @@
         .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
         .replace(/\*(.+?)\*/g, '<em>$1</em>')
         // Code inline
-        .replace(/`([^`]+)`/g, '<code>$1</code>');
-      
-      // Traitement avancé des tableaux avec markdown-it
-      html = this.renderAdvancedTables(html);
-      
-      // Paragraphes
-      html = html.split('\n\n')
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        // Paragraphes
+        .split('\n\n')
         .map(para => para.trim())
         .filter(para => para.length > 0)
         .map(para => {
@@ -1920,221 +1964,6 @@
       });
 
       return html;
-    }
-
-    renderAdvancedTables(html) {
-      // Styles CSS avancés pour les tableaux
-      const tableStyles = `
-<style>
-table {
-    border-collapse: collapse;
-    width: 100%;
-    margin: 16px 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
-    background-color: white;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    border-radius: 6px;
-    overflow: hidden;
-}
-
-thead th, th {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    font-weight: 600;
-    color: #495057;
-    border: 1px solid #dee2e6;
-    padding: 12px 16px;
-    text-transform: uppercase;
-    font-size: 12px;
-    letter-spacing: 0.5px;
-}
-
-tbody td, td {
-    border: 1px solid #dee2e6;
-    padding: 12px 16px;
-    background-color: white;
-    transition: background-color 0.2s ease;
-}
-
-tbody tr:nth-child(even), tr:nth-child(even) {
-    background-color: #f8f9fa;
-}
-
-tbody tr:hover, tr:hover {
-    background-color: #e3f2fd;
-}
-
-.text-left { text-align: left !important; }
-.text-center { text-align: center !important; }
-.text-right { text-align: right !important; }
-.text-justify { text-align: justify !important; hyphens: auto; }
-
-td:empty::before {
-    content: "—";
-    color: #6c757d;
-    font-style: italic;
-}
-
-@media (max-width: 768px) {
-    table {
-        font-size: 12px;
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-    th, td {
-        padding: 8px 12px;
-        min-width: 100px;
-    }
-}
-</style>`;
-
-      // Regex pour détecter les tableaux avec alignements
-      const tableRegex = /(\|[^|\n]*\|[^|\n]*\|[^\n]*\n\|[-:| ]+\|[^\n]*\n(?:\|[^\n]*\n?)*)/g;
-      
-      let hasTables = false;
-      
-      html = html.replace(tableRegex, (match) => {
-        const lines = match.trim().split('\n');
-        if (lines.length < 2) return match;
-        
-        const headerLine = lines[0];
-        const separatorLine = lines[1];
-        const dataLines = lines.slice(2);
-        
-        // Vérifier que c'est un tableau valide
-        if (!headerLine.includes('|') || !separatorLine.includes('|')) return match;
-        
-        hasTables = true;
-        
-        // Parser les en-têtes
-        const headers = headerLine.split('|').map(h => h.trim()).filter(h => h);
-        
-        // Parser les alignements depuis la ligne de séparation
-        const separators = separatorLine.split('|').map(s => s.trim()).filter(s => s);
-        const alignments = separators.map(sep => {
-          if (sep.startsWith(':') && sep.endsWith(':')) return 'center';
-          if (sep.endsWith(':')) return 'right';
-          if (sep.startsWith(':')) return 'left';
-          return 'left'; // par défaut
-        });
-        
-        // Parser les données
-        const rows = dataLines.map(line => 
-          line.split('|').map(cell => cell.trim()).filter(cell => cell)
-        ).filter(row => row.length > 0);
-        
-        // Construire le tableau HTML avec styles et alignements
-        let tableHtml = '<table>';
-        
-        // En-têtes avec alignement
-        tableHtml += '<thead><tr>';
-        headers.forEach((header, i) => {
-          const align = alignments[i] || 'left';
-          tableHtml += `<th class="text-${align}">${header}</th>`;
-        });
-        tableHtml += '</tr></thead>';
-        
-        // Corps du tableau avec alignement
-        tableHtml += '<tbody>';
-        rows.forEach((row) => {
-          tableHtml += '<tr>';
-          row.forEach((cell, i) => {
-            const align = alignments[i] || 'left';
-            tableHtml += `<td class="text-${align}">${cell}</td>`;
-          });
-          tableHtml += '</tr>';
-        });
-        tableHtml += '</tbody></table>';
-        
-        return tableHtml;
-      });
-      
-      // Ajouter les styles seulement si on a des tableaux
-      if (hasTables) {
-        // Injecter les styles directement dans le DOM
-        this.injectTableStyles();
-      }
-      
-      return html;
-    }
-    
-    injectTableStyles() {
-      // Vérifier si les styles sont déjà injectés
-      if (document.getElementById('ontowave-table-styles')) {
-        return; // Déjà injectés
-      }
-      
-      const styleSheet = document.createElement('style');
-      styleSheet.id = 'ontowave-table-styles';
-      styleSheet.textContent = `
-table {
-    border-collapse: collapse;
-    width: 100%;
-    margin: 16px 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
-    background-color: white;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    border-radius: 6px;
-    overflow: hidden;
-}
-
-thead th, th {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    font-weight: 600;
-    color: #495057;
-    border: 1px solid #dee2e6;
-    padding: 12px 16px;
-    text-transform: uppercase;
-    font-size: 12px;
-    letter-spacing: 0.5px;
-}
-
-tbody td, td {
-    border: 1px solid #dee2e6;
-    padding: 12px 16px;
-    background-color: white;
-    transition: background-color 0.2s ease;
-}
-
-tbody tr:nth-child(even), tr:nth-child(even) {
-    background-color: #f8f9fa;
-}
-
-tbody tr:hover, tr:hover {
-    background-color: #e3f2fd;
-}
-
-.text-left { text-align: left !important; }
-.text-center { text-align: center !important; }
-.text-right { text-align: right !important; }
-.text-justify { text-align: justify !important; hyphens: auto; }
-
-td:empty::before {
-    content: "—";
-    color: #6c757d;
-    font-style: italic;
-}
-
-@media (max-width: 768px) {
-    table {
-        font-size: 12px;
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-    th, td {
-        padding: 8px 12px;
-        min-width: 100px;
-    }
-}`;
-      
-      // Ajouter au head du document
-      document.head.appendChild(styleSheet);
-      console.log('✅ Styles CSS tableaux injectés dans le DOM');
     }
 
     async processDiagrams(container) {
@@ -3339,7 +3168,7 @@ ${configString}
       const style = document.createElement('style');
       style.id = 'ontowave-config-panel-styles';
       style.textContent = `
-        
+        /* Panneau de configuration étendu */
         .ontowave-config-panel {
           position: absolute;
           top: 100%;
@@ -3377,7 +3206,7 @@ ${configString}
           border-bottom: 2px solid #f6f8fa;
         }
         
-        
+        /* Sections de configuration */
         .config-section {
           margin-bottom: 32px;
           padding: 24px;
@@ -3396,7 +3225,7 @@ ${configString}
           gap: 8px;
         }
         
-        
+        /* Disposition en lignes */
         .config-row {
           display: grid;
           grid-template-columns: 1fr 1fr;
@@ -3408,7 +3237,7 @@ ${configString}
           margin-bottom: 0;
         }
         
-        
+        /* Groupes de formulaire */
         .form-group-full {
           margin-bottom: 0;
         }
@@ -3446,7 +3275,7 @@ ${configString}
           font-style: italic;
         }
         
-        
+        /* Checkboxes */
         .form-group-checkbox {
           display: flex;
           align-items: center;
@@ -3470,7 +3299,7 @@ ${configString}
           accent-color: #0969da;
         }
         
-        
+        /* Actions du formulaire */
         .form-actions-full {
           display: flex;
           gap: 16px;
@@ -3529,7 +3358,7 @@ ${configString}
           box-shadow: 0 4px 12px rgba(215, 58, 73, 0.3);
         }
         
-        
+        /* Responsive pour petits écrans */
         @media (max-width: 768px) {
           .ontowave-config-panel {
             min-width: 95vw;
@@ -3555,7 +3384,7 @@ ${configString}
           }
         }
         
-        
+        /* Styles pour compatibilité avec l'ancien panneau compact */
         .config-form-compact h3,
         .config-preview-compact h3 {
           margin: 0 0 16px 0;
