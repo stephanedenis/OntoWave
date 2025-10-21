@@ -604,4 +604,4 @@ OntoWave + Prism.js supporte **150+ langages** dont :
 
 ---
 
-**🔗 Retour** : [← Index démos](README.md)
+**🔗 Retour** : [← Index démos](index.md)
