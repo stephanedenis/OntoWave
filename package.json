@@ -1,6 +1,6 @@
 {
   "name": "ontowave",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Lightweight JavaScript library for creating interactive documentation from Markdown with multilingual support, Prism syntax highlighting, Mermaid diagrams, and PlantUML rendering",
   "main": "dist/ontowave.js",
   "unpkg": "dist/ontowave.min.js",
