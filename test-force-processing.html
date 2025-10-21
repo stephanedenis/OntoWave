@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Alignements - Force Processing</title>
+</head>
+<body>
+    <h1>🎯 Test Force Processing Markdown</h1>
+    
+    <!-- OntoWave attend du contenu dans un div avec cet ID -->
+    <div id="ontowave-content">
+        <h2>1. Tableau Alignements Basiques</h2>
+        
+| Gauche | Centre | Droite |
+|:-------|:------:|-------:|
+| Texte gauche | Texte centré | Texte droite |
+| ABC | DEF | GHI |
+| 123 | 456 | 789 |
+
+        <h2>2. Tableau Données Techniques</h2>
+        
+| Paramètre | Valeur Min | Valeur Max | Unité | Description |
+|:----------|----------:|----------:|:-----:|:------------|
+| Température | 1500 | 3000 | °C | Température de fonctionnement |
+| Pression | 10 | 100 | Bar | Pression hydraulique maximale |
+| Débit | 0.5 | 15.0 | L/min | Débit volumique du fluide |
+    </div>
+    
+    <div id="test-status" style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+        <h3>📊 Status du Test</h3>
+        <div id="status-content">⏳ Initialisation...</div>
+    </div>
+    
+    <script src="dist/ontowave.js"></script>
+    <script>
+        // Attendre que OntoWave soit initialisé
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                console.log('🔧 Force processing du markdown existant...');
+                
+                // Essayer d'accéder à l'instance OntoWave
+                if (window.OntoWave && window.OntoWave.instance) {
+                    const instance = window.OntoWave.instance;
+                    const contentDiv = document.getElementById('ontowave-content');
+                    
+                    if (contentDiv) {
+                        // Obtenir le contenu markdown brut
+                        const markdownContent = contentDiv.textContent || contentDiv.innerText;
+                        console.log('📝 Contenu markdown détecté:', markdownContent.substring(0, 100) + '...');
+                        
+                        // Forcer le traitement du markdown (si la méthode existe)
+                        if (typeof instance.renderMarkdown === 'function') {
+                            const htmlContent = instance.renderMarkdown(markdownContent);
+                            contentDiv.innerHTML = htmlContent;
+                            console.log('✅ Markdown traité avec renderMarkdown');
+                        } else {
+                            console.log('❌ Méthode renderMarkdown non trouvée');
+                            // Fallback: au moins traiter les tableaux
+                            if (typeof instance.renderAdvancedTables === 'function') {
+                                const htmlContent = instance.renderAdvancedTables(markdownContent);
+                                contentDiv.innerHTML = htmlContent;
+                                console.log('✅ Tableaux traités avec renderAdvancedTables');
+                            } else {
+                                console.log('❌ Méthode renderAdvancedTables non trouvée');
+                            }
+                        }
+                        
+                        // Vérification des résultats
+                        setTimeout(function() {
+                            const tables = document.querySelectorAll('table').length;
+                            const cssStyle = document.getElementById('ontowave-table-styles');
+                            const leftCells = document.querySelectorAll('.text-left').length;
+                            const centerCells = document.querySelectorAll('.text-center').length;
+                            const rightCells = document.querySelectorAll('.text-right').length;
+                            
+                            const statusDiv = document.getElementById('status-content');
+                            statusDiv.innerHTML = `
+                                <p><strong>Tableaux générés:</strong> ${tables}</p>
+                                <p><strong>CSS injecté:</strong> ${cssStyle ? '✅' : '❌'}</p>
+                                <p><strong>Cellules text-left:</strong> ${leftCells}</p>
+                                <p><strong>Cellules text-center:</strong> ${centerCells}</p>
+                                <p><strong>Cellules text-right:</strong> ${rightCells}</p>
+                                <p><strong>Résultat:</strong> ${tables > 0 && leftCells > 0 && centerCells > 0 && rightCells > 0 ? '🎉 SUCCESS' : '❌ ÉCHEC'}</p>
+                            `;
+                            
+                            console.log('📊 Résultats finaux:', {tables, leftCells, centerCells, rightCells});
+                        }, 1000);
+                    }
+                } else {
+                    console.log('❌ OntoWave instance non trouvée');
+                    document.getElementById('status-content').innerHTML = '❌ OntoWave non initialisé';
+                }
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

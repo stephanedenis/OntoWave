@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test CSS Debug Direct</title>
+    <style>
+        /* Test CSS manuel */
+        .test-left { text-align: left; background: pink; }
+        .test-center { text-align: center; background: lightblue; }
+        .test-right { text-align: right; background: lightgreen; }
+    </style>
+</head>
+<body>
+    <h1>Test Alignement Tableau - Debug CSS</h1>
+    
+    <h2>Test 1: CSS Manuel (devrait fonctionner)</h2>
+    <table border="1">
+        <tr>
+            <th class="test-left">Gauche</th>
+            <th class="test-center">Centre</th>
+            <th class="test-right">Droite</th>
+        </tr>
+        <tr>
+            <td class="test-left">Texte à gauche</td>
+            <td class="test-center">Texte centré</td>
+            <td class="test-right">Texte à droite</td>
+        </tr>
+    </table>
+    
+    <h2>Test 2: Markdown avec OntoWave</h2>
+    <div id="markdown-content">
+| Gauche | Centre | Droite |
+|:-------|:------:|-------:|
+| ABC    | DEF    | GHI    |
+| 123    | 456    | 789    |
+    </div>
+    
+    <script src="dist/ontowave.js"></script>
+    <script>
+        console.log('Page chargée, OntoWave disponible:', typeof window.OntoWave);
+        
+        // Forcer le rendu après chargement
+        setTimeout(() => {
+            console.log('Début du debug...');
+            
+            // Vérifier les styles présents
+            const allStyles = document.querySelectorAll('style');
+            console.log('Styles présents:', allStyles.length);
+            
+            allStyles.forEach((style, i) => {
+                console.log(`Style ${i}:`, style.textContent.includes('text-align') ? 'contient text-align' : 'pas de text-align');
+            });
+            
+            // Vérifier les tables générées
+            const tables = document.querySelectorAll('table');
+            console.log('Tables générées:', tables.length);
+            
+            tables.forEach((table, i) => {
+                console.log(`Table ${i}:`, table.innerHTML.substring(0, 100) + '...');
+                
+                const cells = table.querySelectorAll('td, th');
+                cells.forEach((cell, j) => {
+                    const computed = window.getComputedStyle(cell);
+                    console.log(`  Cellule ${j}: classe="${cell.className}", text-align="${computed.textAlign}"`);
+                });
+            });
+        }, 2000);
+    </script>
+</body>
+</html>

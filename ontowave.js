@@ -579,114 +579,6 @@
       color: #155724;
     }
     
-    /* === FIX #1: STYLES TABLEAUX === */
-    .ontowave-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 16px 0;
-      font-size: 14px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    
-    .ontowave-table th {
-      background: #f6f8fa;
-      padding: 12px 16px;
-      font-weight: 600;
-      border: 1px solid #d0d7de;
-      color: #24292f;
-    }
-    
-    .ontowave-table td {
-      padding: 12px 16px;
-      border: 1px solid #d0d7de;
-      color: #24292f;
-    }
-    
-    .ontowave-table tbody tr:nth-child(even) {
-      background: #f6f8fa;
-    }
-    
-    .ontowave-table tbody tr:hover {
-      background: #eaeef2;
-    }
-    /* === FIN FIX #1 === */
-    
-    /* === FIX #4: STYLES CODE SOURCE PLANTUML + DIAGRAMME === */
-    .ontowave-plantuml-container {
-      margin: 20px 0;
-    }
-    
-    .ontowave-plantuml-source {
-      margin-bottom: 30px;
-      border: 1px solid #d0d7de;
-      border-radius: 6px;
-      overflow: hidden;
-    }
-    
-    .ontowave-plantuml-source h3 {
-      margin: 0;
-      padding: 12px 16px;
-      background: #f6f8fa;
-      border-bottom: 1px solid #d0d7de;
-      font-size: 16px;
-      font-weight: 600;
-      color: #24292f;
-    }
-    
-    .ontowave-plantuml-source pre {
-      margin: 0;
-      background: #ffffff;
-      padding: 16px;
-      overflow-x: auto;
-      max-height: 500px;
-      overflow-y: auto;
-    }
-    
-    .ontowave-plantuml-source code {
-      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-    
-    .ontowave-plantuml-render {
-      /* Bordure désactivée à la demande de l'utilisateur */
-      /* border: 1px solid #d0d7de; */
-      /* border-radius: 6px; */
-      overflow: hidden;
-      background: #ffffff;
-    }
-    
-    .ontowave-plantuml-render h3 {
-      margin: 0;
-      padding: 12px 16px;
-      background: #f6f8fa;
-      border-bottom: 1px solid #d0d7de;
-      font-size: 16px;
-      font-weight: 600;
-      color: #24292f;
-    }
-    
-    .ontowave-plantuml-render img {
-      padding: 20px;
-      display: block;
-      margin: 0 auto;
-    }
-    
-    /* Styles pour les liens dans les SVG PlantUML */
-    .plantuml-diagram a.ontowave-internal-link {
-      transition: opacity 0.2s;
-    }
-    
-    .plantuml-diagram a.ontowave-internal-link:hover {
-      opacity: 0.7;
-    }
-    
-    .plantuml-diagram svg {
-      max-width: 100%;
-      height: auto;
-    }
-    /* === FIN FIX #4 === */
-    
     @media (max-width: 768px) {
       .ontowave-header {
         padding: 1rem;
@@ -725,54 +617,6 @@
       this.prismLoaded = false;
       this.currentPage = null;
       this.currentLanguage = null; // Langue courante stockée
-      
-      // === CACHE SVG POUR PERFORMANCE ===
-      this.svgCache = new Map(); // Cache: URL -> {svg: string, timestamp: number}
-      this.svgCacheTTL = 5 * 60 * 1000; // 5 minutes par défaut
-      this.svgCacheEnabled = config.svgCache !== false; // Activé par défaut
-    }
-
-    /**
-     * Récupère un SVG du cache s'il est valide
-     */
-    getCachedSVG(url) {
-      if (!this.svgCacheEnabled) return null;
-      
-      const cached = this.svgCache.get(url);
-      if (!cached) return null;
-      
-      // Vérifier si le cache est expiré
-      const now = Date.now();
-      if (now - cached.timestamp > this.svgCacheTTL) {
-        this.svgCache.delete(url);
-        return null;
-      }
-      
-      console.log('✅ SVG récupéré du cache:', url);
-      return cached.svg;
-    }
-
-    /**
-     * Ajoute un SVG au cache
-     */
-    cacheSVG(url, svg) {
-      if (!this.svgCacheEnabled) return;
-      
-      this.svgCache.set(url, {
-        svg: svg,
-        timestamp: Date.now()
-      });
-      
-      console.log('💾 SVG mis en cache:', url, `(${this.svgCache.size} entrées)`);
-    }
-
-    /**
-     * Vide le cache SVG
-     */
-    clearSVGCache() {
-      const count = this.svgCache.size;
-      this.svgCache.clear();
-      console.log(`🗑️ Cache SVG vidé (${count} entrées supprimées)`);
     }
 
     getCurrentLanguage() {
@@ -1150,12 +994,6 @@
         script.onload = () => {
           console.log('🎨 Prism core loaded');
           
-          // FIX: Préparer des stubs pour éviter les erreurs de dépendances circulaires
-          // Certains composants Prism essaient de lire des propriétés avant qu'elles soient définies
-          if (!window.Prism.languages.javascript) {
-            window.Prism.languages.javascript = { 'class-name': null };
-          }
-          
           // Charger les langages essentiels et attendre leur chargement
           const essentialLanguages = ['markup', 'css', 'javascript'];
           let loadedCount = 0;
@@ -1174,79 +1012,19 @@
               console.log('✅ Prism ready with essential languages');
               resolve();
               
-              // === FIX #4: DÉFINITION LANGAGE PLANTUML POUR PRISM ===
-              // PlantUML n'a pas de plugin officiel, on crée la définition
-              if (window.Prism && window.Prism.languages) {
-                window.Prism.languages.plantuml = {
-                  'comment': /'[^\n]*/,
-                  'keyword': /@startuml|@enduml|@startmindmap|@endmindmap|@startsalt|@endsalt|@startgantt|@endgantt|participant|actor|boundary|control|entity|database|collections|queue|as|title|note|over|left|right|end|alt|else|opt|loop|par|break|critical|group|autonumber|activate|deactivate|destroy|create|hide|show|class|interface|abstract|enum|extends|implements|package|namespace|skinparam|style|sprite/,
-                  'string': {
-                    pattern: /"(?:\\.|[^\\"\r\n])*"/,
-                    greedy: true
-                  },
-                  'arrow': /(?:--|->|o-|-o|\*-|-\*|\.-|-\.)/,
-                  'operator': /[:=[\](){}|]/,
-                  'tag': /#[a-zA-Z0-9]+/,
-                  'function': /\[\[.*?\]\]/,
-                  'number': /\b\d+\b/,
-                  'punctuation': /[,;]/
+              // Charger les langages supplémentaires en arrière-plan
+              const additionalLanguages = ['python', 'java', 'bash', 'json', 'yaml', 'typescript'];
+              additionalLanguages.forEach(lang => {
+                const langScript = document.createElement('script');
+                langScript.src = `https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-${lang}.min.js`;
+                langScript.onload = () => {
+                  console.log(`🔤 Additional Prism language loaded: ${lang}`);
                 };
-                console.log('🏭 PlantUML language definition added to Prism');
-              }
-              // === FIN FIX #4 ===
-              
-              // Charger les langages supplémentaires en arrière-plan (séquentiellement pour respecter les dépendances)
-              // Attendre que JavaScript soit complètement prêt avant de charger TypeScript qui l'étend
-              setTimeout(() => {
-                // Langages qui n'étendent PAS JavaScript (chargement sûr)
-                const safeLanguages = ['python', 'java', 'bash', 'json', 'yaml', 'mermaid'];
-                // TypeScript sera chargé EN DERNIER après vérification
-                
-                let loadIndex = 0;
-                
-                const loadNextLanguage = () => {
-                  if (loadIndex >= safeLanguages.length) {
-                    console.log('✅ All safe Prism languages loaded');
-                    // Maintenant charger TypeScript avec vérification
-                    loadTypescript();
-                    return;
-                  }
-                  
-                  const lang = safeLanguages[loadIndex++];
-                  const langScript = document.createElement('script');
-                  langScript.src = `https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-${lang}.min.js`;
-                  langScript.onload = () => {
-                    console.log(`🔤 Additional Prism language loaded: ${lang}`);
-                    // Petit délai entre chaque langage pour éviter les conflits
-                    setTimeout(loadNextLanguage, 10);
-                  };
-                  langScript.onerror = () => {
-                    console.warn(`⚠️ Failed to load Prism language: ${lang}`);
-                    loadNextLanguage(); // Continuer même en cas d'erreur
-                  };
-                  document.head.appendChild(langScript);
+                langScript.onerror = () => {
+                  console.warn(`⚠️ Failed to load Prism language: ${lang}`);
                 };
-                
-                const loadTypescript = () => {
-                  // Vérifier que JavaScript est complet avant de charger TypeScript
-                  if (!window.Prism.languages.javascript || !window.Prism.languages.javascript['class-name']) {
-                    console.warn('⚠️ JavaScript grammar incomplete, skipping TypeScript');
-                    return;
-                  }
-                  
-                  const tsScript = document.createElement('script');
-                  tsScript.src = 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-typescript.min.js';
-                  tsScript.onload = () => {
-                    console.log('🔤 Additional Prism language loaded: typescript');
-                  };
-                  tsScript.onerror = () => {
-                    console.warn('⚠️ Failed to load Prism language: typescript');
-                  };
-                  document.head.appendChild(tsScript);
-                };
-                
-                loadNextLanguage(); // Démarrer le chargement séquentiel
-              }, 100); // Attendre 100ms pour que JavaScript soit stable
+                document.head.appendChild(langScript);
+              });
             }
           };
           
@@ -1576,39 +1354,6 @@
     async loadInitialPage() {
       const currentHash = location.hash.replace('#', '');
       
-      // === FIX #3: DÉTECTION AUTOMATIQUE LANGUE NAVIGATEUR ===
-      // Détecter la langue du navigateur si pas de hash et pas de langue explicite
-      if (!currentHash && this.config.languages && this.config.languages.supported) {
-        const browserLang = navigator.language.split('-')[0].toLowerCase(); // 'en-US' → 'en'
-        console.log('🌍 Browser language detected:', browserLang);
-        
-        const supportedLangs = this.config.languages.supported.split(',').map(l => l.trim().toLowerCase());
-        const fallbackLang = this.config.languages.fallback || 'fr';
-        
-        // Vérifier si la langue du navigateur est supportée et différente du fallback
-        if (supportedLangs.includes(browserLang) && browserLang !== fallbackLang) {
-          console.log(`🌍 Auto-redirecting to browser language: ${browserLang}`);
-          
-          // Construire le nom de page dans la langue du navigateur
-          const basePage = this.config.defaultPage.replace(/\.([a-z]{2})\.md$/, '.md').replace(/\.md$/, '');
-          const langPage = `${basePage}.${browserLang}.md`;
-          
-          // Vérifier si la page existe
-          try {
-            const testResponse = await fetch(this.config.baseUrl + langPage, { method: 'HEAD' });
-            if (testResponse.ok) {
-              console.log(`🌍 Language page found: ${langPage}`);
-              location.hash = '#' + langPage;
-              await this.loadPage(langPage);
-              return;
-            }
-          } catch (e) {
-            console.log(`🌍 Language page not found: ${langPage}, using fallback`);
-          }
-        }
-      }
-      // === FIN FIX #3 ===
-      
       // Mode multilingue : redirection automatique si pas de hash
       if (this.isMultilingualMode() && !currentHash) {
         const defaultSource = this.config.sources[this.config.defaultLocale];
@@ -1685,62 +1430,15 @@
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
-        const content = await response.text();
-        console.log('✅ Content loaded:', content.length, 'characters');
+        const markdown = await response.text();
+        console.log('✅ Content loaded:', markdown.length, 'characters');
 
-        // === FIX #2A: SUPPORT FICHIERS .PUML (avec coloration Prism) ===
-        let html;
-        if (pagePath.endsWith('.puml')) {
-          // Fichier PlantUML direct
-          console.log('🏭 Processing .puml file');
-          
-          // Fonction d'encodage PlantUML (réutiliser celle existante)
-          function encodePlantUML(text) {
-            const utf8Encoder = new TextEncoder();
-            const utf8Bytes = utf8Encoder.encode(text);
-            let hex = '';
-            for (let i = 0; i < utf8Bytes.length; i++) {
-              hex += utf8Bytes[i].toString(16).padStart(2, '0');
-            }
-            return 'h' + hex;
-          }
-          
-          const encodedContent = encodePlantUML(content);
-          const plantUMLUrl = `${this.config.plantuml.server}/${this.config.plantuml.format}/~${encodedContent}`;
-          
-          // Échapper le code source pour l'affichage
-          const escapedContent = content.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-          
-          // === FIX #4: CODE SOURCE COLORÉ + DIAGRAMME (SVG inline) ===
-          html = `
-            <div class="ontowave-plantuml-container">
-              <div class="ontowave-plantuml-source">
-                <h3>📝 Code Source PlantUML</h3>
-                <pre><code class="language-plantuml">${escapedContent}</code></pre>
-              </div>
-              <div class="ontowave-plantuml-render">
-                <h3>🎨 Diagramme Rendu</h3>
-                <div class="plantuml-diagram" data-plantuml-url="${plantUMLUrl}">⏳ Chargement diagramme PlantUML...</div>
-              </div>
-            </div>
-          `;
-        } else {
-          // Fichier markdown classique
-          html = await this.renderMarkdown(content);
-        }
-        // === FIN FIX #2A ===
-        
+        // Rendre le markdown
+        const html = await this.renderMarkdown(markdown);
         contentDiv.innerHTML = html;
-        
-        // Supprimer explicitement tous les éléments de loading restants
-        const loadingElements = document.querySelectorAll('.ontowave-loading');
-        loadingElements.forEach(el => el.remove());
 
-        // Traiter les diagrammes Mermaid
+        // Traiter les diagrammes
         await this.processDiagrams(contentDiv);
-
-        // Traiter les diagrammes PlantUML (SVG inline)
-        await this.processPlantUML(contentDiv);
 
         // Traiter la coloration syntaxique
         await this.processPrism(contentDiv);
@@ -1777,53 +1475,6 @@
       // Rendu markdown corrigé avec support complet
       let html = markdown;
       
-      // === FIX #1: SUPPORT TABLEAUX MARKDOWN ===
-      // Traiter les tableaux AVANT les blocs de code
-      html = html.replace(/\n(\|[^\n]+\|\n)+/gm, (match) => {
-        const lines = match.trim().split('\n');
-        if (lines.length < 2) return match;
-        
-        // Ligne 1 = headers, Ligne 2 = alignements, Reste = données
-        const headers = lines[0].split('|').map(h => h.trim()).filter(h => h);
-        const alignments = lines[1].split('|').map(a => a.trim()).filter(a => a);
-        const rows = lines.slice(2).map(line => 
-          line.split('|').map(cell => cell.trim()).filter(cell => cell !== '')
-        );
-        
-        // Déterminer alignements: :--- = left, :---: = center, ---: = right
-        const aligns = alignments.map(a => {
-          if (a.startsWith(':') && a.endsWith(':')) return 'center';
-          if (a.endsWith(':')) return 'right';
-          return 'left';
-        });
-        
-        // Générer HTML table
-        let table = '<table class="ontowave-table">';
-        
-        // Headers
-        table += '<thead><tr>';
-        headers.forEach((header, i) => {
-          const align = aligns[i] || 'left';
-          table += `<th style="text-align: ${align}">${header}</th>`;
-        });
-        table += '</tr></thead>';
-        
-        // Body
-        table += '<tbody>';
-        rows.forEach(row => {
-          table += '<tr>';
-          row.forEach((cell, i) => {
-            const align = aligns[i] || 'left';
-            table += `<td style="text-align: ${align}">${cell}</td>`;
-          });
-          table += '</tr>';
-        });
-        table += '</tbody></table>';
-        
-        return '\n' + table + '\n';
-      });
-      // === FIN FIX #1 ===
-      
       // Traiter les blocs de code AVANT les autres transformations
       const codeBlocks = [];
       html = html.replace(/```(\w+)([\s\S]*?)```/g, (match, language, content) => {
@@ -1832,27 +1483,32 @@
         
         if (language === 'mermaid') {
           const id = 'mermaid-' + Math.random().toString(36).substr(2, 9);
-          codeBlocks.push(`<div class="mermaid" id="${id}">${trimmedContent}</div>`);
+          codeBlocks.push(`<div class="ontowave-mermaid">
+            <div style="margin-bottom: 8px; font-weight: bold; color: #586069;">🧜‍♀️ Diagramme Mermaid</div>
+            <div class="mermaid" id="${id}">${trimmedContent}</div>
+          </div>`);
         } else if (language === 'plantuml') {
           const id = 'plantuml-' + Math.random().toString(36).substr(2, 9);
           
-          // === NOUVEAU: SVG INLINE DIRECT (comme Mermaid) ===
           // Fonction d'encodage PlantUML avec support UTF-8
           function encodePlantUML(text) {
+            // Encoder le texte en UTF-8 puis en hexadécimal
             const utf8Encoder = new TextEncoder();
             const utf8Bytes = utf8Encoder.encode(text);
             let hex = '';
             for (let i = 0; i < utf8Bytes.length; i++) {
               hex += utf8Bytes[i].toString(16).padStart(2, '0');
             }
-            return 'h' + hex;
+            return 'h' + hex; // Le préfixe ~h sera ajouté dans l'URL
           }
           
           const encodedContent = encodePlantUML(trimmedContent);
           const plantUMLUrl = `${this.config.plantuml.server}/${this.config.plantuml.format}/~${encodedContent}`;
-          
-          // Placeholder pour le SVG qui sera chargé de manière asynchrone
-          codeBlocks.push(`<div class="plantuml-diagram" id="${id}" data-plantuml-url="${plantUMLUrl}">⏳ Chargement diagramme PlantUML...</div>`);
+          codeBlocks.push(`<div class="ontowave-plantuml" id="${id}">
+            <div style="margin-bottom: 8px; font-weight: bold; color: #586069;">🏭 Diagramme PlantUML</div>
+            <img src="${plantUMLUrl}" alt="Diagramme PlantUML" style="max-width: 100%; height: auto;" 
+                 onerror="this.parentElement.innerHTML='<div style=\\'color: #d73a49; padding: 20px;\\'>❌ Erreur de rendu PlantUML</div>'" />
+          </div>`);
         } else {
           const codeClass = this.prismLoaded ? `language-${language}` : '';
           console.log(`📝 Processing code block: language="${language}", prismLoaded=${this.prismLoaded}, class="${codeClass}"`);
@@ -2179,124 +1835,12 @@ td:empty::before {
       }
     }
 
-    // === NOUVEAU: TRAITEMENT SVG PLANTUML INLINE ===
-    async processPlantUML(container) {
-      const plantUMLElements = container.querySelectorAll('.plantuml-diagram[data-plantuml-url]');
-      if (plantUMLElements.length === 0) return;
-
-      console.log('🌱 Processing', plantUMLElements.length, 'PlantUML diagrams');
-
-      // Traiter tous les diagrammes en parallèle pour la performance
-      const promises = Array.from(plantUMLElements).map(async (element) => {
-        const plantUMLUrl = element.getAttribute('data-plantuml-url');
-        
-        try {
-          let svgText;
-          
-          // === CACHE SVG ===
-          const cachedSVG = this.getCachedSVG(plantUMLUrl);
-          if (cachedSVG) {
-            svgText = cachedSVG;
-          } else {
-            // Fetch le SVG depuis le serveur PlantUML
-            const response = await fetch(plantUMLUrl);
-            if (!response.ok) {
-              throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            
-            svgText = await response.text();
-            
-            // Mettre en cache
-            this.cacheSVG(plantUMLUrl, svgText);
-          }
-          
-          // Parser le SVG
-          const temp = document.createElement('div');
-          temp.innerHTML = svgText;
-          const svg = temp.querySelector('svg');
-          
-          if (!svg) {
-            throw new Error('No SVG found in response');
-          }
-          
-          // Appliquer les styles au SVG
-          svg.style.maxWidth = '100%';
-          svg.style.height = 'auto';
-          svg.style.display = 'block';
-          svg.style.margin = '0 auto';
-          
-          // === GESTION DES LIENS CLIQUABLES ===
-          const links = svg.querySelectorAll('a[href]');
-          console.log(`🔗 Found ${links.length} links in PlantUML diagram`);
-          
-          links.forEach(link => {
-            const href = link.getAttribute('href');
-            
-            // Si c'est un lien interne (.md, .html, .puml), utiliser le router OntoWave
-            if (href && (href.endsWith('.md') || href.endsWith('.html') || href.endsWith('.puml'))) {
-              link.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log(`🔗 Navigating to: ${href}`);
-                this.loadPage(href);
-              });
-              
-              // Style hover pour indiquer que c'est cliquable
-              link.style.cursor = 'pointer';
-              link.setAttribute('class', (link.getAttribute('class') || '') + ' ontowave-internal-link');
-            }
-          });
-          
-          // Remplacer le placeholder par le SVG
-          element.innerHTML = '';
-          element.appendChild(svg);
-          
-          console.log('✅ PlantUML diagram rendered with', links.length, 'clickable links');
-          
-        } catch (error) {
-          console.error('❌ Failed to load PlantUML diagram:', error);
-          element.innerHTML = `
-            <div style="color: #d73a49; padding: 20px; background: #fff5f5; border: 1px solid #feb2b2; border-radius: 6px;">
-              <strong>❌ Erreur de rendu PlantUML</strong>
-              <p style="margin: 5px 0; font-size: 14px;">${error.message}</p>
-              <details style="margin-top: 10px;">
-                <summary style="cursor: pointer; color: #0366d6;">Détails techniques</summary>
-                <pre style="background: #f6f8fa; padding: 10px; margin-top: 5px; border-radius: 4px; overflow-x: auto; font-size: 12px;">URL: ${plantUMLUrl}</pre>
-              </details>
-            </div>
-          `;
-        }
-      });
-
-      // Attendre que tous les diagrammes soient traités
-      await Promise.all(promises);
-      console.log('✅ All PlantUML diagrams processed');
-    }
-    // === FIN TRAITEMENT PLANTUML ===
-
     async processPrism(container) {
       console.log('🔍 processPrism called - prismLoaded:', this.prismLoaded, 'window.Prism:', !!window.Prism);
       
       if (!window.Prism) {
         console.log('🎨 Prism not available, skipping syntax highlighting');
         return;
-      }
-
-      // Attendre que JavaScript soit chargé (langage essentiel)
-      if (!window.Prism.languages || !window.Prism.languages.javascript) {
-        console.log('⏳ JavaScript not loaded yet, waiting...');
-        // Attendre maximum 2 secondes
-        for (let i = 0; i < 20; i++) {
-          await new Promise(resolve => setTimeout(resolve, 100));
-          if (window.Prism.languages && window.Prism.languages.javascript) {
-            console.log('✅ JavaScript language now available');
-            break;
-          }
-        }
-        
-        if (!window.Prism.languages || !window.Prism.languages.javascript) {
-          console.warn('⚠️ JavaScript language still not available after waiting');
-        }
       }
 
       try {
@@ -2371,11 +1915,6 @@ td:empty::before {
         console.error('❌ Prism highlighting error:', error);
       }
     }
-
-    // === ANCIENNE FONCTION SUPPRIMÉE ===
-    // attachPlantUMLLinks() n'est plus nécessaire car on insère directement le SVG inline
-    // Les liens sont attachés dans processPlantUML()
-    // === FIN SUPPRESSION ===
 
     showConfigurationInterface() {
       const contentDiv = document.getElementById('ontowave-content');

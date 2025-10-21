@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌊 OntoWave - Démo Tableaux (Simple)</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f8f9fa;
+      color: #333;
+    }
+    .header {
+      text-align: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+    }
+    .demo-box {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+    .status { 
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: #28a745;
+      color: white;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+    #markdown-output {
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      padding: 2rem;
+      background: white;
+      min-height: 300px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🌊 OntoWave - Fix Tableaux</h1>
+    <p>Démonstration du fix des tableaux avec injection CSS automatique</p>
+    <span class="status">✅ VALIDÉ</span>
+  </div>
+
+  <div class="demo-box">
+    <h2>📋 Rendu Markdown → HTML</h2>
+    <div id="markdown-output">
+      <p><em>⏳ Chargement OntoWave...</em></p>
+    </div>
+  </div>
+
+  <div class="demo-box">
+    <h2>🔧 Fix Appliqué</h2>
+    <ul>
+      <li>✅ <strong>MarkdownIt tables</strong> : <code>tables: true</code></li>
+      <li>✅ <strong>CSS automatique</strong> : <code>injectTableStyles()</code></li>
+      <li>✅ <strong>Bordures et headers</strong> : Stylisation complète</li>
+      <li>✅ <strong>Zebra striping</strong> : Alternance de couleurs</li>
+      <li>✅ <strong>Responsive</strong> : Adaptation mobile</li>
+      <li>✅ <strong>Dark mode</strong> : Thème sombre supporté</li>
+    </ul>
+  </div>
+
+  <!-- OntoWave Assets -->
+  <script src="docs/assets/md-B_Y-_9Ry.js"></script>
+  <script src="docs/assets/index-BfHSqbNC.js"></script>
+  
+  <script>
+    // Contenu markdown à rendre
+    const markdownContent = \`# Démonstration Fix Tableaux OntoWave
+
+## 🔧 Tableaux Simples
+
+| Nom | Age | Ville |
+|-----|-----|-------|
+| Alice | 30 | Paris |
+| Bob | 25 | Lyon |
+| Charlie | 35 | Marseille |
+
+## 📊 Tableau avec Alignement
+
+| Élément | Quantité | Prix | Total |
+|:--------|:--------:|-----:|------:|
+| Pommes | 5 | 2.50€ | 12.50€ |
+| Oranges | 3 | 3.00€ | 9.00€ |
+| Bananes | 8 | 1.80€ | 14.40€ |
+
+## ✅ Statut du Fix
+
+| 🌟 Fonctionnalité | Status | Impact |
+|:------------------|:------:|:------:|
+| **Tables CSS** | ✅ | 🔥 |
+| **Headers** | ✅ | 📈 |
+| **Zebra Striping** | ✅ | 🎨 |
+| **Responsive** | ✅ | 📱 |
+| **Dark Mode** | ✅ | 🌙 |
+
+---
+
+**Fix des tableaux OntoWave validé !** 🎉\`;
+
+    // Initialisation OntoWave
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        console.log('🚀 Initialisation OntoWave...');
+        
+        // Attendre OntoWave
+        let attempts = 0;
+        while (!window.OntoWave && attempts < 30) {
+          await new Promise(resolve => setTimeout(resolve, 200));
+          attempts++;
+        }
+
+        if (window.OntoWave) {
+          console.log('✅ OntoWave chargé avec succès');
+          
+          // Créer le renderer
+          const renderer = window.OntoWave.createRenderer();
+          
+          // Rendre le markdown
+          const html = renderer.render(markdownContent);
+          
+          // Afficher dans la page
+          document.getElementById('markdown-output').innerHTML = html;
+          
+          console.log('📄 Contenu rendu avec OntoWave');
+          console.log('🔧 Fix tableaux appliqué automatiquement');
+          
+        } else {
+          throw new Error('OntoWave non disponible après 30 tentatives');
+        }
+        
+      } catch (error) {
+        console.error('❌ Erreur OntoWave:', error);
+        document.getElementById('markdown-output').innerHTML = \`
+          <div style="color: red; text-align: center; padding: 2rem;">
+            <h3>❌ Erreur de chargement OntoWave</h3>
+            <p>\${error.message}</p>
+            <p><small>Vérifiez la console pour plus de détails</small></p>
+          </div>
+        \`;
+      }
+    });
+  </script>
+</body>
+</html>
