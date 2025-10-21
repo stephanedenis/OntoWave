@@ -194,10 +194,12 @@ sequenceDiagram
 
 **Méthode 2 : Blocs de code avec triple backticks**
 
-    ```mermaid
+Utiliser la syntaxe suivante (remplacer `X` par `` ` ``):
+
+    XXXmermaid
     graph TD;
       A --> B
-    ```
+    XXX
 
 **Rendu attendu** : Diagramme graphique Mermaid rendu en SVG
 
@@ -233,9 +235,11 @@ Montrer **comment écrire** un diagramme :
     </details>
     
     Résultat :
-    ```mermaid
+    XXXmermaid
     ...code diagramme...
-    ```
+    XXX
+
+(Remplacer `XXX` par trois backticks `` ` ``)
 
 ### 🎓 Tutoriels
 
@@ -253,10 +257,12 @@ Support prévu pour **attributs Pandoc** :
 
 **Exemple de syntaxe future :**
 
-    ```mermaid {render=false}
+    XXXmermaid {render=false}
     graph TD;
       A --> B
-    ```
+    XXX
+
+(Remplacer `XXX` par trois backticks `` ` ``)
 
 **Comportement attendu :**
 - `{render=false}` → Coloration Prism (code source uniquement)
@@ -275,9 +281,11 @@ Support prévu pour **attributs Pandoc** :
 
 **POUR RENDU (diagramme graphique) :**
 
-    ```mermaid
+    XXXmermaid
     ...
-    ```
+    XXX
+
+(Remplacer `XXX` par trois backticks `` ` ``)
 
 **POUR LES DEUX :**
 
