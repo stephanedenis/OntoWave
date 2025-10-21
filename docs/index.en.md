@@ -1,16 +1,32 @@
-# OntoWave v1.0
+# OntoWave v1.0.1
 
-Lightweight JavaScript micro-application (~18KB) for static sites with multilingual support, syntax highlighting and diagrams.
+Lightweight JavaScript micro-application (~74KB) for static sites with multilingual support, syntax highlighting and diagrams.
 
 ## Features
 
-- **Markdown Processing**: Parse and render Markdown with syntax highlighting
-- **Multilingual Support**: Built-in internationalization (i18n)
-- **Prism Integration**: Automatic syntax highlighting for code blocks
-- **Mermaid Diagrams**: Rendering of charts, sequence diagrams, etc.
-- **PlantUML Support**: UML diagrams with online rendering
-- **Lightweight**: ~18KB minified, no dependencies
+- **Markdown Processing**: Parse and render Markdown with table alignments support
+- **Multilingual Support**: Built-in internationalization (i18n) with auto language detection
+- **Prism Integration**: Automatic syntax highlighting for code blocks (150+ languages)
+- **Mermaid Diagrams**: Render flowcharts, sequence diagrams, class diagrams, state diagrams, and more
+- **PlantUML Support**: UML diagrams with online rendering and clickable SVG links
+- **.puml Files**: Direct PlantUML file loading
+- **Lightweight**: ~74KB minified, no dependencies
 - **Simple Configuration**: Drop-in script with automatic initialization
+
+### 🧪 Demonstrations
+
+Explore all OntoWave v1.0.1 features through 11 interactive demos:
+
+**Featured Demos:**
+- **[Mermaid Flowcharts](demos/09-mermaid-flowcharts.html)** - Architecture diagrams, pie charts, styled graphs
+- **[Mermaid Sequence](demos/10-mermaid-sequence.html)** - Sequence, class, and state diagrams
+- **[Prism Highlighting](demos/11-prism-highlight.html)** - 8 languages with production-ready code
+- **[Markdown Tables](demos/06-markdown-tables.html)** - Column alignments (left, center, right)
+- **[PlantUML Files](demos/07-plantuml-file.html)** - Direct `.puml` file loading
+- **[PlantUML Links](demos/05-plantuml-links.html)** - Clickable diagrams with SPA navigation
+- **[Internationalization](demos/02-i18n-french.html)** - Auto language detection
+
+[📋 See all 11 demos with full documentation →](demos/)
 
 ### Usage
 
@@ -100,36 +116,39 @@ UIManager --> MarkdownProcessor : manages
 @enduml
 ```
 
-#### Plugin System
+#### External Integrations
 
 ```plantuml
-@startuml Plugin_System
+@startuml External_Integrations
 !theme plain
 
-interface SyntaxHighlighter {
-  +highlight()
+component "OntoWave Core" as Core {
+  component "MarkdownProcessor" as MD
+  component "ContentRenderer" as CR
 }
 
-interface DiagramRenderer {
-  +render()
-}
+component "Prism.js" as Prism <<external>>
+component "Mermaid.js" as Mermaid <<external>>
+component "PlantUML Server" as PlantUML <<external>>
 
-class PrismPlugin
-class MermaidPlugin
-class PlantUMLPlugin
+MD --> Prism : syntax highlighting
+MD --> Mermaid : diagram rendering
+MD --> PlantUML : SVG generation
 
-SyntaxHighlighter <|.. PrismPlugin
-DiagramRenderer <|.. MermaidPlugin
-DiagramRenderer <|.. PlantUMLPlugin
+note right of Prism
+  Automatic highlighting
+  150+ languages
+end note
 
-class MarkdownProcessor {
-  +parse()
-  +render()
-}
+note right of Mermaid
+  Flowchart, sequence,
+  class diagrams, etc.
+end note
 
-MarkdownProcessor --> PrismPlugin : uses
-MarkdownProcessor --> MermaidPlugin : uses
-MarkdownProcessor --> PlantUMLPlugin : uses
+note right of PlantUML
+  UML diagrams
+  Clickable links
+end note
 
 @enduml
 ```
