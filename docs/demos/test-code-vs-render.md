@@ -174,26 +174,32 @@ sequenceDiagram
 
 ### Syntaxe HTML pour Code Source
 
-```html
-<details>
-<summary>📝 Voir le code source</summary>
+**Méthode 1 : Balises `<details>` + `<pre>`**
 
-<pre><code class="language-mermaid">
-graph TD;
-  A --> B
-</code></pre>
+    <details>
+    <summary>📝 Voir le code source</summary>
+    
+    <pre><code class="language-mermaid">
+    graph TD;
+      A --> B
+    </code></pre>
+    
+    </details>
 
-</details>
-```
+**Rendu attendu** : Un bloc pliable avec code coloré par Prism.js
+
+---
 
 ### Syntaxe Markdown pour Rendu
 
-````markdown
-```mermaid
-graph TD;
-  A --> B
-```
-````
+**Méthode 2 : Blocs de code avec triple backticks**
+
+    ```mermaid
+    graph TD;
+      A --> B
+    ```
+
+**Rendu attendu** : Diagramme graphique Mermaid rendu en SVG
 
 ---
 
@@ -219,17 +225,17 @@ OntoWave supporte **11 langages** via Prism.js :
 
 Montrer **comment écrire** un diagramme :
 
-```markdown
-<details>
-<summary>Code source</summary>
-...
-</details>
+**Structure recommandée :**
 
-Résultat :
-```mermaid
-...
-```
-```
+    <details>
+    <summary>Code source</summary>
+    ...code HTML...
+    </details>
+    
+    Résultat :
+    ```mermaid
+    ...code diagramme...
+    ```
 
 ### 🎓 Tutoriels
 
@@ -245,38 +251,37 @@ Afficher le **code brut** pour vérifier les erreurs.
 
 Support prévu pour **attributs Pandoc** :
 
-````markdown
-```mermaid {render=false}
-graph TD;
-  A --> B
-```
-````
+**Exemple de syntaxe future :**
 
-Comportement :
-- `{render=false}` → Coloration Prism
-- Sans attribut → Rendu Mermaid (défaut)
+    ```mermaid {render=false}
+    graph TD;
+      A --> B
+    ```
+
+**Comportement attendu :**
+- `{render=false}` → Coloration Prism (code source uniquement)
+- Sans attribut → Rendu Mermaid (défaut, comportement actuel)
 
 ---
 
 ## 📝 Résumé
 
-**POUR CODE SOURCE :**
-```html
-<details>
-<summary>📝 Code source</summary>
-<pre><code class="language-mermaid">...</code></pre>
-</details>
-```
+**POUR CODE SOURCE (pas de rendu graphique) :**
 
-**POUR RENDU :**
-````markdown
-```mermaid
-...
-```
-````
+    <details>
+    <summary>📝 Code source</summary>
+    <pre><code class="language-mermaid">...</code></pre>
+    </details>
+
+**POUR RENDU (diagramme graphique) :**
+
+    ```mermaid
+    ...
+    ```
 
 **POUR LES DEUX :**
-Combinez les deux approches dans votre documentation.
+
+Combinez les deux approches dans votre documentation (voir exemples ci-dessus).
 
 ---
 
