@@ -49,10 +49,3 @@ Quand aucun alignement n'est spécifié, tout est aligné à gauche par défaut.
 
 ---
 
-**Tests attendus** :
-- ✅ Détection des alignements `:---`, `:---:`, `---:`
-- ✅ Injection CSS `text-align` inline
-- ✅ Styles `.ontowave-table` appliqués
-- ✅ Hover effect sur les lignes
-- ✅ Zebra striping (alternance couleurs)
-- ✅ Bordures et padding corrects

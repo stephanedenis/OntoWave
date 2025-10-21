@@ -197,26 +197,6 @@ sequenceDiagram
 
 ---
 
-## ✅ Tests Manuels
-
-**Validation visuelle** :
-
-- [ ] Sequence diagrams affichent les participants correctement
-- [ ] Les flèches sont orientées dans le bon sens
-- [ ] Les boucles (loop) sont bien délimitées
-- [ ] Les alternatives (alt/else) sont claires
-- [ ] Class diagram montre les relations entre classes
-- [ ] State diagram affiche les transitions d'états
-- [ ] Pas d'erreur Mermaid dans la console
-- [ ] Diagrammes responsive
-
-**Tests sémantiques** :
-
-- [ ] Sequence diagram #1 reflète bien le processus réel OntoWave
-- [ ] Class diagram correspond à l'architecture réelle
-- [ ] State diagram menu est cohérent avec le comportement observé
-
----
 
 ## 📚 Syntaxe Mermaid
 

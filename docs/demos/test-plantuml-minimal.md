@@ -1,8 +1,10 @@
-# Test PlantUML - Encodage ~0 (DEFLATE) + Insertion Directe
+# 📊 PlantUML - Diagrammes de Séquence
 
-Ce document teste le nouveau système PlantUML avec encodage DEFLATE (`~0`) et insertion SVG directe sans wrappers.
+OntoWave supporte les **diagrammes PlantUML** avec rendu SVG haute qualité directement dans la page.
 
-## Diagramme Simple
+## 🎯 Exemples
+
+### Diagramme de Séquence Simple
 
 ```plantuml
 @startuml
@@ -14,7 +16,7 @@ Alice <-- Bob: Another authentication Response
 @enduml
 ```
 
-## Diagramme de Classes
+### Diagramme de Classes
 
 ```plantuml
 @startuml
@@ -33,7 +35,7 @@ User <|-- Admin
 @enduml
 ```
 
-## Diagramme de Séquence
+### Architecture OntoWave
 
 ```plantuml
 @startuml
@@ -41,21 +43,21 @@ participant Client
 participant OntoWave
 participant PlantUMLServer
 
-Client -> OntoWave: Afficher page
+Client -> OntoWave: Charger page
 OntoWave -> OntoWave: Parser Markdown
-OntoWave -> OntoWave: Encoder DEFLATE (~0)
-OntoWave -> PlantUMLServer: GET /svg/{encoded}
-PlantUMLServer --> OntoWave: SVG brut
-OntoWave -> OntoWave: Insertion directe
-OntoWave --> Client: Page rendue
+OntoWave -> OntoWave: Encoder diagrammes
+OntoWave -> PlantUMLServer: Requête SVG
+PlantUMLServer --> OntoWave: SVG généré
+OntoWave -> OntoWave: Insertion inline
+OntoWave --> Client: Page affichée
 @enduml
 ```
 
 ---
 
-**Tests attendus** :
-- ✅ Encodage DEFLATE (~0) au lieu de HUFFMAN (~1)
-- ✅ Pas de wrapper `.plantuml-diagram-wrapper`
-- ✅ Pas de wrapper `.diagram`
-- ✅ SVG inséré directement dans le DOM
-- ✅ Liens cliquables préservés
+## 💡 Avantages
+
+- **SVG haute qualité** : Rendu vectoriel, zoom sans perte
+- **Liens cliquables** : Navigation interactive préservée
+- **Performance** : Insertion directe, pas de wrapper
+- **Compatibilité** : Toute syntaxe PlantUML supportée

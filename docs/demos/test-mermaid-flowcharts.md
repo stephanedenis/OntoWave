@@ -114,27 +114,6 @@ graph TD
 
 ---
 
-## ✅ Tests Manuels
-
-**Validation visuelle** :
-
-- [ ] Les 5 diagrammes sont rendus correctement
-- [ ] Les flowcharts utilisent les bonnes directions (TD, LR)
-- [ ] Les formes sont variées : rectangles, losanges, cercles
-- [ ] Les flèches sont correctement orientées
-- [ ] Le pie chart affiche les pourcentages
-- [ ] Les styles personnalisés (couleurs) sont appliqués
-- [ ] Pas de message d'erreur Mermaid dans la console
-- [ ] Diagrammes responsive (s'adaptent à la largeur)
-
-**Tests interactifs** :
-
-- [ ] Zoom navigateur (Ctrl +/-) : diagrammes restent lisibles
-- [ ] Mode responsive (F12 > Toggle device) : pas de débordement
-- [ ] Survol des éléments : pas d'effet indésirable
-
----
-
 ## 📚 Syntaxe Mermaid
 
 **Formes disponibles** :

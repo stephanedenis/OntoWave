@@ -29,8 +29,3 @@ OntoWave -> Navigateur: Affiche contenu français
 
 ---
 
-**Tests attendus** :
-
-- ✅ Menu OntoWave visible
-- ✅ Contenu français chargé
-- ✅ `location.hash = "#demos/test-i18n-french.md"`

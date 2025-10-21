@@ -568,27 +568,6 @@ pre[class*="language-"] {
 
 ---
 
-## ✅ Tests Manuels
-
-**Validation coloration** :
-
-- [ ] Python : mots-clés (def, class, async, await) colorés différemment
-- [ ] JavaScript : template literals `` ` `` bien détectés
-- [ ] TypeScript : types (string, number, etc.) en couleur distincte
-- [ ] Bash : variables $VAR en évidence
-- [ ] JSON : clés vs valeurs colorées différemment
-- [ ] YAML : indentation respectée, `:` bien visible
-- [ ] CSS : propriétés vs valeurs distinctes
-- [ ] HTML : balises vs attributs vs contenu
-
-**Tests fonctionnels** :
-
-- [ ] Pas d'erreur Prism dans la console
-- [ ] Copier-coller du code fonctionne (sans numéros de lignes)
-- [ ] Scroll horizontal si code long
-- [ ] Code lisible sur mobile
-
----
 
 ## 📚 Langages Supportés
 
