@@ -3,23 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo 01 - PlantUML Minimal</title>
+    <title>OntoWave - Démo PlantUML Minimal</title>
+    <script src="../ontowave.min.js"></script>
 </head>
 <body>
-    <div id="app"></div>
+    <div id="ontowave"></div>
     
-    <!-- OntoWave CONFIG -->
     <script>
+        // Forcer le hash pour bypass détection automatique langue
+        location.hash = '#test-plantuml-minimal.md';
+        
+        // Configuration OntoWave (API v0.x)
         window.ontoWaveConfig = {
-            locales: ["fr"],
-            defaultLocale: "fr",
-            sources: {
-                fr: "docs/demos/test-plantuml-minimal.md"
-            }
+            baseUrl: '/docs/demos/',
+            defaultPage: 'test-plantuml-minimal.md'
         };
     </script>
-    
-    <!-- OntoWave -->
-    <script src="../../dist/ontowave.min.js"></script>
 </body>
 </html>

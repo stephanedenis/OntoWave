@@ -3,29 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo 04 - i18n Fallback</title>
+    <title>OntoWave - Demo i18n Fallback</title>
+    <script src="../ontowave.min.js"></script>
 </head>
 <body>
-    <div id="app"></div>
+    <div id="ontowave"></div>
     
-    <!-- OntoWave CONFIG with German browser (should fallback to French) -->
     <script>
-        // Simulate German browser
-        Object.defineProperty(navigator, 'language', {
-            get: function() { return 'de-DE'; }
-        });
+        // Forcer le hash pour bypass détection automatique langue
+        location.hash = '#test-i18n-french.md';
         
+        // Configuration OntoWave (API v0.x)
         window.ontoWaveConfig = {
-            locales: ["fr", "en"],
-            defaultLocale: "fr",
-            sources: {
-                fr: "docs/demos/test-i18n-french.md",
-                en: "docs/demos/test-i18n-english.md"
+            baseUrl: '/docs/demos/',
+            defaultPage: 'test-i18n-french.md',
+            languages: {
+                supported: 'fr,en',
+                fallback: 'fr'
             }
         };
     </script>
-    
-    <!-- OntoWave -->
-    <script src="../../dist/ontowave.min.js"></script>
 </body>
 </html>

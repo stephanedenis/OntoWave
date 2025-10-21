@@ -3,29 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo 03 - i18n English</title>
+    <title>OntoWave - Demo i18n English</title>
+    <script src="../ontowave.min.js"></script>
 </head>
 <body>
-    <div id="app"></div>
+    <div id="ontowave"></div>
     
-    <!-- OntoWave CONFIG with English detection -->
     <script>
-        // Simulate English browser
-        Object.defineProperty(navigator, 'language', {
-            get: function() { return 'en-US'; }
-        });
+        // Forcer le hash pour bypass détection automatique langue
+        location.hash = '#test-i18n-english.md';
         
+        // Configuration OntoWave (API v0.x)
         window.ontoWaveConfig = {
-            locales: ["fr", "en"],
-            defaultLocale: "en",
-            sources: {
-                fr: "docs/demos/test-i18n-french.md",
-                en: "docs/demos/test-i18n-english.md"
+            baseUrl: '/docs/demos/',
+            defaultPage: 'test-i18n-english.md',
+            languages: {
+                supported: 'fr,en',
+                fallback: 'en'
             }
         };
     </script>
-    
-    <!-- OntoWave -->
-    <script src="../../dist/ontowave.min.js"></script>
 </body>
 </html>
