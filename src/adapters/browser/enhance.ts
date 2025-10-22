@@ -1,4 +1,5 @@
 import { getJsonFromBundle } from './bundle'
+import { svgCache } from './svg-cache'
 
 function buildTocFromHtml(html: string): string {
   const h = globalThis.document?.createElement('div')
@@ -52,10 +53,23 @@ async function renderKroki(container: HTMLElement) {
     const engine = langMap[lang]
     if (!engine || engine === 'mermaid') continue // Mermaid géré ailleurs
     const txt = code.textContent || ''
+    const krokiUrl = `https://kroki.io/${engine}/svg`
+    
     try {
-      const res = await fetch(`https://kroki.io/${engine}/svg`, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: txt })
-      if (!res.ok) continue
-      const svg = await res.text()
+      // Vérifier le cache SVG
+      const cacheKey = `${krokiUrl}:${txt}`
+      let svg = svgCache.get(cacheKey)
+      
+      if (!svg) {
+        // Fetch depuis Kroki
+        const res = await fetch(krokiUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: txt })
+        if (!res.ok) continue
+        svg = await res.text()
+        
+        // Mettre en cache
+        svgCache.set(cacheKey, svg)
+      }
+      
       // Insérer SVG inline directement, sans div wrapper ni label
       const wrapper = document.createElement('div')
       wrapper.innerHTML = svg
@@ -63,6 +77,19 @@ async function renderKroki(container: HTMLElement) {
       if (svgEl) {
         svgEl.style.maxWidth = '100%'
         svgEl.style.height = 'auto'
+        
+        // Attacher event listeners pour les liens internes
+        const links = svgEl.querySelectorAll('a[href]')
+        links.forEach((link) => {
+          const href = link.getAttribute('href')
+          if (href && (href.endsWith('.md') || href.endsWith('.html') || href.endsWith('.puml'))) {
+            link.addEventListener('click', (e) => {
+              e.preventDefault()
+              window.location.hash = href
+            })
+          }
+        })
+        
         const pre = code.closest('pre')!
         pre.replaceWith(svgEl)
       }
