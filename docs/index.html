@@ -1,28 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OntoWave - Lightweight Documentation Framework</title>
-    <meta name="description" content="OntoWave: Lightweight JavaScript framework for static documentation sites with multilingual support, syntax highlighting, and diagrams">
+    <title>OntoWave</title>
 </head>
 <body>
-    <div id="ontowave"></div>
-    
-    <!-- OntoWave from npm CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/ontowave@1.0.6/dist/ontowave.min.js"></script>
-    
-    <script>
-        // Initialize OntoWave
-        new OntoWave({
-            basePath: '.',
-            contentPath: 'README.md',
-            locales: ['en', 'fr'],
-            defaultLocale: 'en',
-            enablePrism: true,
-            enableMermaid: true,
-            enablePlantUML: true
-        });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
 </body>
 </html>
