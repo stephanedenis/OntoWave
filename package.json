@@ -41,6 +41,7 @@
     "prebuild": "npm run sitemap && npm run pageslist",
     "dev": "vite",
     "build": "vite build",
+    "postbuild": "bash tools/restore-github-pages-files.sh",
     "build:package": "npx uglifyjs dist/ontowave.js -o dist/ontowave.min.js -c -m",
     "build:standalone": "npm run build && node tools/build-standalone.mjs",
     "serve:docs": "npx http-server ./docs -p 8080 -c-1 --cors",
