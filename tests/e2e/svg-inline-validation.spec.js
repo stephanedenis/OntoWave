@@ -6,15 +6,15 @@
 
 import { test, expect } from '@playwright/test';
 
-const BASE_URL = 'http://localhost:8080/docs';
+const BASE_URL = 'http://localhost:8080';
 
 test.describe('SVG Inline Validation - PlantUML', () => {
   
   test('PlantUML: fichier .puml doit être rendu en SVG inline', async ({ page }) => {
     console.log('🧪 Testing PlantUML .puml file rendering...');
     
-    await page.goto(`${BASE_URL}/demos/07-plantuml-file.html#test-navigation.puml`);
-    await page.waitForTimeout(3000);
+    await page.goto(`${BASE_URL}/demos/07-plantuml-file.html`);
+    await page.waitForTimeout(4000); // Attendre le chargement + rendu SVG
     
     // Vérifier qu'il N'Y A PAS d'élément <img> pour PlantUML
     const imgCount = await page.$$eval('img[alt*="PlantUML"], img[src*="plantuml"]', els => els.length);
@@ -86,8 +86,8 @@ test.describe('SVG Inline Validation - PlantUML', () => {
   test('PlantUML: navigation via lien SVG doit changer le hash', async ({ page }) => {
     console.log('🧪 Testing PlantUML link navigation...');
     
-    await page.goto(`${BASE_URL}/demos/07-plantuml-file.html#test-navigation.puml`);
-    await page.waitForTimeout(3000);
+    await page.goto(`${BASE_URL}/demos/07-plantuml-file.html`);
+    await page.waitForTimeout(4000);
     
     const initialHash = await page.evaluate(() => window.location.hash);
     console.log(`📊 Initial hash: ${initialHash}`);
@@ -171,18 +171,18 @@ test.describe('SVG Inline Validation - Performance & Cache', () => {
     });
     
     // Première navigation - doit fetcher
-    await page.goto(`${BASE_URL}/demos/07-plantuml-file.html#test-navigation.puml`);
-    await page.waitForTimeout(3000);
+    await page.goto(`${BASE_URL}/demos/07-plantuml-file.html`);
+    await page.waitForTimeout(4000);
     
     const logsAfterFirst = [...consoleLogs];
     console.log('📊 Logs after first load:', logsAfterFirst);
     
     // Navigation vers autre page
-    await page.goto(`${BASE_URL}/demos/05-plantuml-links.html#test-plantuml-links.md`);
+    await page.goto(`${BASE_URL}/demos/05-plantuml-links.html`);
     await page.waitForTimeout(2000);
     
     // Retour - doit utiliser cache
-    await page.goto(`${BASE_URL}/demos/07-plantuml-file.html#test-navigation.puml`);
+    await page.goto(`${BASE_URL}/demos/07-plantuml-file.html`);
     await page.waitForTimeout(2000);
     
     const logsAfterSecond = consoleLogs.filter(log => 
@@ -216,8 +216,8 @@ test.describe('SVG Inline Validation - Performance & Cache', () => {
       }
     });
     
-    await page.goto(`${BASE_URL}/demos/07-plantuml-file.html#test-navigation.puml`);
-    await page.waitForTimeout(3000);
+    await page.goto(`${BASE_URL}/demos/07-plantuml-file.html`);
+    await page.waitForTimeout(4000);
     
     console.log(`📊 PlantUML requests made: ${requests.length}`);
     requests.forEach((req, i) => {

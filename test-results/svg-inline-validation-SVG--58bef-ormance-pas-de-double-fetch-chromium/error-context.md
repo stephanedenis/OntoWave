@@ -1,0 +1,41 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic "OntoWave Menu" [ref=e3]:
+    - generic [ref=e4] [cursor=pointer]: 🌊
+    - generic:
+      - link "OntoWave.org":
+        - /url: https://ontowave.org/
+        - text: OntoWave
+        - generic: .org
+      - generic [ref=e5]:
+        - generic [ref=e6] [cursor=pointer]: 🏠 Home
+        - generic [ref=e7] [cursor=pointer]: 🌐 FR
+        - generic [ref=e8] [cursor=pointer]: 🌐 EN
+        - generic [ref=e9] [cursor=pointer]: ⚙️ Configuration
+  - generic [ref=e10]:
+    - heading "Test PlantUML File" [level=1] [ref=e11]
+    - paragraph: "Ce test charge un fichier PlantUML externe:"
+    - paragraph
+    - img [ref=e13]:
+      - generic [ref=e14]:
+        - link "#simple.md" [ref=e17] [cursor=pointer]:
+          - /url: "#simple.md"
+          - generic [ref=e18] [cursor=pointer]: Simple Page
+        - link "#complex.md" [ref=e21] [cursor=pointer]:
+          - /url: "#complex.md"
+          - generic [ref=e22] [cursor=pointer]: Complex Page
+        - link "#index.md" [ref=e25] [cursor=pointer]:
+          - /url: "#index.md"
+          - generic [ref=e26] [cursor=pointer]: Home
+        - generic [ref=e29]: navigation
+        - generic [ref=e32]: retour
+        - generic [ref=e35]: nouveau cycle
+    - paragraph
+    - paragraph [ref=e36]:
+      - text: Ce diagramme devrait être rendu en SVG inline directement, sans balise
+      - code:
+        - img
+      - text: .
+```
