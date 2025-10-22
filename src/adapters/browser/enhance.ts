@@ -1,15 +1,5 @@
 import { getJsonFromBundle } from './bundle'
 
-function svgToDataUri(svg: string): string {
-  try {
-    const base64 = btoa(unescape(encodeURIComponent(svg)))
-    return `data:image/svg+xml;base64,${base64}`
-  } catch {
-    // Fallback to UTF-8 encoded data URI
-    return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
-  }
-}
-
 function buildTocFromHtml(html: string): string {
   const h = globalThis.document?.createElement('div')
   if (!h) return ''
@@ -48,7 +38,7 @@ async function renderMermaid(container: HTMLElement) {
 }
 
 async function renderKroki(container: HTMLElement) {
-  // Support basique via images Kroki: détecte ```plantuml / ```puml / ```noml etc. et remplace par <img src="https://kroki.io/...">
+  // SVG inline direct pour PlantUML, Graphviz, D2, BPMN via Kroki
   const langMap: Record<string, string> = {
     plantuml: 'plantuml', puml: 'plantuml', uml: 'plantuml',
     dot: 'graphviz', mermaid: 'mermaid', d2: 'd2', bpmn: 'bpmn'
@@ -66,16 +56,16 @@ async function renderKroki(container: HTMLElement) {
       const res = await fetch(`https://kroki.io/${engine}/svg`, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: txt })
       if (!res.ok) continue
       const svg = await res.text()
-      const div = document.createElement('div')
-      div.className = 'diagram'
-      const img = document.createElement('img')
-      img.src = svgToDataUri(svg)
-      img.alt = `${engine} diagram`
-      img.style.maxWidth = '100%'
-      img.style.height = 'auto'
-      div.appendChild(img)
-      const pre = code.closest('pre')!
-      pre.replaceWith(div)
+      // Insérer SVG inline directement, sans div wrapper ni label
+      const wrapper = document.createElement('div')
+      wrapper.innerHTML = svg
+      const svgEl = wrapper.querySelector('svg')
+      if (svgEl) {
+        svgEl.style.maxWidth = '100%'
+        svgEl.style.height = 'auto'
+        const pre = code.closest('pre')!
+        pre.replaceWith(svgEl)
+      }
     } catch {}
   }
 }
