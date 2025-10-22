@@ -1,0 +1,93 @@
+@startuml
+' ═══════════════════════════════════════════════════════════════
+' Test Coloration Syntaxique PlantUML avec Prism.js
+' OntoWave v1.0.2 - FIX #4
+' ═══════════════════════════════════════════════════════════════
+
+title 🎨 Démonstration Coloration PlantUML\nAvec Prism.js dans OntoWave
+
+' Configuration visuelle
+skinparam backgroundColor #FEFEFE
+skinparam titleFontSize 18
+skinparam titleFontColor #2C3E50
+
+' === Participants colorés ===
+participant "🔵 [[index.md Accueil]]" as Home #ADD8E6
+participant "🟢 [[test-tables.md Tableaux]]" as Tables #90EE90
+participant "🟡 [[test-plantuml-prism.puml Ce Fichier]]" as Self #FFD700
+participant "🔴 Serveur PlantUML" as Server #FFA07A
+
+' === Séquence d'interactions ===
+Home -> Tables: 1. Navigation\ninterne
+activate Tables
+
+Tables -> Self: 2. Clic lien\nPlantUML
+activate Self
+
+Self -> Server: 3. Encodage\n+ Rendu SVG
+activate Server
+
+note over Server
+  **Encodage Hexadécimal UTF-8**
+  Format: ~h + hex_bytes
+  Serveur: plantuml.com
+end note
+
+Server --> Self: 4. Image SVG\nrendue
+deactivate Server
+
+note over Self
+  **Rendu OntoWave:**
+  • Code source coloré (Prism)
+  • Diagramme SVG interactif
+  • Liens cliquables actifs
+end note
+
+Self -> Self: 5. Affichage\ndual-pane
+deactivate Self
+
+Tables -> Home: 6. Retour\naccueil
+deactivate Tables
+
+' === Annotations de test ===
+note left of Home
+  **Tests à valider:**
+  ✅ Coloration syntaxe
+  ✅ Liens [[...]] cliquables
+  ✅ Navigation OntoWave
+  ✅ Pas de rechargement
+end note
+
+note right of Server
+  **Éléments PlantUML:**
+  • @startuml / @enduml
+  • participant / actor
+  • -> / --> / ->> flèches
+  • activate / deactivate
+  • note / alt / loop
+  • skinparam / style
+  • [[url liens]]
+  • ' commentaires
+  • #colors tags
+end note
+
+' === Test des flèches variées ===
+Home ->> Tables: Message asynchrone
+Tables --> Home: Réponse en pointillés
+Home -\ Tables: Flèche ouverte gauche
+Tables /- Home: Flèche ouverte droite
+
+' === Test groupe alternatif ===
+alt Test réussi ✅
+  Self -> Home: Navigation\nfonctionne
+else Test échoué ❌
+  Self -> Server: Nouvelle\ntentative
+end
+
+' === Footer avec métadonnées ===
+center footer
+  **OntoWave v1.0.2** • FIX #4: PlantUML + Prism.js
+  Generated: %date("yyyy-MM-dd HH:mm")
+end footer
+
+@enduml

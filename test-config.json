@@ -1,0 +1,14 @@
+{
+  "engine": "v2",
+  "locales": ["fr"],
+  "defaultLocale": "fr",
+  "sources": {
+    "fr": "test-plantuml.md"
+  },
+  "roots": [
+    {
+      "base": "/",
+      "root": "/"
+    }
+  ]
+}
