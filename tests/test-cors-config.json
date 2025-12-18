@@ -1,0 +1,22 @@
+{
+  "locales": ["fr", "en"],
+  "defaultLocale": "fr",
+  "roots": [
+    { "base": "fr", "root": "/docs" },
+    { "base": "en", "root": "/docs" }
+  ],
+  "sources": {
+    "fr": "index.fr.md",
+    "en": "index.en.md"
+  },
+  "enablePrism": true,
+  "enableMermaid": true,
+  "enablePlantUML": true,
+  "externalDataSources": [
+    {
+      "name": "external-api",
+      "baseUrl": "http://localhost:8011",
+      "corsEnabled": true
+    }
+  ]
+}
