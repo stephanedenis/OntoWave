@@ -8,5 +8,48 @@
   "cSpell.locale": "fr",
 
   // Markdown: options mineures
-  "markdown.extension.toc.orderedList": false
+  "markdown.extension.toc.orderedList": false,
+
+  // Thème personnalisé - Bleu et Blanc pour OntoWave (haute lisibilité)
+  "workbench.colorTheme": "Default Light Modern",
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#1e3a8a",
+    "titleBar.activeForeground": "#ffffff",
+    "titleBar.inactiveBackground": "#2563eb",
+    "titleBar.inactiveForeground": "#ffffff",
+    "statusBar.background": "#1e40af",
+    "statusBar.foreground": "#ffffff",
+    "statusBar.noFolderBackground": "#3b82f6",
+    "activityBar.background": "#1e3a8a",
+    "activityBar.foreground": "#ffffff",
+    "activityBar.inactiveForeground": "#bfdbfe",
+    "sideBar.background": "#ffffff",
+    "sideBar.foreground": "#0c1e47",
+    "sideBar.border": "#2563eb",
+    "sideBarSectionHeader.background": "#2563eb",
+    "sideBarSectionHeader.foreground": "#ffffff",
+    "sideBarTitle.foreground": "#1e3a8a",
+    "list.activeSelectionBackground": "#3b82f6",
+    "list.activeSelectionForeground": "#ffffff",
+    "list.inactiveSelectionBackground": "#dbeafe",
+    "list.inactiveSelectionForeground": "#1e3a8a",
+    "list.hoverBackground": "#eff6ff",
+    "list.hoverForeground": "#0c1e47",
+    "editorGroupHeader.tabsBackground": "#e0e7ff",
+    "tab.activeBackground": "#ffffff",
+    "tab.activeForeground": "#0c1e47",
+    "tab.activeBorder": "#2563eb",
+    "tab.inactiveBackground": "#f3f4f6",
+    "tab.inactiveForeground": "#1e3a8a",
+    "tab.border": "#2563eb",
+    "panel.background": "#ffffff",
+    "panel.border": "#2563eb",
+    "panelTitle.activeForeground": "#0c1e47",
+    "panelTitle.inactiveForeground": "#1e3a8a",
+    "panelTitle.activeBorder": "#2563eb",
+    "terminal.background": "#ffffff",
+    "terminal.foreground": "#0c1e47",
+    "editorLineNumber.foreground": "#2563eb",
+    "editorLineNumber.activeForeground": "#1e3a8a"
+  }
 }

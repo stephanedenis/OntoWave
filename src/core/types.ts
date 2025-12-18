@@ -1,6 +1,14 @@
 export type Route = { path: string }
 
 export type Root = { base: string; root: string }
+
+export type ExternalDataSource = {
+  name: string
+  baseUrl: string
+  corsEnabled?: boolean
+  headers?: Record<string, string>
+}
+
 export type AppConfig = {
   roots: Root[]
   engine?: 'legacy' | 'v2'
@@ -10,6 +18,7 @@ export type AppConfig = {
     enabled: string[]
     config?: Record<string, any>
   }
+  externalDataSources?: ExternalDataSource[]
 }
 
 export interface ConfigService {
@@ -21,7 +30,7 @@ export interface ContentService {
 }
 
 export interface ContentPathStrategy {
-  resolveCandidates(_roots: Root[], _path: string): string[]
+  resolveCandidates(_roots: Root[], _path: string, _externalSources?: ExternalDataSource[]): string[]
 }
 
 export interface RouterService {

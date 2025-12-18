@@ -1,0 +1,27 @@
+{
+  "locales": ["fr", "en"],
+  "defaultLocale": "fr",
+  "sources": {
+    "fr": "index.fr.md",
+    "en": "index.en.md"
+  },
+  "enablePrism": true,
+  "enableMermaid": true,
+  "enablePlantUML": true,
+  "_comment": "Configuration des sources de données externes avec support CORS",
+  "externalDataSources": [
+    {
+      "name": "api-docs",
+      "baseUrl": "https://api.example.com/docs",
+      "corsEnabled": true,
+      "headers": {
+        "Authorization": "Bearer YOUR_TOKEN_HERE"
+      }
+    },
+    {
+      "name": "wiki",
+      "baseUrl": "https://wiki.example.com/content",
+      "corsEnabled": true
+    }
+  ]
+}

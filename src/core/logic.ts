@@ -1,12 +1,41 @@
-import type { Root } from './types'
+import type { Root, ExternalDataSource } from './types'
 
 export function normalizePath(path: string): string {
   const p = path.replace(/\/+/g, '/').replace(/\/$/, '')
   return p === '' ? '/' : (p.startsWith('/') ? p : '/' + p)
 }
 
-export function resolveCandidates(roots: Root[], path: string): string[] {
+/**
+ * Resolve candidates with external sources support
+ * External sources are checked first if path starts with @sourceName
+ */
+export function resolveCandidates(
+  roots: Root[], 
+  path: string, 
+  externalSources?: ExternalDataSource[]
+): string[] {
   const candidates: string[] = []
+  
+  // Check if path references an external source: @sourceName/path/to/file.md
+  if (externalSources && path.startsWith('@')) {
+    const [sourcePart, ...pathParts] = path.slice(1).split('/')
+    const source = externalSources.find(s => s.name === sourcePart)
+    
+    if (source && pathParts.length > 0) {
+      const externalPath = pathParts.join('/')
+      const fullUrl = `${source.baseUrl.replace(/\/$/, '')}/${externalPath}`
+      candidates.push(fullUrl)
+      
+      // Also try with .md extension if not present
+      if (!externalPath.endsWith('.md')) {
+        candidates.push(`${fullUrl}.md`)
+      }
+      
+      return candidates // Return early with external URLs
+    }
+  }
+  
+  // Standard local resolution
   const p = normalizePath(path)
   const tryRoots: Array<{ r: Root; sub: string }> = []
   for (const r of roots) {

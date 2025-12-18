@@ -1,6 +1,6 @@
 import { createApp } from './app'
 import { browserConfig } from './adapters/browser/config'
-import { browserContent } from './adapters/browser/content'
+import { browserContent, setExternalDataSources } from './adapters/browser/content'
 import { browserRouter } from './adapters/browser/router'
 import { browserView } from './adapters/browser/view'
 import { createMd as createMdV2 } from './adapters/browser/md'
@@ -14,6 +14,13 @@ import { getJsonFromBundle } from './adapters/browser/bundle'
   // Toggle engine via config.json; fallback v2 par défaut si absent
   const cfg = getJsonFromBundle('/config.json') || await fetch('/config.json', { cache: 'no-cache' }).then(r => r.json())
   const engine = cfg.engine ?? 'v2'
+  
+  // Configure external data sources if provided
+  if (cfg.externalDataSources) {
+    setExternalDataSources(cfg.externalDataSources)
+    console.log('[OntoWave] External data sources configured:', cfg.externalDataSources.map((s: any) => s.name).join(', '))
+  }
+  
   // UI options
   try {
     const H = document.getElementById('site-header')

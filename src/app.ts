@@ -10,10 +10,10 @@ import type {
 } from './core/types'
 import { resolveCandidates as defaultResolve } from './core/logic'
 
-async function loadMarkdown(roots: AppConfig['roots'], path: string, content: ContentService, resolver: ContentPathStrategy): Promise<string> {
+async function loadMarkdown(roots: AppConfig['roots'], path: string, content: ContentService, resolver: ContentPathStrategy, externalSources?: AppConfig['externalDataSources']): Promise<string> {
   // Ignore any query string / directives when resolving content path
   const cleanPath = path.split('?')[0]
-  const cands = resolver.resolveCandidates(roots, cleanPath)
+  const cands = resolver.resolveCandidates(roots, cleanPath, externalSources)
   for (const url of cands) {
     try {
       const txt = await content.fetchText(url)
@@ -42,7 +42,7 @@ export function createApp(deps: {
     const [routePath, queryStr] = route.split('?')
     const params = new URLSearchParams(queryStr || '')
     const viewMode = params.get('view') || ''
-  const mdSrc = await loadMarkdown(cfg.roots, routePath, deps.content, resolver)
+  const mdSrc = await loadMarkdown(cfg.roots, routePath, deps.content, resolver, cfg.externalDataSources)
     const html = deps.md.render(mdSrc)
   const mode = viewMode.toLowerCase()
   // Split view: show Markdown source and its rendered HTML side-by-side
