@@ -1,0 +1,51 @@
+{
+  "engine": "v2",
+  "locales": ["fr", "en"],
+  "defaultLocale": "fr",
+  "sources": {
+    "fr": "index.fr.md",
+    "en": "index.en.md"
+  },
+  "ui": {
+    "menu": true,
+    "header": true,
+    "sidebar": true,
+    "toc": true,
+    "minimal": false
+  },
+  "roots": [
+    {
+      "base": "/",
+      "root": "/"
+    }
+  ],
+  "i18n": {
+    "default": "fr",
+    "supported": ["fr", "en"]
+  },
+  "plugins": {
+    "enabled": ["prism", "mermaid", "plantuml", "search"],
+    "config": {
+      "prism": {
+        "theme": "default"
+      },
+      "mermaid": {
+        "theme": "default"
+      }
+    }
+  },
+  "externalDataSources": [
+    {
+      "name": "external-api",
+      "baseUrl": "https://api.example.com/docs",
+      "corsEnabled": true,
+      "headers": {
+        "Authorization": "Bearer YOUR_API_TOKEN_HERE"
+      }
+    }
+  ],
+  "enablePrism": true,
+  "enableMermaid": true,
+  "enablePlantUML": true,
+  "enableSearch": true
+}

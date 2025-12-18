@@ -72,31 +72,54 @@ const RDFNavigatorPlugin: ContentAwarePlugin = {
 ### Configuration avancée
 ```html
 <script>
-// Configuration pour navigation ontologique
 window.ontoWaveConfig = {
-  plugins: {
-    'ontology-detector': { enabled: true },
-    'rdf-navigator': { enabled: true, autoLoad: true },
-    'semantic-visualizer': { enabled: true }
+  // Interface utilisateur
+  ui: {
+    menu: false,        // Désactiver le menu flottant
+    header: true,
+    sidebar: true,
+    toc: true
   },
-  paniniFS: {
-    enabled: true,
-    semanticCompression: true
+  
+  // Sources de données externes avec CORS
+  externalDataSources: [
+    {
+      name: "api-docs",
+      baseUrl: "https://api.example.com/docs",
+      corsEnabled: true,
+      headers: {
+        "Authorization": "Bearer YOUR_TOKEN"
+      }
+    }
+  ],
+  
+  // Plugins
+  plugins: {
+    enabled: ["prism", "mermaid", "plantuml"],
+    config: {
+      prism: { theme: "default" }
+    }
   }
 };
 </script>
 ```
 
+Voir le [Guide de Configuration](docs/technical/development/CONFIGURATION-GUIDE.md) complet.
+
 ## 📋 Fonctionnalités
 
 ### Core (v1.0)
+
 - ✅ Rendu Markdown avec Prism.js
-- ✅ Diagrammes PlantUML intégrés
+- ✅ Diagrammes PlantUML et Mermaid intégrés
+- ✅ **Support CORS** pour contenu externe (🆕)
 - ✅ Navigation par glisser-déposer
 - ✅ Architecture de plugins modulaire
 - ✅ Mode multilingue
+- ✅ Configuration flexible (UI, menu, plugins)
 
 ### Extensions Ontologiques (Roadmap v2.0)
+
 - 🔄 **RDF Navigator** : Navigation dans les graphes RDF/OWL
 - 🔄 **SKOS Browser** : Parcours des vocabulaires SKOS
 - 🔄 **Semantic Relations** : Visualisation des relations sémantiques
@@ -106,6 +129,7 @@ window.ontoWaveConfig = {
 ## 🔬 Recherche et Développement
 
 OntoWave bénéficie des recherches menées dans **PaniniFS-Research** :
+
 - Modèles sémantiques avancés (Panksepp)
 - Algorithmes de compression fractale
 - Analyses d'ambiguïtés sémantiques
@@ -114,13 +138,16 @@ OntoWave bénéficie des recherches menées dans **PaniniFS-Research** :
 ## 📚 Documentation
 
 - [Guide de démarrage](docs/technical/development/SETUP-MINIMAL.md)
+- [Guide de Configuration](docs/technical/development/CONFIGURATION-GUIDE.md)
+- [Déploiement NPM](docs/technical/deployment/NPM-DEPLOYMENT.md)
 - [Architecture des plugins](docs/PLUGIN-SYSTEM.md)
 - [Intégration écosystème Panini](docs/panini/README.md)
-- [Exemples d'usage](docs/demo/)
+- [Exemples d'usage](docs/examples/)
 
 ## 🤝 Contribution
 
 OntoWave suit les standards de l'écosystème Panini :
+
 - **Copilotage** : Workflow de développement avec IA
 - **Standards PaniniFS** : Cohérence avec l'écosystème
 - **Conventional Commits** : Messages de commit standardisés

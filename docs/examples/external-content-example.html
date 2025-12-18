@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave - Contenu Externe avec CORS</title>
+</head>
+<body>
+    <script>
+    // Configuration OntoWave avec sources de données externes
+    window.ontoWaveConfig = {
+        locales: ["fr", "en"],
+        defaultLocale: "fr",
+        sources: {
+            fr: "index.fr.md",
+            en: "index.en.md"
+        },
+        
+        // Configuration de l'interface
+        ui: {
+            menu: true,
+            header: true,
+            sidebar: true,
+            toc: true
+        },
+        
+        // ⭐ Sources de données externes avec support CORS
+        externalDataSources: [
+            {
+                name: "api-docs",
+                baseUrl: "https://api.example.com/documentation",
+                corsEnabled: true,
+                headers: {
+                    "Authorization": "Bearer YOUR_TOKEN_HERE",
+                    "X-Custom-Header": "custom-value"
+                }
+            },
+            {
+                name: "cdn-content",
+                baseUrl: "https://cdn.example.com/docs",
+                corsEnabled: true
+            },
+            {
+                name: "wiki",
+                baseUrl: "https://wiki.example.com/api/content",
+                corsEnabled: true,
+                headers: {
+                    "Accept": "text/markdown"
+                }
+            }
+        ],
+        
+        // Plugins
+        enablePrism: true,
+        enableMermaid: true,
+        enablePlantUML: true,
+        enableSearch: true
+    };
+    </script>
+    
+    <!-- Chargement de OntoWave -->
+    <script src="ontowave.min.js"></script>
+    
+    <!-- 
+    Utilisation dans les liens markdown:
+    
+    # Documentation Locale
+    
+    Voir aussi:
+    - [API Guide](@api-docs/api-guide.md)
+    - [Webhooks](@api-docs/webhooks.md)
+    - [Rate Limiting](@api-docs/advanced/rate-limiting.md)
+    - [CDN Docs](@cdn-content/getting-started.md)
+    - [Wiki Content](@wiki/howto/setup.md)
+    
+    Navigation directe via URL:
+    https://votresite.com/#@api-docs/api-guide.md
+    -->
+</body>
+</html>
