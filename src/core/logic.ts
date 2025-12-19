@@ -16,14 +16,20 @@ export function resolveCandidates(
 ): string[] {
   const candidates: string[] = []
   
+  console.log(`[resolveCandidates] path="${path}", hasExternalSources=${!!externalSources}, sourcesCount=${externalSources?.length || 0}`)
+  
   // Check if path references an external source: @sourceName/path/to/file.md
   if (externalSources && path.startsWith('@')) {
+    console.log(`[resolveCandidates] Detected external source reference: ${path}`)
     const [sourcePart, ...pathParts] = path.slice(1).split('/')
+    console.log(`[resolveCandidates] sourcePart="${sourcePart}", pathParts=[${pathParts.join(', ')}]`)
     const source = externalSources.find(s => s.name === sourcePart)
+    console.log(`[resolveCandidates] Found source:`, source)
     
     if (source && pathParts.length > 0) {
       const externalPath = pathParts.join('/')
       const fullUrl = `${source.baseUrl.replace(/\/$/, '')}/${externalPath}`
+      console.log(`[resolveCandidates] Built external URL: ${fullUrl}`)
       candidates.push(fullUrl)
       
       // Also try with .md extension if not present
@@ -31,6 +37,7 @@ export function resolveCandidates(
         candidates.push(`${fullUrl}.md`)
       }
       
+      console.log(`[resolveCandidates] Returning external candidates:`, candidates)
       return candidates // Return early with external URLs
     }
   }

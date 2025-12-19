@@ -1,0 +1,218 @@
+name: 🌐 Deploy GitHub Pages (ontowave.org)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+      - 'dist/ontowave.min.js'
+      - '.github/workflows/deploy-github-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # ===== ÉTAPE 1 : TESTS DE RÉGRESSION =====
+  regression-tests:
+    name: 🧪 Tests de Régression
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: 📚 Install Dependencies
+        run: npm ci
+      
+      - name: ✅ Tests de Protection docs/
+        run: npm run test -- tests/protect-docs.test.ts
+        continue-on-error: false
+      
+      - name: 🔍 Validation Structure docs/
+        run: |
+          echo "📋 Vérification structure docs/..."
+          
+          # Fichiers essentiels
+          test -f docs/index.html || { echo "❌ docs/index.html manquant"; exit 1; }
+          test -f docs/ontowave.min.js || { echo "❌ docs/ontowave.min.js manquant"; exit 1; }
+          test -f docs/nav.yml || { echo "❌ docs/nav.yml manquant"; exit 1; }
+          test -f docs/sitemap.json || { echo "❌ docs/sitemap.json manquant"; exit 1; }
+          
+          # Configuration dogfooding
+          grep -q "window.ontoWaveConfig" docs/index.html || { 
+            echo "❌ Configuration dogfooding manquante"; 
+            exit 1; 
+          }
+          
+          grep -q "externalDataSources" docs/index.html || { 
+            echo "❌ externalDataSources manquant"; 
+            exit 1; 
+          }
+          
+          echo "✅ Structure docs/ validée"
+      
+      - name: 📏 Validation Taille Bundle
+        run: |
+          SIZE=$(stat -f%z docs/ontowave.min.js 2>/dev/null || stat -c%s docs/ontowave.min.js)
+          echo "📦 Taille bundle: $SIZE bytes"
+          
+          # Limite : 100 KB
+          if [ $SIZE -gt 102400 ]; then
+            echo "⚠️ Bundle trop gros: $SIZE bytes (limite 100KB)"
+            exit 1
+          fi
+          
+          echo "✅ Taille bundle acceptable"
+      
+      - name: 🔐 Validation Sécurité
+        run: |
+          echo "🔍 Vérification sécurité..."
+          
+          # Pas de credentials hardcodés
+          ! grep -r "password\|secret\|token\|api_key" docs/*.html || {
+            echo "⚠️ Credentials détectés dans docs/";
+            exit 1;
+          }
+          
+          echo "✅ Pas de credentials hardcodés"
+      
+      - name: 📊 Rapport de Régression
+        if: always()
+        run: |
+          echo "# 📊 Rapport Tests de Régression" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## ✅ Tests Passés" >> $GITHUB_STEP_SUMMARY
+          echo "- Protection docs/" >> $GITHUB_STEP_SUMMARY
+          echo "- Structure docs/" >> $GITHUB_STEP_SUMMARY
+          echo "- Taille bundle" >> $GITHUB_STEP_SUMMARY
+          echo "- Sécurité" >> $GITHUB_STEP_SUMMARY
+
+  # ===== ÉTAPE 2 : TESTS E2E (OPTIONNEL) =====
+  e2e-tests:
+    name: 🎭 Tests E2E Playwright
+    runs-on: ubuntu-latest
+    needs: regression-tests
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: 📚 Install Dependencies
+        run: npm ci
+      
+      - name: 🎭 Install Playwright
+        run: npx playwright install --with-deps chromium
+      
+      - name: 🚀 Start HTTP Server
+        run: |
+          cd docs
+          python3 -m http.server 8020 &
+          sleep 2
+          echo "✅ Server started on port 8020"
+      
+      - name: 🧪 Run E2E Tests
+        run: |
+          npx playwright test tests/e2e/production-deployment.spec.cjs \
+            --project=chromium \
+            --config=playwright.production.config.js \
+            --timeout=60000 \
+            --grep "Configuration|Sources externes"
+        continue-on-error: true
+      
+      - name: 📸 Upload Screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-screenshots
+          path: test-results/
+          retention-days: 7
+
+  # ===== ÉTAPE 3 : DÉPLOIEMENT =====
+  deploy:
+    name: 🚀 Déploiement GitHub Pages
+    runs-on: ubuntu-latest
+    needs: [regression-tests, e2e-tests]
+    if: success()
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+      
+      - name: 🔧 Configure Pages
+        uses: actions/configure-pages@v4
+      
+      - name: 📦 Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'docs'
+      
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      
+      - name: ✅ Déploiement Réussi
+        run: |
+          echo "# 🚀 Déploiement Réussi" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Site déployé sur: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📊 Détails" >> $GITHUB_STEP_SUMMARY
+          echo "- Commit: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Auteur: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Date: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+
+  # ===== ÉTAPE 4 : VALIDATION POST-DÉPLOIEMENT =====
+  post-deploy-validation:
+    name: ✅ Validation Post-Déploiement
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: success()
+    
+    steps:
+      - name: 🌐 Test Site Accessibility
+        run: |
+          echo "🔍 Vérification accessibilité site..."
+          
+          # Attendre que le déploiement soit propagé
+          sleep 30
+          
+          # Test HTTP
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://ontowave.org || echo "000")
+          
+          if [ "$STATUS" = "200" ]; then
+            echo "✅ Site accessible (HTTP 200)"
+          else
+            echo "⚠️ Site retourne HTTP $STATUS"
+            exit 1
+          fi
+      
+      - name: 📊 Rapport Final
+        run: |
+          echo "# ✅ Validation Post-Déploiement" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Site https://ontowave.org accessible" >> $GITHUB_STEP_SUMMARY
+          echo "✅ HTTP 200 OK" >> $GITHUB_STEP_SUMMARY

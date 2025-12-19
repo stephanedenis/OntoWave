@@ -11,8 +11,31 @@ import { renderConfigPage } from './adapters/browser/configPage'
 import { getJsonFromBundle } from './adapters/browser/bundle'
 
 ;(async () => {
-  // Toggle engine via config.json; fallback v2 par défaut si absent
-  const cfg = getJsonFromBundle('/config.json') || await fetch('/config.json', { cache: 'no-cache' }).then(r => r.json())
+  // Priority: window.ontoWaveConfig > embedded bundle > config.json
+  let cfg: any
+  
+  // 1. Check window.ontoWaveConfig first
+  if ((window as any).ontoWaveConfig) {
+    cfg = (window as any).ontoWaveConfig
+    console.log('[OntoWave] Using window.ontoWaveConfig')
+  } else {
+    // 2. Try embedded bundle
+    cfg = getJsonFromBundle('/config.json')
+    if (cfg) {
+      console.log('[OntoWave] Using embedded config from bundle')
+    } else {
+      // 3. Try external config.json (only if nothing else exists)
+      try {
+        cfg = await fetch('/config.json', { cache: 'no-cache' }).then(r => r.json())
+        console.log('[OntoWave] Using external config.json')
+      } catch (e) {
+        // No config found - use defaults
+        cfg = {}
+        console.log('[OntoWave] No config found, using defaults')
+      }
+    }
+  }
+  
   const engine = cfg.engine ?? 'v2'
   
   // Configure external data sources if provided
@@ -41,9 +64,15 @@ import { getJsonFromBundle } from './adapters/browser/bundle'
   // i18n: détecter la langue préférée et rediriger vers la base correspondante si on est à la racine
   try {
     if (location.hash === '' || location.hash === '#/' || location.hash === '#') {
-      // Redirection forcée vers index.md
-      location.hash = '#index.md'
-      return; // Sortir pour laisser l'application se recharger avec le nouveau hash
+      // Utiliser sources[defaultLocale] si défini, sinon index.md
+      const defaultSource = cfg.sources?.[cfg.defaultLocale || 'fr']
+      const newHash = defaultSource ? `#${defaultSource}` : '#index.md'
+      console.log(`[main.ts] Setting hash to: ${newHash}`)
+      location.hash = newHash
+      console.log(`[main.ts] Hash is now: ${location.hash}`)
+      // Ne pas return - continuer l'initialisation, le hashchange déclenchera le rendu
+    } else {
+      console.log(`[main.ts] Hash already set: ${location.hash}`)
     }
   } catch {}
   // Brand
@@ -273,6 +302,7 @@ import { getJsonFromBundle } from './adapters/browser/bundle'
     const cfg2 = cfg
     async function renderRoute() {
       const { path } = getCurrentRoute()
+      console.log(`[renderRoute] Got path from getCurrentRoute: "${path}"`)
       const mdSrc = await loadMarkdown(cfg2.roots, path)
       const html = md.render(mdSrc)
       appEl.innerHTML = html

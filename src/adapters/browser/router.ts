@@ -4,7 +4,8 @@ function parse(): Route {
   const hash = location.hash || '#/'
   const raw = hash.startsWith('#') ? hash.slice(1) : hash
   let path = raw
-  if (!path.startsWith('/')) path = '/' + path
+  // Ne pas ajouter le / initial si le path commence par @ (source externe)
+  if (!path.startsWith('/') && !path.startsWith('@')) path = '/' + path
   return { path }
 }
 
@@ -20,7 +21,8 @@ export const browserRouter = {
       if (href.endsWith('.md') && !/^(https?:)?\/\//.test(href)) {
         e.preventDefault()
         const clean = href.replace(/\.md$/i, '')
-        location.hash = '#' + (clean.startsWith('/') ? clean : ('/' + clean))
+        // Ne pas ajouter / si commence par @
+        location.hash = '#' + (clean.startsWith('/') || clean.startsWith('@') ? clean : ('/' + clean))
       }
     }
     document.addEventListener('click', onClick, true)
@@ -29,5 +31,8 @@ export const browserRouter = {
       document.removeEventListener('click', onClick, true)
     }
   },
-  navigate(path: string) { location.hash = '#' + (path.startsWith('/') ? path : ('/' + path)) }
+  navigate(path: string) { 
+    // Ne pas ajouter / si commence par @
+    location.hash = '#' + (path.startsWith('/') || path.startsWith('@') ? path : ('/' + path)) 
+  }
 }

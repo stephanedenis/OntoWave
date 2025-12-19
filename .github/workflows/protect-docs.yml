@@ -1,0 +1,68 @@
+name: Protect docs/ Content
+
+on:
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'vite.config.ts'
+      - '.gitignore'
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+      - 'vite.config.ts'
+
+jobs:
+  validate-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check docs/index.html exists
+        run: |
+          if [ ! -f "docs/index.html" ]; then
+            echo "❌ docs/index.html missing!"
+            exit 1
+          fi
+          echo "✅ docs/index.html exists"
+      
+      - name: Check dogfooding config
+        run: |
+          if ! grep -q "window.ontoWaveConfig" docs/index.html; then
+            echo "⚠️ Dogfooding config missing in docs/index.html"
+            exit 1
+          fi
+          echo "✅ Dogfooding config present"
+      
+      - name: Check vite.config.ts does NOT use docs/
+        run: |
+          if grep -q 'outDir.*docs' vite.config.ts; then
+            echo "❌ vite.config.ts should NOT use docs/ as outDir!"
+            exit 1
+          fi
+          echo "✅ vite.config.ts does not target docs/"
+      
+      - name: Check vite.config.ts uses public-demo/
+        run: |
+          if ! grep -q 'outDir.*public-demo' vite.config.ts; then
+            echo "❌ vite.config.ts should use public-demo/ as outDir!"
+            exit 1
+          fi
+          echo "✅ vite.config.ts correctly targets public-demo/"
+      
+      - name: Check .gitignore includes public-demo/
+        run: |
+          if ! grep -q 'public-demo/' .gitignore; then
+            echo "⚠️ public-demo/ should be in .gitignore"
+            exit 1
+          fi
+          echo "✅ public-demo/ is ignored"
+      
+      - name: Check docs/ontowave.min.js exists
+        run: |
+          if [ ! -f "docs/ontowave.min.js" ]; then
+            echo "⚠️ docs/ontowave.min.js missing (run: npm run sync:docs)"
+            exit 1
+          fi
+          echo "✅ docs/ontowave.min.js exists"

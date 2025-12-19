@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Test Router Direct</title>
+</head>
+<body>
+  <h1>Test Router Direct</h1>
+  <div id="log"></div>
+  <script type="module">
+    import { getCurrentRoute } from './src/router.ts';
+    
+    const log = document.getElementById('log');
+    
+    function test(hash, expected) {
+      location.hash = hash;
+      const route = getCurrentRoute();
+      const result = route.path === expected ? '✅' : '❌';
+      log.innerHTML += `<p>${result} Hash: ${hash} → Path: ${route.path} (expected: ${expected})</p>`;
+    }
+    
+    test('@github/README.md', '@github/README.md');
+    test('/@github/README.md', '/@github/README.md');
+    test('/local/page.md', '/local/page.md');
+    test('local/page.md', '/local/page.md');
+  </script>
+</body>
+</html>

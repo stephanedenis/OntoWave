@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Démonstration Système de Plugins OntoWave</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f7fa;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .plugin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+    
+    .plugin-card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .plugin-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .plugin-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: #667eea;
+    }
+    
+    .plugin-status {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    
+    .plugin-status.active {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .plugin-status.coming-soon {
+      background: #fff3cd;
+      color: #856404;
+    }
+    
+    .plugin-card p {
+      color: #666;
+      margin-bottom: 1rem;
+    }
+    
+    .plugin-demo {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+      font-size: 0.875rem;
+    }
+    
+    .toggle-button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: background 0.2s;
+      width: 100%;
+    }
+    
+    .toggle-button:hover {
+      background: #5568d3;
+    }
+    
+    .toggle-button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .config-section {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
+    
+    .config-section h2 {
+      color: #667eea;
+      margin-bottom: 1rem;
+    }
+    
+    .code-block {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 1.5rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      position: relative;
+    }
+    
+    .copy-button {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #555;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.75rem;
+    }
+    
+    .copy-button:hover {
+      background: #666;
+    }
+    
+    .stats-panel {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .stat-card {
+      text-align: center;
+      padding: 1.5rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #667eea;
+    }
+    
+    .stat-label {
+      font-size: 0.875rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      color: #666;
+      border-top: 1px solid #e0e0e0;
+      margin-top: 3rem;
+    }
+    
+    .demo-output {
+      background: #e7f2ff;
+      border-left: 4px solid #2e86de;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🔌 Système de Plugins OntoWave</h1>
+    <p>Démonstration interactive des plugins disponibles</p>
+  </div>
+
+  <div class="container">
+    <!-- Stats Panel -->
+    <div class="stats-panel">
+      <h2>📊 Statistiques des Plugins</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="total-plugins">7</div>
+          <div class="stat-label">Plugins Totaux</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="active-plugins">2</div>
+          <div class="stat-label">Actifs</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="coming-soon-plugins">5</div>
+          <div class="stat-label">À Venir</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">100%</div>
+          <div class="stat-label">Core Complete</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plugin Grid -->
+    <h2 style="margin: 2rem 0 1rem; color: #667eea;">🎯 Plugins Disponibles</h2>
+    <div class="plugin-grid">
+      <!-- Analytics Plugin -->
+      <div class="plugin-card">
+        <h2>📊 Analytics</h2>
+        <span class="plugin-status active">✅ ACTIF</span>
+        <p>Suivi des pages visitées et des interactions utilisateur avec Google Analytics.</p>
+        <div class="plugin-demo">
+          <strong>Fonctionnalités:</strong><br>
+          • Tracking des pages vues<br>
+          • Suivi des clics<br>
+          • Temps passé sur page<br>
+          • Téléchargements
+        </div>
+        <button class="toggle-button" onclick="togglePlugin('analytics')">
+          Configurer
+        </button>
+      </div>
+
+      <!-- Custom Syntax Highlighter -->
+      <div class="plugin-card">
+        <h2>🎨 Syntax Highlighter</h2>
+        <span class="plugin-status active">✅ ACTIF</span>
+        <p>Coloration syntaxique personnalisée avec thèmes et langages additionnels.</p>
+        <div class="plugin-demo">
+          <strong>Fonctionnalités:</strong><br>
+          • Thèmes personnalisés<br>
+          • Numéros de ligne<br>
+          • Surlignage de lignes<br>
+          • Langages étendus
+        </div>
+        <button class="toggle-button" onclick="togglePlugin('syntax-highlighter')">
+          Configurer
+        </button>
+      </div>
+
+      <!-- Mermaid Plugin -->
+      <div class="plugin-card">
+        <h2>📈 Mermaid</h2>
+        <span class="plugin-status coming-soon">🚧 À VENIR</span>
+        <p>Rendu de diagrammes Mermaid directement dans la documentation.</p>
+        <div class="plugin-demo">
+          <strong>Fonctionnalités:</strong><br>
+          • Diagrammes de flux<br>
+          • Diagrammes de séquence<br>
+          • Gantt charts<br>
+          • State diagrams
+        </div>
+        <button class="toggle-button" disabled>
+          Bientôt Disponible
+        </button>
+      </div>
+
+      <!-- PlantUML Plugin -->
+      <div class="plugin-card">
+        <h2>🏗️ PlantUML</h2>
+        <span class="plugin-status coming-soon">🚧 À VENIR</span>
+        <p>Rendu de diagrammes UML avec PlantUML.</p>
+        <div class="plugin-demo">
+          <strong>Fonctionnalités:</strong><br>
+          • Diagrammes de classes<br>
+          • Diagrammes de séquence<br>
+          • Diagrammes de composants<br>
+          • Export SVG/PNG
+        </div>
+        <button class="toggle-button" disabled>
+          Bientôt Disponible
+        </button>
+      </div>
+
+      <!-- Math Plugin -->
+      <div class="plugin-card">
+        <h2>🔢 Math (KaTeX)</h2>
+        <span class="plugin-status coming-soon">🚧 À VENIR</span>
+        <p>Rendu d'équations mathématiques avec KaTeX.</p>
+        <div class="plugin-demo">
+          <strong>Fonctionnalités:</strong><br>
+          • Équations inline<br>
+          • Équations display<br>
+          • Syntaxe LaTeX<br>
+          • Rendu rapide
+        </div>
+        <button class="toggle-button" disabled>
+          Bientôt Disponible
+        </button>
+      </div>
+
+      <!-- Search Plugin -->
+      <div class="plugin-card">
+        <h2>🔍 Search</h2>
+        <span class="plugin-status coming-soon">🚧 À VENIR</span>
+        <p>Recherche full-text dans toute la documentation.</p>
+        <div class="plugin-demo">
+          <strong>Fonctionnalités:</strong><br>
+          • Recherche instantanée<br>
+          • Suggestions<br>
+          • Recherche floue<br>
+          • Raccourcis clavier
+        </div>
+        <button class="toggle-button" disabled>
+          Bientôt Disponible
+        </button>
+      </div>
+
+      <!-- TOC Plugin -->
+      <div class="plugin-card">
+        <h2>📑 Table of Contents</h2>
+        <span class="plugin-status coming-soon">🚧 À VENIR</span>
+        <p>Génération automatique de table des matières.</p>
+        <div class="plugin-demo">
+          <strong>Fonctionnalités:</strong><br>
+          • TOC automatique<br>
+          • Navigation smooth<br>
+          • Position sticky<br>
+          • Profondeur configurable
+        </div>
+        <button class="toggle-button" disabled>
+          Bientôt Disponible
+        </button>
+      </div>
+    </div>
+
+    <!-- Configuration Example -->
+    <div class="config-section">
+      <h2>⚙️ Configuration HTML</h2>
+      <p>Exemple de configuration complète avec plugins actifs :</p>
+      <div class="code-block">
+        <button class="copy-button" onclick="copyCode(this)">📋 Copier</button>
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;Ma Documentation&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div id="ontowave-root"&gt;&lt;/div&gt;
+  
+  &lt;!-- OntoWave avec plugins --&gt;
+  &lt;script src="https://unpkg.com/ontowave@latest/dist/ontowave-with-plugins.min.js"&gt;&lt;/script&gt;
+  
+  &lt;script&gt;
+    window.ontoWaveConfig = {
+      plugins: {
+        enabled: [
+          'analytics',
+          'syntax-highlighter'
+        ],
+        config: {
+          analytics: {
+            trackingId: 'GA-XXXXXXXXX',
+            anonymizeIp: true,
+            trackDownloads: true
+          },
+          'syntax-highlighter': {
+            theme: 'monokai',
+            showLineNumbers: true
+          }
+        }
+      }
+    }
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+      </div>
+    </div>
+
+    <!-- Plugin API Example -->
+    <div class="config-section">
+      <h2>🛠️ Créer un Plugin Personnalisé</h2>
+      <p>Exemple de plugin simple qui ajoute un timestamp :</p>
+      <div class="code-block">
+        <button class="copy-button" onclick="copyCode(this)">📋 Copier</button>
+<pre>import { Plugin } from 'ontowave'
+
+export const timestampPlugin: Plugin = {
+  name: 'timestamp',
+  version: '1.0.0',
+  description: 'Ajoute un timestamp aux pages',
+  
+  hooks: {
+    afterHtmlRender(html: string): string {
+      const timestamp = new Date().toLocaleString('fr-FR')
+      const badge = `
+        &lt;div class="timestamp"&gt;
+          🕐 Mis à jour: ${timestamp}
+        &lt;/div&gt;
+      `
+      return html + badge
+    }
+  }
+}</pre>
+      </div>
+      
+      <div class="demo-output">
+        <strong>📘 Résultat:</strong> Chaque page affichera automatiquement un timestamp avec l'heure de dernière mise à jour.
+      </div>
+    </div>
+
+    <!-- Roadmap -->
+    <div class="config-section">
+      <h2>🗺️ Roadmap</h2>
+      <h3 style="margin-top: 1.5rem;">Phase 1 - Infrastructure (✅ Complété)</h3>
+      <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+        <li>✅ Plugin Manager complet</li>
+        <li>✅ Système de hooks</li>
+        <li>✅ Configuration via HTML</li>
+        <li>✅ Build system configuré</li>
+      </ul>
+
+      <h3 style="margin-top: 1.5rem;">Phase 2 - Documentation (⏳ En cours)</h3>
+      <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+        <li>✅ PLUGIN-SYSTEM.md</li>
+        <li>✅ PLUGIN-API-REFERENCE.md</li>
+        <li>✅ PLUGIN-EXAMPLES.md</li>
+        <li>✅ Page de démonstration</li>
+      </ul>
+
+      <h3 style="margin-top: 1.5rem;">Phase 3 - Plugins Officiels (🚧 À venir)</h3>
+      <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+        <li>⏳ Mermaid Plugin (1 semaine)</li>
+        <li>⏳ PlantUML Plugin (1 semaine)</li>
+        <li>⏳ Math Plugin (3-4 jours)</li>
+        <li>⏳ Search Plugin (1 semaine)</li>
+        <li>⏳ TOC Plugin (2-3 jours)</li>
+      </ul>
+
+      <h3 style="margin-top: 1.5rem;">Phase 4 - Écosystème (📅 Q1 2026)</h3>
+      <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+        <li>⏳ Plugin marketplace</li>
+        <li>⏳ Plugin CLI generator</li>
+        <li>⏳ External plugins loading</li>
+        <li>⏳ Plugin versioning</li>
+      </ul>
+    </div>
+
+    <!-- Resources -->
+    <div class="config-section">
+      <h2>📚 Ressources</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+        <a href="PLUGIN-SYSTEM.md" style="padding: 1rem; background: #f8f9fa; border-radius: 8px; text-decoration: none; color: #667eea; font-weight: 600;">
+          📖 Documentation Complète
+        </a>
+        <a href="PLUGIN-API-REFERENCE.md" style="padding: 1rem; background: #f8f9fa; border-radius: 8px; text-decoration: none; color: #667eea; font-weight: 600;">
+          🔧 API Reference
+        </a>
+        <a href="PLUGIN-EXAMPLES.md" style="padding: 1rem; background: #f8f9fa; border-radius: 8px; text-decoration: none; color: #667eea; font-weight: 600;">
+          🎨 Exemples de Code
+        </a>
+        <a href="https://github.com/stephanedenis/OntoWave" style="padding: 1rem; background: #f8f9fa; border-radius: 8px; text-decoration: none; color: #667eea; font-weight: 600;">
+          💻 GitHub Repository
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>🔌 OntoWave Plugin System v1.1.0-alpha</p>
+    <p>Dernière mise à jour: Décembre 2025</p>
+    <p>License: CC-BY-NC-SA-4.0</p>
+  </div>
+
+  <script>
+    function togglePlugin(pluginName) {
+      alert(`Configuration du plugin: ${pluginName}\n\nCette fonctionnalité sera disponible dans l'interface OntoWave complète.`)
+    }
+
+    function copyCode(button) {
+      const codeBlock = button.nextElementSibling
+      const code = codeBlock.textContent
+      
+      navigator.clipboard.writeText(code).then(() => {
+        const originalText = button.textContent
+        button.textContent = '✅ Copié!'
+        setTimeout(() => {
+          button.textContent = originalText
+        }, 2000)
+      })
+    }
+
+    // Animation au chargement
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.plugin-card')
+      cards.forEach((card, index) => {
+        setTimeout(() => {
+          card.style.opacity = '0'
+          card.style.transform = 'translateY(20px)'
+          card.style.transition = 'opacity 0.5s, transform 0.5s'
+          
+          setTimeout(() => {
+            card.style.opacity = '1'
+            card.style.transform = 'translateY(0)'
+          }, 50)
+        }, index * 100)
+      })
+    })
+  </script>
+</body>
+</html>

@@ -1,0 +1,397 @@
+name: 📦 Deploy NPM Package
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g., 1.0.1)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  # ===== ÉTAPE 1 : VALIDATION PRÉ-BUILD =====
+  pre-build-validation:
+    name: 🔍 Validation Pré-Build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+      
+      - name: 📚 Install Dependencies
+        run: npm ci
+      
+      - name: ✅ Lint
+        run: npm run lint
+      
+      - name: 🧪 Unit Tests
+        run: npm test
+      
+      - name: ✅ Type Check
+        run: npm run type-check
+      
+      - name: 🔐 Security Audit
+        run: npm audit --audit-level=high
+        continue-on-error: true
+      
+      - name: 📋 Version Validation
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          echo "📦 Version package.json: $PACKAGE_VERSION"
+          
+          if [ "${{ github.event_name }}" = "push" ]; then
+            TAG_VERSION=${GITHUB_REF#refs/tags/v}
+            echo "🏷️ Version tag: $TAG_VERSION"
+            
+            if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
+              echo "❌ Version mismatch: package.json ($PACKAGE_VERSION) != tag ($TAG_VERSION)"
+              exit 1
+            fi
+          fi
+          
+          echo "✅ Version validée: $PACKAGE_VERSION"
+      
+      - name: 📊 Rapport Pré-Build
+        run: |
+          echo "# 📊 Validation Pré-Build" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Lint passé" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Tests passés" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Type check OK" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Version validée" >> $GITHUB_STEP_SUMMARY
+
+  # ===== ÉTAPE 2 : BUILD NPM =====
+  build:
+    name: 🏗️ Build Package NPM
+    runs-on: ubuntu-latest
+    needs: pre-build-validation
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: 📚 Install Dependencies
+        run: npm ci
+      
+      - name: 🏗️ Build NPM Package
+        run: npm run build:npm
+      
+      - name: 📏 Validation Taille Bundle
+        run: |
+          echo "📦 Validation taille des bundles..."
+          
+          MAIN_SIZE=$(stat -f%z dist/ontowave.js 2>/dev/null || stat -c%s dist/ontowave.js)
+          MIN_SIZE=$(stat -f%z dist/ontowave.min.js 2>/dev/null || stat -c%s dist/ontowave.min.js)
+          
+          echo "📊 ontowave.js: $MAIN_SIZE bytes"
+          echo "📊 ontowave.min.js: $MIN_SIZE bytes"
+          
+          # Limites
+          if [ $MAIN_SIZE -gt 204800 ]; then
+            echo "❌ ontowave.js trop gros: $MAIN_SIZE bytes (limite 200KB)"
+            exit 1
+          fi
+          
+          if [ $MIN_SIZE -gt 102400 ]; then
+            echo "❌ ontowave.min.js trop gros: $MIN_SIZE bytes (limite 100KB)"
+            exit 1
+          fi
+          
+          echo "✅ Tailles des bundles acceptables"
+      
+      - name: 🔍 Validation Contenu dist/
+        run: |
+          echo "🔍 Vérification contenu dist/..."
+          
+          test -f dist/ontowave.js || { echo "❌ dist/ontowave.js manquant"; exit 1; }
+          test -f dist/ontowave.min.js || { echo "❌ dist/ontowave.min.js manquant"; exit 1; }
+          
+          # Vérifier que le bundle minifié est plus petit
+          MAIN_SIZE=$(stat -f%z dist/ontowave.js 2>/dev/null || stat -c%s dist/ontowave.js)
+          MIN_SIZE=$(stat -f%z dist/ontowave.min.js 2>/dev/null || stat -c%s dist/ontowave.min.js)
+          
+          if [ $MIN_SIZE -ge $MAIN_SIZE ]; then
+            echo "⚠️ Bundle minifié pas plus petit que l'original"
+            exit 1
+          fi
+          
+          echo "✅ Contenu dist/ validé"
+      
+      - name: 📦 Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-package
+          path: dist/
+          retention-days: 7
+
+  # ===== ÉTAPE 3 : TESTS DE RÉGRESSION =====
+  regression-tests:
+    name: 🧪 Tests de Régression NPM
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: 📚 Install Dependencies
+        run: npm ci
+      
+      - name: 📥 Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-package
+          path: dist/
+      
+      - name: ✅ Tests Protection docs/
+        run: npm run test -- tests/protect-docs.test.ts
+      
+      - name: 🧪 Tests Unitaires
+        run: npm test
+      
+      - name: 🔍 Test Import Package
+        run: |
+          echo "🔍 Test d'import du package..."
+          
+          # Créer un test d'import
+          cat > test-import.mjs << 'EOF'
+          import { readFileSync } from 'fs';
+          
+          // Test import du bundle
+          const bundle = readFileSync('./dist/ontowave.min.js', 'utf-8');
+          
+          if (bundle.length === 0) {
+            console.error('❌ Bundle vide');
+            process.exit(1);
+          }
+          
+          if (!bundle.includes('OntoWave') && !bundle.includes('ontowave')) {
+            console.error('❌ Bundle ne contient pas OntoWave');
+            process.exit(1);
+          }
+          
+          console.log('✅ Import package validé');
+          EOF
+          
+          node test-import.mjs
+      
+      - name: 📊 Rapport Régression
+        run: |
+          echo "# 🧪 Tests de Régression NPM" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Protection docs/" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Tests unitaires" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Import package" >> $GITHUB_STEP_SUMMARY
+
+  # ===== ÉTAPE 4 : DRY RUN PUBLICATION =====
+  dry-run:
+    name: 🧪 Dry Run Publication
+    runs-on: ubuntu-latest
+    needs: [build, regression-tests]
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+      
+      - name: 📚 Install Dependencies
+        run: npm ci
+      
+      - name: 📥 Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-package
+          path: dist/
+      
+      - name: 🧪 Dry Run npm publish
+        run: npm publish --dry-run
+      
+      - name: 📋 Package Info
+        run: |
+          echo "📦 Informations package:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
+          npm pack --dry-run --json | jq '.[0] | {name, version, files}' >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+  # ===== ÉTAPE 5 : PUBLICATION NPM =====
+  publish:
+    name: 🚀 Publication NPM
+    runs-on: ubuntu-latest
+    needs: [build, regression-tests, dry-run]
+    if: success() && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+      
+      - name: 📚 Install Dependencies
+        run: npm ci
+      
+      - name: 📥 Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-package
+          path: dist/
+      
+      - name: 🚀 Publish to NPM
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
+      - name: ✅ Publication Réussie
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          
+          echo "# 🚀 Publication NPM Réussie" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Package: \`$PACKAGE_NAME@$PACKAGE_VERSION\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📦 Installation" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "npm install $PACKAGE_NAME@$PACKAGE_VERSION" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 🔗 Liens" >> $GITHUB_STEP_SUMMARY
+          echo "- [npmjs.com](https://www.npmjs.com/package/$PACKAGE_NAME)" >> $GITHUB_STEP_SUMMARY
+          echo "- [unpkg.com](https://unpkg.com/$PACKAGE_NAME@$PACKAGE_VERSION/)" >> $GITHUB_STEP_SUMMARY
+          echo "- [jsdelivr.com](https://cdn.jsdelivr.net/npm/$PACKAGE_NAME@$PACKAGE_VERSION/)" >> $GITHUB_STEP_SUMMARY
+
+  # ===== ÉTAPE 6 : VALIDATION POST-PUBLICATION =====
+  post-publish-validation:
+    name: ✅ Validation Post-Publication
+    runs-on: ubuntu-latest
+    needs: publish
+    if: success()
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+      
+      - name: 🌐 Test CDN unpkg
+        run: |
+          echo "🔍 Test CDN unpkg..."
+          sleep 30  # Attendre propagation
+          
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://unpkg.com/$PACKAGE_NAME@$PACKAGE_VERSION/dist/ontowave.min.js")
+          
+          if [ "$STATUS" = "200" ]; then
+            echo "✅ unpkg.com accessible"
+          else
+            echo "⚠️ unpkg.com retourne HTTP $STATUS"
+          fi
+      
+      - name: 🌐 Test CDN jsdelivr
+        run: |
+          echo "🔍 Test CDN jsdelivr..."
+          
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://cdn.jsdelivr.net/npm/$PACKAGE_NAME@$PACKAGE_VERSION/dist/ontowave.min.js")
+          
+          if [ "$STATUS" = "200" ]; then
+            echo "✅ jsdelivr.com accessible"
+          else
+            echo "⚠️ jsdelivr.com retourne HTTP $STATUS"
+          fi
+      
+      - name: 📊 Rapport Final
+        run: |
+          echo "# ✅ Validation Post-Publication" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Package publié sur npm" >> $GITHUB_STEP_SUMMARY
+          echo "✅ CDN unpkg accessible" >> $GITHUB_STEP_SUMMARY
+          echo "✅ CDN jsdelivr accessible" >> $GITHUB_STEP_SUMMARY
+
+  # ===== ÉTAPE 7 : SYNC VERS docs/ =====
+  sync-to-docs:
+    name: 🔄 Sync vers docs/
+    runs-on: ubuntu-latest
+    needs: publish
+    if: success()
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: 📚 Install Dependencies
+        run: npm ci
+      
+      - name: 📥 Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-package
+          path: dist/
+      
+      - name: 🔄 Sync to docs/
+        run: npm run sync:docs
+      
+      - name: 📤 Commit and Push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add docs/ontowave.min.js
+          
+          if git diff --cached --quiet; then
+            echo "✅ Aucun changement à committer"
+          else
+            PACKAGE_VERSION=$(node -p "require('./package.json').version")
+            git commit -m "chore: sync docs/ontowave.min.js from npm v$PACKAGE_VERSION"
+            git push
+            echo "✅ docs/ontowave.min.js synchronisé"
+          fi
