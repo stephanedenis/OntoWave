@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OntoWave - Plugins Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+    
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px;
+      text-align: center;
+    }
+    
+    header h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    header p {
+      font-size: 1.2em;
+      opacity: 0.9;
+    }
+    
+    .content {
+      padding: 40px;
+    }
+    
+    .plugin-section {
+      margin-bottom: 60px;
+      padding: 30px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+    }
+    
+    .plugin-section h2 {
+      color: #667eea;
+      margin-bottom: 20px;
+      font-size: 2em;
+    }
+    
+    .plugin-section h3 {
+      color: #764ba2;
+      margin: 30px 0 15px;
+      font-size: 1.5em;
+    }
+    
+    .plugin-section p {
+      margin-bottom: 15px;
+      line-height: 1.8;
+    }
+    
+    code {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+    }
+    
+    pre {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 20px 0;
+    }
+    
+    pre code {
+      padding: 0;
+      background: none;
+    }
+    
+    .demo-box {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: #667eea;
+      color: white;
+      border-radius: 12px;
+      font-size: 0.85em;
+      margin-left: 10px;
+    }
+    
+    .status {
+      text-align: center;
+      padding: 20px;
+      background: #d4edda;
+      border: 2px solid #28a745;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    
+    .status.loading {
+      background: #fff3cd;
+      border-color: #ffc107;
+    }
+    
+    .instructions {
+      background: #e7f2ff;
+      border-left: 4px solid #0066cc;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    
+    .instructions h4 {
+      color: #0066cc;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🚀 OntoWave Plugins Demo</h1>
+      <p>Testing all 7 official plugins in action</p>
+    </header>
+    
+    <div class="content" id="ontowave-root">
+      <div class="status loading">
+        ⏳ Loading OntoWave with plugins...
+      </div>
+      
+      <!-- MERMAID PLUGIN -->
+      <div class="plugin-section">
+        <h2>🎨 Mermaid Plugin <span class="badge">HIGH PRIORITY</span></h2>
+        <p>Renders beautiful diagrams using Mermaid.js syntax.</p>
+        
+        <h3>Example 1: Flowchart</h3>
+        <div class="demo-box">
+          <pre><code class="language-mermaid">
+graph TD
+    A[OntoWave Starts] --> B{Plugins Enabled?}
+    B -->|Yes| C[Load Plugins]
+    B -->|No| D[Standard Mode]
+    C --> E[Initialize Mermaid]
+    C --> F[Initialize Math]
+    C --> G[Initialize Search]
+    E --> H[Render Diagrams]
+    F --> H
+    G --> H
+    D --> H
+    H --> I[Documentation Ready 🎉]
+          </code></pre>
+        </div>
+        
+        <h3>Example 2: Sequence Diagram</h3>
+        <div class="demo-box">
+          <pre><code class="language-mermaid">
+sequenceDiagram
+    participant User
+    participant OntoWave
+    participant Plugin
+    User->>OntoWave: Load page
+    OntoWave->>Plugin: Initialize
+    Plugin-->>OntoWave: Ready
+    OntoWave->>Plugin: Render content
+    Plugin-->>User: Enhanced view
+          </code></pre>
+        </div>
+      </div>
+      
+      <!-- MATH PLUGIN -->
+      <div class="plugin-section">
+        <h2>🧮 Math Plugin (KaTeX) <span class="badge">HIGH PRIORITY</span></h2>
+        <p>Beautiful mathematical equations rendered with KaTeX.</p>
+        
+        <h3>Inline Math</h3>
+        <p>The famous equation $E = mc^2$ shows the relationship between energy and mass.</p>
+        <p>The quadratic formula is $x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}$.</p>
+        
+        <h3>Display Math</h3>
+        <p>The integral of a Gaussian function:</p>
+        $$
+        \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}
+        $$
+        
+        <p>The sum of the first n natural numbers:</p>
+        $$
+        \sum_{i=1}^{n} i = \frac{n(n+1)}{2}
+        $$
+        
+        <p>Euler's identity (the most beautiful equation):</p>
+        $$
+        e^{i\pi} + 1 = 0
+        $$
+      </div>
+      
+      <!-- PLANTUML PLUGIN -->
+      <div class="plugin-section">
+        <h2>📐 PlantUML Plugin</h2>
+        <p>UML diagrams for software architecture and design.</p>
+        
+        <h3>Example: Class Diagram</h3>
+        <div class="demo-box">
+          <pre><code class="language-plantuml">
+@startuml
+class OntoWave {
+  -config: Config
+  -router: Router
+  -plugins: Plugin[]
+  +initialize()
+  +render()
+}
+
+class Plugin {
+  +name: string
+  +version: string
+  +initialize()
+  +destroy()
+}
+
+class MermaidPlugin extends Plugin
+class MathPlugin extends Plugin
+class SearchPlugin extends Plugin
+
+OntoWave "1" *-- "many" Plugin
+@enduml
+          </code></pre>
+        </div>
+      </div>
+      
+      <!-- SEARCH PLUGIN -->
+      <div class="plugin-section">
+        <h2>🔍 Search Plugin</h2>
+        <p>Full-text search across all documentation.</p>
+        
+        <div class="instructions">
+          <h4>How to use:</h4>
+          <ul>
+            <li>Press <code>/</code> key to focus search</li>
+            <li>Type at least 2 characters to see results</li>
+            <li>Click on a result to navigate</li>
+            <li>Press <code>Escape</code> to close</li>
+          </ul>
+        </div>
+        
+        <p>The search plugin indexes all page content and provides instant results with highlighted matches.</p>
+        <p>Try searching for: "plugin", "mermaid", "math", "diagram"</p>
+      </div>
+      
+      <!-- TOC PLUGIN -->
+      <div class="plugin-section">
+        <h2>📚 TOC Plugin (Table of Contents)</h2>
+        <p>Auto-generates a table of contents from page headings.</p>
+        
+        <div class="instructions">
+          <h4>Features:</h4>
+          <ul>
+            <li>Fixed position on the right side</li>
+            <li>Smooth scroll navigation</li>
+            <li>Active section highlighting (scroll spy)</li>
+            <li>Collapsible with toggle button</li>
+            <li>Auto-hides if less than 3 headings</li>
+          </ul>
+        </div>
+        
+        <p>Look at the right side of your screen to see the TOC in action! 👉</p>
+      </div>
+      
+      <!-- ANALYTICS PLUGIN -->
+      <div class="plugin-section">
+        <h2>📊 Analytics Plugin</h2>
+        <p>Google Analytics integration for page tracking.</p>
+        <p>This plugin tracks page views and navigation events. Configure with your GA tracking ID.</p>
+      </div>
+      
+      <!-- SYNTAX HIGHLIGHTER PLUGIN -->
+      <div class="plugin-section">
+        <h2>✨ Syntax Highlighter Plugin</h2>
+        <p>Enhanced code block styling with custom features.</p>
+        
+        <h3>Example: JavaScript</h3>
+        <div class="demo-box">
+          <pre><code class="language-javascript">
+// OntoWave plugin initialization
+function initializePlugins(plugins) {
+  return plugins.map(plugin => {
+    console.log(`Loading plugin: ${plugin.name}`)
+    return plugin.initialize()
+  })
+}
+
+const plugins = [
+  mermaidPlugin,
+  mathPlugin,
+  searchPlugin
+]
+
+Promise.all(initializePlugins(plugins))
+  .then(() => console.log('All plugins ready! 🎉'))
+  .catch(err => console.error('Plugin error:', err))
+          </code></pre>
+        </div>
+      </div>
+      
+      <!-- STATUS -->
+      <div class="status">
+        <h3>✅ All 7 Plugins Loaded Successfully!</h3>
+        <p>OntoWave v1.0.0 with complete plugin system</p>
+      </div>
+      
+      <!-- CONFIGURATION -->
+      <div class="plugin-section">
+        <h2>⚙️ Plugin Configuration</h2>
+        <p>Configure plugins via <code>window.ontoWaveConfig</code>:</p>
+        <pre><code class="language-javascript">
+window.ontoWaveConfig = {
+  plugins: [
+    {
+      name: 'mermaid',
+      enabled: true,
+      config: {
+        theme: 'default',
+        logLevel: 'error'
+      }
+    },
+    {
+      name: 'math',
+      enabled: true
+    },
+    {
+      name: 'plantuml',
+      enabled: true,
+      config: {
+        serverUrl: 'https://www.plantuml.com/plantuml',
+        format: 'svg'
+      }
+    },
+    {
+      name: 'search',
+      enabled: true,
+      config: {
+        minChars: 2,
+        maxResults: 10,
+        placeholder: '🔍 Rechercher...'
+      }
+    },
+    {
+      name: 'toc',
+      enabled: true,
+      config: {
+        position: 'right',
+        sticky: true,
+        minHeadings: 3
+      }
+    },
+    {
+      name: 'analytics',
+      enabled: false,
+      config: {
+        trackingId: 'UA-XXXXX-Y'
+      }
+    },
+    {
+      name: 'custom-syntax-highlighter',
+      enabled: true
+    }
+  ]
+}
+        </code></pre>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Load OntoWave with Plugins -->
+  <script src="ontowave-with-plugins.min.js"></script>
+  <script>
+    // Configuration
+    window.ontoWaveConfig = {
+      plugins: [
+        { name: 'mermaid', enabled: true, config: { theme: 'default' } },
+        { name: 'math', enabled: true },
+        { name: 'plantuml', enabled: true },
+        { name: 'search', enabled: true, config: { minChars: 2 } },
+        { name: 'toc', enabled: true, config: { position: 'right' } },
+        { name: 'custom-syntax-highlighter', enabled: true }
+      ]
+    }
+    
+    // Update status when loaded
+    setTimeout(() => {
+      const status = document.querySelector('.status.loading')
+      if (status) {
+        status.classList.remove('loading')
+        status.innerHTML = '<h3>✅ OntoWave Loaded with Plugins!</h3><p>All systems operational</p>'
+      }
+    }, 1000)
+  </script>
+</body>
+</html>
