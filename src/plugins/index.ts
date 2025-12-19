@@ -6,6 +6,11 @@
 
 export { analyticsPlugin } from './analytics'
 export { syntaxHighlighterPlugin } from './syntax-highlighter'
+export { mermaidPlugin } from './mermaid'
+export { plantumlPlugin } from './plantuml'
+export { mathPlugin } from './math'
+export { searchPlugin } from './search'
+export { tocPlugin } from './toc'
 
 // Export des types pour les développeurs de plugins
 export type * from '../core/plugins'
@@ -16,7 +21,12 @@ export { OntoWavePluginManager } from '../core/plugin-manager'
  */
 export const OFFICIAL_PLUGINS = [
   'analytics',
-  'custom-syntax-highlighter'
+  'custom-syntax-highlighter',
+  'mermaid',
+  'plantuml',
+  'math',
+  'search',
+  'toc'
 ] as const
 
 /**
