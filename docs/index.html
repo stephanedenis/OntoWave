@@ -1,31 +1,81 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OntoWave - Micro-application pour sites statiques</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌊 OntoWave - Navigateur d'Ontologies</title>
+  <meta name="description" content="Navigateur d'ontologies intelligent avec support des sources externes et visualisations sémantiques">
+  
+  <!-- OntoWave Configuration - Dogfooding Philosophy -->
+  <script>
+    // Configuration inline (window.ontoWaveConfig a la priorité)
+    window.ontoWaveConfig = {
+      // Sources externes: OntoWave charge sa propre documentation depuis GitHub
+      // Démonstration du support CORS et des sources externes
+      externalDataSources: [
+        {
+          name: 'ontowave-docs',
+          baseUrl: 'https://raw.githubusercontent.com/stephanedenis/OntoWave/main',
+          corsEnabled: true
+        },
+        {
+          name: 'panini-speckit',
+          baseUrl: 'https://raw.githubusercontent.com/stephanedenis/Panini-SpecKit-Shared/main',
+          corsEnabled: true
+        }
+      ],
+      
+      // Point d'entrée: le README principal depuis GitHub
+      sources: {
+        fr: '@ontowave-docs/README.md',
+        en: '@ontowave-docs/README.md'
+      },
+      
+      defaultLocale: 'fr',
+      
+      // Racines pour contenu local (fallback si besoin)
+      roots: [
+        { base: 'fr', root: '/content/fr' },
+        { base: 'en', root: '/content/en' }
+      ],
+      
+      // Interface utilisateur
+      ui: {
+        menu: true,
+        header: true,
+        sidebar: true,
+        toc: true
+      },
+      
+      // Branding
+      brand: '🌊 OntoWave',
+      
+      // Features activées
+      enablePrism: true,
+      enableMermaid: true,
+      enablePlantUML: true,
+      enableMath: true,
+      
+      // Navigation additionnelle
+      navigation: {
+        links: [
+          { label: '📋 Release Notes', url: '/release-notes.md' },
+          { label: '🗺️ Roadmap', url: '/ROADMAP.md' },
+          { label: '📦 NPM', url: 'https://www.npmjs.com/package/ontowave', external: true },
+          { label: '🐙 GitHub', url: 'https://github.com/stephanedenis/OntoWave', external: true }
+        ]
+      },
+      
+      // Mode v2 (architecture moderne avec plugins)
+      engine: 'v2'
+    };
+  </script>
+  
+  <script type="module" crossorigin src="/assets/index-Cm1od528.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/mermaid-vh1W7QOs.js">
+  <link rel="modulepreload" crossorigin href="/assets/md-B_Y-_9Ry.js">
 </head>
 <body>
-    <!-- OntoWave depuis fichier local -->
-    <script src="ontowave.min.js"></script>
-    <script>
-        // Configuration OntoWave inline
-        window.ontoWaveConfig = {
-            locales: ["fr", "en"],
-            defaultLocale: "fr",
-            sources: {
-                fr: "index.fr.md",
-                en: "index.en.md"
-            },
-            ui: {
-                showMenu: true,
-                showConfiguration: true
-            },
-            enablePrism: true,
-            enableMermaid: true,
-            enablePlantUML: true,
-            enableSearch: true
-        };
-    </script>
+  <!-- L'app sera injectée ici par OntoWave -->
 </body>
 </html>
