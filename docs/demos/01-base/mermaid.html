@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave — Démo Mermaid</title>
+</head>
+<body>
+    <script src="/ontowave.min.js"></script>
+    <script>
+        window.ontoWaveConfig = {
+            roots: [
+                { base: "fr", root: "demos/01-base" },
+                { base: "en", root: "demos/01-base" }
+            ],
+            i18n: { default: "fr", supported: ["fr", "en"] }
+        };
+    </script>
+</body>
+</html>

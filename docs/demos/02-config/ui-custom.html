@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave — Démo UI personnalisée</title>
+</head>
+<body>
+    <script src="/ontowave.min.js"></script>
+    <script>
+        window.ontoWaveConfig = {
+            roots: [
+                { base: "fr", root: "demos/02-config" },
+                { base: "en", root: "demos/02-config" }
+            ],
+            i18n: { default: "fr", supported: ["fr", "en"] }
+        };
+    </script>
+</body>
+</html>
