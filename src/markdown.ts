@@ -43,12 +43,24 @@ export function createMd() {
 }
 
 export function rewriteLinks(el: HTMLElement) {
-  // Convertit les liens .md internes en routes hash
+  // Convertit les liens .md internes en routes hash, avec résolution relative au dossier courant
+  const hash = ((globalThis as any).location?.hash || '#/').replace(/^#/, '') || '/'
+  const dirParts = hash.split('/').filter(Boolean).slice(0, -1)
   el.querySelectorAll('a[href$=".md"]').forEach((a) => {
     const href = a.getAttribute('href') || ''
     if (!/^(https?:)?\/\//.test(href)) {
-      const clean = href.replace(/\.md$/i, '')
-      ;(a as HTMLAnchorElement).href = '#'+(clean.startsWith('/') ? clean : ('/' + clean))
+      const clean = href.replace(/\.md$/i, '').replace(/^\.\//,'')
+      if (clean.startsWith('/')) {
+        ;(a as HTMLAnchorElement).href = '#' + clean
+      } else {
+        const out: string[] = []
+        for (const s of [...dirParts, ...clean.split('/')]) {
+          if (s === '' || s === '.') continue
+          if (s === '..') { out.pop(); continue }
+          out.push(s)
+        }
+        ;(a as HTMLAnchorElement).href = '#/' + out.join('/')
+      }
     }
   })
 }

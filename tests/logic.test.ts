@@ -26,4 +26,29 @@ describe('core logic', () => {
     expect(out).toContain('href="#/guide"')
     expect(out).toContain('href="http://x.md"')
   })
+  it('resolves relative .md link from root page', () => {
+    const html = '<a href="processus-unifie.md">Processus unifié</a>'
+    const out = rewriteLinksHtml(html, '#/')
+    expect(out).toContain('href="#/processus-unifie"')
+  })
+  it('resolves relative .md link from sub-folder page (fix #40)', () => {
+    const html = '<a href="processus-unifie.md">Processus unifié</a>'
+    const out = rewriteLinksHtml(html, '#/portail-metho-prod/index')
+    expect(out).toContain('href="#/portail-metho-prod/processus-unifie"')
+  })
+  it('resolves ./relative .md link from sub-folder page', () => {
+    const html = '<a href="./processus-unifie.md">Processus unifié</a>'
+    const out = rewriteLinksHtml(html, '#/portail-metho-prod/index')
+    expect(out).toContain('href="#/portail-metho-prod/processus-unifie"')
+  })
+  it('resolves ../ relative .md link (parent directory)', () => {
+    const html = '<a href="../autre.md">Autre</a>'
+    const out = rewriteLinksHtml(html, '#/portail/sous-dossier/page')
+    expect(out).toContain('href="#/portail/autre"')
+  })
+  it('resolves absolute /path.md link regardless of current page', () => {
+    const html = '<a href="/racine/guide.md">Guide</a>'
+    const out = rewriteLinksHtml(html, '#/portail-metho-prod/index')
+    expect(out).toContain('href="#/racine/guide"')
+  })
 })
