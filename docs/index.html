@@ -29,5 +29,308 @@
             enableSearch: true
         };
     </script>
+
+<!-- noscript:seo:start -->
+<noscript>
+  <div lang="fr">
+<h1>OntoWave <a href="https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md">v1.0.25</a></h1>
+<p>Micro-application JavaScript légère (~245KB, ~85KB gzippé) pour sites statiques avec support multilingue, coloration syntaxique, formules mathématiques et diagrammes.</p>
+<h2>Fonctionnalités</h2>
+<ul>
+<li><strong>Traitement Markdown</strong>: Analyse et rendu Markdown avec support alignements tableaux</li>
+<li><strong>Formules mathématiques</strong>: Support KaTeX (LaTeX) pour équations inline et en bloc</li>
+<li><strong>Coloration syntaxique</strong>: Blocs de code avec highlight.js (multi-langages)</li>
+<li><strong>Support Multilingue</strong>: Internationalisation (i18n) intégrée avec détection automatique langue</li>
+<li><strong>Diagrammes Mermaid</strong>: Rendu de flowcharts, sequence, class diagrams en SVG inline</li>
+<li><strong>Support PlantUML</strong>: Diagrammes UML via <a href="http://Kroki.io">Kroki.io</a> avec rendu SVG inline</li>
+<li><strong>Fichiers .puml</strong>: Chargement direct de fichiers PlantUML</li>
+<li><strong>Cache SVG Intelligent</strong>: Cache in-memory avec TTL 5min pour performance optimale</li>
+<li><strong>Modes d’Affichage</strong>: Normal, Split View (source + rendu), Source-only</li>
+<li><strong>Routing SPA</strong>: Navigation hash-based sans rechargement de page</li>
+<li><strong>Léger</strong>: ~245KB minifié (~85KB gzippé), aucune dépendance runtime</li>
+<li><strong>Configuration Simple</strong>: Script à intégrer avec initialisation automatique</li>
+</ul>
+<h3>🧪 Démonstrations Interactives</h3>
+<p>Explorez OntoWave v1.0.25 à travers des <strong>démos interactives et testées</strong> :</p>
+<h4>✨ Capacités de Base (sans configuration)</h4>
+<ul>
+<li><strong><a href="demos/01-base/markdown.html">Markdown Features</a></strong> - Tables, listes, liens, formatage</li>
+<li><strong><a href="demos/01-base/mermaid.html">Mermaid Diagrams</a></strong> - Flowcharts, sequence, class diagrams</li>
+<li><strong><a href="demos/01-base/plantuml.html">PlantUML via Kroki</a></strong> - Diagrammes UML, composants</li>
+<li><strong><a href="demos/01-base/routing.html">SPA Routing</a></strong> - Navigation sans rechargement, 404</li>
+</ul>
+<h4>⚙️ Configurations Avancées</h4>
+<ul>
+<li><strong><a href="demos/02-config/i18n.html">Internationalisation</a></strong> - Détection langue automatique, fallback</li>
+<li><strong><a href="demos/02-config/view-modes.html">View Modes</a></strong> - Split view, source-only, normal</li>
+<li><strong><a href="demos/02-config/ui-custom.html">UI Customization</a></strong> - Sidebar, header, TOC, minimal mode</li>
+</ul>
+<p><a href="demos/">📋 Voir toutes les démos dans le catalogue →</a></p>
+<h3>Utilisation</h3>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Mon Site avec OntoWave&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- CDN --&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>C’est tout ! OntoWave se charge automatiquement et affiche son interface.</p>
+<h3>🏗️ Architecture OntoWave</h3>
+<h4>Vue d’ensemble des composants</h4>
+<pre><code class="language-plantuml">@startuml Vue_Ensemble
+!theme plain
+
+component &quot;index.html&quot; as HTML
+component &quot;ontowave.min.js&quot; as Core
+component &quot;index.fr.md&quot; as DocFR
+component &quot;index.en.md&quot; as DocEN
+
+HTML --&gt; Core : charge
+Core --&gt; DocFR : selon locale FR
+Core --&gt; DocEN : selon locale EN
+
+note bottom of HTML : Point d'entrée unique\nConfiguration JSON intégrée
+note bottom of Core : Cœur OntoWave\n245KB minifié (~85KB gzippé)
+note bottom of DocFR : Documentation française
+note bottom of DocEN : Documentation anglaise
+
+@enduml
+</code></pre>
+<h4>Classes principales</h4>
+<pre><code class="language-plantuml">@startuml Classes_Principales
+!theme plain
+
+class Loader {
+  +init()
+  +loadContent()
+}
+
+class UIManager {
+  +createInterface()
+  +handleEvents()
+}
+
+class FloatingMenu {
+  +show()
+  +hide()
+  +toggle()
+}
+
+class ConfigPanel {
+  +open()
+  +close()
+  +saveSettings()
+}
+
+class MarkdownProcessor {
+  +parse()
+  +render()
+}
+
+class I18nSystem {
+  +setLanguage()
+  +translate()
+}
+
+Loader --&gt; UIManager : utilise
+Loader --&gt; I18nSystem : utilise
+UIManager --&gt; FloatingMenu : gère
+UIManager --&gt; ConfigPanel : gère
+UIManager --&gt; MarkdownProcessor : gère
+
+@enduml
+</code></pre>
+<h4>Système de plugins</h4>
+<pre><code class="language-plantuml">@startuml Systeme_Plugins
+!theme plain
+
+interface SyntaxHighlighter {
+  +highlight()
+}
+
+interface DiagramRenderer {
+  +render()
+}
+
+class HljsPlugin
+class MermaidPlugin
+class PlantUMLPlugin
+
+SyntaxHighlighter &lt;|.. HljsPlugin
+DiagramRenderer &lt;|.. MermaidPlugin
+DiagramRenderer &lt;|.. PlantUMLPlugin
+
+class MarkdownProcessor {
+  +parse()
+  +render()
+}
+
+MarkdownProcessor --&gt; HljsPlugin : utilise
+MarkdownProcessor --&gt; MermaidPlugin : utilise
+MarkdownProcessor --&gt; PlantUMLPlugin : utilise
+
+@enduml
+</code></pre>
+<h3>Licence</h3>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="CC BY-NC-SA"> <strong>Stéphane Denis</strong></p>
+<p>OntoWave est publié sous licence <strong>CC BY-NC-SA 4.0</strong> (Creative Commons Attribution-NonCommercial-ShareAlike).</p>
+<p>Ce logiciel est fourni “tel quel”, sans garantie d’aucune sorte, expresse ou implicite. En aucun cas les auteurs ne seront responsables de réclamations, dommages ou autres responsabilités.</p>
+<p><strong>Code source :</strong> <a href="https://github.com/stephanedenis/OntoWave">GitHub - OntoWave</a></p>
+  </div>
+  <div lang="en">
+<h1>OntoWave <a href="https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md">v1.0.25</a></h1>
+<p>Lightweight JavaScript micro-application (~245KB, ~85KB gzipped) for static sites with multilingual support, syntax highlighting, math formulas and diagrams.</p>
+<h2>Features</h2>
+<ul>
+<li><strong>Markdown Processing</strong>: Parse and render Markdown with table alignments support</li>
+<li><strong>Math Formulas</strong>: KaTeX (LaTeX) support for inline and block equations</li>
+<li><strong>Syntax Highlighting</strong>: Code blocks with highlight.js (multi-language)</li>
+<li><strong>Multilingual Support</strong>: Built-in internationalization (i18n) with auto language detection</li>
+<li><strong>Mermaid Diagrams</strong>: Render flowcharts, sequence diagrams, class diagrams as inline SVG</li>
+<li><strong>PlantUML Support</strong>: UML diagrams via <a href="http://Kroki.io">Kroki.io</a> with inline SVG rendering</li>
+<li><strong>.puml Files</strong>: Direct PlantUML file loading</li>
+<li><strong>Smart SVG Cache</strong>: In-memory cache with 5min TTL for optimal performance</li>
+<li><strong>View Modes</strong>: Normal, Split View (source + render), Source-only</li>
+<li><strong>SPA Routing</strong>: Hash-based navigation without page reload</li>
+<li><strong>Lightweight</strong>: ~245KB minified (~85KB gzipped), no runtime dependencies</li>
+<li><strong>Simple Configuration</strong>: Drop-in script with automatic initialization</li>
+</ul>
+<h3>🧪 Interactive Demonstrations</h3>
+<p>Explore OntoWave v1.0.25 through <strong>interactive and tested demos</strong>:</p>
+<h4>✨ Base Capabilities (no configuration needed)</h4>
+<ul>
+<li><strong><a href="demos/01-base/markdown.html">Markdown Features</a></strong> - Tables, lists, links, formatting</li>
+<li><strong><a href="demos/01-base/mermaid.html">Mermaid Diagrams</a></strong> - Flowcharts, sequence, class diagrams</li>
+<li><strong><a href="demos/01-base/plantuml.html">PlantUML via Kroki</a></strong> - UML diagrams, components</li>
+<li><strong><a href="demos/01-base/routing.html">SPA Routing</a></strong> - Navigation without reload, 404 handling</li>
+</ul>
+<h4>⚙️ Advanced Configurations</h4>
+<ul>
+<li><strong><a href="demos/02-config/i18n.html">Internationalization</a></strong> - Auto language detection, fallback</li>
+<li><strong><a href="demos/02-config/view-modes.html">View Modes</a></strong> - Split view, source-only, normal</li>
+<li><strong><a href="demos/02-config/ui-custom.html">UI Customization</a></strong> - Sidebar, header, TOC, minimal mode</li>
+</ul>
+<p><a href="demos/">📋 See all demos in the catalog →</a></p>
+<h3>Usage</h3>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;My Site with OntoWave&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- CDN --&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>That’s it! OntoWave loads automatically and displays its interface.</p>
+<h3>🏗️ OntoWave Architecture</h3>
+<h4>Component Overview</h4>
+<pre><code class="language-plantuml">@startuml Component_Overview
+!theme plain
+
+component &quot;index.html&quot; as HTML
+component &quot;ontowave.min.js&quot; as Core
+component &quot;index.fr.md&quot; as DocFR
+component &quot;index.en.md&quot; as DocEN
+
+HTML --&gt; Core : loads
+Core --&gt; DocFR : by locale FR
+Core --&gt; DocEN : by locale EN
+
+note bottom of HTML : Single entry point\nIntegrated JSON configuration
+note bottom of Core : OntoWave Core\n245KB minified (~85KB gzipped)
+note bottom of DocFR : French documentation
+note bottom of DocEN : English documentation
+
+@enduml
+</code></pre>
+<h4>Main Classes</h4>
+<pre><code class="language-plantuml">@startuml Main_Classes
+!theme plain
+
+class Loader {
+  +init()
+  +loadContent()
+}
+
+class UIManager {
+  +createInterface()
+  +handleEvents()
+}
+
+class FloatingMenu {
+  +show()
+  +hide()
+  +toggle()
+}
+
+class ConfigPanel {
+  +open()
+  +close()
+  +saveSettings()
+}
+
+class MarkdownProcessor {
+  +parse()
+  +render()
+}
+
+class I18nSystem {
+  +setLanguage()
+  +translate()
+}
+
+Loader --&gt; UIManager : uses
+Loader --&gt; I18nSystem : uses
+UIManager --&gt; FloatingMenu : manages
+UIManager --&gt; ConfigPanel : manages
+UIManager --&gt; MarkdownProcessor : manages
+
+@enduml
+</code></pre>
+<h4>Plugin System</h4>
+<pre><code class="language-plantuml">@startuml Plugin_System
+!theme plain
+
+interface SyntaxHighlighter {
+  +highlight()
+}
+
+interface DiagramRenderer {
+  +render()
+}
+
+class HljsPlugin
+class MermaidPlugin
+class PlantUMLPlugin
+
+SyntaxHighlighter &lt;|.. HljsPlugin
+DiagramRenderer &lt;|.. MermaidPlugin
+DiagramRenderer &lt;|.. PlantUMLPlugin
+
+class MarkdownProcessor {
+  +parse()
+  +render()
+}
+
+MarkdownProcessor --&gt; HljsPlugin : uses
+MarkdownProcessor --&gt; MermaidPlugin : uses
+MarkdownProcessor --&gt; PlantUMLPlugin : uses
+
+@enduml
+</code></pre>
+<h3>License</h3>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="CC BY-NC-SA"> <strong>Stéphane Denis</strong></p>
+<p>OntoWave is released under <strong>CC BY-NC-SA 4.0</strong> (Creative Commons Attribution-NonCommercial-ShareAlike) license.</p>
+<p>This software is provided “as is”, without warranty of any kind, express or implied. In no event shall the authors be liable for any claim, damages or other liability.</p>
+<p><strong>Source code:</strong> <a href="https://github.com/stephanedenis/OntoWave">GitHub - OntoWave</a></p>
+  </div>
+</noscript>
+<!-- noscript:seo:end -->
 </body>
 </html>

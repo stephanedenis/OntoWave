@@ -16,5 +16,102 @@
             i18n: { default: "fr", supported: ["fr", "en"] }
         };
     </script>
+
+<!-- noscript:seo:start -->
+<noscript>
+  <div lang="fr">
+<h1>Diagrammes PlantUML</h1>
+<p>Démonstration du rendu PlantUML dans OntoWave : diagrammes de classes, d’activités et de composants.</p>
+<h2>Diagramme de classes</h2>
+<pre><code class="language-plantuml">@startuml
+class OntoWave {
+    +config: Config
+    +init(): void
+    +render(markdown: string): string
+}
+
+class Config {
+    +roots: Root[]
+    +i18n: I18nConfig
+}
+
+class Root {
+    +base: string
+    +root: string
+}
+
+OntoWave --&gt; Config
+Config --&gt; Root
+@enduml
+</code></pre>
+<h2>Diagramme d’activité</h2>
+<pre><code class="language-plantuml">@startuml
+start
+:Chargement de la page;
+:Lecture de la configuration;
+if (Hash URL présent ?) then (oui)
+    :Charge le fichier Markdown cible;
+else (non)
+    :Charge le fichier index par défaut;
+endif
+:Rendu HTML;
+:Injection dans le DOM;
+stop
+@enduml
+</code></pre>
+<h2>Limite connue</h2>
+<ul>
+<li>PlantUML est rendu côté serveur via <code>plantuml.com</code> — les diagrammes nécessitent Internet</li>
+<li>Les longs diagrammes peuvent dépasser la limite d’URL de PlantUML</li>
+</ul>
+  </div>
+  <div lang="en">
+<h1>PlantUML Diagrams</h1>
+<p>Demonstration of PlantUML rendering in OntoWave: class diagrams, activity diagrams and component diagrams.</p>
+<h2>Class Diagram</h2>
+<pre><code class="language-plantuml">@startuml
+class OntoWave {
+    +config: Config
+    +init(): void
+    +render(markdown: string): string
+}
+
+class Config {
+    +roots: Root[]
+    +i18n: I18nConfig
+}
+
+class Root {
+    +base: string
+    +root: string
+}
+
+OntoWave --&gt; Config
+Config --&gt; Root
+@enduml
+</code></pre>
+<h2>Activity Diagram</h2>
+<pre><code class="language-plantuml">@startuml
+start
+:Page loading;
+:Read configuration;
+if (URL hash present?) then (yes)
+    :Load target Markdown file;
+else (no)
+    :Load default index file;
+endif
+:HTML rendering;
+:Inject into DOM;
+stop
+@enduml
+</code></pre>
+<h2>Known Limitations</h2>
+<ul>
+<li>PlantUML is rendered server-side via <code>plantuml.com</code> — diagrams require Internet access</li>
+<li>Long diagrams may exceed PlantUML’s URL length limit</li>
+</ul>
+  </div>
+</noscript>
+<!-- noscript:seo:end -->
 </body>
 </html>

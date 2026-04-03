@@ -16,5 +16,76 @@
             i18n: { default: "fr", supported: ["fr", "en"] }
         };
     </script>
+
+<!-- noscript:seo:start -->
+<noscript>
+  <div lang="fr">
+<h1>Internationalisation (i18n)</h1>
+<p>Démonstration du support multilingue d’OntoWave : détection de langue, bascule FR/EN, fallback.</p>
+<h2>Configuration</h2>
+<pre><code class="language-json">{
+    &quot;i18n&quot;: {
+        &quot;default&quot;: &quot;fr&quot;,
+        &quot;supported&quot;: [&quot;fr&quot;, &quot;en&quot;]
+    },
+    &quot;roots&quot;: [
+        { &quot;base&quot;: &quot;fr&quot;, &quot;root&quot;: &quot;demos/02-config&quot; },
+        { &quot;base&quot;: &quot;en&quot;, &quot;root&quot;: &quot;demos/02-config&quot; }
+    ]
+}
+</code></pre>
+<h2>Langues supportées</h2>
+<p>Cette page est disponible en <strong>deux langues</strong> :</p>
+<ul>
+<li>🇫🇷 <strong>Français</strong> (cette page) — URL : <code>#fr/i18n</code></li>
+<li>🇬🇧 <strong>English</strong> — URL : <code>#en/i18n</code></li>
+</ul>
+<h2>Détection automatique</h2>
+<p>OntoWave détecte la langue préférée du navigateur (<code>navigator.language</code>) et redirige vers la version correspondante si elle est supportée.</p>
+<h2>Bascule manuelle</h2>
+<p>La bascule de langue s’effectue via des liens dans l’interface utilisateur générée. Chaque lien modifie le préfixe de langue dans le hash URL.</p>
+<h2>Fallback</h2>
+<p>Si un fichier dans une langue n’existe pas, OntoWave tente de charger la version dans la langue par défaut.</p>
+<h2>Limite connue</h2>
+<ul>
+<li>La détection automatique se base uniquement sur <code>navigator.language</code> (pas sur les cookies ni localStorage)</li>
+<li>Il n’y a pas de négociation de contenu côté serveur (le routage est entièrement côté client)</li>
+</ul>
+  </div>
+  <div lang="en">
+<h1>Internationalisation (i18n)</h1>
+<p>Demonstration of OntoWave’s multilingual support: language detection, FR/EN toggle, fallback.</p>
+<h2>Configuration</h2>
+<pre><code class="language-json">{
+    &quot;i18n&quot;: {
+        &quot;default&quot;: &quot;fr&quot;,
+        &quot;supported&quot;: [&quot;fr&quot;, &quot;en&quot;]
+    },
+    &quot;roots&quot;: [
+        { &quot;base&quot;: &quot;fr&quot;, &quot;root&quot;: &quot;demos/02-config&quot; },
+        { &quot;base&quot;: &quot;en&quot;, &quot;root&quot;: &quot;demos/02-config&quot; }
+    ]
+}
+</code></pre>
+<h2>Supported Languages</h2>
+<p>This page is available in <strong>two languages</strong>:</p>
+<ul>
+<li>🇫🇷 <strong>Français</strong> — URL: <code>#fr/i18n</code></li>
+<li>🇬🇧 <strong>English</strong> (this page) — URL: <code>#en/i18n</code></li>
+</ul>
+<h2>Automatic Detection</h2>
+<p>OntoWave detects the browser’s preferred language (<code>navigator.language</code>) and redirects to the corresponding version if it is supported.</p>
+<h2>Manual Toggle</h2>
+<p>Language switching is done via links in the generated user interface. Each link changes the language prefix in the hash URL.</p>
+<h2>Fallback</h2>
+<p>If a file in one language does not exist, OntoWave tries to load the default language version.</p>
+<h2>Known Limitations</h2>
+<ul>
+<li>Automatic detection is based only on <code>navigator.language</code> (not on cookies or localStorage)</li>
+<li>There is no server-side content negotiation (routing is entirely client-side)</li>
+</ul>
+  </div>
+</noscript>
+<!-- noscript:seo:end -->
 </body>
 </html>

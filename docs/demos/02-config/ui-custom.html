@@ -16,5 +16,96 @@
             i18n: { default: "fr", supported: ["fr", "en"] }
         };
     </script>
+
+<!-- noscript:seo:start -->
+<noscript>
+  <div lang="fr">
+<h1>UI personnalisée</h1>
+<p>Démonstration de la personnalisation de l’interface OntoWave : titre, logo, liens personnalisés, CSS.</p>
+<h2>Configuration du titre et logo</h2>
+<pre><code class="language-javascript">window.ontoWaveConfig = {
+    ui: {
+        title: &quot;Ma Documentation&quot;,
+        subtitle: &quot;Version 2.0&quot;,
+        logo: &quot;/assets/logo.svg&quot;
+    }
+};
+</code></pre>
+<h2>Liens de navigation personnalisés</h2>
+<pre><code class="language-javascript">window.ontoWaveConfig = {
+    ui: {
+        links: [
+            { label: &quot;GitHub&quot;, href: &quot;https://github.com/mon-projet&quot;, target: &quot;_blank&quot; },
+            { label: &quot;npm&quot;, href: &quot;https://npmjs.com/package/mon-package&quot;, target: &quot;_blank&quot; }
+        ]
+    }
+};
+</code></pre>
+<h2>CSS personnalisé</h2>
+<p>OntoWave expose des variables CSS pour la personnalisation :</p>
+<pre><code class="language-css">:root {
+    --ow-primary: #0066cc;
+    --ow-font-family: 'Courier New', monospace;
+    --ow-sidebar-width: 300px;
+}
+</code></pre>
+<h2>Injection de styles</h2>
+<pre><code class="language-javascript">window.ontoWaveConfig = {
+    ui: {
+        customCss: &quot;/assets/my-theme.css&quot;
+    }
+};
+</code></pre>
+<h2>Limite connue</h2>
+<ul>
+<li>Le logo SVG doit être hébergé sur le même domaine (pas de CORS)</li>
+<li>Les variables CSS ne sont pas toutes documentées — consulter le code source pour la liste complète</li>
+</ul>
+  </div>
+  <div lang="en">
+<h1>Custom UI</h1>
+<p>Demonstration of OntoWave’s interface customization: title, logo, custom links, CSS.</p>
+<h2>Title and Logo Configuration</h2>
+<pre><code class="language-javascript">window.ontoWaveConfig = {
+    ui: {
+        title: &quot;My Documentation&quot;,
+        subtitle: &quot;Version 2.0&quot;,
+        logo: &quot;/assets/logo.svg&quot;
+    }
+};
+</code></pre>
+<h2>Custom Navigation Links</h2>
+<pre><code class="language-javascript">window.ontoWaveConfig = {
+    ui: {
+        links: [
+            { label: &quot;GitHub&quot;, href: &quot;https://github.com/my-project&quot;, target: &quot;_blank&quot; },
+            { label: &quot;npm&quot;, href: &quot;https://npmjs.com/package/my-package&quot;, target: &quot;_blank&quot; }
+        ]
+    }
+};
+</code></pre>
+<h2>Custom CSS</h2>
+<p>OntoWave exposes CSS variables for customization:</p>
+<pre><code class="language-css">:root {
+    --ow-primary: #0066cc;
+    --ow-font-family: 'Courier New', monospace;
+    --ow-sidebar-width: 300px;
+}
+</code></pre>
+<h2>Style Injection</h2>
+<pre><code class="language-javascript">window.ontoWaveConfig = {
+    ui: {
+        customCss: &quot;/assets/my-theme.css&quot;
+    }
+};
+</code></pre>
+<h2>Known Limitations</h2>
+<ul>
+<li>SVG logo must be hosted on the same domain (no CORS)</li>
+<li>Not all CSS variables are documented — check the source code for a complete list</li>
+</ul>
+  </div>
+</noscript>
+<!-- noscript:seo:end -->
 </body>
 </html>

@@ -16,5 +16,86 @@
             i18n: { default: "fr", supported: ["fr", "en"] }
         };
     </script>
+
+<!-- noscript:seo:start -->
+<noscript>
+  <div lang="fr">
+<h1>Diagrammes Mermaid</h1>
+<p>Démonstration du rendu Mermaid dans OntoWave : diagrammes de flux, séquences et graphes.</p>
+<h2>Diagramme de flux</h2>
+<pre><code class="language-mermaid">flowchart TD
+    A[Fichier Markdown] --&gt; B{Contient Mermaid ?}
+    B -- Oui --&gt; C[Chargement Mermaid.js]
+    B -- Non --&gt; D[Rendu HTML direct]
+    C --&gt; E[Rendu SVG]
+    D --&gt; E
+    E --&gt; F[Affichage dans le navigateur]
+</code></pre>
+<h2>Diagramme de séquence</h2>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant U as Utilisateur
+    participant B as Navigateur
+    participant M as Mermaid CDN
+
+    U-&gt;&gt;B: Ouvre la page
+    B-&gt;&gt;B: Parse le Markdown
+    B-&gt;&gt;M: Charge mermaid.min.js
+    M--&gt;&gt;B: Bibliothèque chargée
+    B-&gt;&gt;B: Rend les blocs mermaid
+    B--&gt;&gt;U: Affiche les diagrammes
+</code></pre>
+<h2>Graphe simple</h2>
+<pre><code class="language-mermaid">graph LR
+    OntoWave --&gt; Markdown
+    OntoWave --&gt; Mermaid
+    OntoWave --&gt; PlantUML
+    OntoWave --&gt; KaTeX
+</code></pre>
+<h2>Limite connue</h2>
+<ul>
+<li>Mermaid est chargé depuis le CDN de manière asynchrone — les diagrammes apparaissent après un court délai</li>
+<li>Les thèmes Mermaid ne s’adaptent pas automatiquement au thème sombre/clair d’OntoWave</li>
+</ul>
+  </div>
+  <div lang="en">
+<h1>Mermaid Diagrams</h1>
+<p>Demonstration of Mermaid rendering in OntoWave: flowcharts, sequence diagrams and graphs.</p>
+<h2>Flowchart</h2>
+<pre><code class="language-mermaid">flowchart TD
+    A[Markdown File] --&gt; B{Contains Mermaid?}
+    B -- Yes --&gt; C[Load Mermaid.js]
+    B -- No --&gt; D[Direct HTML render]
+    C --&gt; E[SVG render]
+    D --&gt; E
+    E --&gt; F[Display in browser]
+</code></pre>
+<h2>Sequence Diagram</h2>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant U as User
+    participant B as Browser
+    participant M as Mermaid CDN
+
+    U-&gt;&gt;B: Opens the page
+    B-&gt;&gt;B: Parses Markdown
+    B-&gt;&gt;M: Loads mermaid.min.js
+    M--&gt;&gt;B: Library loaded
+    B-&gt;&gt;B: Renders mermaid blocks
+    B--&gt;&gt;U: Displays diagrams
+</code></pre>
+<h2>Simple Graph</h2>
+<pre><code class="language-mermaid">graph LR
+    OntoWave --&gt; Markdown
+    OntoWave --&gt; Mermaid
+    OntoWave --&gt; PlantUML
+    OntoWave --&gt; KaTeX
+</code></pre>
+<h2>Known Limitations</h2>
+<ul>
+<li>Mermaid is loaded asynchronously from CDN — diagrams appear after a brief delay</li>
+<li>Mermaid themes do not automatically adapt to OntoWave’s dark/light theme</li>
+</ul>
+  </div>
+</noscript>
+<!-- noscript:seo:end -->
 </body>
 </html>

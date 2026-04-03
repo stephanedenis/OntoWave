@@ -16,5 +16,146 @@
             i18n: { default: "fr", supported: ["fr", "en"] }
         };
     </script>
+
+<!-- noscript:seo:start -->
+<noscript>
+  <div lang="fr">
+<h1>Fonctionnalités Markdown</h1>
+<p>Démonstration du rendu Markdown de base par OntoWave : tableaux, listes, titres, formatage, liens et blocs de code.</p>
+<h2>Tableaux avec alignements</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Gauche</th>
+<th style="text-align:center">Centré</th>
+<th style="text-align:right">Droite</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">alpha</td>
+<td style="text-align:center">bravo</td>
+<td style="text-align:right">1</td>
+</tr>
+<tr>
+<td style="text-align:left">charlie</td>
+<td style="text-align:center">delta</td>
+<td style="text-align:right">22</td>
+</tr>
+<tr>
+<td style="text-align:left">echo</td>
+<td style="text-align:center">foxtrot</td>
+<td style="text-align:right">333</td>
+</tr>
+</tbody>
+</table>
+<h2>Titres</h2>
+<h3>Niveau 3</h3>
+<h4>Niveau 4</h4>
+<h5>Niveau 5</h5>
+<h2>Formatage du texte</h2>
+<ul>
+<li><strong>Gras</strong> et <em>italique</em> et <s>barré</s></li>
+<li><code>code inline</code> dans une phrase</li>
+<li><a href="https://ontowave.org">Lien vers OntoWave</a></li>
+</ul>
+<h2>Listes imbriquées</h2>
+<ol>
+<li>Élément un
+<ul>
+<li>Sous-élément A</li>
+<li>Sous-élément B</li>
+</ul>
+</li>
+<li>Élément deux</li>
+<li>Élément trois</li>
+</ol>
+<h2>Bloc de code</h2>
+<pre><code class="language-javascript">// Exemple OntoWave minimal
+window.ontoWaveConfig = {
+    roots: [{ base: &quot;fr&quot;, root: &quot;docs&quot; }],
+    i18n: { default: &quot;fr&quot;, supported: [&quot;fr&quot;] }
+};
+</code></pre>
+<h2>Citation</h2>
+<blockquote>
+<p>OntoWave transforme des fichiers Markdown en documentation interactive dans le navigateur, sans aucune dépendance.</p>
+</blockquote>
+<h2>Limite connue</h2>
+<ul>
+<li>Les tableaux sans ligne de séparation (<code>|---|</code>) ne sont pas rendus comme tableaux</li>
+<li>Les images externes peuvent être bloquées par les politiques CSP du navigateur</li>
+</ul>
+  </div>
+  <div lang="en">
+<h1>Markdown Features</h1>
+<p>Demonstration of basic Markdown rendering by OntoWave: tables, lists, headings, formatting, links and code blocks.</p>
+<h2>Tables with Alignment</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Left</th>
+<th style="text-align:center">Center</th>
+<th style="text-align:right">Right</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">alpha</td>
+<td style="text-align:center">bravo</td>
+<td style="text-align:right">1</td>
+</tr>
+<tr>
+<td style="text-align:left">charlie</td>
+<td style="text-align:center">delta</td>
+<td style="text-align:right">22</td>
+</tr>
+<tr>
+<td style="text-align:left">echo</td>
+<td style="text-align:center">foxtrot</td>
+<td style="text-align:right">333</td>
+</tr>
+</tbody>
+</table>
+<h2>Headings</h2>
+<h3>Level 3</h3>
+<h4>Level 4</h4>
+<h5>Level 5</h5>
+<h2>Text Formatting</h2>
+<ul>
+<li><strong>Bold</strong> and <em>italic</em> and <s>strikethrough</s></li>
+<li><code>inline code</code> in a sentence</li>
+<li><a href="https://ontowave.org">Link to OntoWave</a></li>
+</ul>
+<h2>Nested Lists</h2>
+<ol>
+<li>Item one
+<ul>
+<li>Sub-item A</li>
+<li>Sub-item B</li>
+</ul>
+</li>
+<li>Item two</li>
+<li>Item three</li>
+</ol>
+<h2>Code Block</h2>
+<pre><code class="language-javascript">// Minimal OntoWave example
+window.ontoWaveConfig = {
+    roots: [{ base: &quot;en&quot;, root: &quot;docs&quot; }],
+    i18n: { default: &quot;en&quot;, supported: [&quot;en&quot;] }
+};
+</code></pre>
+<h2>Blockquote</h2>
+<blockquote>
+<p>OntoWave transforms Markdown files into interactive documentation in the browser, with zero dependencies.</p>
+</blockquote>
+<h2>Known Limitations</h2>
+<ul>
+<li>Tables without separator line (<code>|---|</code>) are not rendered as tables</li>
+<li>External images may be blocked by browser CSP policies</li>
+</ul>
+  </div>
+</noscript>
+<!-- noscript:seo:end -->
 </body>
 </html>

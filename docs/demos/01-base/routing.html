@@ -16,5 +16,76 @@
             i18n: { default: "fr", supported: ["fr", "en"] }
         };
     </script>
+
+<!-- noscript:seo:start -->
+<noscript>
+  <div lang="fr">
+<h1>Routing par hash URL</h1>
+<p>Démonstration du système de routing d’OntoWave : navigation entre pages via l’ancre URL (<code>#</code>).</p>
+<h2>Comment fonctionne le routing</h2>
+<p>OntoWave écoute les changements de hash dans l’URL (<code>window.location.hash</code>) pour charger le fichier Markdown correspondant.</p>
+<h3>Exemples de routes</h3>
+<ul>
+<li><code>index.html#fr/index</code> → charge <code>demos/01-base/index.fr.md</code></li>
+<li><code>index.html#en/index</code> → charge <code>demos/01-base/index.en.md</code></li>
+<li><code>index.html#fr/markdown</code> → cette page (en français)</li>
+<li><code>index.html#en/markdown</code> → cette page (en anglais)</li>
+</ul>
+<h2>Navigation interne</h2>
+<p>Les liens Markdown relatifs fonctionnent comme des routes :</p>
+<ul>
+<li><a href="../index">Retour à l’accueil des démos</a></li>
+<li><a href="mermaid">Voir la démo Mermaid</a></li>
+<li><a href="plantuml">Voir la démo PlantUML</a></li>
+</ul>
+<h2>Format des URLs</h2>
+<p>Le format d’une route est <code>#&lt;langue&gt;/&lt;chemin&gt;</code> où :</p>
+<ul>
+<li><code>&lt;langue&gt;</code> correspond à un <code>base</code> dans la configuration <code>roots</code></li>
+<li><code>&lt;chemin&gt;</code> est le chemin relatif au <code>root</code> correspondant</li>
+</ul>
+<h2>Fallback de langue</h2>
+<p>Si la langue demandée n’est pas supportée, OntoWave utilise la langue par défaut (<code>i18n.default</code>).</p>
+<h2>Limite connue</h2>
+<ul>
+<li>Les routes sont sensibles à la casse sur les systèmes de fichiers Linux</li>
+<li>Les ancres intra-page (<code>#titre</code>) ne sont pas distinguées des routes OntoWave</li>
+</ul>
+  </div>
+  <div lang="en">
+<h1>Hash URL Routing</h1>
+<p>Demonstration of OntoWave’s routing system: page navigation via URL hash (<code>#</code>).</p>
+<h2>How Routing Works</h2>
+<p>OntoWave listens to hash changes in the URL (<code>window.location.hash</code>) to load the corresponding Markdown file.</p>
+<h3>Route Examples</h3>
+<ul>
+<li><code>index.html#fr/index</code> → loads <code>demos/01-base/index.fr.md</code></li>
+<li><code>index.html#en/index</code> → loads <code>demos/01-base/index.en.md</code></li>
+<li><code>index.html#fr/markdown</code> → this page (in French)</li>
+<li><code>index.html#en/markdown</code> → this page (in English)</li>
+</ul>
+<h2>Internal Navigation</h2>
+<p>Relative Markdown links work as routes:</p>
+<ul>
+<li><a href="../index">Back to demos home</a></li>
+<li><a href="mermaid">See Mermaid demo</a></li>
+<li><a href="plantuml">See PlantUML demo</a></li>
+</ul>
+<h2>URL Format</h2>
+<p>A route format is <code>#&lt;lang&gt;/&lt;path&gt;</code> where:</p>
+<ul>
+<li><code>&lt;lang&gt;</code> corresponds to a <code>base</code> in the <code>roots</code> configuration</li>
+<li><code>&lt;path&gt;</code> is the relative path from the corresponding <code>root</code></li>
+</ul>
+<h2>Language Fallback</h2>
+<p>If the requested language is not supported, OntoWave uses the default language (<code>i18n.default</code>).</p>
+<h2>Known Limitations</h2>
+<ul>
+<li>Routes are case-sensitive on Linux file systems</li>
+<li>In-page anchors (<code>#heading</code>) are not distinguished from OntoWave routes</li>
+</ul>
+  </div>
+</noscript>
+<!-- noscript:seo:end -->
 </body>
 </html>

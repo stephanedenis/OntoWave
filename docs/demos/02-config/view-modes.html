@@ -16,5 +16,116 @@
             i18n: { default: "fr", supported: ["fr", "en"] }
         };
     </script>
+
+<!-- noscript:seo:start -->
+<noscript>
+  <div lang="fr">
+<h1>Modes d’affichage</h1>
+<p>Démonstration des différents modes d’affichage d’OntoWave : sidebar, sans sidebar, plein écran.</p>
+<h2>Modes disponibles</h2>
+<p>OntoWave propose plusieurs modes d’affichage configurables :</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sidebar</code></td>
+<td>Barre latérale de navigation visible (défaut)</td>
+</tr>
+<tr>
+<td><code>nosidebar</code></td>
+<td>Contenu centré sans navigation latérale</td>
+</tr>
+<tr>
+<td><code>fullscreen</code></td>
+<td>Contenu en pleine largeur</td>
+</tr>
+</tbody>
+</table>
+<h2>Configuration</h2>
+<pre><code class="language-javascript">window.ontoWaveConfig = {
+    display: {
+        mode: &quot;sidebar&quot;,   // &quot;sidebar&quot; | &quot;nosidebar&quot; | &quot;fullscreen&quot;
+        sidebar: true      // Afficher ou masquer la sidebar
+    }
+};
+</code></pre>
+<h2>Adaptation responsive</h2>
+<p>OntoWave s’adapte automatiquement aux petits écrans :</p>
+<ul>
+<li>Sur mobile (&lt; 768px), la sidebar se transforme en menu hamburger</li>
+<li>Le mode <code>nosidebar</code> est recommandé pour les pages à contenu dense</li>
+</ul>
+<h2>Thème sombre/clair</h2>
+<pre><code class="language-javascript">window.ontoWaveConfig = {
+    theme: &quot;auto&quot;  // &quot;light&quot; | &quot;dark&quot; | &quot;auto&quot;
+};
+</code></pre>
+<p>Le mode <code>auto</code> suit les préférences système (<code>prefers-color-scheme</code>).</p>
+<h2>Limite connue</h2>
+<ul>
+<li>La persistance du thème choisi par l’utilisateur n’est pas implémentée (rechargement = retour aux paramètres de config)</li>
+<li>Le mode plein écran n’est pas disponible sur les pages avec une sidebar active</li>
+</ul>
+  </div>
+  <div lang="en">
+<h1>View Modes</h1>
+<p>Demonstration of OntoWave’s different display modes: sidebar, no sidebar, full screen.</p>
+<h2>Available Modes</h2>
+<p>OntoWave offers several configurable display modes:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sidebar</code></td>
+<td>Navigation sidebar visible (default)</td>
+</tr>
+<tr>
+<td><code>nosidebar</code></td>
+<td>Centered content without side navigation</td>
+</tr>
+<tr>
+<td><code>fullscreen</code></td>
+<td>Full-width content</td>
+</tr>
+</tbody>
+</table>
+<h2>Configuration</h2>
+<pre><code class="language-javascript">window.ontoWaveConfig = {
+    display: {
+        mode: &quot;sidebar&quot;,   // &quot;sidebar&quot; | &quot;nosidebar&quot; | &quot;fullscreen&quot;
+        sidebar: true      // Show or hide the sidebar
+    }
+};
+</code></pre>
+<h2>Responsive Adaptation</h2>
+<p>OntoWave automatically adapts to small screens:</p>
+<ul>
+<li>On mobile (&lt; 768px), the sidebar transforms into a hamburger menu</li>
+<li><code>nosidebar</code> mode is recommended for content-dense pages</li>
+</ul>
+<h2>Dark/Light Theme</h2>
+<pre><code class="language-javascript">window.ontoWaveConfig = {
+    theme: &quot;auto&quot;  // &quot;light&quot; | &quot;dark&quot; | &quot;auto&quot;
+};
+</code></pre>
+<p>The <code>auto</code> mode follows system preferences (<code>prefers-color-scheme</code>).</p>
+<h2>Known Limitations</h2>
+<ul>
+<li>User-chosen theme persistence is not implemented (reload = back to config settings)</li>
+<li>Full screen mode is not available on pages with an active sidebar</li>
+</ul>
+  </div>
+</noscript>
+<!-- noscript:seo:end -->
 </body>
 </html>
