@@ -13172,6 +13172,10 @@
 
     async loadPrism() {
       return new Promise((resolve) => {
+        if (this.config.prism?.autoload === false) {
+          console.log('🎨 Prism disabled by config (prism.autoload: false)');
+          return resolve();
+        }
         if (window.Prism) {
           this.prismLoaded = true;
           console.log('🎨 Prism already loaded');
@@ -13196,6 +13200,8 @@
             window.Prism.languages.javascript = { 'class-name': null };
           }
           
+          // === FIX: charger clike en prérequis de javascript (javascript extends clike) ===
+          const startEssentialLoad = () => {
           // Charger les langages essentiels et attendre leur chargement
           const essentialLanguages = ['markup', 'css', 'javascript'];
           let loadedCount = 0;
@@ -13300,6 +13306,20 @@
             };
             document.head.appendChild(langScript);
           });
+          }; // fin startEssentialLoad
+          
+          // Charger clike AVANT les autres (javascript en dépend)
+          const clikeScript = document.createElement('script');
+          clikeScript.src = 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-clike.min.js';
+          clikeScript.onload = () => {
+            console.log('🔤 clike loaded (required by javascript)');
+            startEssentialLoad();
+          };
+          clikeScript.onerror = () => {
+            console.warn('⚠️ Failed to load prism-clike, continuing without it');
+            startEssentialLoad();
+          };
+          document.head.appendChild(clikeScript);
         };
         script.onerror = () => {
           console.warn('⚠️ Failed to load Prism library');

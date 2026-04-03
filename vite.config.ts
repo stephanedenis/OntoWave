@@ -5,7 +5,7 @@ export default defineConfig({
   server: { port: 5173 },
   build: {
     outDir: 'docs',
-    emptyOutDir: true,
+    emptyOutDir: false,
     chunkSizeWarningLimit: 2000,
     rollupOptions: {
       output: {
