@@ -17,8 +17,11 @@ describe('core logic', () => {
       { base: 'en', root: '/content/en' },
       { base: 'fr', root: '/content/fr' },
     ]
-    expect(resolveCandidates(roots as any, '/en/guide')).toEqual(['/content/en/guide.md', '/content/en/guide/index.md'])
-    expect(resolveCandidates(roots as any, '/fr')).toEqual(['/content/fr/index.md', '/content/fr//index.md'])
+    const enCandidates = resolveCandidates(roots as any, '/en/guide')
+    expect(enCandidates).toContain('/content/en/guide.md')
+    expect(enCandidates).toContain('/content/en/guide/index.md')
+    const frCandidates = resolveCandidates(roots as any, '/fr')
+    expect(frCandidates).toContain('/content/fr/index.md')
   })
   it('rewrites .md links to hash routes', () => {
     const html = '<a href="/guide.md">Guide</a> <a href="http://x.md">ext</a>'

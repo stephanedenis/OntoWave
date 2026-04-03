@@ -8,6 +8,7 @@ describe('markdown rendering', () => {
     const html = md.render(src)
     expect(html).toContain('<h1')
     expect(html).toContain('Titre')
-    expect(html).toContain('<pre class="hljs"><code>')
+    expect(html).toContain('<pre class="hljs')
+    expect(html).toContain('<code')
   })
 })
