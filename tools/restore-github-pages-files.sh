@@ -24,4 +24,17 @@ if [ -f "index.en.md" ]; then
   echo "✅ docs/index.en.md copié"
 fi
 
+# Préserver robots.txt (SEO)
+if [ ! -f "docs/robots.txt" ]; then
+  cat > docs/robots.txt << 'EOF'
+User-agent: *
+Allow: /
+
+Sitemap: https://ontowave.org/sitemap.xml
+EOF
+  echo "✅ docs/robots.txt créé"
+else
+  echo "✅ docs/robots.txt déjà présent"
+fi
+
 echo "🎉 Fichiers GitHub Pages restaurés avec succès!"
