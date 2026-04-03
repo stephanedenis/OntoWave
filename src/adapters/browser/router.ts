@@ -19,8 +19,20 @@ export const browserRouter = {
       const href = a.getAttribute('href') || ''
       if (href.endsWith('.md') && !/^(https?:)?\/\//.test(href)) {
         e.preventDefault()
-        const clean = href.replace(/\.md$/i, '')
-        location.hash = '#' + (clean.startsWith('/') ? clean : ('/' + clean))
+        const clean = href.replace(/\.md$/i, '').replace(/^\.\//,'')
+        if (clean.startsWith('/')) {
+          location.hash = '#' + clean
+        } else {
+          const curr = location.hash.replace(/^#/, '') || '/'
+          const dirParts = curr.split('/').filter(Boolean).slice(0, -1)
+          const out: string[] = []
+          for (const s of [...dirParts, ...clean.split('/')]) {
+            if (s === '' || s === '.') continue
+            if (s === '..') { out.pop(); continue }
+            out.push(s)
+          }
+          location.hash = '#/' + out.join('/')
+        }
       }
     }
     document.addEventListener('click', onClick, true)

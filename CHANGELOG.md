@@ -7,6 +7,39 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
 ---
 
+## [1.0.25] - 2026-04-02
+
+### Corrigé
+- **Liens relatifs Markdown depuis sous-dossier produisaient des 404** ([#40](https://github.com/stephanedenis/OntoWave/issues/40))
+  - `rewriteLinksHtml` résout maintenant les liens par rapport au dossier de la page courante
+  - Paramètre optionnel `currentHash` ajouté (rétrocompatible, améliore la testabilité)
+  - Fix appliqué aux 4 chemins de code : rendu HTML v2, DOM rewriter legacy, router v2, router legacy
+  - Support complet de `./`, `../`, et chemins absolus `/`
+  - 5 nouveaux tests de régression ajoutés dans `tests/logic.test.ts`
+
+---
+
+## [1.0.24] - 2026-04-01
+
+### Ajouté
+- **Galerie de démos interactives** dans `docs/demos/` — 24 fichiers (8 HTML + 16 Markdown bilingues) ([#41](https://github.com/stephanedenis/OntoWave/issues/41))
+  - `demos/01-base/` : markdown, mermaid, plantuml, routing
+  - `demos/02-config/` : i18n, view-modes, ui-custom
+  - `demos/index.html` : catalogue général
+- Infrastructure workspace agent IA : `.github/copilot-instructions.md`, `copilotage/journal/`
+- Tests E2E Playwright : 21/21 passants avec snapshots visuels (7 specs canoniques)
+
+### Corrigé
+- **Bug Prism.js** : `prism-clike` non chargé avant `prism-javascript` causait une erreur silencieuse pour la coloration syntaxique JS
+- `vite.config.ts` : `emptyOutDir: false` pour préserver `docs/demos/` lors du build
+
+### Modifié
+- `docs/ontowave.min.js` : build local désormais synchronisé depuis `dist/` (les démos utilisent ce build local plutôt que le CDN)
+- `package.json` : `build:package` synchronise automatiquement `docs/ontowave.min.js`
+- `.gitignore` : ajout `test-results/` et `docs/standalone/`
+
+---
+
 ## [1.0.2] - 2025-10-20
 
 ### 🎨 Refactor Majeur - SVG Inline

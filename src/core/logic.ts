@@ -53,9 +53,9 @@ export function resolveCandidates(roots: Root[], path: string): string[] {
   return candidates
 }
 
-export function rewriteLinksHtml(html: string): string {
+export function rewriteLinksHtml(html: string, currentHash?: string): string {
   // Réécrit les liens internes se terminant par .md en routes hash, avec résolution relative et ancre préservée
-  const fullHash = (globalThis.location?.hash || '#/').toString()
+  const fullHash = (currentHash ?? (globalThis as any).location?.hash ?? '#/').toString()
   const [rawPath] = fullHash.split('?')
   const curr = rawPath.replace(/^#/, '') || '/'
   const parts = curr.split('/').filter(Boolean)
