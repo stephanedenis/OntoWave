@@ -11939,7 +11939,8 @@
                   const isExternal = /^https?:\/\//.test(href);
                   const isDownload = /\.(tar\.gz|zip|pdf|doc|docx|xls|xlsx|ppt|pptx|txt|csv|json|xml|js|css|png|jpg|jpeg|gif|svg|webp)$/i.test(href);
                   const isHtmlFile = /\.html/.test(href);
-                  if (!isExternal && !isDownload && !isHtmlFile) {
+                  const isDirectory = href.endsWith('/');
+                  if (!isExternal && !isDownload && !isHtmlFile && !isDirectory) {
                       // Lien interne OntoWave
                       token.attrSet('href', `#${href}`);
                       token.attrSet('onclick', `window.OntoWave?.loadPage('${href}'); return false;`);
