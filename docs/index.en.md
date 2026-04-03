@@ -1,12 +1,10 @@
 # OntoWave [v1.0.25](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)
 
-Lightweight JavaScript micro-application (~245KB, ~85KB gzipped) for static sites with multilingual support, syntax highlighting, math formulas and diagrams.
+Lightweight JavaScript micro-application (~80KB) for static sites with multilingual support, syntax highlighting and diagrams.
 
 ## Features
 
 - **Markdown Processing**: Parse and render Markdown with table alignments support
-- **Math Formulas**: KaTeX (LaTeX) support for inline and block equations
-- **Syntax Highlighting**: Code blocks with highlight.js (multi-language)
 - **Multilingual Support**: Built-in internationalization (i18n) with auto language detection
 - **Mermaid Diagrams**: Render flowcharts, sequence diagrams, class diagrams as inline SVG
 - **PlantUML Support**: UML diagrams via Kroki.io with inline SVG rendering
@@ -14,7 +12,7 @@ Lightweight JavaScript micro-application (~245KB, ~85KB gzipped) for static site
 - **Smart SVG Cache**: In-memory cache with 5min TTL for optimal performance
 - **View Modes**: Normal, Split View (source + render), Source-only
 - **SPA Routing**: Hash-based navigation without page reload
-- **Lightweight**: ~245KB minified (~85KB gzipped), no runtime dependencies
+- **Lightweight**: ~80KB minified, no heavy dependencies
 - **Simple Configuration**: Drop-in script with automatic initialization
 
 ### 🧪 Interactive Demonstrations
@@ -69,7 +67,7 @@ Core --> DocFR : by locale FR
 Core --> DocEN : by locale EN
 
 note bottom of HTML : Single entry point\nIntegrated JSON configuration
-note bottom of Core : OntoWave Core\n245KB minified (~85KB gzipped)
+note bottom of Core : OntoWave Core\n18KB minified
 note bottom of DocFR : French documentation
 note bottom of DocEN : English documentation
 
@@ -137,11 +135,11 @@ interface DiagramRenderer {
   +render()
 }
 
-class HljsPlugin
+class PrismPlugin
 class MermaidPlugin
 class PlantUMLPlugin
 
-SyntaxHighlighter <|.. HljsPlugin
+SyntaxHighlighter <|.. PrismPlugin
 DiagramRenderer <|.. MermaidPlugin
 DiagramRenderer <|.. PlantUMLPlugin
 
@@ -150,7 +148,7 @@ class MarkdownProcessor {
   +render()
 }
 
-MarkdownProcessor --> HljsPlugin : uses
+MarkdownProcessor --> PrismPlugin : uses
 MarkdownProcessor --> MermaidPlugin : uses
 MarkdownProcessor --> PlantUMLPlugin : uses
 
