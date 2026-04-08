@@ -24,26 +24,26 @@
 <noscript>
   <div lang="fr">
 <h1>Système de plugins OntoWave</h1>
-<p>OntoWave offre une architecture de plugins extensible qui permet d'injecter du comportement personnalisé à chaque étape du cycle de vie de l'application.</p>
+<p>OntoWave offre une architecture de plugins extensible qui permet d’injecter du comportement personnalisé à chaque étape du cycle de vie de l’application.</p>
 <h2>Concepts clés</h2>
 <p>Un <strong>plugin</strong> est un objet JavaScript qui implémente une ou plusieurs méthodes de cycle de vie :</p>
 <table>
 <thead>
 <tr>
 <th>Hook</th>
-<th>Moment d'appel</th>
+<th>Moment d’appel</th>
 <th>Signature</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>onStart(ctx)</code></td>
-<td>Démarrage de l'appli</td>
+<td>Démarrage de l’appli</td>
 <td><code>(ctx: PluginContext) =&gt; void | Promise&lt;void&gt;</code></td>
 </tr>
 <tr>
 <td><code>onStop()</code></td>
-<td>Arrêt de l'appli</td>
+<td>Arrêt de l’appli</td>
 <td><code>() =&gt; void | Promise&lt;void&gt;</code></td>
 </tr>
 <tr>
@@ -53,7 +53,7 @@
 </tr>
 <tr>
 <td><code>afterRender(html, route)</code></td>
-<td>Après l'injection du HTML</td>
+<td>Après l’injection du HTML</td>
 <td><code>(html: string, route: string) =&gt; void | Promise&lt;void&gt;</code></td>
 </tr>
 <tr>
@@ -63,6 +63,109 @@
 </tr>
 </tbody>
 </table>
+<h2>Créer un plugin</h2>
+<pre><code class="language-javascript">const monPlugin = {
+  name: 'mon-plugin',       // obligatoire, unique
+  version: '1.0.0',         // optionnel
+
+  onStart(ctx) {
+    console.log('[mon-plugin] Démarrage', ctx.config)
+  },
+
+  beforeRender(md, route) {
+    // Ajouter une bannière en haut de chaque page
+    return `&gt; 🔖 Route : ${route}\n\n` + md
+  },
+
+  afterRender(html, route) {
+    console.log('[mon-plugin] HTML rendu pour', route, '—', html.length, 'octets')
+  },
+
+  onRouteChange(route) {
+    console.log('[mon-plugin] Navigation vers', route)
+  },
+
+  onStop() {
+    console.log('[mon-plugin] Arrêt')
+  },
+}
+</code></pre>
+<h2>Enregistrer des plugins</h2>
+<p>Utilisez <code>createPluginManager()</code> pour gérer vos plugins, puis passez-les à <code>createApp()</code> :</p>
+<pre><code class="language-javascript">import { createApp, createPluginManager } from 'ontowave'
+
+const plugins = createPluginManager()
+  .use(monPlugin)
+  .use(autrePlugin)
+
+const app = createApp({
+  // ... autres dépendances ...
+  plugins: plugins.getPlugins(),
+})
+
+await app.start()
+</code></pre>
+<h2>Exemples de plugins intégrables</h2>
+<h3>Plugin de journalisation</h3>
+<pre><code class="language-javascript">const loggerPlugin = {
+  name: 'logger',
+  onRouteChange(route) {
+    console.log('[logger] Route :', route)
+  },
+  afterRender(_html, route) {
+    console.log('[logger] Rendu terminé :', route)
+  },
+}
+</code></pre>
+<h3>Plugin de méta-données analytiques</h3>
+<pre><code class="language-javascript">const analyticsPlugin = {
+  name: 'analytics',
+  onRouteChange(route) {
+    // Envoi vers un service d'analyse
+    navigator.sendBeacon('/track', JSON.stringify({ page: route, ts: Date.now() }))
+  },
+}
+</code></pre>
+<h3>Plugin de transformation Markdown</h3>
+<pre><code class="language-javascript">const badgePlugin = {
+  name: 'badge',
+  beforeRender(md) {
+    // Remplace [[badge:nouveau]] par un span HTML coloré
+    return md.replace(/\[\[badge:([^\]]+)\]\]/g,
+      (_, label) =&gt; `&lt;span class=&quot;badge&quot;&gt;${label}&lt;/span&gt;`)
+  },
+}
+</code></pre>
+<h3>Plugin de mise en évidence de route active</h3>
+<pre><code class="language-javascript">const activeNavPlugin = {
+  name: 'active-nav',
+  onRouteChange(route) {
+    document.querySelectorAll('nav a').forEach(a =&gt; {
+      a.classList.toggle('active', a.getAttribute('href') === `#${route}`)
+    })
+  },
+}
+</code></pre>
+<h2>API de référence</h2>
+<h3><code>createPluginManager()</code></h3>
+<p>Retourne un <code>PluginManager</code> avec les méthodes :</p>
+<ul>
+<li><code>register(plugin)</code> — enregistre un plugin (avertissement si doublon)</li>
+<li><code>use(plugin)</code> — enregistre et retourne le manager (chaînable)</li>
+<li><code>getPlugins()</code> — retourne le tableau des plugins enregistrés</li>
+</ul>
+<h3>Interface <code>PluginContext</code></h3>
+<p>Disponible dans <code>onStart(ctx)</code> :</p>
+<ul>
+<li><code>ctx.config</code> — la configuration complète de l’application (<code>AppConfig</code>)</li>
+<li><code>ctx.navigate(path)</code> — navigue programmatiquement vers un chemin</li>
+</ul>
+<h2>Limites connues</h2>
+<ul>
+<li>Les hooks <code>beforeRender</code> sont exécutés en séquence : l’ordre d’enregistrement importe</li>
+<li><code>afterRender</code> reçoit le HTML <em>avant</em> les transformations DOM (Mermaid, Kroki, etc.)</li>
+<li>Un plugin doit avoir un <code>name</code> unique — les doublons sont ignorés avec avertissement console</li>
+</ul>
   </div>
   <div lang="en">
 <h1>OntoWave Plugin System</h1>
@@ -105,6 +208,109 @@
 </tr>
 </tbody>
 </table>
+<h2>Creating a Plugin</h2>
+<pre><code class="language-javascript">const myPlugin = {
+  name: 'my-plugin',       // required, must be unique
+  version: '1.0.0',        // optional
+
+  onStart(ctx) {
+    console.log('[my-plugin] Started', ctx.config)
+  },
+
+  beforeRender(md, route) {
+    // Add a banner at the top of every page
+    return `&gt; 🔖 Route: ${route}\n\n` + md
+  },
+
+  afterRender(html, route) {
+    console.log('[my-plugin] HTML rendered for', route, '—', html.length, 'bytes')
+  },
+
+  onRouteChange(route) {
+    console.log('[my-plugin] Navigating to', route)
+  },
+
+  onStop() {
+    console.log('[my-plugin] Stopped')
+  },
+}
+</code></pre>
+<h2>Registering Plugins</h2>
+<p>Use <code>createPluginManager()</code> to manage your plugins, then pass them to <code>createApp()</code>:</p>
+<pre><code class="language-javascript">import { createApp, createPluginManager } from 'ontowave'
+
+const plugins = createPluginManager()
+  .use(myPlugin)
+  .use(anotherPlugin)
+
+const app = createApp({
+  // ... other dependencies ...
+  plugins: plugins.getPlugins(),
+})
+
+await app.start()
+</code></pre>
+<h2>Example Plugins</h2>
+<h3>Logging Plugin</h3>
+<pre><code class="language-javascript">const loggerPlugin = {
+  name: 'logger',
+  onRouteChange(route) {
+    console.log('[logger] Route:', route)
+  },
+  afterRender(_html, route) {
+    console.log('[logger] Render complete:', route)
+  },
+}
+</code></pre>
+<h3>Analytics Plugin</h3>
+<pre><code class="language-javascript">const analyticsPlugin = {
+  name: 'analytics',
+  onRouteChange(route) {
+    // Send to analytics service
+    navigator.sendBeacon('/track', JSON.stringify({ page: route, ts: Date.now() }))
+  },
+}
+</code></pre>
+<h3>Markdown Transformation Plugin</h3>
+<pre><code class="language-javascript">const badgePlugin = {
+  name: 'badge',
+  beforeRender(md) {
+    // Replace [[badge:new]] with a colored HTML span
+    return md.replace(/\[\[badge:([^\]]+)\]\]/g,
+      (_, label) =&gt; `&lt;span class=&quot;badge&quot;&gt;${label}&lt;/span&gt;`)
+  },
+}
+</code></pre>
+<h3>Active Navigation Plugin</h3>
+<pre><code class="language-javascript">const activeNavPlugin = {
+  name: 'active-nav',
+  onRouteChange(route) {
+    document.querySelectorAll('nav a').forEach(a =&gt; {
+      a.classList.toggle('active', a.getAttribute('href') === `#${route}`)
+    })
+  },
+}
+</code></pre>
+<h2>API Reference</h2>
+<h3><code>createPluginManager()</code></h3>
+<p>Returns a <code>PluginManager</code> with the following methods:</p>
+<ul>
+<li><code>register(plugin)</code> — registers a plugin (warns on duplicate)</li>
+<li><code>use(plugin)</code> — registers and returns the manager (chainable)</li>
+<li><code>getPlugins()</code> — returns the array of registered plugins</li>
+</ul>
+<h3><code>PluginContext</code> Interface</h3>
+<p>Available in <code>onStart(ctx)</code>:</p>
+<ul>
+<li><code>ctx.config</code> — full application configuration (<code>AppConfig</code>)</li>
+<li><code>ctx.navigate(path)</code> — programmatically navigate to a path</li>
+</ul>
+<h2>Known Limitations</h2>
+<ul>
+<li><code>beforeRender</code> hooks run sequentially: registration order matters</li>
+<li><code>afterRender</code> receives the HTML <em>before</em> DOM transforms (Mermaid, Kroki, etc.)</li>
+<li>Each plugin must have a unique <code>name</code> — duplicates are silently ignored with a console warning</li>
+</ul>
   </div>
 </noscript>
 <!-- noscript:seo:end -->
