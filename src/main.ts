@@ -44,7 +44,8 @@ import { initUx } from './adapters/browser/ux'
   const brand = document.getElementById('brand')
   if (brand && typeof cfg.brand === 'string') brand.textContent = cfg.brand
   // UX module: init si activé (cfg.ux !== false)
-  const ux = cfg.ux !== false ? initUx(typeof cfg.ux === 'object' ? cfg.ux : {}) : null
+  const uxOptions = typeof cfg.ux === 'object' ? cfg.ux : {}
+  const ux = cfg.ux !== false ? initUx(uxOptions) : null
   if (engine === 'v2') {
   const app = createApp({
       config: browserConfig,

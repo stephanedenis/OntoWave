@@ -106,7 +106,7 @@ let sitemapCache: Array<{ route: string; path?: string }> | null = null
 async function getSitemapItems(): Promise<Array<{ route: string; path?: string }>> {
   if (sitemapCache !== null) return sitemapCache
   try {
-    const resp = await fetch('/sitemap.json', { cache: 'no-cache' })
+    const resp = await fetch('/sitemap.json', { cache: 'default' })
     if (!resp.ok) return []
     const data = await resp.json() as { items: Array<{ route: string; path?: string }> }
     sitemapCache = data.items || []
@@ -371,13 +371,14 @@ export function injectUxToolbar(container: HTMLElement | null, showNotes = true)
 
     const textarea = document.createElement('textarea')
     textarea.placeholder = 'Vos notes pour cette page… (sauvegardées automatiquement)'
-    // Lire la route courante dynamiquement dans le handler pour éviter la capture de route obsolète
     textarea.value = loadNote(location.hash || '#/')
     let saveTimer: ReturnType<typeof setTimeout> | null = null
     textarea.addEventListener('input', () => {
+      // Capturer la route au moment de la saisie pour éviter une sauvegarde sur la mauvaise page
+      const currentRoute = location.hash || '#/'
       if (saveTimer) clearTimeout(saveTimer)
       saveTimer = setTimeout(() => {
-        saveNote(location.hash || '#/', textarea.value)
+        saveNote(currentRoute, textarea.value)
       }, 600)
     })
     notesPanel.appendChild(textarea)
