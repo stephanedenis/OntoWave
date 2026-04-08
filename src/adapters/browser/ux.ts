@@ -16,6 +16,11 @@ const LS_NOTES_PREFIX = 'ow-note:'
 const MARKOV_KEY = 'ow-markov'
 const MARKOV_MAX_ENTRIES = 200
 
+/** Vérifie qu'une clé de route ne peut pas polluer Object.prototype */
+function isSafeRouteKey(key: string): boolean {
+  return key !== '__proto__' && key !== 'constructor' && key !== 'prototype'
+}
+
 // ---------------------------------------------------------------------------
 // Thèmes de lecture
 // ---------------------------------------------------------------------------
@@ -78,8 +83,9 @@ function saveMarkov(table: MarkovTable): void {
 
 function recordTransition(from: string, to: string): void {
   if (from === to) return
+  if (!isSafeRouteKey(from) || !isSafeRouteKey(to)) return
   const table = loadMarkov()
-  if (!table[from]) table[from] = {}
+  if (!table[from]) table[from] = Object.create(null) as Record<string, number>
   table[from][to] = (table[from][to] || 0) + 1
   saveMarkov(table)
 }
@@ -94,12 +100,26 @@ function predictNext(from: string): string[] {
     .map(([route]) => route)
 }
 
-async function prefetchRoute(route: string): Promise<void> {
+// Cache mémoire du sitemap pour éviter des requêtes répétées
+let sitemapCache: Array<{ route: string; path?: string }> | null = null
+
+async function getSitemapItems(): Promise<Array<{ route: string; path?: string }>> {
+  if (sitemapCache !== null) return sitemapCache
   try {
     const resp = await fetch('/sitemap.json', { cache: 'no-cache' })
-    if (!resp.ok) return
+    if (!resp.ok) return []
     const data = await resp.json() as { items: Array<{ route: string; path?: string }> }
-    const match = data.items.find(it => it.route === route)
+    sitemapCache = data.items || []
+    return sitemapCache
+  } catch {
+    return []
+  }
+}
+
+async function prefetchRoute(route: string): Promise<void> {
+  try {
+    const items = await getSitemapItems()
+    const match = items.find(it => it.route === route)
     if (!match) return
     const mdPath = match.path?.replace(/^\//, '') || ''
     if (mdPath) await fetch('/' + mdPath, { cache: 'force-cache' }).catch(() => {})
@@ -304,10 +324,13 @@ function createThemeLabel(theme: ReadingTheme): string {
   return labels[theme]
 }
 
-export function injectUxToolbar(container: HTMLElement | null): void {
+export function injectUxToolbar(container: HTMLElement | null, showNotes = true): void {
   if (!container) return
   const existing = document.getElementById('ow-ux-toolbar')
   if (existing) existing.remove()
+  // Supprimer aussi l'ancien panneau de notes s'il existe
+  const existingPanel = container.querySelector('.ow-notes-panel')
+  if (existingPanel) existingPanel.remove()
 
   const toolbar = document.createElement('div')
   toolbar.id = 'ow-ux-toolbar'
@@ -334,39 +357,41 @@ export function injectUxToolbar(container: HTMLElement | null): void {
   printBtn.addEventListener('click', () => window.print())
   toolbar.appendChild(printBtn)
 
-  // Bouton notes
-  let notesVisible = false
-  const notesBtn = document.createElement('button')
-  notesBtn.className = 'ow-theme-btn'
-  notesBtn.title = 'Afficher/masquer les notes pour cette page'
-  notesBtn.textContent = '📝 Notes'
+  if (showNotes) {
+    // Bouton notes
+    let notesVisible = false
+    const notesBtn = document.createElement('button')
+    notesBtn.className = 'ow-theme-btn'
+    notesBtn.title = 'Afficher/masquer les notes pour cette page'
+    notesBtn.textContent = '📝 Notes'
 
-  const notesPanel = document.createElement('div')
-  notesPanel.className = 'ow-notes-panel'
-  notesPanel.style.display = 'none'
+    const notesPanel = document.createElement('div')
+    notesPanel.className = 'ow-notes-panel'
+    notesPanel.style.display = 'none'
 
-  const route = location.hash || '#/'
-  const savedNote = loadNote(route)
-  const textarea = document.createElement('textarea')
-  textarea.placeholder = 'Vos notes pour cette page… (sauvegardées automatiquement)'
-  textarea.value = savedNote
-  let saveTimer: ReturnType<typeof setTimeout> | null = null
-  textarea.addEventListener('input', () => {
-    if (saveTimer) clearTimeout(saveTimer)
-    saveTimer = setTimeout(() => {
-      saveNote(route, textarea.value)
-    }, 600)
-  })
-  notesPanel.appendChild(textarea)
+    const textarea = document.createElement('textarea')
+    textarea.placeholder = 'Vos notes pour cette page… (sauvegardées automatiquement)'
+    // Lire la route courante dynamiquement dans le handler pour éviter la capture de route obsolète
+    textarea.value = loadNote(location.hash || '#/')
+    let saveTimer: ReturnType<typeof setTimeout> | null = null
+    textarea.addEventListener('input', () => {
+      if (saveTimer) clearTimeout(saveTimer)
+      saveTimer = setTimeout(() => {
+        saveNote(location.hash || '#/', textarea.value)
+      }, 600)
+    })
+    notesPanel.appendChild(textarea)
 
-  notesBtn.addEventListener('click', () => {
-    notesVisible = !notesVisible
-    notesPanel.style.display = notesVisible ? 'block' : 'none'
-    if (notesVisible) textarea.focus()
-  })
-  toolbar.appendChild(notesBtn)
+    notesBtn.addEventListener('click', () => {
+      notesVisible = !notesVisible
+      notesPanel.style.display = notesVisible ? 'block' : 'none'
+      if (notesVisible) textarea.focus()
+    })
+    toolbar.appendChild(notesBtn)
 
-  container.prepend(notesPanel)
+    container.prepend(notesPanel)
+  }
+
   container.prepend(toolbar)
 }
 
@@ -456,30 +481,9 @@ export function initUx(options: UxOptions = {}): {
 
     currentPrevNext = prevNext
 
-    if (opts.notes) {
+    if (opts.notes || opts.themes) {
       const appEl = document.getElementById('app')
-      if (appEl) {
-        injectUxToolbar(appEl)
-        // Mettre à jour la note pour la nouvelle route
-        const panel = appEl.querySelector('.ow-notes-panel') as HTMLElement | null
-        if (panel) {
-          const ta = panel.querySelector('textarea') as HTMLTextAreaElement | null
-          if (ta) {
-            ta.value = loadNote(route)
-            const newRoute = route
-            ta.oninput = null
-            let saveTimer: ReturnType<typeof setTimeout> | null = null
-            ta.addEventListener('input', () => {
-              if (saveTimer) clearTimeout(saveTimer)
-              saveTimer = setTimeout(() => saveNote(newRoute, ta.value), 600)
-            })
-          }
-        }
-      }
-    } else if (opts.themes) {
-      // Injecter uniquement la barre de thème sans les notes
-      const appEl = document.getElementById('app')
-      if (appEl) injectUxToolbar(appEl)
+      if (appEl) injectUxToolbar(appEl, opts.notes)
     }
   }
 

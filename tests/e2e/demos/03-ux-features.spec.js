@@ -81,7 +81,7 @@ test.describe('Demo 03-ux: UX Features', () => {
     }
 
     // Click notes button
-    const notesBtn = page.locator('.ow-theme-btn', { hasText: 'Notes' });
+    const notesBtn = page.locator('button.ow-theme-btn', { hasText: '📝' });
     await notesBtn.click();
 
     // Panel should be visible
