@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { resolveCandidates, normalizePath, rewriteLinksHtml } from '../src/core/logic'
+import { resolveCandidates, normalizePath, rewriteLinksHtml, resolvePumlCandidates } from '../src/core/logic'
 
 describe('core logic', () => {
   it('normalizes path', () => {
@@ -53,5 +53,44 @@ describe('core logic', () => {
     const html = '<a href="/racine/guide.md">Guide</a>'
     const out = rewriteLinksHtml(html, '#/portail-metho-prod/index')
     expect(out).toContain('href="#/racine/guide"')
+  })
+
+  // --- .puml link rewriting ---
+  it('rewrites relative .puml link to hash route (extension preserved)', () => {
+    const html = '<a href="architecture.puml">Architecture</a>'
+    const out = rewriteLinksHtml(html, '#/')
+    expect(out).toContain('href="#/architecture.puml"')
+  })
+  it('rewrites relative .puml link from sub-folder page', () => {
+    const html = '<a href="architecture.puml">Architecture</a>'
+    const out = rewriteLinksHtml(html, '#/demos/01-base/index')
+    expect(out).toContain('href="#/demos/01-base/architecture.puml"')
+  })
+  it('does not rewrite external .puml links', () => {
+    const html = '<a href="https://example.com/diagram.puml">External</a>'
+    const out = rewriteLinksHtml(html)
+    expect(out).toContain('href="https://example.com/diagram.puml"')
+  })
+  it('rewrites absolute /path.puml link to hash route', () => {
+    const html = '<a href="/diagrams/arch.puml">Arch</a>'
+    const out = rewriteLinksHtml(html, '#/any/page')
+    expect(out).toContain('href="#/diagrams/arch.puml"')
+  })
+
+  // --- resolvePumlCandidates ---
+  it('resolves .puml candidates with simple root', () => {
+    const roots = [{ base: '/', root: '/content' }]
+    const cands = resolvePumlCandidates(roots as any, '/diagrams/arch.puml')
+    expect(cands).toContain('/content/diagrams/arch.puml')
+  })
+  it('resolves .puml candidates with base prefix (i18n)', () => {
+    const roots = [{ base: 'fr', root: '/content/fr' }]
+    const cands = resolvePumlCandidates(roots as any, '/fr/diagrams/arch.puml')
+    expect(cands).toContain('/content/fr/diagrams/arch.puml')
+  })
+  it('resolves .puml candidates fallback to literal path', () => {
+    const roots = [{ base: 'en', root: '/content/en' }]
+    const cands = resolvePumlCandidates(roots as any, '/other/arch.puml')
+    expect(cands).toContain('/other/arch.puml')
   })
 })

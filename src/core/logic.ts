@@ -1,5 +1,24 @@
 import type { Root } from './types'
 
+export function resolvePumlCandidates(roots: Root[], path: string): string[] {
+  const candidates: string[] = []
+  const p = normalizePath(path)
+  for (const r of roots) {
+    const base = r.base === '/' ? '/' : ('/' + String(r.base).replace(/^\/+|\/+$/g, ''))
+    let sub: string
+    if (base === '/' || p === base || p.startsWith(base + '/')) {
+      sub = base === '/' ? p : (p.slice(base.length) || '/')
+    } else {
+      sub = p
+    }
+    const prefix = r.root.replace(/\/$/, '')
+    candidates.push(`${prefix}${sub}`)
+  }
+  // Literal path fallback
+  if (candidates.indexOf(p) === -1) candidates.push(p)
+  return [...new Set(candidates)]
+}
+
 export function normalizePath(path: string): string {
   const p = path.replace(/\/+/g, '/').replace(/\/$/, '')
   return p === '' ? '/' : (p.startsWith('/') ? p : '/' + p)
@@ -70,7 +89,7 @@ export function rewriteLinksHtml(html: string, currentHash?: string): string {
     }
     return '/' + out.join('/')
   }
-  return html.replace(/href=("|')([^"']+\.md)(#[^"']*)?(\1)/gi, (_m, q, href, anchor = '', qq) => {
+  const rewriteMd = html.replace(/href=("|')([^"']+\.md)(#[^"']*)?(\1)/gi, (_m, q, href, anchor = '', _qq) => {
     if (/^(https?:)?\/\//i.test(href)) return `href=${q}${href}${anchor || ''}${q}`
     // Absolute content path
     if (href.startsWith('/')) {
@@ -86,6 +105,23 @@ export function rewriteLinksHtml(html: string, currentHash?: string): string {
     const clean = href.replace(/^\.\//, '')
     const baseParts = currDirParts.length ? currDirParts : (currentLang ? [currentLang] : [])
     const target = norm([...baseParts, ...clean.replace(/\.md$/i, '').split('/')])
+    return `href=${q}#${target}${anchor || ''}${q}`
+  })
+  // Réécrit les liens internes se terminant par .puml en routes hash (extension conservée)
+  return rewriteMd.replace(/href=("|')([^"']+\.puml)(#[^"']*)?(\1)/gi, (_m, q, href, anchor = '', _qq) => {
+    if (/^(https?:)?\/\//i.test(href)) return `href=${q}${href}${anchor || ''}${q}`
+    // Absolute content path (keep .puml extension)
+    if (href.startsWith('/')) {
+      return `href=${q}#${href}${anchor || ''}${q}`
+    }
+    // Language-prefixed path
+    if (/^[a-z]{2}\//i.test(href)) {
+      return `href=${q}#/${href}${anchor || ''}${q}`
+    }
+    // Relative path from current directory
+    const clean = href.replace(/^\.\//, '')
+    const baseParts = currDirParts.length ? currDirParts : (currentLang ? [currentLang] : [])
+    const target = norm([...baseParts, ...clean.split('/')])
     return `href=${q}#${target}${anchor || ''}${q}`
   })
 }

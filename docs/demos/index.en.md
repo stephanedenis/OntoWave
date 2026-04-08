@@ -9,6 +9,7 @@ Welcome to the OntoWave demonstration gallery. Each page illustrates a specific 
 | [Markdown](01-base/markdown) | Markdown rendering: tables, lists, code, formatting |
 | [Mermaid](01-base/mermaid) | Mermaid diagrams: flowcharts, sequences, graphs |
 | [PlantUML](01-base/plantuml) | PlantUML diagrams: classes, activities |
+| [.puml Navigation](01-base/puml-navigation) | Navigation to .puml files from Markdown |
 | [Routing](01-base/routing) | Hash URL navigation |
 
 ## Configuration
