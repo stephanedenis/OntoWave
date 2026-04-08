@@ -26,7 +26,7 @@ export function createPluginManager(): PluginManager {
   }
 
   function getPlugins(): readonly OntoWavePlugin[] {
-    return plugins
+    return [...plugins]
   }
 
   const manager: PluginManager = { register, use, getPlugins }

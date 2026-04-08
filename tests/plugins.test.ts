@@ -31,11 +31,14 @@ describe('createPluginManager', () => {
     warnSpy.mockRestore()
   })
 
-  it('retourne une liste en lecture seule (pas de mutation externe)', () => {
+  it('retourne une copie independante a chaque appel (pas de mutation externe)', () => {
     const pm = createPluginManager()
     pm.register({ name: 'immutable' })
-    const list = pm.getPlugins()
-    expect(Object.isFrozen(list) || Array.isArray(list)).toBe(true)
+    const list1 = pm.getPlugins() as OntoWavePlugin[]
+    list1.push({ name: 'injected' })
+    // The manager internal state should not be affected
+    expect(pm.getPlugins()).toHaveLength(1)
+    expect(pm.getPlugins()[0].name).toBe('immutable')
   })
 })
 
