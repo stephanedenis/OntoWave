@@ -9,11 +9,14 @@
     <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
     <script>
         window.ontoWaveConfig = {
-            roots: [
-                { base: "fr", root: "demos/02-config" },
-                { base: "en", root: "demos/02-config" }
-            ],
-            i18n: { default: "fr", supported: ["fr", "en"] }
+            baseUrl: "/demos/02-config/",
+            locales: ["fr", "en"],
+            defaultLocale: "fr",
+            sources: {
+                fr: "i18n.fr.md",
+                en: "i18n.en.md"
+            },
+            enablePrism: true
         };
     </script>
 
