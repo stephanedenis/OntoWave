@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave — Thèmes de lecture</title>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+    <script src="/ontowave-ux.js"></script>
+    <script>
+        window.ontoWaveConfig = {
+            baseUrl: "/demos/03-ux/",
+            locales: ["fr", "en"],
+            defaultLocale: "fr",
+            sources: {
+                fr: "themes.fr.md",
+                en: "themes.en.md"
+            },
+            enablePrism: true
+        };
+    </script>
+
+<!-- noscript:seo:start -->
+<noscript>
+  <div lang="fr">
+<h1>Thèmes de lecture</h1>
+<p>OntoWave propose trois thèmes de lecture : clair, sépia et sombre. Un bouton discret en bas à droite permet de basculer entre les thèmes.</p>
+<h2>Thèmes disponibles</h2>
+<ul>
+<li>☀️ <strong>Clair</strong> — fond blanc, texte foncé</li>
+<li>📖 <strong>Sépia</strong> — fond sépia chaud, lecture confortable</li>
+<li>🌙 <strong>Sombre</strong> — fond sombre, moins de fatigue nocturne</li>
+</ul>
+<p>Le thème choisi est persisté dans le localStorage.</p>
+  </div>
+  <div lang="en">
+<h1>Reading Themes</h1>
+<p>OntoWave offers three reading themes: light, sepia, and dark. A subtle button at the bottom right allows switching between themes.</p>
+<h2>Available Themes</h2>
+<ul>
+<li>☀️ <strong>Light</strong> — white background, dark text</li>
+<li>📖 <strong>Sepia</strong> — warm sepia background, comfortable reading</li>
+<li>🌙 <strong>Dark</strong> — dark background, less eye strain at night</li>
+</ul>
+<p>The chosen theme is persisted in localStorage.</p>
+  </div>
+</noscript>
+<!-- noscript:seo:end -->
+</body>
+</html>

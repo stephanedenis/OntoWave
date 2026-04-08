@@ -14,6 +14,7 @@ import { browserView } from './adapters/browser/view'
 import { createMd as createMdV2 } from './adapters/browser/md'
 import { enhancePage } from './adapters/browser/enhance'
 import { getJsonFromBundle } from './adapters/browser/bundle'
+import { setupKeyboardNav, setupThemes, setupPrint, setupMarkovPrefetch, setupNotes } from './adapters/browser/ux'
 
 /**
  * Initialize OntoWave application
@@ -75,6 +76,15 @@ export async function initOntoWave() {
     })
     console.log('[OntoWave] Starting app...')
     await app.start()
+    // Améliorations UX
+    try {
+      const uxOpts = cfg.ux || {}
+      if (uxOpts.keyboard !== false) setupKeyboardNav()
+      if (uxOpts.themes !== false) setupThemes()
+      if (uxOpts.print !== false) setupPrint()
+      if (uxOpts.markov !== false) setupMarkovPrefetch()
+      if (uxOpts.notes === true) setupNotes()
+    } catch {}
     console.log('[OntoWave] App started successfully')
   } else {
     console.error('OntoWave: unknown engine', engine)

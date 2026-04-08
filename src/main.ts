@@ -9,6 +9,7 @@ import { buildSidebar, buildPrevNext } from './adapters/browser/navigation'
 import { createSearch } from './adapters/browser/search'
 import { renderConfigPage } from './adapters/browser/configPage'
 import { getJsonFromBundle } from './adapters/browser/bundle'
+import { setupKeyboardNav, setupThemes, setupPrint, setupMarkovPrefetch, setupNotes } from './adapters/browser/ux'
 
 ;(async () => {
   // Toggle engine via config.json; fallback v2 par défaut si absent
@@ -200,6 +201,15 @@ import { getJsonFromBundle } from './adapters/browser/bundle'
       } },
     })
     await app.start()
+    // Améliorations UX : raccourcis clavier, thèmes, impression, Markov, notes
+    try {
+      const uxOpts = cfg.ux || {}
+      if (uxOpts.keyboard !== false) setupKeyboardNav()
+      if (uxOpts.themes !== false) setupThemes()
+      if (uxOpts.print !== false) setupPrint()
+      if (uxOpts.markov !== false) setupMarkovPrefetch()
+      if (uxOpts.notes === true) setupNotes()
+    } catch {}
     // Si la page d’accueil n’existe pas, afficher une page de configuration
     try {
       const appEl = document.getElementById('app')!

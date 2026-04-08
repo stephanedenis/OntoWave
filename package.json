@@ -44,6 +44,7 @@
     "noscript": "node tools/inject-noscript.mjs",
     "postbuild": "bash tools/restore-github-pages-files.sh && node tools/inject-noscript.mjs",
     "build:package": "npx uglifyjs dist/ontowave.js -o dist/ontowave.min.js -c -m && cp dist/ontowave.min.js docs/ontowave.min.js",
+    "build:ux": "vite build --config vite.config.ux.ts",
     "build:standalone": "npm run build && node tools/build-standalone.mjs",
     "serve:docs": "npx http-server ./docs -p 8080 -c-1 --cors",
     "preview": "vite preview",
