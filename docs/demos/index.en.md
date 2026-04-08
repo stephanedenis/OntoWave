@@ -19,6 +19,14 @@ Welcome to the OntoWave demonstration gallery. Each page illustrates a specific 
 | [View Modes](02-config/view-modes) | Sidebar, no sidebar, light/dark theme |
 | [Custom UI](02-config/ui-custom) | Title, logo, links, custom CSS |
 
+## UX and Reading
+
+| Demo | Description |
+|------|-------------|
+| [Keyboard Shortcuts](03-ux/keyboard) | Navigate with j/k/n/p without a mouse |
+| [Reading Themes](03-ux/themes) | Switch between light, sepia and dark themes |
+| [PDF Export](03-ux/print) | Optimized print via Ctrl+P |
+
 ## About
 
 These pages serve both as **user documentation** and as **E2E test cases** for Playwright.

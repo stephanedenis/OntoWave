@@ -19,6 +19,14 @@ Bienvenue dans la galerie de démonstrations d'OntoWave. Chaque page illustre un
 | [Modes d'affichage](02-config/view-modes) | Sidebar, sans sidebar, thème clair/sombre |
 | [UI personnalisée](02-config/ui-custom) | Titre, logo, liens, CSS personnalisé |
 
+## UX et lecture
+
+| Démo | Description |
+|------|-------------|
+| [Raccourcis clavier](03-ux/keyboard) | Navigation j/k/n/p sans souris |
+| [Thèmes de lecture](03-ux/themes) | Basculer entre thème clair, sépia et sombre |
+| [Export PDF](03-ux/print) | Impression optimisée via Ctrl+P |
+
 ## À propos
 
 Ces pages servent à la fois de **documentation utilisateur** et de **cas de test E2E** pour Playwright.
