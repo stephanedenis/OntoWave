@@ -78,7 +78,7 @@
     "markdown-it-katex": "^2.0.3",
     "markdown-it-link-attributes": "^4.0.1",
     "markdown-it-multimd-table": "^4.2.3",
-    "mermaid": "^10.9.1",
+    "mermaid": "^11.12.2",
     "yaml": "^2.5.1"
   },
   "devDependencies": {
