@@ -9,10 +9,70 @@ import { buildSidebar, buildPrevNext } from './adapters/browser/navigation'
 import { createSearch } from './adapters/browser/search'
 import { renderConfigPage } from './adapters/browser/configPage'
 import { getJsonFromBundle } from './adapters/browser/bundle'
+import { initReader } from './adapters/browser/reader'
+
+/** Crée la structure DOM minimale si elle n'existe pas déjà */
+function ensureLayout(): void {
+  if (document.getElementById('app')) return
+  const style = document.createElement('style')
+  style.textContent = `
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    #ow-layout { display: flex; min-height: 100vh; }
+    #sidebar { width: 240px; flex-shrink: 0; padding: 1rem; border-right: 1px solid #e1e4e8; overflow-y: auto; }
+    #app { flex: 1; padding: 2rem; max-width: 860px; }
+    #toc { width: 200px; flex-shrink: 0; padding: 1rem; font-size: 0.85em; }
+    @media (max-width: 768px) { #sidebar, #toc { display: none; } }
+    .hidden-by-config { display: none !important; }
+    .minimal #sidebar, .minimal #toc { display: none !important; }
+  `
+  document.head.appendChild(style)
+  const layout = document.createElement('div')
+  layout.id = 'ow-layout'
+  layout.innerHTML = `
+    <nav id="sidebar" aria-label="Navigation"></nav>
+    <main id="app" aria-live="polite"></main>
+    <aside id="toc" aria-label="Table des matières"></aside>
+  `
+  document.body.appendChild(layout)
+}
 
 ;(async () => {
+  // Bootstrap DOM si aucune structure n'existe encore
+  ensureLayout()
+  // Support de window.ontoWaveConfig (format hérité) : traduire en config.json bundle
+  try {
+    const legacyCfg = (window as any).ontoWaveConfig
+    if (legacyCfg && !getJsonFromBundle('/config.json')) {
+      const baseUrl = String(legacyCfg.baseUrl || '/').replace(/\/$/, '')
+      const sources: Record<string, string> = legacyCfg.sources || {}
+      const locales: string[] = legacyCfg.locales || Object.keys(sources) || ['fr']
+      const defaultLocale: string = legacyCfg.defaultLocale || locales[0] || 'fr'
+      // Utiliser le baseUrl comme root commun — les sources (.fr.md/.en.md) seront
+      // résolues via le sélecteur de langue dans le chemin de route (#/fr/stem)
+      const roots = locales.map((lang: string) => ({ base: lang, root: baseUrl || '/' }))
+      const translated = {
+        engine: 'v2',
+        roots,
+        i18n: { default: defaultLocale, supported: locales },
+        enablePrism: legacyCfg.enablePrism,
+        enableMermaid: legacyCfg.enableMermaid,
+        enablePlantUML: legacyCfg.enablePlantUML,
+      }
+      if (!window.__ONTOWAVE_BUNDLE__) window.__ONTOWAVE_BUNDLE__ = {}
+      window.__ONTOWAVE_BUNDLE__['/config.json'] = JSON.stringify(translated)
+      // Rediriger vers le bon chemin si le hash est vide
+      if (!location.hash || location.hash === '#/' || location.hash === '#') {
+        const defaultSource = sources[defaultLocale]
+        if (defaultSource) {
+          // "themes.fr.md" → stem = "themes"
+          const stem = defaultSource.replace(/\.[a-z]{2}\.md$/i, '').replace(/\.md$/i, '').replace(/^\/+/, '')
+          location.hash = `#/${defaultLocale}/${stem}`
+        }
+      }
+    }
+  } catch {}
   // Toggle engine via config.json; fallback v2 par défaut si absent
-  const cfg = getJsonFromBundle('/config.json') || await fetch('/config.json', { cache: 'no-cache' }).then(r => r.json())
+  const cfg = getJsonFromBundle('/config.json') || await fetch('/config.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).catch(() => ({}))
   const engine = cfg.engine ?? 'v2'
   // UI options
   try {
@@ -197,8 +257,14 @@ import { getJsonFromBundle } from './adapters/browser/bundle'
         }
         if (pn.prev) prefetch(pn.prev)
         if (pn.next) prefetch(pn.next)
+        // Mettre à jour prev/next pour les raccourcis clavier
+        lastPrevNext.prev = pn.prev
+        lastPrevNext.next = pn.next
       } },
     })
+    // Initialiser les fonctionnalités de lecture (thèmes, raccourcis, impression, notes)
+    const lastPrevNext: { prev?: string; next?: string } = {}
+    initReader(() => lastPrevNext, { themes: true, keyboard: true, print: true, notes: true })
     await app.start()
     // Si la page d’accueil n’existe pas, afficher une page de configuration
     try {

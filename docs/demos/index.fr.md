@@ -19,6 +19,15 @@ Bienvenue dans la galerie de démonstrations d'OntoWave. Chaque page illustre un
 | [Modes d'affichage](02-config/view-modes) | Sidebar, sans sidebar, thème clair/sombre |
 | [UI personnalisée](02-config/ui-custom) | Titre, logo, liens, CSS personnalisé |
 
+## Lecture (Roadmap)
+
+| Démo | Description |
+|------|-------------|
+| [Thèmes de lecture](03-reader/themes) | Thèmes clair, sépia et sombre avec persistance localStorage |
+| [Raccourcis clavier](03-reader/keyboard) | Navigation j/k (scroll) et n/p (page précédente/suivante) |
+| [Export PDF](03-reader/print) | Impression et export PDF avec CSS @media print |
+| [Notes légères](03-reader/notes) | Annotations persistantes par page (localStorage) |
+
 ## À propos
 
 Ces pages servent à la fois de **documentation utilisateur** et de **cas de test E2E** pour Playwright.
@@ -27,3 +36,4 @@ Chaque démo vérifie :
 - Chargement sans erreur console
 - Rendu du contenu Markdown principal
 - Stabilité visuelle (captures d'écran de référence)
+

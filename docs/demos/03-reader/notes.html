@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave — Démo Notes légères</title>
+</head>
+<body>
+    <script>
+        window.ontoWaveConfig = {
+            baseUrl: "/demos/03-reader/",
+            locales: ["fr", "en"],
+            defaultLocale: "fr",
+            sources: {
+                fr: "notes.fr.md",
+                en: "notes.en.md"
+            },
+            enablePrism: true
+        };
+    </script>
+    <script src="/ontowave.min.js"></script>
+
+<!-- noscript:seo:start -->
+<noscript>
+  <div lang="fr">
+<h1>Notes légères</h1>
+<p>Démonstration du système de notes légères d'OntoWave.</p>
+<p>Un bouton 📝 apparaît dans la barre de lecture. Cliquer dessus ouvre un
+panneau de notes associé à la page courante.</p>
+<p>Les notes sont sauvegardées localement dans le <code>localStorage</code>
+du navigateur et sont cloisonnées par page.</p>
+  </div>
+  <div lang="en">
+<h1>Lightweight Notes</h1>
+<p>Demonstration of OntoWave's lightweight notes system.</p>
+<p>A 📝 button appears in the reader bar. Clicking it opens a notes panel
+associated with the current page.</p>
+<p>Notes are saved locally in the browser's <code>localStorage</code>
+and are scoped per page.</p>
+  </div>
+</noscript>
+<!-- noscript:seo:end -->
+</body>
+</html>

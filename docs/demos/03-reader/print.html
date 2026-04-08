@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave — Démo Export PDF</title>
+</head>
+<body>
+    <script>
+        window.ontoWaveConfig = {
+            baseUrl: "/demos/03-reader/",
+            locales: ["fr", "en"],
+            defaultLocale: "fr",
+            sources: {
+                fr: "print.fr.md",
+                en: "print.en.md"
+            },
+            enablePrism: true
+        };
+    </script>
+    <script src="/ontowave.min.js"></script>
+
+<!-- noscript:seo:start -->
+<noscript>
+  <div lang="fr">
+<h1>Export PDF</h1>
+<p>Démonstration de l'export PDF côté client d'OntoWave.</p>
+<p>Un bouton 🖨️ apparaît dans la barre de lecture. Cliquer dessus déclenche
+la boîte de dialogue d'impression du navigateur.</p>
+  </div>
+  <div lang="en">
+<h1>PDF Export</h1>
+<p>Demonstration of OntoWave's client-side PDF export.</p>
+<p>A 🖨️ button appears in the reader bar. Clicking it triggers the
+browser's print dialog.</p>
+  </div>
+</noscript>
+<!-- noscript:seo:end -->
+</body>
+</html>

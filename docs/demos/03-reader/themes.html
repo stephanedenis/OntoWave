@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave — Démo Thèmes de lecture</title>
+</head>
+<body>
+    <script>
+        window.ontoWaveConfig = {
+            baseUrl: "/demos/03-reader/",
+            locales: ["fr", "en"],
+            defaultLocale: "fr",
+            sources: {
+                fr: "themes.fr.md",
+                en: "themes.en.md"
+            },
+            enablePrism: true
+        };
+    </script>
+    <script src="/ontowave.min.js"></script>
+
+<!-- noscript:seo:start -->
+<noscript>
+  <div lang="fr">
+<h1>Thèmes de lecture</h1>
+<p>Démonstration des thèmes de lecture d'OntoWave : clair, sépia et sombre.</p>
+<h2>Bascule de thème</h2>
+<p>Un bouton discret apparaît en bas à droite de l'écran. Cliquer dessus fait
+défiler les thèmes : Clair → Sépia → Sombre.</p>
+<h2>Persistance</h2>
+<p>Le thème choisi est sauvegardé dans le <code>localStorage</code> du navigateur sous la
+clé <code>ow-theme</code>.</p>
+  </div>
+  <div lang="en">
+<h1>Reading Themes</h1>
+<p>Demonstration of OntoWave's reading themes: light, sepia, and dark.</p>
+<h2>Theme Toggle</h2>
+<p>A discreet button appears at the bottom-right. Clicking it cycles through
+themes: Light → Sepia → Dark.</p>
+<h2>Persistence</h2>
+<p>The chosen theme is saved in the browser's <code>localStorage</code> under the key
+<code>ow-theme</code>.</p>
+  </div>
+</noscript>
+<!-- noscript:seo:end -->
+</body>
+</html>
