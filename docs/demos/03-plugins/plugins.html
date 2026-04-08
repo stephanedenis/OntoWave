@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave — Démo Plugins</title>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+    <script>
+        window.ontoWaveConfig = {
+            baseUrl: "/demos/03-plugins/",
+            locales: ["fr", "en"],
+            defaultLocale: "fr",
+            sources: {
+                fr: "plugins.fr.md",
+                en: "plugins.en.md"
+            },
+            enablePrism: true
+        };
+    </script>
+
+<!-- noscript:seo:start -->
+<noscript>
+  <div lang="fr">
+<h1>Système de plugins OntoWave</h1>
+<p>OntoWave offre une architecture de plugins extensible qui permet d'injecter du comportement personnalisé à chaque étape du cycle de vie de l'application.</p>
+<h2>Concepts clés</h2>
+<p>Un <strong>plugin</strong> est un objet JavaScript qui implémente une ou plusieurs méthodes de cycle de vie :</p>
+<table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>Moment d'appel</th>
+<th>Signature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>onStart(ctx)</code></td>
+<td>Démarrage de l'appli</td>
+<td><code>(ctx: PluginContext) =&gt; void | Promise&lt;void&gt;</code></td>
+</tr>
+<tr>
+<td><code>onStop()</code></td>
+<td>Arrêt de l'appli</td>
+<td><code>() =&gt; void | Promise&lt;void&gt;</code></td>
+</tr>
+<tr>
+<td><code>beforeRender(md, route)</code></td>
+<td>Avant le rendu Markdown</td>
+<td><code>(md: string, route: string) =&gt; string | Promise&lt;string&gt;</code></td>
+</tr>
+<tr>
+<td><code>afterRender(html, route)</code></td>
+<td>Après l'injection du HTML</td>
+<td><code>(html: string, route: string) =&gt; void | Promise&lt;void&gt;</code></td>
+</tr>
+<tr>
+<td><code>onRouteChange(route)</code></td>
+<td>Changement de route</td>
+<td><code>(route: string) =&gt; void | Promise&lt;void&gt;</code></td>
+</tr>
+</tbody>
+</table>
+  </div>
+  <div lang="en">
+<h1>OntoWave Plugin System</h1>
+<p>OntoWave provides an extensible plugin architecture that allows injecting custom behavior at every stage of the application lifecycle.</p>
+<h2>Key Concepts</h2>
+<p>A <strong>plugin</strong> is a JavaScript object that implements one or more lifecycle methods:</p>
+<table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>When called</th>
+<th>Signature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>onStart(ctx)</code></td>
+<td>App startup</td>
+<td><code>(ctx: PluginContext) =&gt; void | Promise&lt;void&gt;</code></td>
+</tr>
+<tr>
+<td><code>onStop()</code></td>
+<td>App shutdown</td>
+<td><code>() =&gt; void | Promise&lt;void&gt;</code></td>
+</tr>
+<tr>
+<td><code>beforeRender(md, route)</code></td>
+<td>Before Markdown rendering</td>
+<td><code>(md: string, route: string) =&gt; string | Promise&lt;string&gt;</code></td>
+</tr>
+<tr>
+<td><code>afterRender(html, route)</code></td>
+<td>After HTML injection</td>
+<td><code>(html: string, route: string) =&gt; void | Promise&lt;void&gt;</code></td>
+</tr>
+<tr>
+<td><code>onRouteChange(route)</code></td>
+<td>Route change</td>
+<td><code>(route: string) =&gt; void | Promise&lt;void&gt;</code></td>
+</tr>
+</tbody>
+</table>
+  </div>
+</noscript>
+<!-- noscript:seo:end -->
+</body>
+</html>
