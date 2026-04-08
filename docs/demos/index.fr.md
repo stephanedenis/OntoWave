@@ -19,6 +19,12 @@ Bienvenue dans la galerie de démonstrations d'OntoWave. Chaque page illustre un
 | [Modes d'affichage](02-config/view-modes) | Sidebar, sans sidebar, thème clair/sombre |
 | [UI personnalisée](02-config/ui-custom) | Titre, logo, liens, CSS personnalisé |
 
+## Extensibilité
+
+| Démo | Description |
+|------|-------------|
+| [Plugins](03-plugins/plugins) | Architecture de plugins : hooks, événements, exemples |
+
 ## À propos
 
 Ces pages servent à la fois de **documentation utilisateur** et de **cas de test E2E** pour Playwright.
