@@ -12064,6 +12064,9 @@
       configPrism: "Coloration Syntaxique (Prism.js)",
       configPrismTheme: "Thème Prism :",
       configPrismAutoload: "Chargement automatique",
+      configPrismLangsTitle: "Langages supportés",
+      configPrismLangsEssential: "Essentiels (toujours disponibles)",
+      configPrismLangsAdditional: "Additionnels (chargement automatique)",
       configUI: "Interface Utilisateur",
       configUITheme: "Thème de l'interface :",
       configUIResponsive: "Design responsive",
@@ -12104,6 +12107,9 @@
       configPrism: "Syntax Highlighting (Prism.js)",
       configPrismTheme: "Prism theme:",
       configPrismAutoload: "Auto loading",
+      configPrismLangsTitle: "Supported languages",
+      configPrismLangsEssential: "Essential (always available)",
+      configPrismLangsAdditional: "Additional (auto loaded)",
       configUI: "User Interface",
       configUITheme: "Interface theme:",
       configUIResponsive: "Responsive design",
@@ -14992,7 +14998,7 @@ ${configString}
 
             <!-- Section Diagrammes Mermaid -->
             <div class="config-section">
-              <h4>📊 ${this.t('configMermaid', targetLang)}</h4>
+              <h4>🧜‍♀️ ${this.t('configMermaid', targetLang)}</h4>
               <div class="config-row">
                 <div class="form-group-full">
                   <label for="config-mermaidTheme-full">${this.t('configMermaidTheme', targetLang)}</label>
@@ -15022,7 +15028,7 @@ ${configString}
 
             <!-- Section PlantUML -->
             <div class="config-section">
-              <h4>🌿 ${this.t('configPlantuml', targetLang)}</h4>
+              <h4>🏭 ${this.t('configPlantuml', targetLang)}</h4>
               <div class="config-row">
                 <div class="form-group-full">
                   <label for="config-plantumlServer-full">${this.t('configPlantumlServer', targetLang)}</label>
@@ -15055,6 +15061,35 @@ ${configString}
                     <input type="checkbox" id="config-prismAutoload-full" ${this.config.prism?.autoload !== false ? 'checked' : ''} />
                     🔄 ${this.t('configPrismAutoload', targetLang)}
                   </label>
+                </div>
+              </div>
+              <div class="config-row">
+                <div class="form-group-full">
+                  <p style="margin: 0 0 8px 0; font-weight: 600; color: #586069;">🔤 ${this.t('configPrismLangsTitle', targetLang)}</p>
+                  <div class="language-grid">
+                    <div class="language-group">
+                      <p class="language-group-title">${this.t('configPrismLangsEssential', targetLang)}</p>
+                      <div class="language-tags">
+                        <span class="lang-tag">HTML</span>
+                        <span class="lang-tag">CSS</span>
+                        <span class="lang-tag">JavaScript</span>
+                      </div>
+                    </div>
+                    <div class="language-group">
+                      <p class="language-group-title">${this.t('configPrismLangsAdditional', targetLang)}</p>
+                      <div class="language-tags">
+                        <span class="lang-tag">Python</span>
+                        <span class="lang-tag">Java</span>
+                        <span class="lang-tag">TypeScript</span>
+                        <span class="lang-tag">PHP</span>
+                        <span class="lang-tag">Bash</span>
+                        <span class="lang-tag">JSON</span>
+                        <span class="lang-tag">YAML</span>
+                        <span class="lang-tag">Mermaid</span>
+                        <span class="lang-tag">PlantUML</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -15676,6 +15711,34 @@ ${configString}
           overflow-x: auto;
           max-height: 300px;
           overflow-y: auto;
+        }
+        
+        .language-grid {
+          display: grid;
+          gap: 12px;
+        }
+        
+        .language-group-title {
+          margin: 0 0 6px 0;
+          color: #586069;
+          font-size: 0.85em;
+          font-weight: 600;
+        }
+        
+        .language-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+        }
+        
+        .lang-tag {
+          background: #ffffff;
+          border: 1px solid #d1d9e0;
+          border-radius: 12px;
+          padding: 3px 10px;
+          font-size: 0.78em;
+          color: #586069;
+          font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
         }
       `;
       document.head.appendChild(style);

@@ -4,6 +4,8 @@ import type {
   ContentPathStrategy,
   ContentService,
   MarkdownRenderer,
+  OntoWavePlugin,
+  PluginContext,
   RouterService,
   ViewRenderer,
   PostRenderEnhancer,
@@ -43,8 +45,10 @@ export function createApp(deps: {
   view: ViewRenderer
   md: MarkdownRenderer
   enhance?: PostRenderEnhancer
+  plugins?: OntoWavePlugin[]
 }) {
   const resolver = deps.resolver ?? { resolveCandidates: defaultResolve }
+  const plugins = deps.plugins ?? []
   let disposer: (() => void) | null = null
   let cfg: AppConfig | null = null
 
@@ -74,6 +78,13 @@ export function createApp(deps: {
     }
 
     const mdSrc = await loadMarkdown(cfg.roots, routePath, deps.content, resolver)
+    let mdSrc = await loadMarkdown(cfg.roots, routePath, deps.content, resolver)
+
+    // Plugin beforeRender hooks
+    for (const plugin of plugins) {
+      mdSrc = (await plugin.beforeRender?.(mdSrc, route)) ?? mdSrc
+    }
+
     const html = deps.md.render(mdSrc)
   const mode = viewMode.toLowerCase()
   // Split view: show Markdown source and its rendered HTML side-by-side
@@ -114,18 +125,44 @@ export function createApp(deps: {
     }
     const h1 = /<h1[^>]*>(.*?)<\/h1>/i.exec(html)?.[1]?.replace(/<[^>]+>/g, '').trim()
     if (h1) deps.view.setTitle(`${h1} — OntoWave`)
-  await deps.enhance?.afterRender(html, route)
+    await deps.enhance?.afterRender(html, route)
+
+    // Plugin afterRender hooks
+    for (const plugin of plugins) {
+      await plugin.afterRender?.(html, route)
+    }
   }
 
   async function start() {
     cfg = await deps.config.load()
+
+    // Plugin onStart hooks
+    const ctx: PluginContext = {
+      get config() { return cfg! },
+      navigate: (path: string) => deps.router.navigate(path),
+    }
+    for (const plugin of plugins) {
+      await plugin.onStart?.(ctx)
+    }
+
     await renderRoute()
-    disposer = deps.router.subscribe(() => { void renderRoute() })
+    disposer = deps.router.subscribe(async (r) => {
+      // Plugin onRouteChange hooks
+      for (const plugin of plugins) {
+        await plugin.onRouteChange?.(r.path)
+      }
+      void renderRoute()
+    })
   }
 
-  function stop() {
+  async function stop() {
     disposer?.()
     disposer = null
+
+    // Plugin onStop hooks
+    for (const plugin of plugins) {
+      await plugin.onStop?.()
+    }
   }
 
   return { start, stop, renderRoute }

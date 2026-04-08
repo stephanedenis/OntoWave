@@ -20,6 +20,12 @@ Welcome to the OntoWave demonstration gallery. Each page illustrates a specific 
 | [View Modes](02-config/view-modes) | Sidebar, no sidebar, light/dark theme |
 | [Custom UI](02-config/ui-custom) | Title, logo, links, custom CSS |
 
+## Extensibility
+
+| Demo | Description |
+|------|-------------|
+| [Plugins](03-plugins/plugins) | Plugin architecture: hooks, events, examples |
+
 ## About
 
 These pages serve both as **user documentation** and as **E2E test cases** for Playwright.
