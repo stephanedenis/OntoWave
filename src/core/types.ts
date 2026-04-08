@@ -1,11 +1,53 @@
 export type Route = { path: string }
 
 export type Root = { base: string; root: string }
+
+export type GlossaryTerm = {
+  term: string
+  aliases?: string[]
+  definition: string
+  href: string
+}
+
+export type GlossaryMatchingConfig = {
+  caseSensitive?: boolean
+  wordBoundary?: boolean
+  firstOccurrenceOnly?: boolean
+}
+
+export type GlossaryExcludeConfig = {
+  elements?: string[]
+}
+
+export type GlossarySvgConfig = {
+  inline?: boolean
+}
+
+export type GlossaryUiConfig = {
+  underlineStyle?: 'dotted' | 'dashed' | 'solid'
+  clickBehavior?: 'sidebar' | 'tooltip'
+  tooltip?: {
+    showOnHover?: boolean
+    delay?: number
+    maxWidth?: number
+  }
+}
+
+export type GlossaryConfig = {
+  enabled?: boolean
+  sources?: string[]
+  matching?: GlossaryMatchingConfig
+  exclude?: GlossaryExcludeConfig
+  svg?: GlossarySvgConfig
+  ui?: GlossaryUiConfig
+}
+
 export type AppConfig = {
   roots: Root[]
   engine?: 'legacy' | 'v2'
   i18n?: { default: string; supported: string[] }
   ui?: { header?: boolean; sidebar?: boolean; toc?: boolean; footer?: boolean; minimal?: boolean; menu?: boolean }
+  glossary?: GlossaryConfig
 }
 
 export interface ConfigService {

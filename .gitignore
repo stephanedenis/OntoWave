@@ -7,3 +7,4 @@ node_modules
 archive/
 test-results/
 docs/standalone/
+dist/ontowave.umd.cjs
