@@ -73,7 +73,7 @@ export function createApp(deps: {
       return
     }
 
-  const mdSrc = await loadMarkdown(cfg.roots, routePath, deps.content, resolver)
+    const mdSrc = await loadMarkdown(cfg.roots, routePath, deps.content, resolver)
     const html = deps.md.render(mdSrc)
   const mode = viewMode.toLowerCase()
   // Split view: show Markdown source and its rendered HTML side-by-side

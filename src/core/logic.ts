@@ -89,7 +89,7 @@ export function rewriteLinksHtml(html: string, currentHash?: string): string {
     }
     return '/' + out.join('/')
   }
-  const rewriteMd = html.replace(/href=("|')([^"']+\.md)(#[^"']*)?(\1)/gi, (_m, q, href, anchor = '', _qq) => {
+  const rewriteMd = html.replace(/href=("|')([^"']+\.md)(#[^"']*)?(\1)/gi, (_m, q, href, anchor = '') => {
     if (/^(https?:)?\/\//i.test(href)) return `href=${q}${href}${anchor || ''}${q}`
     // Absolute content path
     if (href.startsWith('/')) {
@@ -108,7 +108,7 @@ export function rewriteLinksHtml(html: string, currentHash?: string): string {
     return `href=${q}#${target}${anchor || ''}${q}`
   })
   // Réécrit les liens internes se terminant par .puml en routes hash (extension conservée)
-  return rewriteMd.replace(/href=("|')([^"']+\.puml)(#[^"']*)?(\1)/gi, (_m, q, href, anchor = '', _qq) => {
+  return rewriteMd.replace(/href=("|')([^"']+\.puml)(#[^"']*)?(\1)/gi, (_m, q, href, anchor = '') => {
     if (/^(https?:)?\/\//i.test(href)) return `href=${q}${href}${anchor || ''}${q}`
     // Absolute content path (keep .puml extension)
     if (href.startsWith('/')) {
