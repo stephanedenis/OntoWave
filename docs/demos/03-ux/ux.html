@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave — Démo Fonctionnalités UX</title>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+    <script>
+        window.ontoWaveConfig = {
+            baseUrl: "/demos/03-ux/",
+            locales: ["fr", "en"],
+            defaultLocale: "fr",
+            sources: {
+                fr: "ux.fr.md",
+                en: "ux.en.md"
+            },
+            enablePrism: true,
+            ux: true
+        };
+    </script>
+
+<!-- noscript:seo:start -->
+<noscript>
+  <div lang="fr">
+<h1>Fonctionnalités UX — Lecture et Navigation</h1>
+<p>Démonstration des améliorations de lecture et de navigation d’OntoWave, inspirées des liseuses type Remarkable.</p>
+<h2>Thèmes de lecture</h2>
+<p>OntoWave propose trois thèmes de lecture persistés dans le navigateur :</p>
+<table>
+<thead>
+<tr>
+<th>Thème</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>☀ Clair</td>
+<td>Fond blanc, texte sombre — usage standard</td>
+</tr>
+<tr>
+<td>📖 Sépia</td>
+<td>Fond sépia, texte chaud — lecture prolongée</td>
+</tr>
+<tr>
+<td>🌙 Sombre</td>
+<td>Fond noir, texte clair — faible luminosité</td>
+</tr>
+</tbody>
+</table>
+<p>La bascule se fait via le bouton <strong>☀ Clair</strong> (ou son équivalent selon le thème courant) dans la barre d’outils UX, visible en haut du contenu.</p>
+<p>Le thème choisi est mémorisé dans <code>localStorage</code> et restauré à chaque visite.</p>
+<h2>Navigation au clavier</h2>
+<p>Les raccourcis clavier fonctionnent lorsque le focus n’est pas dans un champ de saisie :</p>
+<table>
+<thead>
+<tr>
+<th>Touche</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>j</code></td>
+<td>Défiler vers le bas (120 px)</td>
+</tr>
+<tr>
+<td><code>k</code></td>
+<td>Défiler vers le haut (120 px)</td>
+</tr>
+<tr>
+<td><code>n</code></td>
+<td>Aller à la page suivante (si disponible)</td>
+</tr>
+<tr>
+<td><code>p</code></td>
+<td>Aller à la page précédente (si disponible)</td>
+</tr>
+</tbody>
+</table>
+<h2>Export PDF</h2>
+<p>Le bouton <strong>🖨 PDF</strong> déclenche l’impression du navigateur. Un CSS d’impression masque automatiquement la navigation, la barre latérale et la barre d’outils UX pour produire un document propre.</p>
+<p>Éléments masqués à l’impression :</p>
+<ul>
+<li>En-tête (<code>#site-header</code>)</li>
+<li>Barre latérale (<code>#sidebar</code>)</li>
+<li>Table des matières (<code>#toc</code>)</li>
+<li>Menu flottant (<code>#floating-menu</code>)</li>
+<li>Barre d’outils UX (<code>.ow-ux-toolbar</code>)</li>
+<li>Panneau de notes (<code>.ow-notes-panel</code>)</li>
+</ul>
+<h2>Notes légères</h2>
+<p>Le bouton <strong>📝 Notes</strong> ouvre un panneau de saisie libre ancré à la page courante. Les notes sont automatiquement sauvegardées dans <code>localStorage</code> avec la clé <code>ow-note:&lt;hash-de-la-route&gt;</code>.</p>
+<p>Les notes sont spécifiques à chaque page et persistent entre les sessions.</p>
+<h2>Prefetch Markov</h2>
+<p>OntoWave observe vos transitions de navigation et construit une table de Markov en <code>localStorage</code>. À chaque changement de page, les destinations les plus probables (basées sur l’historique) sont préchargées en arrière-plan.</p>
+<p>Cela accélère la navigation répétée sur les mêmes chemins.</p>
+<h2>Configuration</h2>
+<p>Les fonctionnalités UX sont <strong>activées par défaut</strong>. Pour les désactiver globalement ou partiellement, ajoutez dans votre <code>config.json</code> :</p>
+<pre><code class="language-json">{
+  &quot;ux&quot;: false
+}
+</code></pre>
+<p>Ou pour une configuration fine :</p>
+<pre><code class="language-json">{
+  &quot;ux&quot;: {
+    &quot;themes&quot;: true,
+    &quot;keyboard&quot;: true,
+    &quot;notes&quot;: true,
+    &quot;prefetch&quot;: true
+  }
+}
+</code></pre>
+  </div>
+  <div lang="en">
+<h1>UX Features — Reading and Navigation</h1>
+<p>Demonstration of OntoWave’s reading and navigation enhancements, inspired by e-readers like the Remarkable.</p>
+<h2>Reading Themes</h2>
+<p>OntoWave provides three reading themes persisted in the browser:</p>
+<table>
+<thead>
+<tr>
+<th>Theme</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>☀ Light</td>
+<td>White background, dark text — standard use</td>
+</tr>
+<tr>
+<td>📖 Sepia</td>
+<td>Sepia background, warm text — extended reading</td>
+</tr>
+<tr>
+<td>🌙 Dark</td>
+<td>Black background, light text — low light</td>
+</tr>
+</tbody>
+</table>
+<p>Toggle via the <strong>☀ Light</strong> button (or its equivalent for the current theme) in the UX toolbar at the top of the content.</p>
+<p>The chosen theme is saved in <code>localStorage</code> and restored on every visit.</p>
+<h2>Keyboard Navigation</h2>
+<p>Keyboard shortcuts work when focus is not in an input field:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>j</code></td>
+<td>Scroll down (120 px)</td>
+</tr>
+<tr>
+<td><code>k</code></td>
+<td>Scroll up (120 px)</td>
+</tr>
+<tr>
+<td><code>n</code></td>
+<td>Go to next page (if available)</td>
+</tr>
+<tr>
+<td><code>p</code></td>
+<td>Go to previous page (if available)</td>
+</tr>
+</tbody>
+</table>
+<h2>PDF Export</h2>
+<p>The <strong>🖨 PDF</strong> button triggers the browser print dialog. A print CSS automatically hides navigation, sidebar, and the UX toolbar to produce a clean document.</p>
+<p>Elements hidden when printing:</p>
+<ul>
+<li>Header (<code>#site-header</code>)</li>
+<li>Sidebar (<code>#sidebar</code>)</li>
+<li>Table of contents (<code>#toc</code>)</li>
+<li>Floating menu (<code>#floating-menu</code>)</li>
+<li>UX toolbar (<code>.ow-ux-toolbar</code>)</li>
+<li>Notes panel (<code>.ow-notes-panel</code>)</li>
+</ul>
+<h2>Light Notes</h2>
+<p>The <strong>📝 Notes</strong> button opens a free-text input panel anchored to the current page. Notes are automatically saved in <code>localStorage</code> with key <code>ow-note:&lt;route-hash&gt;</code>.</p>
+<p>Notes are page-specific and persist between sessions.</p>
+<h2>Markov Prefetch</h2>
+<p>OntoWave tracks your navigation transitions and builds a Markov table in <code>localStorage</code>. On every page change, the most likely destinations (based on history) are prefetched in the background.</p>
+<p>This speeds up repeated navigation on the same paths.</p>
+<h2>Configuration</h2>
+<p>UX features are <strong>enabled by default</strong>. To disable them globally or partially, add to your <code>config.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;ux&quot;: false
+}
+</code></pre>
+<p>Or for fine-grained configuration:</p>
+<pre><code class="language-json">{
+  &quot;ux&quot;: {
+    &quot;themes&quot;: true,
+    &quot;keyboard&quot;: true,
+    &quot;notes&quot;: true,
+    &quot;prefetch&quot;: true
+  }
+}
+</code></pre>
+  </div>
+</noscript>
+<!-- noscript:seo:end -->
+</body>
+</html>
