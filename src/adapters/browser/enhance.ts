@@ -120,7 +120,7 @@ export async function enhancePage(appEl: HTMLElement, html: string) {
     const hash = location.hash || '#/'
     const path = hash.replace(/^#/, '')
     const parts = path.split('/').filter(Boolean) // e.g., ['en','vendor','page']
-    if (parts.length >= 2) {
+    if (parts.length >= 3) {
       const base = parts[0]
       const folder = parts[1]
       const rest = parts.slice(2).join('/')

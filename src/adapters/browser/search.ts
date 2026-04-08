@@ -39,7 +39,15 @@ export function createSearch() {
   async function loadFromPrebuiltIndex(): Promise<boolean> {
     try {
   const embedded = getJsonFromBundle<Array<{ route: string; title: string; text?: string }>>('/search-index.json')
-  const arr = embedded || await fetch('/search-index.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null)
+      if (embedded !== null) {
+        // Bundle explicitly provides an index (may be empty - that's intentional, stop fallthrough)
+        if (Array.isArray(embedded) && embedded.length > 0) {
+          items = embedded.map(d => ({ route: d.route, title: d.title }))
+          for (const d of embedded) docs.set(d.route, { title: d.title, text: d.text || '' })
+        }
+        return true
+      }
+  const arr = await fetch('/search-index.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null)
       if (!Array.isArray(arr) || arr.length === 0) return false
       items = arr.map(d => ({ route: d.route, title: d.title }))
       for (const d of arr) docs.set(d.route, { title: d.title, text: d.text || '' })

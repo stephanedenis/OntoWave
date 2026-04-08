@@ -4,23 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OntoWave — Démo Markdown</title>
+    <script>
+        window.__ONTOWAVE_BUNDLE__ = {
+            '/config.json': JSON.stringify({
+                roots: [
+                    { base: 'fr', root: '/demos/01-base' },
+                    { base: 'en', root: '/demos/01-base' }
+                ],
+                i18n: { default: 'fr', supported: ['fr', 'en'] }
+            }),
+            '/nav.yml': '[]',
+            '/sitemap.json': '{"items":[]}',
+            '/search-index.json': '[]'
+        };
+        if (!location.hash || location.hash === '#/' || location.hash === '#') {
+            location.hash = '#fr/markdown';
+        }
+    </script>
 </head>
 <body>
-    <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
-    <script>
-        window.ontoWaveConfig = {
-            baseUrl: "/demos/01-base/",
-            locales: ["fr", "en"],
-            defaultLocale: "fr",
-            sources: {
-                fr: "markdown.fr.md",
-                en: "markdown.en.md"
-            },
-            enableMermaid: true,
-            enablePlantUML: true,
-            enablePrism: true
-        };
-    </script>
+    <div id="app"></div>
+    <script src="/ontowave.min.js"></script>
 
 <!-- noscript:seo:start -->
 <noscript>
