@@ -34,6 +34,24 @@ Explorez OntoWave v1.0.25 à travers des **démos interactives et testées** :
 
 [📋 Voir toutes les démos dans le catalogue →](demos/)
 
+### 🎨 Syntaxe et diagrammes supportés
+
+#### 🏭 PlantUML
+Diagrammes UML (classes, séquences, activités, composants) via le serveur officiel PlantUML.
+Syntaxe : ` ```plantuml ``` ` ou fichiers `.puml`
+
+#### 🧜‍♀️ Mermaid
+Diagrammes interactifs (flowcharts, séquences, graphes) avec Mermaid.js.
+Syntaxe : ` ```mermaid ``` `
+
+#### 🔤 Coloration syntaxique (Prism.js)
+
+**Langages essentiels** (toujours disponibles) : `HTML`, `CSS`, `JavaScript`
+
+**Langages additionnels** (chargement automatique) : `Python`, `Java`, `TypeScript`, `PHP`, `Bash`, `JSON`, `YAML`, `Mermaid`, `PlantUML`
+
+[Voir les exemples de code →](demos/01-base/markdown.html)
+
 ### Utilisation
 
 ```html
