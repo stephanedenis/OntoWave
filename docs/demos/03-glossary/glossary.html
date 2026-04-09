@@ -69,15 +69,105 @@
 <noscript>
   <div lang="fr">
 <h1>Glossaire — Dictionnaire avec soulignement et infobulle latérale</h1>
-<p>Démonstration de la fonctionnalité glossaire d'OntoWave : soulignement en pointillé des termes définis, infobulle au survol et définition dans le panneau latéral.</p>
+<p>Cette page démontre la fonctionnalité <strong>glossaire</strong> d’OntoWave. Les termes définis dans le dictionnaire chargé sont soulignés en pointillé. Au clic, leur définition apparaît dans le panneau latéral.</p>
 <h2>Termes du glossaire en action</h2>
-<p>L'<strong>UAF</strong> est le standard OMG de modélisation d'architecture d'entreprise. La notion de <strong>Capabilité</strong> désigne l'aptitude mesurable d'une organisation à atteindre un résultat. La <strong>Gouvernance IT</strong> encadre les mécanismes de pilotage des ressources informationnelles.</p>
+<p>L’<strong>UAF</strong> (Unified Architecture Framework) est le standard de l’OMG pour la modélisation d’architecture d’entreprise par vues et viewpoints.</p>
+<p>La notion de <strong>Capabilité</strong> est centrale dans les cadres d’architecture modernes. Une Capabilité représente l’aptitude mesurable d’une organisation à atteindre un résultat défini.</p>
+<p>La <strong>Gouvernance IT</strong> (ou Gouvernance des TI) encadre les mécanismes d’orientation et de pilotage des ressources informationnelles au sein d’une organisation.</p>
+<p>Le cadre <strong>AEG</strong> (Architecture d’entreprise gouvernementale) constitue la directive SCT applicable aux organismes publics du Québec.</p>
+<p>La loi <strong>LGGRI</strong> régit la gouvernance et la gestion des ressources informationnelles des organismes publics québécois.</p>
+<h2>Comportement attendu</h2>
+<ul>
+<li>Les termes définis apparaissent <strong>soulignés en pointillé bleu</strong> (<code>text-decoration: underline dotted</code>)</li>
+<li>Un <strong>clic</strong> sur un terme affiché dans le panneau latéral : terme, définition courte et lien vers la fiche complète</li>
+<li>Le survol déclenche également une <strong>infobulle</strong> après un délai configurable (défaut : 300 ms)</li>
+<li>Les termes dans les blocs <code>code</code> sont exclus : <code>UAF</code>, <code>Capabilité</code>, <code>LGGRI</code></li>
+</ul>
+<h2>Configuration</h2>
+<p>La fonctionnalité est activée via <code>config.json</code> :</p>
+<pre><code class="language-json">{
+  &quot;glossary&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;sources&quot;: [&quot;/demos/03-glossary/glossary.fr.json&quot;],
+    &quot;matching&quot;: {
+      &quot;caseSensitive&quot;: false,
+      &quot;wordBoundary&quot;: true,
+      &quot;firstOccurrenceOnly&quot;: false
+    },
+    &quot;exclude&quot;: { &quot;elements&quot;: [&quot;code&quot;, &quot;pre&quot;, &quot;kbd&quot;] },
+    &quot;ui&quot;: {
+      &quot;underlineStyle&quot;: &quot;dotted&quot;,
+      &quot;clickBehavior&quot;: &quot;sidebar&quot;,
+      &quot;tooltip&quot;: { &quot;showOnHover&quot;: true, &quot;delay&quot;: 300, &quot;maxWidth&quot;: 340 }
+    }
+  }
+}
+</code></pre>
+<h2>Fusion de sources multiples (last-wins)</h2>
+<p>OntoWave supporte plusieurs sources de glossaire. Le dernier fichier chargé écrase les entrées conflictuelles :</p>
+<pre><code class="language-json">{
+  &quot;sources&quot;: [
+    &quot;https://culture.calme.gouv.qc.ca/glossary.fr.json&quot;,
+    &quot;./glossary.fr.json&quot;
+  ]
+}
+</code></pre>
+<p>Clé de fusion : <code>term.toLowerCase()</code> + <code>alias.toLowerCase()</code>. Si deux sources définissent <strong>UAF</strong>, la seconde source prend la priorité (last-wins).</p>
+<h2>Limite connue</h2>
+<ul>
+<li>Les SVG référencés via <code>&lt;img src=&quot;...&quot;&gt;</code> sont hors portée (DOM inaccessible)</li>
+<li>Les SVG inline (Mermaid) peuvent être annotés avec <code>svg.inline: true</code>, mais le wrapping de <code>&lt;text&gt;</code> en <code>&lt;a&gt;</code> SVG peut affecter les coordonnées du layout</li>
+</ul>
   </div>
   <div lang="en">
 <h1>Glossary — Dictionary with dotted underline and sidebar tooltip</h1>
-<p>Demonstration of OntoWave's glossary feature: dotted underline for defined terms, hover tooltip and sidebar definition panel.</p>
+<p>This page demonstrates OntoWave’s <strong>glossary</strong> feature. Terms defined in the loaded dictionary are underlined with a dotted line. On click, their definition appears in the sidebar panel.</p>
 <h2>Glossary Terms in Action</h2>
-<p><strong>UAF</strong> is the OMG standard for enterprise architecture modelling. The <strong>Capability</strong> concept refers to an organisation's measurable ability to achieve a defined outcome. <strong>IT Governance</strong> encompasses the mechanisms for directing and managing IT resources.</p>
+<p><strong>UAF</strong> (Unified Architecture Framework) is the OMG standard for enterprise architecture modelling through views and viewpoints.</p>
+<p>The concept of <strong>Capability</strong> is central in modern architecture frameworks. A Capability represents an organisation’s measurable ability to achieve a defined outcome.</p>
+<p><strong>IT Governance</strong> encompasses the mechanisms for directing and managing IT resources within an organisation.</p>
+<h2>Expected Behaviour</h2>
+<ul>
+<li>Defined terms appear <strong>underlined with a dotted blue line</strong> (<code>text-decoration: underline dotted</code>)</li>
+<li>A <strong>click</strong> on a term shows its definition in the sidebar panel: term, short definition and link to the full entry</li>
+<li>Hovering also triggers a <strong>tooltip</strong> after a configurable delay (default: 300 ms)</li>
+<li>Terms inside <code>code</code> blocks are excluded: <code>UAF</code>, <code>Capability</code>, <code>IT Governance</code></li>
+</ul>
+<h2>Configuration</h2>
+<p>The feature is enabled via <code>config.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;glossary&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;sources&quot;: [&quot;/demos/03-glossary/glossary.en.json&quot;],
+    &quot;matching&quot;: {
+      &quot;caseSensitive&quot;: false,
+      &quot;wordBoundary&quot;: true,
+      &quot;firstOccurrenceOnly&quot;: false
+    },
+    &quot;exclude&quot;: { &quot;elements&quot;: [&quot;code&quot;, &quot;pre&quot;, &quot;kbd&quot;] },
+    &quot;ui&quot;: {
+      &quot;underlineStyle&quot;: &quot;dotted&quot;,
+      &quot;clickBehavior&quot;: &quot;sidebar&quot;,
+      &quot;tooltip&quot;: { &quot;showOnHover&quot;: true, &quot;delay&quot;: 300, &quot;maxWidth&quot;: 340 }
+    }
+  }
+}
+</code></pre>
+<h2>Multi-source Merging (last-wins)</h2>
+<p>OntoWave supports multiple glossary sources. The last file loaded overwrites conflicting entries:</p>
+<pre><code class="language-json">{
+  &quot;sources&quot;: [
+    &quot;https://culture.example.org/glossary.en.json&quot;,
+    &quot;./glossary.en.json&quot;
+  ]
+}
+</code></pre>
+<p>Merge key: <code>term.toLowerCase()</code> + <code>alias.toLowerCase()</code>. If two sources define <strong>UAF</strong>, the second source takes priority (last-wins).</p>
+<h2>Known Limitations</h2>
+<ul>
+<li>SVG referenced via <code>&lt;img src=&quot;...&quot;&gt;</code> is out of scope (DOM is opaque)</li>
+<li>Inline SVG (Mermaid) can be annotated with <code>svg.inline: true</code>, but wrapping <code>&lt;text&gt;</code> in SVG <code>&lt;a&gt;</code> may affect layout coordinates</li>
+</ul>
   </div>
 </noscript>
 <!-- noscript:seo:end -->

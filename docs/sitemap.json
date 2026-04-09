@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-04-09T12:33:18.199Z",
-  "count": 48,
+  "generatedAt": "2026-04-09T12:37:46.853Z",
+  "count": 52,
   "i18n": {
     "default": "fr",
     "supported": [
@@ -106,6 +106,18 @@
       "base": "en"
     },
     {
+      "path": "docs/demos/03-glossary/glossary.en.md",
+      "route": "#/en/demos/03-glossary/glossary",
+      "title": "Glossary — Dictionary with dotted underline and sidebar tooltip",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/03-glossary/glossary.en.md",
+      "route": "#/en/demos/03-glossary/glossary",
+      "title": "Glossary — Dictionary with dotted underline and sidebar tooltip",
+      "base": "en"
+    },
+    {
       "path": "docs/demos/03-plugins/plugins.en.md",
       "route": "#/en/demos/03-plugins/plugins",
       "title": "OntoWave Plugin System",
@@ -247,6 +259,18 @@
       "path": "docs/demos/02-config/view-modes.fr.md",
       "route": "#/fr/demos/02-config/view-modes",
       "title": "Modes d'affichage",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/03-glossary/glossary.fr.md",
+      "route": "#/fr/demos/03-glossary/glossary",
+      "title": "Glossaire — Dictionnaire avec soulignement et infobulle latérale",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/03-glossary/glossary.fr.md",
+      "route": "#/fr/demos/03-glossary/glossary",
+      "title": "Glossaire — Dictionnaire avec soulignement et infobulle latérale",
       "base": "en"
     },
     {

@@ -6,6 +6,7 @@ en/demos/01-base/routing.md
 en/demos/02-config/i18n.md
 en/demos/02-config/ui-custom.md
 en/demos/02-config/view-modes.md
+en/demos/03-glossary/glossary.md
 en/demos/03-plugins/plugins.md
 en/demos/03-ux/ux.md
 en/demos/index.md
@@ -17,6 +18,7 @@ en/fr/demos/01-base/routing.md
 en/fr/demos/02-config/i18n.md
 en/fr/demos/02-config/ui-custom.md
 en/fr/demos/02-config/view-modes.md
+en/fr/demos/03-glossary/glossary.md
 en/fr/demos/03-plugins/plugins.md
 en/fr/demos/03-ux/ux.md
 en/fr/demos/index.md
@@ -30,6 +32,7 @@ fr/demos/01-base/routing.md
 fr/demos/02-config/i18n.md
 fr/demos/02-config/ui-custom.md
 fr/demos/02-config/view-modes.md
+fr/demos/03-glossary/glossary.md
 fr/demos/03-plugins/plugins.md
 fr/demos/03-ux/ux.md
 fr/demos/index.md
@@ -41,6 +44,7 @@ fr/en/demos/01-base/routing.md
 fr/en/demos/02-config/i18n.md
 fr/en/demos/02-config/ui-custom.md
 fr/en/demos/02-config/view-modes.md
+fr/en/demos/03-glossary/glossary.md
 fr/en/demos/03-plugins/plugins.md
 fr/en/demos/03-ux/ux.md
 fr/en/demos/index.md
