@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave — Navigation clavier</title>
+</head>
+<body>
+    <script src="https://unpkg.com/ontowave/dist/ontowave.min.js"></script>
+    <script>
+        window.ontoWaveConfig = {
+            baseUrl: "/demos/03-ux/",
+            locales: ["fr", "en"],
+            defaultLocale: "fr",
+            sources: { fr: "keyboard.fr.md", en: "keyboard.en.md" },
+            enablePrism: true,
+            ux: true
+        };
+    </script>
+    <!-- noscript:seo:start -->
+    <noscript>
+        <h1>Navigation clavier — OntoWave</h1>
+        <p>OntoWave offre des raccourcis clavier pour naviguer dans la documentation :
+        j (défiler vers le bas), k (défiler vers le haut), n (page suivante), p (page précédente).
+        Activez JavaScript pour essayer ces raccourcis.</p>
+    </noscript>
+    <!-- noscript:seo:end -->
+</body>
+</html>

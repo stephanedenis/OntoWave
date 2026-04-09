@@ -20,6 +20,15 @@ Welcome to the OntoWave demonstration gallery. Each page illustrates a specific 
 | [View Modes](02-config/view-modes) | Sidebar, no sidebar, light/dark theme |
 | [Custom UI](02-config/ui-custom) | Title, logo, links, custom CSS |
 
+## Reading Experience (UX)
+
+| Demo | Description |
+|------|-------------|
+| [Themes](03-ux/themes) | Light, sepia, dark modes — CSS variables — persistence |
+| [Keyboard navigation](03-ux/keyboard) | j/k shortcuts (scroll), n/p (page navigation) |
+| [PDF Export](03-ux/print) | Print CSS, UI hiding, URLs in PDF output |
+| [Notes](03-ux/notes) | Persistent per-page notes (localStorage, 600 ms debounce) |
+
 ## Extensibility
 
 | Demo | Description |

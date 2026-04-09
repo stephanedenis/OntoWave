@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave — Notes persistantes</title>
+</head>
+<body>
+    <script src="https://unpkg.com/ontowave/dist/ontowave.min.js"></script>
+    <script>
+        window.ontoWaveConfig = {
+            baseUrl: "/demos/03-ux/",
+            locales: ["fr", "en"],
+            defaultLocale: "fr",
+            sources: { fr: "notes.fr.md", en: "notes.en.md" },
+            enablePrism: true,
+            ux: true
+        };
+    </script>
+    <!-- noscript:seo:start -->
+    <noscript>
+        <h1>Notes persistantes — OntoWave</h1>
+        <p>OntoWave permet de prendre des notes par page, sauvegardées automatiquement dans
+        le localStorage. Le bouton 📝 de la barre UX ouvre le panneau de notes.
+        Activez JavaScript pour utiliser cette fonctionnalité.</p>
+    </noscript>
+    <!-- noscript:seo:end -->
+</body>
+</html>

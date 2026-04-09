@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave — Export PDF / Impression</title>
+</head>
+<body>
+    <script src="https://unpkg.com/ontowave/dist/ontowave.min.js"></script>
+    <script>
+        window.ontoWaveConfig = {
+            baseUrl: "/demos/03-ux/",
+            locales: ["fr", "en"],
+            defaultLocale: "fr",
+            sources: { fr: "print.fr.md", en: "print.en.md" },
+            enablePrism: true,
+            ux: true
+        };
+    </script>
+    <!-- noscript:seo:start -->
+    <noscript>
+        <h1>Export PDF / Impression — OntoWave</h1>
+        <p>OntoWave fournit un CSS d'impression qui masque l'interface de navigation et formate
+        le contenu pour l'impression papier ou l'export PDF via le bouton 🖨 de la barre UX.
+        Activez JavaScript pour tester la fonctionnalité.</p>
+    </noscript>
+    <!-- noscript:seo:end -->
+</body>
+</html>

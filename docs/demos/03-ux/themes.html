@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave — Thèmes de lecture</title>
+</head>
+<body>
+    <script src="https://unpkg.com/ontowave/dist/ontowave.min.js"></script>
+    <script>
+        window.ontoWaveConfig = {
+            baseUrl: "/demos/03-ux/",
+            locales: ["fr", "en"],
+            defaultLocale: "fr",
+            sources: { fr: "themes.fr.md", en: "themes.en.md" },
+            enablePrism: true,
+            ux: true
+        };
+    </script>
+    <!-- noscript:seo:start -->
+    <noscript>
+        <h1>Thèmes de lecture — OntoWave</h1>
+        <p>OntoWave propose trois thèmes de lecture : clair, sépia et sombre.
+        Le thème actif est mémorisé dans le localStorage sous la clé <code>ow-reading-theme</code>.
+        Activez JavaScript pour bénéficier de la démo interactive.</p>
+    </noscript>
+    <!-- noscript:seo:end -->
+</body>
+</html>
