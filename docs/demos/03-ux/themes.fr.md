@@ -1,7 +1,7 @@
 # Thèmes de lecture
 
 OntoWave intègre trois thèmes de lecture activables depuis la barre UX ou par code.
-Le bouton **☀ Thème** dans la barre en haut de page permet de les parcourir.
+Le bouton de thème dans la barre en haut de page permet de les parcourir.
 
 ## Les trois thèmes
 
