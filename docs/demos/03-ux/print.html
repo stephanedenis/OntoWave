@@ -144,8 +144,8 @@ n’importe quel navigateur. Le bouton <strong>🖨</strong> dans la barre UX d�
 </tbody>
 </table>
 <h3>Exemple de code</h3>
-<pre><code class="language-typescript">// Initialiser le module UX
-initUx({
+<pre><code class="language-javascript">// Initialiser le module UX (via l'API exposée par le bundle)
+ontowave.ux.initUx({
   themes: true,
   keyboard: true,
   notes: true,
@@ -290,8 +290,8 @@ The <strong>🖨</strong> button in the UX toolbar triggers <code>window.print()
 </tbody>
 </table>
 <h3>Code Example</h3>
-<pre><code class="language-typescript">// Initialize the UX module
-initUx({
+<pre><code class="language-javascript">// Initialize the UX module (via the API exposed by the bundle)
+ontowave.ux.initUx({
   themes: true,
   keyboard: true,
   notes: true,

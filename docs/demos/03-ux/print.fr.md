@@ -69,9 +69,9 @@ Le contenu ci-dessous illustre la qualité d'impression :
 
 ### Exemple de code
 
-```typescript
-// Initialiser le module UX
-initUx({
+```javascript
+// Initialiser le module UX (via l'API exposée par le bundle)
+ontowave.ux.initUx({
   themes: true,
   keyboard: true,
   notes: true,
