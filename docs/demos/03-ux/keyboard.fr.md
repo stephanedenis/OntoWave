@@ -65,9 +65,11 @@ Ou, pour activer uniquement la navigation clavier :
 ```typescript
 // Installer la navigation clavier manuellement
 const cleanup = ontowave.ux.installKeyboardNav(() => {
+  const links = document.querySelectorAll<HTMLAnchorElement>('footer a[href]');
+
   return {
-    prev: document.querySelector('a[rel="prev"]')?.href,
-    next: document.querySelector('a[rel="next"]')?.href
+    prev: links[0]?.getAttribute('href') ?? undefined,
+    next: links[1]?.getAttribute('href') ?? undefined
   };
 });
 
