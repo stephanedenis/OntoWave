@@ -4,26 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OntoWave — Thèmes de lecture</title>
+    <script>
+        window.__ONTOWAVE_BUNDLE__ = {
+            '/config.json': JSON.stringify({
+                roots: [
+                    { base: 'fr', root: '/demos/03-ux' },
+                    { base: 'en', root: '/demos/03-ux' }
+                ],
+                i18n: { default: 'fr', supported: ['fr', 'en'] },
+                ux: true
+            }),
+            '/nav.yml': '[]',
+            '/sitemap.json': '{"items":[]}',
+            '/search-index.json': '[]'
+        };
+        if (!location.hash || location.hash === '#/' || location.hash === '#') {
+            location.hash = '#fr/themes';
+        }
+    </script>
 </head>
 <body>
-    <script src="https://unpkg.com/ontowave/dist/ontowave.min.js"></script>
-    <script>
-        window.ontoWaveConfig = {
-            baseUrl: "/demos/03-ux/",
-            locales: ["fr", "en"],
-            defaultLocale: "fr",
-            sources: { fr: "themes.fr.md", en: "themes.en.md" },
-            enablePrism: true,
-            ux: true
-        };
-    </script>
-    <!-- noscript:seo:start -->
-    <noscript>
-        <h1>Thèmes de lecture — OntoWave</h1>
-        <p>OntoWave propose trois thèmes de lecture : clair, sépia et sombre.
-        Le thème actif est mémorisé dans le localStorage sous la clé <code>ow-reading-theme</code>.
-        Activez JavaScript pour bénéficier de la démo interactive.</p>
-    </noscript>
-    <!-- noscript:seo:end -->
+    <div id="app"></div>
+    <script src="/ontowave.min.js"></script>
+
+<!-- noscript:seo:start -->
+<noscript>
+  <div lang="fr">
+    <h1>Thèmes de lecture — OntoWave</h1>
+    <p>OntoWave propose trois thèmes de lecture : clair, sépia et sombre.
+    Le thème actif est mémorisé dans le localStorage sous la clé <code>ow-reading-theme</code>.
+    Activez JavaScript pour bénéficier de la démo interactive.</p>
+  </div>
+  <div lang="en">
+    <h1>Reading Themes — OntoWave</h1>
+    <p>OntoWave offers three reading themes: light, sepia and dark.
+    The active theme is saved in localStorage under the key <code>ow-reading-theme</code>.
+    Enable JavaScript to use the interactive demo.</p>
+  </div>
+</noscript>
+<!-- noscript:seo:end -->
 </body>
 </html>

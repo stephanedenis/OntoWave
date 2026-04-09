@@ -4,26 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OntoWave — Navigation clavier</title>
+    <script>
+        window.__ONTOWAVE_BUNDLE__ = {
+            '/config.json': JSON.stringify({
+                roots: [
+                    { base: 'fr', root: '/demos/03-ux' },
+                    { base: 'en', root: '/demos/03-ux' }
+                ],
+                i18n: { default: 'fr', supported: ['fr', 'en'] },
+                ux: true
+            }),
+            '/nav.yml': '[]',
+            '/sitemap.json': '{"items":[]}',
+            '/search-index.json': '[]'
+        };
+        if (!location.hash || location.hash === '#/' || location.hash === '#') {
+            location.hash = '#fr/keyboard';
+        }
+    </script>
 </head>
 <body>
-    <script src="https://unpkg.com/ontowave/dist/ontowave.min.js"></script>
-    <script>
-        window.ontoWaveConfig = {
-            baseUrl: "/demos/03-ux/",
-            locales: ["fr", "en"],
-            defaultLocale: "fr",
-            sources: { fr: "keyboard.fr.md", en: "keyboard.en.md" },
-            enablePrism: true,
-            ux: true
-        };
-    </script>
-    <!-- noscript:seo:start -->
-    <noscript>
-        <h1>Navigation clavier — OntoWave</h1>
-        <p>OntoWave offre des raccourcis clavier pour naviguer dans la documentation :
-        j (défiler vers le bas), k (défiler vers le haut), n (page suivante), p (page précédente).
-        Activez JavaScript pour essayer ces raccourcis.</p>
-    </noscript>
-    <!-- noscript:seo:end -->
+    <div id="app"></div>
+    <script src="/ontowave.min.js"></script>
+
+<!-- noscript:seo:start -->
+<noscript>
+  <div lang="fr">
+    <h1>Navigation clavier — OntoWave</h1>
+    <p>OntoWave offre des raccourcis clavier pour naviguer dans la documentation :
+    j (défiler vers le bas), k (défiler vers le haut), n (page suivante), p (page précédente).
+    Activez JavaScript pour essayer ces raccourcis.</p>
+  </div>
+  <div lang="en">
+    <h1>Keyboard Navigation — OntoWave</h1>
+    <p>OntoWave provides keyboard shortcuts to navigate the documentation:
+    j (scroll down), k (scroll up), n (next page), p (previous page).
+    Enable JavaScript to try these shortcuts.</p>
+  </div>
+</noscript>
+<!-- noscript:seo:end -->
 </body>
 </html>
