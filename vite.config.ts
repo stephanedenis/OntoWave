@@ -9,12 +9,13 @@ export default defineConfig({
     chunkSizeWarningLimit: 2000,
     rollupOptions: {
       output: {
-        manualChunks: {
-          katex: ['katex'],
-          mermaid: ['mermaid'],
-          md: ['markdown-it', 'markdown-it-anchor', 'markdown-it-footnote', 'markdown-it-container', 'highlight.js'],
-          yaml: ['yaml'],
-        } as Record<string, string[]>,
+        manualChunks: (id: string): string | undefined => {
+          if (id.includes('katex')) return 'katex'
+          if (id.includes('mermaid')) return 'mermaid'
+          if (['markdown-it', 'markdown-it-anchor', 'markdown-it-footnote', 'markdown-it-container', 'highlight.js'].some(p => id.includes(p))) return 'md'
+          if (id.includes('yaml')) return 'yaml'
+          return undefined
+        },
       },
     },
   },
