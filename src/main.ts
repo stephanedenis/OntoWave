@@ -9,6 +9,7 @@ import { buildSidebar, buildPrevNext } from './adapters/browser/navigation'
 import { createSearch } from './adapters/browser/search'
 import { renderConfigPage } from './adapters/browser/configPage'
 import { getJsonFromBundle, getTextFromBundle } from './adapters/browser/bundle'
+import { initUx } from './adapters/browser/ux'
 
 ;(async () => {
   // Toggle engine via config.json; fallback v2 par défaut si absent
