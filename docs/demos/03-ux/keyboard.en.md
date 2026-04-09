@@ -65,9 +65,10 @@ Or, to enable keyboard navigation only:
 ```typescript
 // Install keyboard navigation manually
 const cleanup = ontowave.ux.installKeyboardNav(() => {
+  const navLinks = document.querySelectorAll('main > p:last-of-type a');
   return {
-    prev: document.querySelector('a[rel="prev"]')?.href,
-    next: document.querySelector('a[rel="next"]')?.href
+    prev: navLinks[0]?.getAttribute('href') ?? undefined,
+    next: navLinks[1]?.getAttribute('href') ?? undefined
   };
 });
 
