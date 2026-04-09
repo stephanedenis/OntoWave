@@ -14,7 +14,7 @@ export default defineConfig({
           mermaid: ['mermaid'],
           md: ['markdown-it', 'markdown-it-anchor', 'markdown-it-footnote', 'markdown-it-container', 'highlight.js'],
           yaml: ['yaml'],
-        },
+        } as Record<string, string[]>,
       },
     },
   },
