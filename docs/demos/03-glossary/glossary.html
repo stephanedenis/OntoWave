@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave — Démo Glossaire</title>
+    <style>
+      body { margin: 0; font-family: system-ui, sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
+      #layout { display: flex; flex: 1; }
+      #app { flex: 1; padding: 1.5rem 2rem; max-width: 860px; }
+      #sidebar { width: 280px; min-width: 200px; padding: 1rem; border-left: 1px solid #e2e8f0; background: #f8fafc; font-size: 0.875rem; }
+      #sidebar h2 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin: 0 0 0.75rem; }
+      .ow-term { text-decoration: underline dotted; text-underline-offset: 3px; text-decoration-color: #3b82f6; cursor: help; }
+    </style>
+</head>
+<body>
+    <div id="layout">
+        <div id="app">Chargement…</div>
+        <div id="sidebar">
+            <h2>Définitions</h2>
+            <p style="color:#94a3b8;font-size:0.8rem;">Cliquez sur un terme souligné pour voir sa définition ici.</p>
+        </div>
+    </div>
+
+    <!-- Embed configuration so the app finds it without a server-side /config.json -->
+    <script>
+        // Set default hash route before OntoWave loads to avoid the early-return redirect
+        if (!location.hash || location.hash === '#' || location.hash === '#/') {
+            location.hash = '#/fr/glossary';
+        }
+
+        window.__ONTOWAVE_BUNDLE__ = {
+            '/config.json': JSON.stringify({
+                engine: 'v2',
+                roots: [
+                    { base: 'fr', root: '/demos/03-glossary' },
+                    { base: 'en', root: '/demos/03-glossary' }
+                ],
+                glossary: {
+                    enabled: true,
+                    sources: ['/demos/03-glossary/glossary.fr.json'],
+                    matching: {
+                        caseSensitive: false,
+                        wordBoundary: true,
+                        firstOccurrenceOnly: false
+                    },
+                    exclude: {
+                        elements: ['code', 'pre', 'kbd']
+                    },
+                    svg: { inline: false },
+                    ui: {
+                        underlineStyle: 'dotted',
+                        clickBehavior: 'sidebar',
+                        tooltip: {
+                            showOnHover: true,
+                            delay: 300,
+                            maxWidth: 340
+                        }
+                    }
+                }
+            })
+        };
+    </script>
+
+    <!-- Local OntoWave build (updated with glossary feature) -->
+    <script src="/ontowave.min.js"></script>
+
+<!-- noscript:seo:start -->
+<noscript>
+  <div lang="fr">
+<h1>Glossaire — Dictionnaire avec soulignement et infobulle latérale</h1>
+<p>Démonstration de la fonctionnalité glossaire d'OntoWave : soulignement en pointillé des termes définis, infobulle au survol et définition dans le panneau latéral.</p>
+<h2>Termes du glossaire en action</h2>
+<p>L'<strong>UAF</strong> est le standard OMG de modélisation d'architecture d'entreprise. La notion de <strong>Capabilité</strong> désigne l'aptitude mesurable d'une organisation à atteindre un résultat. La <strong>Gouvernance IT</strong> encadre les mécanismes de pilotage des ressources informationnelles.</p>
+  </div>
+  <div lang="en">
+<h1>Glossary — Dictionary with dotted underline and sidebar tooltip</h1>
+<p>Demonstration of OntoWave's glossary feature: dotted underline for defined terms, hover tooltip and sidebar definition panel.</p>
+<h2>Glossary Terms in Action</h2>
+<p><strong>UAF</strong> is the OMG standard for enterprise architecture modelling. The <strong>Capability</strong> concept refers to an organisation's measurable ability to achieve a defined outcome. <strong>IT Governance</strong> encompasses the mechanisms for directing and managing IT resources.</p>
+  </div>
+</noscript>
+<!-- noscript:seo:end -->
+</body>
+</html>

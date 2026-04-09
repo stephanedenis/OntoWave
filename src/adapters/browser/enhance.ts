@@ -1,5 +1,7 @@
 import { getJsonFromBundle } from './bundle'
 import { svgCache, compressSvg } from './svg-cache'
+import { applyGlossary } from './glossary'
+import type { AppConfig } from '../../core/types'
 
 function buildTocFromHtml(html: string): string {
   const h = globalThis.document?.createElement('div')
@@ -133,7 +135,6 @@ async function renderKroki(container: HTMLElement) {
 }
 
 export async function enhancePage(appEl: HTMLElement, html: string) {
-  // TOC
   const toc = buildTocFromHtml(html)
   const tocEl = document.getElementById('toc')
   if (tocEl) tocEl.innerHTML = toc
@@ -192,6 +193,14 @@ export async function enhancePage(appEl: HTMLElement, html: string) {
           appEl.prepend(note)
         }
       }
+    }
+  } catch {}
+
+  // Glossary: annotate terms with dotted underline and sidebar tooltips
+  try {
+    const cfg: AppConfig = getJsonFromBundle('/config.json') || await fetch('/config.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).catch(() => null) || {}
+    if (cfg.glossary?.enabled !== false && cfg.glossary?.sources?.length) {
+      await applyGlossary(appEl, cfg.glossary)
     }
   } catch {}
 }

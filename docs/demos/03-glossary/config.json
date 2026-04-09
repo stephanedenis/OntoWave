@@ -1,0 +1,30 @@
+{
+  "engine": "v2",
+  "roots": [
+    { "base": "/", "root": "/demos/03-glossary" }
+  ],
+  "glossary": {
+    "enabled": true,
+    "sources": ["/demos/03-glossary/glossary.fr.json"],
+    "matching": {
+      "caseSensitive": false,
+      "wordBoundary": true,
+      "firstOccurrenceOnly": false
+    },
+    "exclude": {
+      "elements": ["code", "pre", "kbd"]
+    },
+    "svg": {
+      "inline": false
+    },
+    "ui": {
+      "underlineStyle": "dotted",
+      "clickBehavior": "sidebar",
+      "tooltip": {
+        "showOnHover": true,
+        "delay": 300,
+        "maxWidth": 340
+      }
+    }
+  }
+}
