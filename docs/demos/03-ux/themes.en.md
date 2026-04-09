@@ -1,7 +1,7 @@
 # Reading Themes
 
 OntoWave provides three reading themes switchable from the UX toolbar or via code.
-The **☀ Theme** button at the top of the page cycles through them.
+The theme toggle in the top toolbar cycles through them.
 
 ## The Three Themes
 
