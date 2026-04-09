@@ -13,7 +13,7 @@ Le bouton de thème dans la barre en haut de page permet de les parcourir.
 
 ## Variables CSS exposées
 
-Chaque thème redéfinit les variables CSS suivantes sur `:root` :
+Chaque thème redéfinit les variables CSS suivantes sur `body.ow-theme-*` ; elles sont ensuite héritées par le contenu :
 
 | Variable | Rôle |
 |---|---|
