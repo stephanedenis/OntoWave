@@ -45,6 +45,9 @@ import { getJsonFromBundle, getTextFromBundle } from './adapters/browser/bundle'
   // Brand
   const brand = document.getElementById('brand')
   if (brand && typeof cfg.brand === 'string') brand.textContent = cfg.brand
+  // UX module: init si activé (cfg.ux !== false)
+  const uxOptions = typeof cfg.ux === 'object' ? cfg.ux : {}
+  const ux = cfg.ux !== false ? initUx(uxOptions) : null
   if (engine === 'v2') {
   const app = createApp({
       config: browserConfig,
@@ -200,6 +203,8 @@ import { getJsonFromBundle, getTextFromBundle } from './adapters/browser/bundle'
         }
         if (pn.prev) prefetch(pn.prev)
         if (pn.next) prefetch(pn.next)
+        // UX module: notifier le changement de route
+        if (ux) ux.onRouteChange(location.hash || '#/', pn)
       } },
     })
     await app.start()
