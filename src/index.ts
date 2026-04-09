@@ -14,6 +14,11 @@ import { browserView } from './adapters/browser/view'
 import { createMd as createMdV2 } from './adapters/browser/md'
 import { enhancePage } from './adapters/browser/enhance'
 import { getJsonFromBundle } from './adapters/browser/bundle'
+import { createPluginManager } from './core/plugins'
+import type { OntoWavePlugin, PluginContext, PluginManager } from './core/types'
+
+export { createPluginManager }
+export type { OntoWavePlugin, PluginContext, PluginManager }
 
 /**
  * Initialize OntoWave application

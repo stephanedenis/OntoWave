@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave — Navigation .puml</title>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+    <script>
+        window.ontoWaveConfig = {
+            baseUrl: "/demos/01-base/",
+            locales: ["fr", "en"],
+            defaultLocale: "fr",
+            sources: {
+                fr: "puml-navigation.fr.md",
+                en: "puml-navigation.en.md"
+            },
+            enablePlantUML: true,
+            enablePrism: true
+        };
+    </script>
+
+<!-- noscript:seo:start -->
+<noscript>
+  <div lang="fr">
+<h1>Navigation vers fichiers .puml</h1>
+<p>Démonstration de la navigation directe vers des fichiers PlantUML depuis une page Markdown.</p>
+<h2>Principe</h2>
+<p>Quand un lien Markdown pointe vers un fichier <code>.puml</code>, OntoWave :</p>
+<ol>
+<li>Intercepte le clic sur le lien</li>
+<li>Charge le fichier <code>.puml</code> depuis le serveur</li>
+<li>L'envoie à Kroki pour le rendu SVG</li>
+<li>Affiche le diagramme dans l'interface OntoWave</li>
+</ol>
+<h2>Exemple</h2>
+<p>Consultez le <a href="architecture.puml">diagramme d'architecture</a> pour voir le fonctionnement.</p>
+<h2>Syntaxe Markdown</h2>
+<pre><code class="language-markdown">Consultez le [diagramme d'architecture](architecture.puml).
+</code></pre>
+<h2>Hyperliens dans les diagrammes</h2>
+<p>Les liens définis dans un fichier <code>.puml</code> avec la syntaxe <code>[[url]]</code> restent cliquables dans le SVG rendu.</p>
+<h2>Limite connue</h2>
+<ul>
+<li>Le rendu SVG nécessite une connexion Internet (appel à Kroki.io)</li>
+<li>Les fichiers <code>.puml</code> très grands peuvent dépasser les limites du serveur Kroki</li>
+</ul>
+  </div>
+  <div lang="en">
+<h1>Navigation to .puml files</h1>
+<p>Demonstration of direct navigation to PlantUML files from a Markdown page.</p>
+<h2>Principle</h2>
+<p>When a Markdown link points to a <code>.puml</code> file, OntoWave:</p>
+<ol>
+<li>Intercepts the click on the link</li>
+<li>Fetches the <code>.puml</code> file from the server</li>
+<li>Sends it to Kroki for SVG rendering</li>
+<li>Displays the diagram inside the OntoWave interface</li>
+</ol>
+<h2>Example</h2>
+<p>Consult the <a href="architecture.puml">architecture diagram</a> to see how it works.</p>
+<h2>Markdown Syntax</h2>
+<pre><code class="language-markdown">Consult the [architecture diagram](architecture.puml).
+</code></pre>
+<h2>Hyperlinks in diagrams</h2>
+<p>Links defined in a <code>.puml</code> file using the <code>[[url]]</code> syntax remain clickable in the rendered SVG.</p>
+<h2>Known Limitations</h2>
+<ul>
+<li>SVG rendering requires an Internet connection (Kroki.io API call)</li>
+<li>Very large <code>.puml</code> files may exceed Kroki server limits</li>
+</ul>
+  </div>
+</noscript>
+<!-- noscript:seo:end -->
+</body>
+</html>

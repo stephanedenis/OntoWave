@@ -9,6 +9,7 @@ Bienvenue dans la galerie de démonstrations d'OntoWave. Chaque page illustre un
 | [Markdown](01-base/markdown) | Rendu Markdown : tableaux, listes, code, formatage |
 | [Mermaid](01-base/mermaid) | Diagrammes Mermaid : flux, séquences, graphes |
 | [PlantUML](01-base/plantuml) | Diagrammes PlantUML : classes, activités |
+| [Navigation .puml](01-base/puml-navigation) | Navigation vers fichiers .puml depuis Markdown |
 | [Routing](01-base/routing) | Navigation par hash URL |
 
 ## Configuration
@@ -18,6 +19,12 @@ Bienvenue dans la galerie de démonstrations d'OntoWave. Chaque page illustre un
 | [i18n](02-config/i18n) | Internationalisation et bascule de langue |
 | [Modes d'affichage](02-config/view-modes) | Sidebar, sans sidebar, thème clair/sombre |
 | [UI personnalisée](02-config/ui-custom) | Titre, logo, liens, CSS personnalisé |
+
+## Extensibilité
+
+| Démo | Description |
+|------|-------------|
+| [Plugins](03-plugins/plugins) | Architecture de plugins : hooks, événements, exemples |
 
 ## À propos
 

@@ -82,3 +82,41 @@ export interface PostRenderEnhancer {
 export interface MarkdownRenderer {
   render(_mdSrc: string): string
 }
+
+// --- Plugin API ---
+
+export interface PluginContext {
+  /** Configuration de l'application (disponible après démarrage) */
+  readonly config: AppConfig
+  /** Navigue vers un chemin de route */
+  navigate(_path: string): void
+}
+
+export interface OntoWavePlugin {
+  /** Nom unique du plugin */
+  readonly name: string
+  /** Version du plugin (optionnelle) */
+  readonly version?: string
+
+  /** Appelé une fois au démarrage de l'application */
+  onStart?(_ctx: PluginContext): void | Promise<void>
+  /** Appelé à l'arrêt de l'application */
+  onStop?(): void | Promise<void>
+
+  /** Transforme le source Markdown avant le rendu */
+  beforeRender?(_md: string, _route: string): string | Promise<string>
+  /** Appelé après que le HTML est rendu et injecté dans la page */
+  afterRender?(_html: string, _route: string): void | Promise<void>
+
+  /** Appelé à chaque changement de route */
+  onRouteChange?(_route: string): void | Promise<void>
+}
+
+export interface PluginManager {
+  /** Enregistre un plugin */
+  register(_plugin: OntoWavePlugin): void
+  /** Interface fluent : enregistre et retourne le manager */
+  use(_plugin: OntoWavePlugin): PluginManager
+  /** Retourne la liste des plugins enregistrés */
+  getPlugins(): readonly OntoWavePlugin[]
+}

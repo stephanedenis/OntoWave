@@ -4,22 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OntoWave — Démo PlantUML</title>
+    <script>
+        window.__ONTOWAVE_BUNDLE__ = {
+            '/config.json': JSON.stringify({
+                roots: [
+                    { base: 'fr', root: '/demos/01-base' },
+                    { base: 'en', root: '/demos/01-base' }
+                ],
+                i18n: { default: 'fr', supported: ['fr', 'en'] }
+            }),
+            '/nav.yml': '[]',
+            '/sitemap.json': '{"items":[]}',
+            '/search-index.json': '[]'
+        };
+        if (!location.hash || location.hash === '#/' || location.hash === '#') {
+            location.hash = '#fr/plantuml';
+        }
+    </script>
 </head>
 <body>
-    <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
-    <script>
-        window.ontoWaveConfig = {
-            baseUrl: "/demos/01-base/",
-            locales: ["fr", "en"],
-            defaultLocale: "fr",
-            sources: {
-                fr: "plantuml.fr.md",
-                en: "plantuml.en.md"
-            },
-            enablePlantUML: true,
-            enablePrism: true
-        };
-    </script>
+    <div id="app"></div>
+    <script src="/ontowave.min.js"></script>
 
 <!-- noscript:seo:start -->
 <noscript>
@@ -63,9 +68,16 @@ endif
 stop
 @enduml
 </code></pre>
+<h2>Optimisations de rendu</h2>
+<p>Les diagrammes PlantUML bénéficient de trois optimisations :</p>
+<ul>
+<li><strong>Lazy loading</strong> : les diagrammes hors viewport ne sont chargés que lorsqu’ils deviennent visibles (pré-chargement à 200 px de la limite du viewport), via <code>IntersectionObserver</code>.</li>
+<li><strong>Cache intelligent</strong> : les SVG générés sont mis en cache en mémoire et dans <code>sessionStorage</code> avec un TTL de 30 minutes, évitant les requêtes réseau répétées lors de la navigation.</li>
+<li><strong>Compression SVG</strong> : les SVG reçus sont compressés (suppression des espaces superflus entre balises) avant stockage.</li>
+</ul>
 <h2>Limite connue</h2>
 <ul>
-<li>PlantUML est rendu côté serveur via <code>plantuml.com</code> — les diagrammes nécessitent Internet</li>
+<li>PlantUML est rendu côté serveur via <a href="http://Kroki.io">Kroki.io</a> — les diagrammes nécessitent Internet</li>
 <li>Les longs diagrammes peuvent dépasser la limite d’URL de PlantUML</li>
 </ul>
   </div>
@@ -109,9 +121,16 @@ endif
 stop
 @enduml
 </code></pre>
+<h2>Rendering Optimisations</h2>
+<p>PlantUML diagrams benefit from three optimisations:</p>
+<ul>
+<li><strong>Lazy loading</strong>: diagrams outside the viewport are only fetched when they become visible (pre-loading 200 px before the viewport edge), using <code>IntersectionObserver</code>.</li>
+<li><strong>Smart cache</strong>: generated SVGs are cached in memory and in <code>sessionStorage</code> with a 30-minute TTL, avoiding repeated network requests during navigation.</li>
+<li><strong>SVG compression</strong>: received SVGs are compressed (removal of redundant whitespace between tags) before storage.</li>
+</ul>
 <h2>Known Limitations</h2>
 <ul>
-<li>PlantUML is rendered server-side via <code>plantuml.com</code> — diagrams require Internet access</li>
+<li>PlantUML is rendered server-side via <a href="http://Kroki.io">Kroki.io</a> — diagrams require Internet access</li>
 <li>Long diagrams may exceed PlantUML’s URL length limit</li>
 </ul>
   </div>

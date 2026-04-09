@@ -8,7 +8,8 @@ import { enhancePage } from './adapters/browser/enhance'
 import { buildSidebar, buildPrevNext } from './adapters/browser/navigation'
 import { createSearch } from './adapters/browser/search'
 import { renderConfigPage } from './adapters/browser/configPage'
-import { getJsonFromBundle } from './adapters/browser/bundle'
+import { getJsonFromBundle, getTextFromBundle } from './adapters/browser/bundle'
+import { initUx } from './adapters/browser/ux'
 
 ;(async () => {
   // Toggle engine via config.json; fallback v2 par défaut si absent
@@ -34,14 +35,20 @@ import { getJsonFromBundle } from './adapters/browser/bundle'
   // i18n: détecter la langue préférée et rediriger vers la base correspondante si on est à la racine
   try {
     if (location.hash === '' || location.hash === '#/' || location.hash === '#') {
-      // Redirection forcée vers index.md
-      location.hash = '#index.md'
+      // Construire la redirection initiale depuis i18n.default ou le premier root
+      const defaultLang = cfg.i18n?.default
+        || (cfg.roots?.[0]?.base && cfg.roots[0].base !== '/' ? cfg.roots[0].base : null)
+        || null
+      location.hash = defaultLang ? `#${defaultLang}/index` : '#/index'
       return; // Sortir pour laisser l'application se recharger avec le nouveau hash
     }
   } catch {}
   // Brand
   const brand = document.getElementById('brand')
   if (brand && typeof cfg.brand === 'string') brand.textContent = cfg.brand
+  // UX module: init si activé (cfg.ux !== false)
+  const uxOptions = typeof cfg.ux === 'object' ? cfg.ux : {}
+  const ux = cfg.ux !== false ? initUx(uxOptions) : null
   if (engine === 'v2') {
   const app = createApp({
       config: browserConfig,
@@ -197,6 +204,8 @@ import { getJsonFromBundle } from './adapters/browser/bundle'
         }
         if (pn.prev) prefetch(pn.prev)
         if (pn.next) prefetch(pn.next)
+        // UX module: notifier le changement de route
+        if (ux) ux.onRouteChange(location.hash || '#/', pn)
       } },
     })
     await app.start()
@@ -221,6 +230,9 @@ import { getJsonFromBundle } from './adapters/browser/bundle'
       // Marqueur ⚠️ dans le menu si éléments auxiliaires manquants
       try {
         const check = async (url: string) => {
+          // Check bundle first to avoid unnecessary fetches
+          if (getJsonFromBundle(url) !== null) return true
+          if (getTextFromBundle(url) !== null) return true
           try { const r = await fetch(url, { cache: 'no-cache' }); return r.ok } catch { return false }
         }
         const hasNav = await check('/nav.yml')

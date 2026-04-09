@@ -4,21 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OntoWave — Galerie de démos</title>
+    <script>
+        window.__ONTOWAVE_BUNDLE__ = {
+            '/config.json': JSON.stringify({
+                roots: [
+                    { base: 'fr', root: '/demos' },
+                    { base: 'en', root: '/demos' }
+                ],
+                i18n: { default: 'fr', supported: ['fr', 'en'] }
+            }),
+            '/nav.yml': '[]',
+            '/sitemap.json': '{"items":[]}',
+            '/search-index.json': '[]'
+        };
+        if (!location.hash || location.hash === '#/' || location.hash === '#') {
+            location.hash = '#fr/index';
+        }
+    </script>
 </head>
 <body>
-    <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
-    <script>
-        window.ontoWaveConfig = {
-            baseUrl: "/demos/",
-            locales: ["fr", "en"],
-            defaultLocale: "fr",
-            sources: {
-                fr: "index.fr.md",
-                en: "index.en.md"
-            },
-            enablePrism: true
-        };
-    </script>
+    <div id="app"></div>
+    <script src="/ontowave.min.js"></script>
 
 <!-- noscript:seo:start -->
 <noscript>
@@ -72,6 +78,21 @@
 <tr>
 <td><a href="02-config/ui-custom">UI personnalisée</a></td>
 <td>Titre, logo, liens, CSS personnalisé</td>
+</tr>
+</tbody>
+</table>
+<h2>Extensibilité</h2>
+<table>
+<thead>
+<tr>
+<th>Démo</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="03-plugins/plugins">Plugins</a></td>
+<td>Architecture de plugins : hooks, événements, exemples</td>
 </tr>
 </tbody>
 </table>
@@ -134,6 +155,21 @@
 <tr>
 <td><a href="02-config/ui-custom">Custom UI</a></td>
 <td>Title, logo, links, custom CSS</td>
+</tr>
+</tbody>
+</table>
+<h2>Extensibility</h2>
+<table>
+<thead>
+<tr>
+<th>Demo</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="03-plugins/plugins">Plugins</a></td>
+<td>Plugin architecture: hooks, events, examples</td>
 </tr>
 </tbody>
 </table>

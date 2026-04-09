@@ -5,30 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OntoWave - Micro-application pour sites statiques</title>
     <meta name="description" content="Micro-application JavaScript légère pour sites statiques avec support multilingue, Mermaid, PlantUML et Markdown">
+  <script type="module" crossorigin src="/assets/index-Jd2pdi6O.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/rolldown-runtime-FhOqtrmT.js">
+  <link rel="modulepreload" crossorigin href="/assets/mermaid-D-rVCKi2.js">
+  <link rel="modulepreload" crossorigin href="/assets/md-DM8L1vVv.js">
+  <link rel="modulepreload" crossorigin href="/assets/katex-38ZsmK9X.js">
 </head>
 <body>
-    <!-- OntoWave CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
-    
-    <!-- Configuration OntoWave -->
-    <script>
-        window.ontoWaveConfig = {
-            locales: ["fr", "en"],
-            defaultLocale: "fr",
-            sources: {
-                fr: "index.fr.md",
-                en: "index.en.md"
-            },
-            ui: {
-                showMenu: true,
-                showConfiguration: true
-            },
-            enablePrism: true,
-            enableMermaid: true,
-            enablePlantUML: true,
-            enableSearch: true
-        };
-    </script>
+    <div id="app"></div>
 
 <!-- noscript:seo:start -->
 <noscript>
