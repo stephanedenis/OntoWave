@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-04-09T12:29:06.836Z",
-  "count": 44,
+  "generatedAt": "2026-04-09T12:33:18.199Z",
+  "count": 48,
   "i18n": {
     "default": "fr",
     "supported": [
@@ -46,6 +46,18 @@
       "base": "en"
     },
     {
+      "path": "docs/demos/01-base/puml-navigation.en.md",
+      "route": "#/en/demos/01-base/puml-navigation",
+      "title": "Navigation to .puml files",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/01-base/puml-navigation.en.md",
+      "route": "#/en/demos/01-base/puml-navigation",
+      "title": "Navigation to .puml files",
+      "base": "en"
+    },
+    {
       "path": "docs/demos/01-base/routing.en.md",
       "route": "#/en/demos/01-base/routing",
       "title": "Hash URL Routing",
@@ -175,6 +187,18 @@
       "path": "docs/demos/01-base/plantuml.fr.md",
       "route": "#/fr/demos/01-base/plantuml",
       "title": "Diagrammes PlantUML",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/01-base/puml-navigation.fr.md",
+      "route": "#/fr/demos/01-base/puml-navigation",
+      "title": "Navigation vers fichiers .puml",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/01-base/puml-navigation.fr.md",
+      "route": "#/fr/demos/01-base/puml-navigation",
+      "title": "Navigation vers fichiers .puml",
       "base": "en"
     },
     {

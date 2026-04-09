@@ -1,6 +1,7 @@
 en/demos/01-base/markdown.md
 en/demos/01-base/mermaid.md
 en/demos/01-base/plantuml.md
+en/demos/01-base/puml-navigation.md
 en/demos/01-base/routing.md
 en/demos/02-config/i18n.md
 en/demos/02-config/ui-custom.md
@@ -11,6 +12,7 @@ en/demos/index.md
 en/fr/demos/01-base/markdown.md
 en/fr/demos/01-base/mermaid.md
 en/fr/demos/01-base/plantuml.md
+en/fr/demos/01-base/puml-navigation.md
 en/fr/demos/01-base/routing.md
 en/fr/demos/02-config/i18n.md
 en/fr/demos/02-config/ui-custom.md
@@ -23,6 +25,7 @@ en/index.md
 fr/demos/01-base/markdown.md
 fr/demos/01-base/mermaid.md
 fr/demos/01-base/plantuml.md
+fr/demos/01-base/puml-navigation.md
 fr/demos/01-base/routing.md
 fr/demos/02-config/i18n.md
 fr/demos/02-config/ui-custom.md
@@ -33,6 +36,7 @@ fr/demos/index.md
 fr/en/demos/01-base/markdown.md
 fr/en/demos/01-base/mermaid.md
 fr/en/demos/01-base/plantuml.md
+fr/en/demos/01-base/puml-navigation.md
 fr/en/demos/01-base/routing.md
 fr/en/demos/02-config/i18n.md
 fr/en/demos/02-config/ui-custom.md
