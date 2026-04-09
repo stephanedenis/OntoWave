@@ -13,7 +13,7 @@ The theme toggle in the top toolbar cycles through them.
 
 ## Exposed CSS Variables
 
-Each theme redefines the following CSS variables on `:root`:
+Each theme redefines the following CSS variables on `body.ow-theme-*`, where they are then inherited by the content:
 
 | Variable | Purpose |
 |---|---|
