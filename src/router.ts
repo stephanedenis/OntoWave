@@ -34,6 +34,24 @@ export function onRouteChange(cb: (_r: Route) => void) {
         location.hash = '#/' + out.join('/')
       }
     }
+    // Liens internes vers .puml → route hash avec extension préservée
+    if (href.endsWith('.puml') && !/^(https?:)?\/\//.test(href)) {
+      e.preventDefault()
+      const clean = href.replace(/^\.\//,'')
+      if (clean.startsWith('/')) {
+        location.hash = '#' + clean
+      } else {
+        const curr = location.hash.replace(/^#/, '') || '/'
+        const dirParts = curr.split('/').filter(Boolean).slice(0, -1)
+        const out: string[] = []
+        for (const s of [...dirParts, ...clean.split('/')]) {
+          if (s === '' || s === '.') continue
+          if (s === '..') { out.pop(); continue }
+          out.push(s)
+        }
+        location.hash = '#/' + out.join('/')
+      }
+    }
     // Liens internes relatifs sans protocole et sans .md → laisser au navigateur
   }, true)
   return () => window.removeEventListener('hashchange', handler)

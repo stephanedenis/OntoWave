@@ -10,7 +10,7 @@ import type {
   ViewRenderer,
   PostRenderEnhancer,
 } from './core/types'
-import { resolveCandidates as defaultResolve } from './core/logic'
+import { resolveCandidates as defaultResolve, resolvePumlCandidates } from './core/logic'
 
 async function loadMarkdown(roots: AppConfig['roots'], path: string, content: ContentService, resolver: ContentPathStrategy): Promise<string> {
   // Ignore any query string / directives when resolving content path
@@ -23,6 +23,18 @@ async function loadMarkdown(roots: AppConfig['roots'], path: string, content: Co
     } catch {}
   }
   return `# 404 — Not found\n\nAucun document pour \`${path}\``
+}
+
+async function loadPuml(roots: AppConfig['roots'], path: string, content: ContentService): Promise<string | null> {
+  const cleanPath = path.split('?')[0]
+  const cands = resolvePumlCandidates(roots, cleanPath)
+  for (const url of cands) {
+    try {
+      const txt = await content.fetchText(url)
+      if (txt != null) return txt
+    } catch {}
+  }
+  return null
 }
 
 export function createApp(deps: {
@@ -46,6 +58,25 @@ export function createApp(deps: {
     const [routePath, queryStr] = route.split('?')
     const params = new URLSearchParams(queryStr || '')
     const viewMode = params.get('view') || ''
+
+    // Handle .puml routes: fetch the file and render as a PlantUML diagram
+    if (routePath.endsWith('.puml')) {
+      const pumlSrc = await loadPuml(cfg.roots, routePath, deps.content)
+      const fileName = routePath.split('/').pop() || 'diagram.puml'
+      const title = fileName.replace(/\.puml$/i, '')
+      if (pumlSrc != null) {
+        const mdSrc = `\`\`\`plantuml\n${pumlSrc}\n\`\`\``
+        const html = deps.md.render(mdSrc)
+        deps.view.setHtml(html)
+        deps.view.setTitle(`${title} — OntoWave`)
+        await deps.enhance?.afterRender(html, route)
+      } else {
+        deps.view.setHtml(`<p>Fichier introuvable : <code>${routePath}</code></p>`)
+        deps.view.setTitle(`${fileName} — OntoWave`)
+      }
+      return
+    }
+
     let mdSrc = await loadMarkdown(cfg.roots, routePath, deps.content, resolver)
 
     // Plugin beforeRender hooks
