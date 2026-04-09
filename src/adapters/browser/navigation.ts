@@ -67,10 +67,10 @@ export async function buildSidebar(): Promise<string> {
 
 export async function buildPrevNext(current: string): Promise<{ prev?: string; next?: string }> {
   try {
-    const res = await fetch('/sitemap.json', { cache: 'no-cache' })
-    if (!res.ok) return {}
-    const data = await res.json() as { items: SitemapItem[] }
-    const items = data.items || []
+    const bundleData = getJsonFromBundle('/sitemap.json')
+    const data = bundleData || await fetch('/sitemap.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).catch(() => null)
+    if (!data) return {}
+    const items = (data.items || []) as SitemapItem[]
     const idx = items.findIndex(i => i.route.replace('#','') === current.replace('#',''))
     if (idx === -1) return {}
     const prev = items[idx - 1]?.route

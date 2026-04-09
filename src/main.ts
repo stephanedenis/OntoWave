@@ -114,9 +114,16 @@ import { initUx } from './adapters/browser/ux'
           }
           const applyMode = async () => {
             const mode = getMode()
+            const wasInOtherMode = document.body.classList.contains('mode-md') || document.body.classList.contains('mode-split')
               try { document.body.classList.remove('mode-html','mode-md','mode-split') } catch {}
               try { document.body.classList.add(`mode-${mode === 'sbs' ? 'split' : mode}`) } catch {}
-            if (mode === 'html') { appEl.innerHTML = cache.lastHtml; return }
+            if (mode === 'html') {
+              // Only restore innerHTML when switching back from md/split mode.
+              // On initial render enhancePage has already set the correct content
+              // with live event listeners; overwriting with innerHTML would strip them.
+              if (wasInOtherMode) appEl.innerHTML = cache.lastHtml
+              return
+            }
             if (!cache.lastMd) await fetchMarkdown()
             const raw = cache.lastMd ? escapeHtml(cache.lastMd) : '*Markdown introuvable*'
             if (mode === 'md') {
@@ -194,7 +201,8 @@ import { initUx } from './adapters/browser/ux'
         // Prefetch prev/next pour accélérer la nav
         const prefetch = async (href: string) => {
           try {
-            const resp = await fetch('/sitemap.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => null)
+            const bundleData = getJsonFromBundle('/sitemap.json')
+            const resp = bundleData || await fetch('/sitemap.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).catch(() => null)
             const items = resp?.items || []
             const match = items.find((it: any) => it.route === href)
             if (!match) return

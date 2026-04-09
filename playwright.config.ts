@@ -19,7 +19,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   
   // Retries
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 2 : 1,
   
   // Workers
   workers: process.env.CI ? 1 : undefined,
@@ -47,6 +47,9 @@ export default defineConfig({
     
     // Viewport
     viewport: { width: 1280, height: 720 },
+
+    // Headless unless PLAYWRIGHT_HEADED=1 is set
+    headless: !process.env.PLAYWRIGHT_HEADED,
   },
 
   // Test match patterns

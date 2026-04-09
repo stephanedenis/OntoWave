@@ -9,6 +9,8 @@
  * - Prefetch Markov : préchargement intelligent basé sur l'historique de navigation
  */
 
+import { getJsonFromBundle } from './bundle'
+
 export type ReadingTheme = 'light' | 'sepia' | 'dark'
 
 const LS_THEME_KEY = 'ow-reading-theme'
@@ -106,10 +108,10 @@ let sitemapCache: Array<{ route: string; path?: string }> | null = null
 async function getSitemapItems(): Promise<Array<{ route: string; path?: string }>> {
   if (sitemapCache !== null) return sitemapCache
   try {
-    const resp = await fetch('/sitemap.json', { cache: 'default' })
-    if (!resp.ok) return []
-    const data = await resp.json() as { items: Array<{ route: string; path?: string }> }
-    sitemapCache = data.items || []
+    const bundleData = getJsonFromBundle('/sitemap.json')
+    const data = bundleData || await fetch('/sitemap.json', { cache: 'default' }).then(r => r.ok ? r.json() : null).catch(() => null)
+    if (!data) return []
+    sitemapCache = (data as { items: Array<{ route: string; path?: string }> }).items || []
     return sitemapCache
   } catch {
     return []
