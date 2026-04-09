@@ -89,10 +89,13 @@ Here is some content to observe theme differences:
 Inline code example: `const color = getComputedStyle(document.body).getPropertyValue('--ow-bg');`
 
 ```typescript
-// Listen for theme changes
-document.body.addEventListener('ow:theme-change', (e) => {
-  console.log('New theme:', e.detail.theme);
-});
+// Read the current theme from the UX API
+const theme = ontowave.ux.loadSavedTheme();
+console.log('Current theme:', theme);
+
+// Or inspect the class applied on <body>
+const isDark = document.body.classList.contains('ow-theme-dark');
+console.log('Dark theme enabled:', isDark);
 ```
 
 ---
