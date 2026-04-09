@@ -89,10 +89,11 @@ Voici du contenu pour observer les différences de thèmes :
 Un exemple de code inline : `const color = getComputedStyle(document.body).getPropertyValue('--ow-bg');`
 
 ```typescript
-// Écouter le changement de thème
-document.body.addEventListener('ow:theme-change', (e) => {
-  console.log('Nouveau thème :', e.detail.theme);
-});
+// Appliquer un thème puis lire le thème actuellement sauvegardé
+ontowave.ux.applyTheme('sepia');
+
+const currentTheme = ontowave.ux.loadSavedTheme();
+console.log('Thème actif :', currentTheme);
 ```
 
 ---
