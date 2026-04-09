@@ -77,7 +77,6 @@ export function createApp(deps: {
       return
     }
 
-    const mdSrc = await loadMarkdown(cfg.roots, routePath, deps.content, resolver)
     let mdSrc = await loadMarkdown(cfg.roots, routePath, deps.content, resolver)
 
     // Plugin beforeRender hooks
