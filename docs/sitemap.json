@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-04-08T17:44:44.329Z",
-  "count": 36,
+  "generatedAt": "2026-04-09T12:29:06.836Z",
+  "count": 44,
   "i18n": {
     "default": "fr",
     "supported": [
@@ -94,6 +94,30 @@
       "base": "en"
     },
     {
+      "path": "docs/demos/03-plugins/plugins.en.md",
+      "route": "#/en/demos/03-plugins/plugins",
+      "title": "OntoWave Plugin System",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/03-plugins/plugins.en.md",
+      "route": "#/en/demos/03-plugins/plugins",
+      "title": "OntoWave Plugin System",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/03-ux/ux.en.md",
+      "route": "#/en/demos/03-ux/ux",
+      "title": "UX Features — Reading and Navigation",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/03-ux/ux.en.md",
+      "route": "#/en/demos/03-ux/ux",
+      "title": "UX Features — Reading and Navigation",
+      "base": "en"
+    },
+    {
       "path": "docs/demos/index.en.md",
       "route": "#/en/demos/index",
       "title": "OntoWave Demo Gallery",
@@ -199,6 +223,30 @@
       "path": "docs/demos/02-config/view-modes.fr.md",
       "route": "#/fr/demos/02-config/view-modes",
       "title": "Modes d'affichage",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/03-plugins/plugins.fr.md",
+      "route": "#/fr/demos/03-plugins/plugins",
+      "title": "Système de plugins OntoWave",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/03-plugins/plugins.fr.md",
+      "route": "#/fr/demos/03-plugins/plugins",
+      "title": "Système de plugins OntoWave",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/03-ux/ux.fr.md",
+      "route": "#/fr/demos/03-ux/ux",
+      "title": "Fonctionnalités UX — Lecture et Navigation",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/03-ux/ux.fr.md",
+      "route": "#/fr/demos/03-ux/ux",
+      "title": "Fonctionnalités UX — Lecture et Navigation",
       "base": "en"
     },
     {
