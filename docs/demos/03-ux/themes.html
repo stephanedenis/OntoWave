@@ -30,16 +30,240 @@
 <!-- noscript:seo:start -->
 <noscript>
   <div lang="fr">
-    <h1>Thèmes de lecture — OntoWave</h1>
-    <p>OntoWave propose trois thèmes de lecture : clair, sépia et sombre.
-    Le thème actif est mémorisé dans le localStorage sous la clé <code>ow-reading-theme</code>.
-    Activez JavaScript pour bénéficier de la démo interactive.</p>
+<h1>Thèmes de lecture</h1>
+<p>OntoWave intègre trois thèmes de lecture activables depuis la barre UX ou par code.
+Le bouton <strong>☀ Thème</strong> dans la barre en haut de page permet de les parcourir.</p>
+<h2>Les trois thèmes</h2>
+<table>
+<thead>
+<tr>
+<th>Thème</th>
+<th>Classe CSS sur <code>&lt;body&gt;</code></th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Clair</strong></td>
+<td><code>ow-theme-light</code></td>
+<td>Lecture en pleine lumière (défaut)</td>
+</tr>
+<tr>
+<td><strong>Sépia</strong></td>
+<td><code>ow-theme-sepia</code></td>
+<td>Lumière tamisée, teinte chaleureuse</td>
+</tr>
+<tr>
+<td><strong>Sombre</strong></td>
+<td><code>ow-theme-dark</code></td>
+<td>Environnement sombre, faible luminosité</td>
+</tr>
+</tbody>
+</table>
+<h2>Variables CSS exposées</h2>
+<p>Chaque thème redéfinit les variables CSS suivantes sur <code>:root</code> :</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Rôle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--ow-bg</code></td>
+<td>Couleur de fond principal</td>
+</tr>
+<tr>
+<td><code>--ow-text</code></td>
+<td>Couleur du texte courant</td>
+</tr>
+<tr>
+<td><code>--ow-link</code></td>
+<td>Couleur des liens hypertexte</td>
+</tr>
+<tr>
+<td><code>--ow-code-bg</code></td>
+<td>Fond des blocs de code</td>
+</tr>
+<tr>
+<td><code>--ow-border</code></td>
+<td>Couleur des bordures et séparateurs</td>
+</tr>
+<tr>
+<td><code>--ow-sidebar-bg</code></td>
+<td>Fond de la barre latérale</td>
+</tr>
+</tbody>
+</table>
+<p>Ces variables peuvent être surchargées dans votre CSS pour personnaliser les thèmes.</p>
+<h2>Persistance</h2>
+<p>Le thème sélectionné est sauvegardé dans le <code>localStorage</code> sous la clé <code>ow-reading-theme</code>.
+Il est restauré automatiquement à chaque visite.</p>
+<pre><code class="language-javascript">// Valeurs possibles
+localStorage.getItem('ow-reading-theme'); // 'light' | 'sepia' | 'dark'
+</code></pre>
+<h2>Cycle de thèmes</h2>
+<p>La rotation s’effectue dans cet ordre : <strong>clair → sépia → sombre → clair</strong>.</p>
+<h2>API JavaScript</h2>
+<pre><code class="language-javascript">// Appliquer un thème spécifique
+ontowave.ux.applyTheme('sepia');
+
+// Lire le thème actif sauvegardé
+const theme = ontowave.ux.loadSavedTheme(); // 'light' | 'sepia' | 'dark'
+
+// Passer au thème suivant
+const next = ontowave.ux.cycleTheme(); // retourne le nouveau thème
+</code></pre>
+<h2>Configuration</h2>
+<pre><code class="language-json">{
+  &quot;ux&quot;: true
+}
+</code></pre>
+<p>Ou, pour activer uniquement les thèmes :</p>
+<pre><code class="language-json">{
+  &quot;ux&quot;: { &quot;themes&quot;: true }
+}
+</code></pre>
+<h2>Personnalisation CSS</h2>
+<pre><code class="language-css">/* Surcharger la couleur de fond du thème sombre */
+body.ow-theme-dark {
+  --ow-bg: #0d0d0d;
+  --ow-text: #e0e0e0;
+}
+</code></pre>
+<h2>Exemple de rendu</h2>
+<p>Voici du contenu pour observer les différences de thèmes :</p>
+<blockquote>
+<p><strong>Sépia</strong> reproduit l’aspect d’une feuille de papier légèrement jaunie.
+C’est le thème recommandé pour les longues sessions de lecture.</p>
+</blockquote>
+<p>Un exemple de code inline : <code>const color = getComputedStyle(document.body).getPropertyValue('--ow-bg');</code></p>
+<pre><code class="language-typescript">// Écouter le changement de thème
+document.body.addEventListener('ow:theme-change', (e) =&gt; {
+  console.log('Nouveau thème :', e.detail.theme);
+});
+</code></pre>
+<hr>
+<p>→ Démonstration suivante : <a href="keyboard">Navigation clavier</a></p>
   </div>
   <div lang="en">
-    <h1>Reading Themes — OntoWave</h1>
-    <p>OntoWave offers three reading themes: light, sepia and dark.
-    The active theme is saved in localStorage under the key <code>ow-reading-theme</code>.
-    Enable JavaScript to use the interactive demo.</p>
+<h1>Reading Themes</h1>
+<p>OntoWave provides three reading themes switchable from the UX toolbar or via code.
+The <strong>☀ Theme</strong> button at the top of the page cycles through them.</p>
+<h2>The Three Themes</h2>
+<table>
+<thead>
+<tr>
+<th>Theme</th>
+<th>CSS class on <code>&lt;body&gt;</code></th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Light</strong></td>
+<td><code>ow-theme-light</code></td>
+<td>Bright environment (default)</td>
+</tr>
+<tr>
+<td><strong>Sepia</strong></td>
+<td><code>ow-theme-sepia</code></td>
+<td>Dim light, warm tint</td>
+</tr>
+<tr>
+<td><strong>Dark</strong></td>
+<td><code>ow-theme-dark</code></td>
+<td>Low-light environment</td>
+</tr>
+</tbody>
+</table>
+<h2>Exposed CSS Variables</h2>
+<p>Each theme redefines the following CSS variables on <code>:root</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--ow-bg</code></td>
+<td>Main background color</td>
+</tr>
+<tr>
+<td><code>--ow-text</code></td>
+<td>Body text color</td>
+</tr>
+<tr>
+<td><code>--ow-link</code></td>
+<td>Hyperlink color</td>
+</tr>
+<tr>
+<td><code>--ow-code-bg</code></td>
+<td>Code block background</td>
+</tr>
+<tr>
+<td><code>--ow-border</code></td>
+<td>Border and separator color</td>
+</tr>
+<tr>
+<td><code>--ow-sidebar-bg</code></td>
+<td>Sidebar background</td>
+</tr>
+</tbody>
+</table>
+<p>These variables can be overridden in your CSS to customize the themes.</p>
+<h2>Persistence</h2>
+<p>The selected theme is saved to <code>localStorage</code> under the key <code>ow-reading-theme</code>.
+It is automatically restored on every visit.</p>
+<pre><code class="language-javascript">// Possible values
+localStorage.getItem('ow-reading-theme'); // 'light' | 'sepia' | 'dark'
+</code></pre>
+<h2>Theme Cycle</h2>
+<p>The rotation order is: <strong>light → sepia → dark → light</strong>.</p>
+<h2>JavaScript API</h2>
+<pre><code class="language-javascript">// Apply a specific theme
+ontowave.ux.applyTheme('sepia');
+
+// Read the currently saved theme
+const theme = ontowave.ux.loadSavedTheme(); // 'light' | 'sepia' | 'dark'
+
+// Move to the next theme
+const next = ontowave.ux.cycleTheme(); // returns the new theme
+</code></pre>
+<h2>Configuration</h2>
+<pre><code class="language-json">{
+  &quot;ux&quot;: true
+}
+</code></pre>
+<p>Or, to enable themes only:</p>
+<pre><code class="language-json">{
+  &quot;ux&quot;: { &quot;themes&quot;: true }
+}
+</code></pre>
+<h2>CSS Customization</h2>
+<pre><code class="language-css">/* Override background color for the dark theme */
+body.ow-theme-dark {
+  --ow-bg: #0d0d0d;
+  --ow-text: #e0e0e0;
+}
+</code></pre>
+<h2>Sample Content</h2>
+<p>Here is some content to observe theme differences:</p>
+<blockquote>
+<p><strong>Sepia</strong> reproduces the look of a slightly yellowed piece of paper.
+It is the recommended theme for long reading sessions.</p>
+</blockquote>
+<p>Inline code example: <code>const color = getComputedStyle(document.body).getPropertyValue('--ow-bg');</code></p>
+<pre><code class="language-typescript">// Listen for theme changes
+document.body.addEventListener('ow:theme-change', (e) =&gt; {
+  console.log('New theme:', e.detail.theme);
+});
+</code></pre>
+<hr>
+<p>→ Next demo: <a href="keyboard">Keyboard navigation</a></p>
   </div>
 </noscript>
 <!-- noscript:seo:end -->

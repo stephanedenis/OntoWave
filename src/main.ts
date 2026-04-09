@@ -40,7 +40,7 @@ import { initUx } from './adapters/browser/ux'
         || (cfg.roots?.[0]?.base && cfg.roots[0].base !== '/' ? cfg.roots[0].base : null)
         || null
       location.hash = defaultLang ? `#${defaultLang}/index` : '#/index'
-      return; // Sortir pour laisser l'application se recharger avec le nouveau hash
+      // Pas de return : l'app continue de s'initialiser avec le nouveau hash
     }
   } catch {}
   // Brand

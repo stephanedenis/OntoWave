@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-04-09T12:37:46.853Z",
-  "count": 52,
+  "generatedAt": "2026-04-09T19:42:05.389Z",
+  "count": 68,
   "i18n": {
     "default": "fr",
     "supported": [
@@ -130,6 +130,54 @@
       "base": "en"
     },
     {
+      "path": "docs/demos/03-ux/keyboard.en.md",
+      "route": "#/en/demos/03-ux/keyboard",
+      "title": "Keyboard Navigation",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/03-ux/keyboard.en.md",
+      "route": "#/en/demos/03-ux/keyboard",
+      "title": "Keyboard Navigation",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/03-ux/notes.en.md",
+      "route": "#/en/demos/03-ux/notes",
+      "title": "Persistent Notes",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/03-ux/notes.en.md",
+      "route": "#/en/demos/03-ux/notes",
+      "title": "Persistent Notes",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/03-ux/print.en.md",
+      "route": "#/en/demos/03-ux/print",
+      "title": "PDF Export and Printing",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/03-ux/print.en.md",
+      "route": "#/en/demos/03-ux/print",
+      "title": "PDF Export and Printing",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/03-ux/themes.en.md",
+      "route": "#/en/demos/03-ux/themes",
+      "title": "Reading Themes",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/03-ux/themes.en.md",
+      "route": "#/en/demos/03-ux/themes",
+      "title": "Reading Themes",
+      "base": "en"
+    },
+    {
       "path": "docs/demos/03-ux/ux.en.md",
       "route": "#/en/demos/03-ux/ux",
       "title": "UX Features — Reading and Navigation",
@@ -283,6 +331,54 @@
       "path": "docs/demos/03-plugins/plugins.fr.md",
       "route": "#/fr/demos/03-plugins/plugins",
       "title": "Système de plugins OntoWave",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/03-ux/keyboard.fr.md",
+      "route": "#/fr/demos/03-ux/keyboard",
+      "title": "Navigation clavier",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/03-ux/keyboard.fr.md",
+      "route": "#/fr/demos/03-ux/keyboard",
+      "title": "Navigation clavier",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/03-ux/notes.fr.md",
+      "route": "#/fr/demos/03-ux/notes",
+      "title": "Notes persistantes",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/03-ux/notes.fr.md",
+      "route": "#/fr/demos/03-ux/notes",
+      "title": "Notes persistantes",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/03-ux/print.fr.md",
+      "route": "#/fr/demos/03-ux/print",
+      "title": "Export PDF et impression",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/03-ux/print.fr.md",
+      "route": "#/fr/demos/03-ux/print",
+      "title": "Export PDF et impression",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/03-ux/themes.fr.md",
+      "route": "#/fr/demos/03-ux/themes",
+      "title": "Thèmes de lecture",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/03-ux/themes.fr.md",
+      "route": "#/fr/demos/03-ux/themes",
+      "title": "Thèmes de lecture",
       "base": "en"
     },
     {

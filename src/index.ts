@@ -55,7 +55,7 @@ export async function initOntoWave() {
     if (location.hash === '' || location.hash === '#/' || location.hash === '#') {
       // Redirection forcée vers index.md
       location.hash = '#index.md'
-      return; // Sortir pour laisser l'application se recharger avec le nouveau hash
+      // Pas de return : l'app continue de s'initialiser avec le nouveau hash
     }
   } catch {}
   
