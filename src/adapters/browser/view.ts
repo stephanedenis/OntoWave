@@ -1,10 +1,15 @@
-const app = document.getElementById('app')!
-const sidebar = document.getElementById('sidebar')
-const toc = document.getElementById('toc')
-
 export const browserView = {
-  setHtml(html: string) { app.innerHTML = html },
+  setHtml(html: string) {
+    const app = document.getElementById('app')
+    if (app) app.innerHTML = html
+  },
   setTitle(title: string) { document.title = title },
-  setSidebar(html: string) { if (sidebar) sidebar.innerHTML = html },
-  setToc(html: string) { if (toc) toc.innerHTML = html },
+  setSidebar(html: string) {
+    const sidebar = document.getElementById('sidebar')
+    if (sidebar) sidebar.innerHTML = html
+  },
+  setToc(html: string) {
+    const toc = document.getElementById('toc')
+    if (toc) toc.innerHTML = html
+  },
 }

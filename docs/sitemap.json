@@ -1,6 +1,229 @@
 {
-  "generatedAt": "2026-04-09T03:35:24.655Z",
-  "count": 0,
-  "i18n": null,
-  "items": []
+  "generatedAt": "2026-04-08T17:44:44.329Z",
+  "count": 36,
+  "i18n": {
+    "default": "fr",
+    "supported": [
+      "fr",
+      "en"
+    ]
+  },
+  "items": [
+    {
+      "path": "docs/demos/01-base/markdown.en.md",
+      "route": "#/en/demos/01-base/markdown",
+      "title": "Markdown Features",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/01-base/markdown.en.md",
+      "route": "#/en/demos/01-base/markdown",
+      "title": "Markdown Features",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/01-base/mermaid.en.md",
+      "route": "#/en/demos/01-base/mermaid",
+      "title": "Mermaid Diagrams",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/01-base/mermaid.en.md",
+      "route": "#/en/demos/01-base/mermaid",
+      "title": "Mermaid Diagrams",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/01-base/plantuml.en.md",
+      "route": "#/en/demos/01-base/plantuml",
+      "title": "PlantUML Diagrams",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/01-base/plantuml.en.md",
+      "route": "#/en/demos/01-base/plantuml",
+      "title": "PlantUML Diagrams",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/01-base/routing.en.md",
+      "route": "#/en/demos/01-base/routing",
+      "title": "Hash URL Routing",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/01-base/routing.en.md",
+      "route": "#/en/demos/01-base/routing",
+      "title": "Hash URL Routing",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/02-config/i18n.en.md",
+      "route": "#/en/demos/02-config/i18n",
+      "title": "Internationalisation (i18n)",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/02-config/i18n.en.md",
+      "route": "#/en/demos/02-config/i18n",
+      "title": "Internationalisation (i18n)",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/02-config/ui-custom.en.md",
+      "route": "#/en/demos/02-config/ui-custom",
+      "title": "Custom UI",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/02-config/ui-custom.en.md",
+      "route": "#/en/demos/02-config/ui-custom",
+      "title": "Custom UI",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/02-config/view-modes.en.md",
+      "route": "#/en/demos/02-config/view-modes",
+      "title": "View Modes",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/02-config/view-modes.en.md",
+      "route": "#/en/demos/02-config/view-modes",
+      "title": "View Modes",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/index.en.md",
+      "route": "#/en/demos/index",
+      "title": "OntoWave Demo Gallery",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/index.en.md",
+      "route": "#/en/demos/index",
+      "title": "OntoWave Demo Gallery",
+      "base": "en"
+    },
+    {
+      "path": "docs/index.en.md",
+      "route": "#/en/index",
+      "title": "OntoWave [v1.0.25](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)",
+      "base": "fr"
+    },
+    {
+      "path": "docs/index.en.md",
+      "route": "#/en/index",
+      "title": "OntoWave [v1.0.25](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/01-base/markdown.fr.md",
+      "route": "#/fr/demos/01-base/markdown",
+      "title": "Fonctionnalités Markdown",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/01-base/markdown.fr.md",
+      "route": "#/fr/demos/01-base/markdown",
+      "title": "Fonctionnalités Markdown",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/01-base/mermaid.fr.md",
+      "route": "#/fr/demos/01-base/mermaid",
+      "title": "Diagrammes Mermaid",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/01-base/mermaid.fr.md",
+      "route": "#/fr/demos/01-base/mermaid",
+      "title": "Diagrammes Mermaid",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/01-base/plantuml.fr.md",
+      "route": "#/fr/demos/01-base/plantuml",
+      "title": "Diagrammes PlantUML",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/01-base/plantuml.fr.md",
+      "route": "#/fr/demos/01-base/plantuml",
+      "title": "Diagrammes PlantUML",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/01-base/routing.fr.md",
+      "route": "#/fr/demos/01-base/routing",
+      "title": "Routing par hash URL",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/01-base/routing.fr.md",
+      "route": "#/fr/demos/01-base/routing",
+      "title": "Routing par hash URL",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/02-config/i18n.fr.md",
+      "route": "#/fr/demos/02-config/i18n",
+      "title": "Internationalisation (i18n)",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/02-config/i18n.fr.md",
+      "route": "#/fr/demos/02-config/i18n",
+      "title": "Internationalisation (i18n)",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/02-config/ui-custom.fr.md",
+      "route": "#/fr/demos/02-config/ui-custom",
+      "title": "UI personnalisée",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/02-config/ui-custom.fr.md",
+      "route": "#/fr/demos/02-config/ui-custom",
+      "title": "UI personnalisée",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/02-config/view-modes.fr.md",
+      "route": "#/fr/demos/02-config/view-modes",
+      "title": "Modes d'affichage",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/02-config/view-modes.fr.md",
+      "route": "#/fr/demos/02-config/view-modes",
+      "title": "Modes d'affichage",
+      "base": "en"
+    },
+    {
+      "path": "docs/demos/index.fr.md",
+      "route": "#/fr/demos/index",
+      "title": "Galerie de démos OntoWave",
+      "base": "fr"
+    },
+    {
+      "path": "docs/demos/index.fr.md",
+      "route": "#/fr/demos/index",
+      "title": "Galerie de démos OntoWave",
+      "base": "en"
+    },
+    {
+      "path": "docs/index.fr.md",
+      "route": "#/fr/index",
+      "title": "OntoWave [v1.0.25](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)",
+      "base": "fr"
+    },
+    {
+      "path": "docs/index.fr.md",
+      "route": "#/fr/index",
+      "title": "OntoWave [v1.0.25](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)",
+      "base": "en"
+    }
+  ]
 }

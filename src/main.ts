@@ -8,7 +8,7 @@ import { enhancePage } from './adapters/browser/enhance'
 import { buildSidebar, buildPrevNext } from './adapters/browser/navigation'
 import { createSearch } from './adapters/browser/search'
 import { renderConfigPage } from './adapters/browser/configPage'
-import { getJsonFromBundle } from './adapters/browser/bundle'
+import { getJsonFromBundle, getTextFromBundle } from './adapters/browser/bundle'
 import { initUx } from './adapters/browser/ux'
 
 ;(async () => {
@@ -35,8 +35,11 @@ import { initUx } from './adapters/browser/ux'
   // i18n: détecter la langue préférée et rediriger vers la base correspondante si on est à la racine
   try {
     if (location.hash === '' || location.hash === '#/' || location.hash === '#') {
-      // Redirection forcée vers index.md
-      location.hash = '#index.md'
+      // Construire la redirection initiale depuis i18n.default ou le premier root
+      const defaultLang = cfg.i18n?.default
+        || (cfg.roots?.[0]?.base && cfg.roots[0].base !== '/' ? cfg.roots[0].base : null)
+        || null
+      location.hash = defaultLang ? `#${defaultLang}/index` : '#/index'
       return; // Sortir pour laisser l'application se recharger avec le nouveau hash
     }
   } catch {}
@@ -227,6 +230,9 @@ import { initUx } from './adapters/browser/ux'
       // Marqueur ⚠️ dans le menu si éléments auxiliaires manquants
       try {
         const check = async (url: string) => {
+          // Check bundle first to avoid unnecessary fetches
+          if (getJsonFromBundle(url) !== null) return true
+          if (getTextFromBundle(url) !== null) return true
           try { const r = await fetch(url, { cache: 'no-cache' }); return r.ok } catch { return false }
         }
         const hasNav = await check('/nav.yml')
