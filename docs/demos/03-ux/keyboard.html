@@ -99,9 +99,11 @@ quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit
 <h2>API JavaScript</h2>
 <pre><code class="language-typescript">// Installer la navigation clavier manuellement
 const cleanup = ontowave.ux.installKeyboardNav(() =&gt; {
+  const links = document.querySelectorAll&lt;HTMLAnchorElement&gt;('footer a[href]');
+
   return {
-    prev: document.querySelector('a[rel=&quot;prev&quot;]')?.href,
-    next: document.querySelector('a[rel=&quot;next&quot;]')?.href
+    prev: links[0]?.getAttribute('href') ?? undefined,
+    next: links[1]?.getAttribute('href') ?? undefined
   };
 });
 
@@ -186,9 +188,10 @@ quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit
 <h2>JavaScript API</h2>
 <pre><code class="language-typescript">// Install keyboard navigation manually
 const cleanup = ontowave.ux.installKeyboardNav(() =&gt; {
+  const navLinks = document.querySelectorAll('main &gt; p:last-of-type a');
   return {
-    prev: document.querySelector('a[rel=&quot;prev&quot;]')?.href,
-    next: document.querySelector('a[rel=&quot;next&quot;]')?.href
+    prev: navLinks[0]?.getAttribute('href') ?? undefined,
+    next: navLinks[1]?.getAttribute('href') ?? undefined
   };
 });
 

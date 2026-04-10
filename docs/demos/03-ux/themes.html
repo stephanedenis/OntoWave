@@ -32,7 +32,7 @@
   <div lang="fr">
 <h1>Thèmes de lecture</h1>
 <p>OntoWave intègre trois thèmes de lecture activables depuis la barre UX ou par code.
-Le bouton <strong>☀ Thème</strong> dans la barre en haut de page permet de les parcourir.</p>
+Le bouton de thème dans la barre en haut de page permet de les parcourir.</p>
 <h2>Les trois thèmes</h2>
 <table>
 <thead>
@@ -61,7 +61,7 @@ Le bouton <strong>☀ Thème</strong> dans la barre en haut de page permet de le
 </tbody>
 </table>
 <h2>Variables CSS exposées</h2>
-<p>Chaque thème redéfinit les variables CSS suivantes sur <code>:root</code> :</p>
+<p>Chaque thème redéfinit les variables CSS suivantes sur <code>body.ow-theme-*</code> ; elles sont ensuite héritées par le contenu :</p>
 <table>
 <thead>
 <tr>
@@ -139,10 +139,11 @@ body.ow-theme-dark {
 C’est le thème recommandé pour les longues sessions de lecture.</p>
 </blockquote>
 <p>Un exemple de code inline : <code>const color = getComputedStyle(document.body).getPropertyValue('--ow-bg');</code></p>
-<pre><code class="language-typescript">// Écouter le changement de thème
-document.body.addEventListener('ow:theme-change', (e) =&gt; {
-  console.log('Nouveau thème :', e.detail.theme);
-});
+<pre><code class="language-typescript">// Appliquer un thème puis lire le thème actuellement sauvegardé
+ontowave.ux.applyTheme('sepia');
+
+const currentTheme = ontowave.ux.loadSavedTheme();
+console.log('Thème actif :', currentTheme);
 </code></pre>
 <hr>
 <p>→ Démonstration suivante : <a href="keyboard">Navigation clavier</a></p>
@@ -150,7 +151,7 @@ document.body.addEventListener('ow:theme-change', (e) =&gt; {
   <div lang="en">
 <h1>Reading Themes</h1>
 <p>OntoWave provides three reading themes switchable from the UX toolbar or via code.
-The <strong>☀ Theme</strong> button at the top of the page cycles through them.</p>
+The theme toggle in the top toolbar cycles through them.</p>
 <h2>The Three Themes</h2>
 <table>
 <thead>
@@ -179,7 +180,7 @@ The <strong>☀ Theme</strong> button at the top of the page cycles through them
 </tbody>
 </table>
 <h2>Exposed CSS Variables</h2>
-<p>Each theme redefines the following CSS variables on <code>:root</code>:</p>
+<p>Each theme redefines the following CSS variables on <code>body.ow-theme-*</code>, where they are then inherited by the content:</p>
 <table>
 <thead>
 <tr>
@@ -257,10 +258,13 @@ body.ow-theme-dark {
 It is the recommended theme for long reading sessions.</p>
 </blockquote>
 <p>Inline code example: <code>const color = getComputedStyle(document.body).getPropertyValue('--ow-bg');</code></p>
-<pre><code class="language-typescript">// Listen for theme changes
-document.body.addEventListener('ow:theme-change', (e) =&gt; {
-  console.log('New theme:', e.detail.theme);
-});
+<pre><code class="language-typescript">// Read the current theme from the UX API
+const theme = ontowave.ux.loadSavedTheme();
+console.log('Current theme:', theme);
+
+// Or inspect the class applied on &lt;body&gt;
+const isDark = document.body.classList.contains('ow-theme-dark');
+console.log('Dark theme enabled:', isDark);
 </code></pre>
 <hr>
 <p>→ Next demo: <a href="keyboard">Keyboard navigation</a></p>
