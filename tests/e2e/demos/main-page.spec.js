@@ -54,7 +54,7 @@ test.describe('Page principale (docs/index.html)', () => {
     }, { timeout: 15000 })
   })
 
-  test('doit avoir le chrome de page (header, sidebar, floating menu)', async ({ page }) => {
+  test('doit avoir le menu flottant (icône vague)', async ({ page }) => {
     await page.goto('/')
     // Attendre contenu
     await page.waitForFunction(() => {
@@ -62,14 +62,17 @@ test.describe('Page principale (docs/index.html)', () => {
       return app && app.textContent && app.textContent.trim().length > 50
     }, { timeout: 15000 })
 
-    // Header avec le brand
-    await expect(page.locator('#site-header')).toBeVisible()
-    await expect(page.locator('#brand')).toBeVisible()
+    // Mode minimal : le chrome (header, sidebar) est masqué
+    await expect(page.locator('#site-header')).toBeHidden()
 
-    // Menu flottant (créé par le module UX)
+    // Menu flottant avec icône vague (toujours visible)
     await expect(page.locator('#floating-menu')).toBeVisible()
+    await expect(page.locator('#floating-toggle')).toBeVisible()
 
-    // Sidebar (peut être vide si pas de nav.yml/sitemap, mais doit exister)
+    // Le panneau de langue doit exister dans le DOM
+    await expect(page.locator('.ow-lang-btn')).toHaveCount(2)
+
+    // Sidebar existe dans le DOM (conservé pour compatibilité JS) mais caché
     await expect(page.locator('#sidebar')).toBeAttached()
   })
 

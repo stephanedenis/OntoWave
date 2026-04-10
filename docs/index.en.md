@@ -1,4 +1,4 @@
-# OntoWave [v1.0.25](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)
+# OntoWave [v1.0.45](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)
 
 Lightweight JavaScript micro-application (~245KB, ~85KB gzipped) for static sites with multilingual support, syntax highlighting, math formulas and diagrams.
 
