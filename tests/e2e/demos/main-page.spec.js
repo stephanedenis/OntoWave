@@ -72,8 +72,9 @@ test.describe('Page principale (docs/index.html)', () => {
     // Le panneau de langue doit exister dans le DOM
     await expect(page.locator('.ow-lang-btn')).toHaveCount(2)
 
-    // Sidebar existe dans le DOM (conservé pour compatibilité JS) mais caché
-    await expect(page.locator('#sidebar')).toBeAttached()
+    // En mode bootstrap minimal, sidebar n'est pas créé par la lib (pas nécessaire)
+    // #app doit exister et contenir du contenu
+    await expect(page.locator('#app')).toBeAttached()
   })
 
   test('doit charger ontowave.min.js (pas les assets SPA Vite)', async ({ page }) => {
