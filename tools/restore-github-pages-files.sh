@@ -37,4 +37,17 @@ else
   echo "✅ docs/robots.txt déjà présent"
 fi
 
+# =============================================================================
+# CRITIQUE : restaurer docs/index.html depuis git
+# Le build Vite (npm run build) écrase docs/index.html avec la SPA.
+# La version commitée est l'entrée CDN avec le chrome complet.
+# Sans cette restauration, le site ontowave.org devient une page blanche !
+# =============================================================================
+if git checkout HEAD -- docs/index.html 2>/dev/null; then
+  echo "✅ docs/index.html restauré depuis git (protection anti-SPA)"
+else
+  echo "⚠️  Impossible de restaurer docs/index.html via git checkout"
+  echo "   Assurez-vous que le fichier CDN (avec page chrome) est committé."
+fi
+
 echo "🎉 Fichiers GitHub Pages restaurés avec succès!"

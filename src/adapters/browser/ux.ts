@@ -328,6 +328,9 @@ function createThemeLabel(theme: ReadingTheme): string {
 
 export function injectUxToolbar(container: HTMLElement | null, showNotes = true): void {
   if (!container) return
+  // Si la page a un #floating-menu (chrome CDN), on y injecte la barre
+  const floatingMenu = document.getElementById('floating-menu')
+  const toolbarTarget = floatingMenu ?? container
   const existing = document.getElementById('ow-ux-toolbar')
   if (existing) existing.remove()
   // Supprimer aussi l'ancien panneau de notes s'il existe
@@ -337,7 +340,12 @@ export function injectUxToolbar(container: HTMLElement | null, showNotes = true)
   const toolbar = document.createElement('div')
   toolbar.id = 'ow-ux-toolbar'
   toolbar.className = 'ow-ux-toolbar'
-  toolbar.style.cssText = 'display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; margin-bottom:1rem; padding:0.4rem 0; border-bottom:1px solid var(--ow-border,#e0e0e0); font-size:0.85em;'
+  // Style compact si dans le floating-menu, barre horizontale si inline dans #app
+  if (floatingMenu) {
+    toolbar.style.cssText = 'display:flex; flex-direction:column; gap:0.25rem; font-size:0.85em;'
+  } else {
+    toolbar.style.cssText = 'display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; margin-bottom:1rem; padding:0.4rem 0; border-bottom:1px solid var(--ow-border,#e0e0e0); font-size:0.85em;'
+  }
 
   // Bouton thème
   const themeBtn = document.createElement('button')
@@ -395,7 +403,12 @@ export function injectUxToolbar(container: HTMLElement | null, showNotes = true)
     container.prepend(notesPanel)
   }
 
-  container.prepend(toolbar)
+  // Injecter la barre dans le floating-menu ou dans le contenu (inline)
+  if (floatingMenu) {
+    toolbarTarget.appendChild(toolbar)
+  } else {
+    toolbarTarget.prepend(toolbar)
+  }
 }
 
 // ---------------------------------------------------------------------------
