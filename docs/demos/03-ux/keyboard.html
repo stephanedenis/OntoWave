@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave — Navigation clavier</title>
+    <script>
+        window.__ONTOWAVE_BUNDLE__ = {
+            '/config.json': JSON.stringify({
+                roots: [
+                    { base: 'fr', root: '/demos/03-ux' },
+                    { base: 'en', root: '/demos/03-ux' }
+                ],
+                i18n: { default: 'fr', supported: ['fr', 'en'] },
+                ux: true
+            }),
+            '/nav.yml': '[]',
+            '/sitemap.json': '{"items":[]}',
+            '/search-index.json': '[]'
+        };
+        if (!location.hash || location.hash === '#/' || location.hash === '#') {
+            location.hash = '#fr/keyboard';
+        }
+    </script>
+</head>
+<body>
+    <div id="app"></div>
+    <script src="/ontowave.min.js"></script>
+
+<!-- noscript:seo:start -->
+<noscript>
+  <div lang="fr">
+<h1>Navigation clavier</h1>
+<p>OntoWave installe des raccourcis clavier pour naviguer dans la documentation sans souris.
+Testez-les sur cette page : assurez-vous que le focus n’est pas dans un champ de saisie.</p>
+<h2>Raccourcis disponibles</h2>
+<table>
+<thead>
+<tr>
+<th>Touche</th>
+<th>Action</th>
+<th>Détail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>j</code></td>
+<td>Défiler vers le bas</td>
+<td>+120 px</td>
+</tr>
+<tr>
+<td><code>k</code></td>
+<td>Défiler vers le haut</td>
+<td>−120 px</td>
+</tr>
+<tr>
+<td><code>n</code></td>
+<td>Page suivante</td>
+<td>Utilise le lien de navigation “suivant”</td>
+</tr>
+<tr>
+<td><code>p</code></td>
+<td>Page précédente</td>
+<td>Utilise le lien de navigation “précédent”</td>
+</tr>
+</tbody>
+</table>
+<h2>Condition d’activation</h2>
+<p>Les touches <code>j</code>, <code>k</code>, <code>n</code>, <code>p</code> sont ignorées si le focus se trouve dans un élément interactif :
+<code>&lt;input&gt;</code>, <code>&lt;textarea&gt;</code>, <code>&lt;select&gt;</code>, ou tout élément avec <code>contenteditable</code>.</p>
+<p>Cela évite les conflits lors de la saisie de texte.</p>
+<h2>Démo interactive</h2>
+<p>Appuyez sur <code>j</code> pour faire défiler ce texte vers le bas.
+Appuyez sur <code>k</code> pour remonter.</p>
+<hr>
+<p>Cette page présente suffisamment de contenu pour rendre le défilement sensible.</p>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt
+ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit
+voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa quae ab
+illo inventore veritatis et quasi architecto beatae vitae dicta sunt.</p>
+<p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
+consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro
+quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.</p>
+<hr>
+<h2>Configuration</h2>
+<pre><code class="language-json">{
+  &quot;ux&quot;: true
+}
+</code></pre>
+<p>Ou, pour activer uniquement la navigation clavier :</p>
+<pre><code class="language-json">{
+  &quot;ux&quot;: { &quot;keyboard&quot;: true }
+}
+</code></pre>
+<h2>API JavaScript</h2>
+<pre><code class="language-typescript">// Installer la navigation clavier manuellement
+const cleanup = ontowave.ux.installKeyboardNav(() =&gt; {
+  return {
+    prev: document.querySelector('a[rel=&quot;prev&quot;]')?.href,
+    next: document.querySelector('a[rel=&quot;next&quot;]')?.href
+  };
+});
+
+// Désinstaller (ex. lors d'un changement de route)
+cleanup();
+</code></pre>
+<p>La fonction passée en paramètre est appelée à chaque appui sur <code>n</code> ou <code>p</code> pour déterminer
+dynamiquement les URLs de navigation.</p>
+<h2>Intégration avec le routeur OntoWave</h2>
+<p>Quand <code>ux: true</code> est défini dans la config, <code>installKeyboardNav</code> est appelé automatiquement
+et se synchronise avec le routeur interne de la bibliothèque.</p>
+<hr>
+<p>← <a href="themes">Thèmes</a> | → <a href="print">Export PDF</a></p>
+  </div>
+  <div lang="en">
+<h1>Keyboard Navigation</h1>
+<p>OntoWave installs keyboard shortcuts for navigating documentation without a mouse.
+Try them on this page — make sure the focus is not inside an input field.</p>
+<h2>Available Shortcuts</h2>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>j</code></td>
+<td>Scroll down</td>
+<td>+120 px</td>
+</tr>
+<tr>
+<td><code>k</code></td>
+<td>Scroll up</td>
+<td>−120 px</td>
+</tr>
+<tr>
+<td><code>n</code></td>
+<td>Next page</td>
+<td>Uses the “next” navigation link</td>
+</tr>
+<tr>
+<td><code>p</code></td>
+<td>Previous page</td>
+<td>Uses the “previous” navigation link</td>
+</tr>
+</tbody>
+</table>
+<h2>Activation Condition</h2>
+<p>The keys <code>j</code>, <code>k</code>, <code>n</code>, <code>p</code> are ignored when the focus is inside an interactive element:
+<code>&lt;input&gt;</code>, <code>&lt;textarea&gt;</code>, <code>&lt;select&gt;</code>, or any element with <code>contenteditable</code>.</p>
+<p>This avoids conflicts while typing text.</p>
+<h2>Interactive Demo</h2>
+<p>Press <code>j</code> to scroll this text down.
+Press <code>k</code> to scroll back up.</p>
+<hr>
+<p>This page has enough content to make the scrolling noticeable.</p>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt
+ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit
+voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa quae ab
+illo inventore veritatis et quasi architecto beatae vitae dicta sunt.</p>
+<p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
+consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro
+quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.</p>
+<hr>
+<h2>Configuration</h2>
+<pre><code class="language-json">{
+  &quot;ux&quot;: true
+}
+</code></pre>
+<p>Or, to enable keyboard navigation only:</p>
+<pre><code class="language-json">{
+  &quot;ux&quot;: { &quot;keyboard&quot;: true }
+}
+</code></pre>
+<h2>JavaScript API</h2>
+<pre><code class="language-typescript">// Install keyboard navigation manually
+const cleanup = ontowave.ux.installKeyboardNav(() =&gt; {
+  return {
+    prev: document.querySelector('a[rel=&quot;prev&quot;]')?.href,
+    next: document.querySelector('a[rel=&quot;next&quot;]')?.href
+  };
+});
+
+// Uninstall (e.g. on route change)
+cleanup();
+</code></pre>
+<p>The function passed as a parameter is called on each <code>n</code> or <code>p</code> keypress to dynamically
+determine the navigation URLs.</p>
+<h2>Integration with the OntoWave Router</h2>
+<p>When <code>ux: true</code> is set in the config, <code>installKeyboardNav</code> is called automatically
+and synchronizes with the library’s internal router.</p>
+<hr>
+<p>← <a href="themes">Themes</a> | → <a href="print">PDF Export</a></p>
+  </div>
+</noscript>
+<!-- noscript:seo:end -->
+</body>
+</html>

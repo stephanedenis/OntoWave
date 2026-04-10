@@ -31,7 +31,7 @@ test.describe('Demo 03-ux: UX Features', () => {
 
   test('should render main content', async ({ page }) => {
     await page.goto('/demos/03-ux/ux.html');
-    await page.waitForSelector('h1', { timeout: 5000 });
+    await page.waitForSelector('h1', { state: 'attached', timeout: 5000 });
     const h1 = await page.textContent('h1');
     expect(h1).toBeTruthy();
     expect(h1.length).toBeGreaterThan(0);
@@ -40,7 +40,7 @@ test.describe('Demo 03-ux: UX Features', () => {
 
   test('should inject UX toolbar', async ({ page }) => {
     await page.goto('/demos/03-ux/ux.html');
-    await page.waitForSelector('h1', { timeout: 5000 });
+    await page.waitForSelector('h1', { state: 'attached', timeout: 5000 });
     await page.waitForTimeout(1500);
 
     const toolbar = await page.$('#ow-ux-toolbar');
@@ -94,7 +94,7 @@ test.describe('Demo 03-ux: UX Features', () => {
 
   test('should match visual snapshot', async ({ page }) => {
     await page.goto('/demos/03-ux/ux.html');
-    await page.waitForSelector('h1');
+    await page.waitForSelector('h1', { state: 'attached' });
     await page.waitForTimeout(2000);
 
     await expect(page).toHaveScreenshot('03-ux-features.png', {

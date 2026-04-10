@@ -13,7 +13,9 @@ import { browserRouter } from './adapters/browser/router'
 import { browserView } from './adapters/browser/view'
 import { createMd as createMdV2 } from './adapters/browser/md'
 import { enhancePage } from './adapters/browser/enhance'
+import { buildSidebar, buildPrevNext } from './adapters/browser/navigation'
 import { getJsonFromBundle } from './adapters/browser/bundle'
+import { initUx } from './adapters/browser/ux'
 import { createPluginManager } from './core/plugins'
 import type { OntoWavePlugin, PluginContext, PluginManager } from './core/types'
 
@@ -53,15 +55,21 @@ export async function initOntoWave() {
   // i18n: détecter la langue préférée et rediriger vers la base correspondante si on est à la racine
   try {
     if (location.hash === '' || location.hash === '#/' || location.hash === '#') {
-      // Redirection forcée vers index.md
-      location.hash = '#index.md'
-      return; // Sortir pour laisser l'application se recharger avec le nouveau hash
+      const defaultLang = cfg.i18n?.default
+        || (cfg.roots?.[0]?.base && cfg.roots[0].base !== '/' ? cfg.roots[0].base : null)
+        || null
+      location.hash = defaultLang ? `#${defaultLang}/index` : '#/index'
+      // Pas de return : l'app continue de s'initialiser avec le nouveau hash
     }
   } catch {}
   
   // Brand
   const brand = document.getElementById('brand')
   if (brand && typeof cfg.brand === 'string') brand.textContent = cfg.brand
+
+  // UX module: init si activé (cfg.ux !== false)
+  const uxOptions = typeof cfg.ux === 'object' ? cfg.ux : {}
+  const ux = cfg.ux !== false ? initUx(uxOptions) : null
   
   if (engine === 'v2') {
     console.log('[OntoWave] Creating app with engine v2')
@@ -75,6 +83,29 @@ export async function initOntoWave() {
         afterRender: async (html: string, _route: string) => {
           const appEl = document.getElementById('app')!
           await enhancePage(appEl, html)
+          // Sidebar
+          const side = await buildSidebar()
+          if (side) {
+            const el = document.getElementById('sidebar')
+            if (el) el.innerHTML = side
+          }
+          // Prev/Next
+          const pn = await buildPrevNext(location.hash || '#/')
+          // Footer prev/next
+          const ui = cfg.ui || {}
+          if (ui.footer !== false && !ui.minimal) {
+            const footer = document.createElement('div')
+            footer.style.marginTop = '2rem'
+            footer.innerHTML = `
+              <hr/>
+              <div style="display:flex; justify-content:space-between">
+                <span>${pn.prev ? `<a href="${pn.prev}">← Précédent</a>` : ''}</span>
+                <span>${pn.next ? `<a href="${pn.next}">Suivant →</a>` : ''}</span>
+              </div>`
+            appEl.appendChild(footer)
+          }
+          // UX module: notifier le changement de route
+          if (ux) ux.onRouteChange(location.hash || '#/', pn)
         }
       }
     })

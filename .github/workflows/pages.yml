@@ -36,7 +36,15 @@ jobs:
         run: npm ci
         
       - name: Build project
-        run: npm run build
+        run: |
+          # Construire uniquement la librairie (build:package), pas la SPA Vite.
+          # npm run build (Vite SPA) écraserait docs/index.html avec une version vide.
+          # Le site docs/ utilise ontowave.min.js (CDN style), pas le bundle SPA.
+          npm run sitemap
+          npm run pageslist
+          npm run build:package
+          node tools/inject-noscript.mjs
+          bash tools/restore-github-pages-files.sh
         
       - name: Setup Pages
         uses: actions/configure-pages@v4

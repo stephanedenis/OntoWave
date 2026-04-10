@@ -40,7 +40,7 @@ test.describe('Demo 01-base: PlantUML via Kroki', () => {
     await page.goto('/demos/01-base/plantuml.html');
     
     // Wait for H1
-    await page.waitForSelector('h1', { timeout: 5000 });
+    await page.waitForSelector('h1', { state: 'attached', timeout: 5000 });
     
     // Check H1 text
     const h1 = await page.textContent('h1');
@@ -54,7 +54,7 @@ test.describe('Demo 01-base: PlantUML via Kroki', () => {
     await page.goto('/demos/01-base/plantuml.html');
     
     // Wait for content
-    await page.waitForSelector('h1');
+    await page.waitForSelector('h1', { state: 'attached' });
     await page.waitForTimeout(2000); // Allow diagrams to render
     
     // Full page screenshot

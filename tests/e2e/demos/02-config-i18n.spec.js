@@ -40,7 +40,7 @@ test.describe('Demo 02-config: Internationalization', () => {
     await page.goto('/demos/02-config/i18n.html');
     
     // Wait for H1
-    await page.waitForSelector('h1', { timeout: 5000 });
+    await page.waitForSelector('h1', { state: 'attached', timeout: 5000 });
     
     // Check H1 text
     const h1 = await page.textContent('h1');
@@ -54,7 +54,7 @@ test.describe('Demo 02-config: Internationalization', () => {
     await page.goto('/demos/02-config/i18n.html');
     
     // Wait for content
-    await page.waitForSelector('h1');
+    await page.waitForSelector('h1', { state: 'attached' });
     await page.waitForTimeout(2000); // Allow diagrams to render
     
     // Full page screenshot

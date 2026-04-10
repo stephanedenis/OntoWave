@@ -29,6 +29,14 @@ jobs:
         run: npm run test:ci --if-present || echo "Tests skipped or failed (non-blocking)"
         continue-on-error: true
       - name: Build
-        run: npm run build
+        run: npm run build:package
+      - name: Verify docs/index.html is CDN (not SPA)
+        run: |
+          if grep -q 'ontowave.min.js' docs/index.html; then
+            echo "✅ docs/index.html utilise bien ontowave.min.js (CDN)"
+          else
+            echo "❌ docs/index.html ne référence pas ontowave.min.js — régression détectée !"
+            exit 1
+          fi
       - name: List docs output
         run: ls -la docs | head -n 100

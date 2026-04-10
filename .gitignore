@@ -6,5 +6,6 @@ __pycache__/
 node_modules
 archive/
 test-results/
+.playwright-mcp/
 docs/standalone/
 dist/ontowave.umd.cjs
