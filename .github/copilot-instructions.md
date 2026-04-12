@@ -117,6 +117,39 @@ Avant tout merge, les conditions suivantes doivent être satisfaites :
 3. Les tests de régression Playwright passent sur le serveur local : `npm run test:e2e`
 4. `npm run check` passe sans erreur (lint + type-check + tests + spell + build)
 
+### Pipeline d'automatisation (minimum d'intervention humaine)
+
+```
+Issue GitHub (spec claire)
+  → Copilot coding agent → branche feat/<n>-slug → implémentation → PR
+    → GitHub Actions CI (gate bloquant sur main)
+      ├── Vitest (tests unitaires) — BLOQUANT
+      ├── Playwright E2E local (tests de régression) — BLOQUANT
+      ├── lint + type-check + build — BLOQUANT
+      └── Si tout vert → auto-merge automatique
+        → npm publish (patch bump) → GitHub Pages
+          → Smoke-test Playwright sur https://ontowave.org
+            → Si échec → issue GitHub créée automatiquement
+```
+
+#### Rôles dans le pipeline
+
+| Acteur | Rôle |
+|---|---|
+| **Chat VS Code** | Spécifications, décisions d'architecture, revue des résultats, création d'issues |
+| **Copilot coding agents** | Implémentation des issues, création de branches et PRs |
+| **GitHub Actions CI** | Gate automatique — bloque le merge si tests échouent |
+| **Auto-merge** | Merge automatique dès que CI est vert (activé sur le repo) |
+| **Humain** | Uniquement en cas d'échec inattendu ou décision d'architecture |
+
+#### Protection de branche `main` (active)
+
+- Aucun push direct dans `main` — tout passe par une PR
+- Le job CI `build` doit passer (Vitest + Playwright + lint + build)
+- 0 approbation humaine requise — CI suffit
+- Force-push et suppression interdits
+- Branche source supprimée automatiquement après merge
+
 ### Pipeline de déploiement (déclenché par merge dans `main`)
 
 ```
