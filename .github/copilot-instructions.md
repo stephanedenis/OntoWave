@@ -2,7 +2,10 @@
 
 ## Présentation du projet
 
-**OntoWave** est une bibliothèque JavaScript legère (zéro dépendance, un seul fichier distribué) qui transforme des fichiers Markdown en documentation interactive dans le navigateur. Elle supporte le multilingue, les tableaux alignés, KaTeX, Mermaid, PlantUML et les diagrammes SVG inline.
+**OntoWave** est un noyau de navigation (~100KB, **zéro dépendance**) pour sites statiques et applications web. Il transforme des fichiers Markdown en documentation interactive dans le navigateur, avec routing SPA basé sur le hash URL et chargement d'extensions à la demande (Mermaid, KaTeX, PlantUML, etc.).
+
+> **Contrainte « zéro dépendance »** : s'applique au **noyau** `dist/ontowave.js` uniquement.
+> Les extensions vivent dans `dist/extensions/` et sont chargées dynamiquement — elles peuvent avoir des dépendances.
 
 - Package npm : `ontowave`
 - Sites : https://ontowave.org et https://ontowave.com (identiques)
@@ -10,6 +13,39 @@
 - Les sites sont traduits automatiquement en anglais (fichiers `.en.md` générés ou maintenus en parallèle)
 - Licence : CC-BY-NC-SA-4.0
 - Auteur : Stéphane Denis
+
+## État actuel de l'implémentation
+
+> **Important pour les agents** : distinguer ce qui est **déjà implémenté** de ce qui est **à faire**.
+
+### Implémenté (dans `main`)
+
+- `bootstrapDom(cfg)` dans `src/main.ts` : la librairie crée tout le DOM (shell, menu, layout)
+- `docs/index.html` est quasi-vide : juste `<script src="/ontowave.min.js">` — c'est la référence
+- Routing SPA hash-based via `src/router.ts`
+- Fetch + cache de fichiers Markdown
+- Rendu Markdown, KaTeX, Mermaid, Highlight, PlantUML, SVG inline (**tout bundlé dans un seul fichier, ~4.7MB actuellement**)
+
+### À faire (issues ouvertes)
+
+| Milestone | Issues | Objet |
+|---|---|---|
+| v1.1 | #76, #17 | Menu flottant (spec visuelle) + responsive |
+| v2.0 | #72, #73, #74, #75 | Architecture modulaire : extraire les moteurs lourds en extensions lazy-load |
+| v2.0 | #77 | Mode composant `createApp({ container })` |
+
+### Architecture cible (NE PAS anticiper avant les issues correspondantes)
+
+```
+dist/ontowave.js   ≤ 200KB   ← noyau (zéro dépendance)
+dist/extensions/
+  ├── markdown.js             ← chargé par default
+  ├── mermaid.js              ← chargé si bloc ```mermaid détecté
+  ├── katex.js
+  └── ...
+```
+
+Spécifications complètes : [docs/specs/architecture.fr.md](../docs/specs/architecture.fr.md) et [docs/specs/roadmap.fr.md](../docs/specs/roadmap.fr.md).
 
 ## Stack technique
 

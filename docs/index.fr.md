@@ -34,6 +34,9 @@ Explorez OntoWave v1.0.25 à travers des **démos interactives et testées** :
 
 [📋 Voir toutes les démos dans le catalogue →](demos/)
 
+#### 📐 Spécifications de conception
+- **[Interface & Menu flottant](specs/interface.fr.md)** - Principe HTML minimal, spécification visuelle du menu, règles anti-dérive
+
 ### Utilisation
 
 ```html
