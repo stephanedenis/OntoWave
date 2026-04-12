@@ -60,6 +60,45 @@ tests/          # Tests Vitest (unitaires) et Playwright (E2E sur les pages de d
 - Chaque nouvelle fonctionnalité doit avoir un test dans `tests/` ET une page de démo dans `docs/`
 - Les tests Playwright vérifient : absence d'erreurs console, rendu du contenu, régression visuelle (screenshots)
 
+## Mode de travail — Chat vs Agents (non négociable)
+
+> **Le chat VS Code est réservé aux spécifications et aux décisions de conception.**
+> **Toute implémentation est déléguée aux agents GitHub Copilot via des issues.**
+
+### Rôles
+
+| Contexte | Rôle |
+|---|---|
+| Chat VS Code | Spécifications, discussions d'architecture, rédaction de `docs/specs/*.fr.md` |
+| Issues GitHub + agents | Implémentation, tests, refactoring, corrections |
+
+### Règles
+
+1. **Aucune implémentation dans le chat** — si une décision de conception est prise, elle doit aboutir à une issue, pas à un changement de code dans le chat
+2. **Chaque issue référence sa spec** — tout travail d'implémentation doit citer le fichier `docs/specs/` correspondant
+3. **Une issue = une tâche atomique** — suffisamment bien spécifiée pour qu'un agent puisse l'exécuter de façon autonome sans questions
+4. **Les agents Copilot sont assignés par défaut** — c'est le mode de travail préféré pour toutes les tâches définies
+5. **Le chat valide** — après qu'un agent a terminé, le chat peut examiner le résultat et éventuellement créer de nouvelles issues
+
+### Format d'une bonne issue pour agent
+
+```markdown
+## Contexte
+Référence à la spec : docs/specs/xxx.fr.md §N
+
+## Travail demandé
+- [ ] Tâche précise 1
+- [ ] Tâche précise 2
+
+## Critères d'acceptation
+- npm test passe
+- npm run build:package passe
+- [critère fonctionnel spécifique]
+
+## À ne pas faire
+- [contrainte explicite]
+```
+
 ## Workflow Git & Livraison
 
 ### Règles de branchement (non négociables)
@@ -111,9 +150,30 @@ Après que le tag `latest` npm est mis à jour, un smoke-test Playwright doit ê
 - `normalizePath()` dans `src/core/logic.ts` est la référence pour la normalisation des chemins
 - Quand on crée ou modifie un fichier `.fr.md`, toujours créer ou mettre à jour le `.en.md` correspondant
 
+## Principe fondateur — HTML minimal
+
+> **La page HTML est quasi-vide. La librairie crée tout le DOM.**
+
+La spécification complète est dans [docs/specs/interface.fr.md](../docs/specs/interface.fr.md).
+
+### `docs/index.html` — Invariants anti-dérive (non négociables)
+
+`docs/index.html` est la **référence utilisateur**. Elle ne doit contenir que : DOCTYPE + head (meta/title) + `<noscript>` SEO + `<script src="/ontowave.min.js">`.
+
+Tout `<style>`, `#site-header`, `#sidebar`, `#layout` ou `#toc` dans `docs/index.html` est une **dérive de conception** — à corriger immédiatement.
+
+### Menu flottant — Identité visuelle de référence
+
+- **Fond** : `rgba(255,255,255,0.95)` + `backdrop-filter: blur(10px)` + `border: 1px solid #e1e4e8`
+- **Icône** : `&#127754;` (🌊 emoji natif), cercle compact ≈ 66×66px
+- **Expansion** : horizontale (pill), révèle brand + options + boutons langue
+- **Drag & Drop** : obligatoire, session uniquement
+- **Pas de** header fixe, sidebar, TOC dans le DOM — navigation via le menu flottant uniquement
+
 ## À éviter
 
 - N'ajoute pas de dépendances npm dans `dependencies` — la lib doit rester zéro-dépendance
 - N'utilise pas d'API navigateur dans `src/core/` (DOM, fetch, localStorage…)
 - N'introduis pas de code-splitting ou de chunks dynamiques dans le build de distribution
 - N'écris pas de tests `it.only` ou `test.only` sans retirer le `.only` avant commit
+- N'ajoute pas de `<style>`, `#site-header`, `#sidebar` ou `#layout` dans `docs/index.html`
