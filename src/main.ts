@@ -191,16 +191,19 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
     tx = touch.clientX - floatingMenu.offsetLeft
     ty = touch.clientY - floatingMenu.offsetTop
     dragging = true
-  }, { passive: true })
+    e.preventDefault()
+  }, { passive: false })
   document.addEventListener('touchmove', (e) => {
     if (!dragging) return
+    e.preventDefault()
     const touch = e.touches[0]
     const x = Math.max(0, Math.min(touch.clientX - tx, window.innerWidth - floatingMenu.offsetWidth))
     const y = Math.max(0, Math.min(touch.clientY - ty, window.innerHeight - floatingMenu.offsetHeight))
     floatingMenu.style.left = x + 'px'
     floatingMenu.style.top = y + 'px'
-  }, { passive: true })
+  }, { passive: false })
   document.addEventListener('touchend', () => { dragging = false })
+  document.addEventListener('touchcancel', () => { dragging = false })
 }
 
 ;(async () => {
