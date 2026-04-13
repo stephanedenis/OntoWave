@@ -120,7 +120,7 @@ test.describe('Page principale (docs/index.html)', () => {
     expect(ariaExpanded2).toBe('false')
   })
 
-  test('menu flottant — contient icône 🌊 et lien 🏠', async ({ page }) => {
+  test('menu flottant — affiche la version vX.Y.Z dans le brand', async ({ page }) => {
     await page.goto('/')
     await page.waitForFunction(() => {
       const menu = document.getElementById('ontowave-floating-menu')
@@ -128,11 +128,13 @@ test.describe('Page principale (docs/index.html)', () => {
     }, { timeout: 15000 })
 
     const icon = page.locator('.ontowave-menu-icon')
-    await expect(icon).toContainText('🌊')
-
     await icon.click()
-    const homeBtn = page.locator('.ontowave-menu-option')
-    await expect(homeBtn).toBeVisible()
-    await expect(homeBtn).toContainText('🏠')
+
+    // Le badge de version doit être visible dans le brand
+    const versionBadge = page.locator('.ontowave-menu-version')
+    await expect(versionBadge).toBeVisible()
+
+    const versionText = await versionBadge.textContent()
+    expect(versionText).toMatch(/^v\d+\.\d+\.\d+$/)
   })
 })

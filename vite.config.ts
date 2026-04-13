@@ -1,8 +1,12 @@
 import { defineConfig } from 'vite'
+import pkg from './package.json'
 
 export default defineConfig({
   base: '/',
   server: { port: 5173 },
+  define: {
+    __APP_VERSION__: JSON.stringify(pkg.version),
+  },
   build: {
     outDir: 'docs',
     emptyOutDir: false,
