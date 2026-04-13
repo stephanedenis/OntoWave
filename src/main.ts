@@ -97,7 +97,7 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   menuBrand.textContent = 'OntoWave.org'
   const versionSpan = document.createElement('span')
   versionSpan.className = 'ontowave-menu-version'
-  versionSpan.textContent = 'v' + __APP_VERSION__
+  versionSpan.textContent = `v${__APP_VERSION__}`
   menuBrand.appendChild(versionSpan)
   floatingMenu.appendChild(menuBrand)
 
