@@ -39,7 +39,7 @@ export async function initOntoWave() {
     const H = document.getElementById('site-header')
     const S = document.getElementById('sidebar')
     const T = document.getElementById('toc')
-    const F = document.getElementById('floating-menu')
+    const F = document.getElementById('ontowave-floating-menu')
     const ui = cfg.ui || {}
     if (ui.minimal) {
       document.body.classList.add('minimal')

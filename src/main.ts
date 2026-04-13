@@ -11,16 +11,236 @@ import { renderConfigPage } from './adapters/browser/configPage'
 import { getJsonFromBundle, getTextFromBundle } from './adapters/browser/bundle'
 import { initUx } from './adapters/browser/ux'
 
+const BOOTSTRAP_CSS = `
+#ontowave-floating-menu {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  cursor: move;
+  transition: all 0.3s ease;
+}
+#ontowave-floating-menu:not(.expanded) {
+  width: 66px;
+  height: 66px;
+  border-radius: 44px;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid #e1e4e8;
+  box-shadow: 0 4px 12px rgba(27,31,35,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#ontowave-floating-menu:not(.expanded):hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(27,31,35,0.25);
+}
+.ontowave-menu-icon {
+  font-size: 30px;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+}
+#ontowave-floating-menu.expanded {
+  border-radius: 22px;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid #e1e4e8;
+  box-shadow: 0 4px 12px rgba(27,31,35,0.15);
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: default;
+}
+.ontowave-menu-brand {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #1a1a1a;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.ontowave-menu-option {
+  background: none;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: #1a1a1a;
+  text-decoration: none;
+}
+.ontowave-menu-option:hover {
+  transform: translateY(-1px);
+  background: #f6f8fa;
+}
+.ontowave-lang-btn {
+  background: #f8f9fa;
+  border: 1px solid #d0d7de;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: #1a1a1a;
+  font-weight: 500;
+}
+.ontowave-lang-btn.active {
+  background: #28a745;
+  border-color: #28a745;
+  color: #fff;
+}
+#ontowave-floating-menu:not(.expanded) .ontowave-menu-brand,
+#ontowave-floating-menu:not(.expanded) .ontowave-menu-option,
+#ontowave-floating-menu:not(.expanded) .ontowave-lang-btn {
+  display: none;
+}
+`
+
+function bootstrapDom(cfg: Record<string, unknown>): void {
+  if (document.getElementById('ontowave-floating-menu')?.querySelector('.ontowave-menu-icon')) return
+
+  // Inject CSS
+  if (!document.getElementById('ow-menu-css')) {
+    const style = document.createElement('style')
+    style.id = 'ow-menu-css'
+    style.textContent = BOOTSTRAP_CSS
+    document.head.appendChild(style)
+  }
+
+  // Get or create the menu container
+  let floatingMenu = document.getElementById('ontowave-floating-menu')
+  if (!floatingMenu) {
+    floatingMenu = document.createElement('div')
+    floatingMenu.id = 'ontowave-floating-menu'
+    document.body.appendChild(floatingMenu)
+  }
+
+  // Icon
+  const icon = document.createElement('span')
+  icon.className = 'ontowave-menu-icon'
+  icon.setAttribute('role', 'button')
+  icon.setAttribute('aria-label', 'Menu OntoWave')
+  icon.setAttribute('aria-expanded', 'false')
+  icon.textContent = '🌊'
+  floatingMenu.appendChild(icon)
+
+  // Brand
+  const brand = document.createElement('a')
+  brand.className = 'ontowave-menu-brand'
+  brand.href = 'https://ontowave.org'
+  brand.target = '_blank'
+  brand.rel = 'noopener'
+  brand.textContent = 'OntoWave.org'
+  floatingMenu.appendChild(brand)
+
+  // Home option
+  const i18n = cfg.i18n as Record<string, unknown> | undefined
+  const roots = (cfg.roots as Array<{ base: string; root: string }>) || []
+  const defaultLang = (i18n?.default as string | undefined)
+    || (roots[0]?.base && roots[0].base !== '/' ? roots[0].base : null)
+    || null
+  const homeHref = defaultLang ? `#${defaultLang}/index` : '#/index'
+  const homeBtn = document.createElement('a')
+  homeBtn.className = 'ontowave-menu-option'
+  homeBtn.href = homeHref
+  homeBtn.textContent = '🏠 Accueil'
+  floatingMenu.appendChild(homeBtn)
+
+  // Language buttons (dynamically from cfg.roots)
+  const updateLangActive = () => {
+    const hash = location.hash || ''
+    floatingMenu!.querySelectorAll<HTMLButtonElement>('.ontowave-lang-btn').forEach(btn => {
+      const base = btn.dataset.lang || ''
+      btn.classList.toggle('active', hash.startsWith(`#${base}/`) || hash.startsWith(`#/${base}/`))
+    })
+  }
+  if (roots.length > 1) {
+    for (const root of roots) {
+      if (!root.base || root.base === '/') continue
+      const langBtn = document.createElement('button')
+      langBtn.className = 'ontowave-lang-btn'
+      langBtn.dataset.lang = root.base
+      langBtn.textContent = root.base.toUpperCase()
+      langBtn.addEventListener('click', () => {
+        location.hash = `#${root.base}/index`
+        floatingMenu!.classList.remove('expanded')
+        icon.setAttribute('aria-expanded', 'false')
+      })
+      floatingMenu.appendChild(langBtn)
+    }
+    updateLangActive()
+    window.addEventListener('hashchange', updateLangActive)
+  }
+
+  // Toggle expand/collapse on icon click
+  icon.addEventListener('click', (e) => {
+    e.stopPropagation()
+    const expanded = floatingMenu!.classList.toggle('expanded')
+    icon.setAttribute('aria-expanded', String(expanded))
+  })
+
+  // Close when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!floatingMenu!.contains(e.target as Node)) {
+      floatingMenu!.classList.remove('expanded')
+      icon.setAttribute('aria-expanded', 'false')
+    }
+  })
+
+  // Drag & Drop — session uniquement (pas de localStorage)
+  let dragging = false, dx = 0, dy = 0
+  floatingMenu.addEventListener('mousedown', (e) => {
+    if (floatingMenu!.classList.contains('expanded')) return
+    dragging = true
+    dx = e.clientX - floatingMenu!.offsetLeft
+    dy = e.clientY - floatingMenu!.offsetTop
+  })
+  document.addEventListener('mousemove', (e) => {
+    if (!dragging) return
+    const x = Math.max(0, Math.min(e.clientX - dx, window.innerWidth - floatingMenu!.offsetWidth))
+    const y = Math.max(0, Math.min(e.clientY - dy, window.innerHeight - floatingMenu!.offsetHeight))
+    floatingMenu!.style.left = x + 'px'
+    floatingMenu!.style.top = y + 'px'
+  })
+  document.addEventListener('mouseup', () => { dragging = false })
+
+  // Touch drag support
+  let tx = 0, ty = 0
+  floatingMenu.addEventListener('touchstart', (e) => {
+    if (floatingMenu!.classList.contains('expanded')) return
+    const touch = e.touches[0]
+    tx = touch.clientX - floatingMenu!.offsetLeft
+    ty = touch.clientY - floatingMenu!.offsetTop
+    dragging = true
+  }, { passive: true })
+  document.addEventListener('touchmove', (e) => {
+    if (!dragging) return
+    const touch = e.touches[0]
+    const x = Math.max(0, Math.min(touch.clientX - tx, window.innerWidth - floatingMenu!.offsetWidth))
+    const y = Math.max(0, Math.min(touch.clientY - ty, window.innerHeight - floatingMenu!.offsetHeight))
+    floatingMenu!.style.left = x + 'px'
+    floatingMenu!.style.top = y + 'px'
+  }, { passive: true })
+  document.addEventListener('touchend', () => { dragging = false })
+}
+
 ;(async () => {
   // Toggle engine via config.json; fallback v2 par défaut si absent
   const cfg = getJsonFromBundle('/config.json') || await fetch('/config.json', { cache: 'no-cache' }).then(r => r.json())
   const engine = cfg.engine ?? 'v2'
+
+  // Bootstrap menu flottant
+  bootstrapDom(cfg)
+
   // UI options
   try {
     const H = document.getElementById('site-header')
     const S = document.getElementById('sidebar')
     const T = document.getElementById('toc')
-    const F = document.getElementById('floating-menu')
+    const F = document.getElementById('ontowave-floating-menu')
     const ui = cfg.ui || {}
     if (ui.minimal) {
   document.body.classList.add('minimal')
@@ -248,7 +468,7 @@ import { initUx } from './adapters/browser/ux'
         const hasSitemap = await check('/sitemap.json')
         const needs = !hasNav || (!hasSearchIdx && !hasSitemap)
         if (needs) {
-          const a = document.querySelector('.floating-menu a[href="#/config"]') as HTMLAnchorElement | null
+          const a = document.querySelector('#ontowave-floating-menu a[href="#/config"]') as HTMLAnchorElement | null
           if (a && !(a.textContent || '').includes('⚠️')) a.textContent = (a.textContent || 'Configuration') + ' ⚠️'
         }
       } catch {}

@@ -270,7 +270,7 @@ body.ow-theme-dark td {
   #sidebar,
   #toc,
   #site-header,
-  #floating-menu,
+  #ontowave-floating-menu,
   .ow-ux-toolbar,
   .ow-notes-panel,
   nav {
@@ -328,8 +328,8 @@ function createThemeLabel(theme: ReadingTheme): string {
 
 export function injectUxToolbar(container: HTMLElement | null, showNotes = true): void {
   if (!container) return
-  // Si la page a un #floating-menu (chrome CDN), on y injecte la barre
-  const floatingMenu = document.getElementById('floating-menu')
+  // Si la page a un #ontowave-floating-menu (chrome CDN), on y injecte la barre
+  const floatingMenu = document.getElementById('ontowave-floating-menu')
   const toolbarTarget = floatingMenu ?? container
   const existing = document.getElementById('ow-ux-toolbar')
   if (existing) existing.remove()

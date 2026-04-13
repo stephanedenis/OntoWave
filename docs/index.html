@@ -91,32 +91,54 @@
       #toc a:hover { color: #0ea5e9; border-left-color: #0ea5e9; }
 
       /* === Menu flottant === */
-      #floating-menu {
+      #ontowave-floating-menu {
         position: fixed;
-        bottom: 1.5rem;
-        right: 1.5rem;
+        top: 20px;
+        left: 20px;
         z-index: 1000;
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 0.75rem;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-        padding: 0.4rem;
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.2rem;
-        min-width: 100px;
+        cursor: move;
+        transition: all 0.3s ease;
       }
-      /* Barre UX dans le menu flottant : surcharger les styles inline */
-      #floating-menu .ow-ux-toolbar {
+      #ontowave-floating-menu:not(.expanded) {
+        width: 66px;
+        height: 66px;
+        border-radius: 44px;
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid #e1e4e8;
+        box-shadow: 0 4px 12px rgba(27,31,35,0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #ontowave-floating-menu:not(.expanded):hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(27,31,35,0.25);
+      }
+      #ontowave-floating-menu.expanded {
+        border-radius: 22px;
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid #e1e4e8;
+        box-shadow: 0 4px 12px rgba(27,31,35,0.15);
+        padding: 10px 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: default;
+      }
+      /* Barre UX dans le menu flottant étendu : affichage en colonne */
+      #ontowave-floating-menu.expanded .ow-ux-toolbar {
         display: flex !important;
         flex-direction: column !important;
-        gap: 0.2rem !important;
+        gap: 0.25rem !important;
         margin: 0 !important;
         padding: 0 !important;
         border: none !important;
       }
-      #floating-menu .ow-theme-btn {
+      #ontowave-floating-menu .ow-theme-btn {
         border-radius: 6px !important;
         text-align: left !important;
         width: 100%;
@@ -128,10 +150,12 @@
       body.ow-theme-dark #sidebar a { color: #cbd5e1; }
       body.ow-theme-dark #sidebar a:hover { background: #334155; }
       body.ow-theme-dark #toc { border-left-color: #334155; }
-      body.ow-theme-dark #floating-menu { background: #1e293b; border-color: #334155; }
+      body.ow-theme-dark #ontowave-floating-menu:not(.expanded) { background: rgba(30,41,59,0.95); border-color: #334155; }
+      body.ow-theme-dark #ontowave-floating-menu.expanded { background: rgba(30,41,59,0.95); border-color: #334155; }
       body.ow-theme-sepia #site-header { background: #3a2a1a; }
       body.ow-theme-sepia #sidebar { background: var(--ow-sidebar-bg, #ede6de); }
-      body.ow-theme-sepia #floating-menu { background: #f4ede4; border-color: #c8b8a8; }
+      body.ow-theme-sepia #ontowave-floating-menu:not(.expanded) { background: rgba(244,237,228,0.97); border-color: #c8b8a8; }
+      body.ow-theme-sepia #ontowave-floating-menu.expanded { background: rgba(244,237,228,0.97); border-color: #c8b8a8; }
 
       /* === Responsive === */
       @media (max-width: 900px) {
@@ -141,7 +165,7 @@
         #layout { flex-direction: column; }
         #sidebar { width: 100%; min-height: unset; border-right: none; border-bottom: 1px solid #e2e8f0; }
         #main { padding: 1rem; }
-        #floating-menu { bottom: 0.75rem; right: 0.75rem; }
+        #ontowave-floating-menu { bottom: 0.75rem; right: 0.75rem; top: auto; }
       }
 
       /* === Utilitaires === */
@@ -162,7 +186,7 @@
         </main>
         <aside id="toc"></aside>
     </div>
-    <div id="floating-menu"></div>
+    <div id="ontowave-floating-menu"></div>
     <script>
         // i18n : redirect vers la langue par défaut si pas de hash
         (function() {
