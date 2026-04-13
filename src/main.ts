@@ -82,8 +82,15 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   const icon = document.createElement('span')
   icon.className = 'ontowave-menu-icon'
   icon.setAttribute('role', 'button')
+  icon.setAttribute('tabindex', '0')
   icon.setAttribute('aria-label', 'Menu OntoWave')
   icon.setAttribute('aria-expanded', 'false')
+  icon.addEventListener('keydown', (event: KeyboardEvent) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      icon.click()
+    }
+  })
   icon.textContent = '🌊'
   floatingMenu.appendChild(icon)
 
