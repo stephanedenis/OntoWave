@@ -11,9 +11,134 @@ import { renderConfigPage } from './adapters/browser/configPage'
 import { getJsonFromBundle, getTextFromBundle } from './adapters/browser/bundle'
 import { initUx } from './adapters/browser/ux'
 
+// CSS injecté quand la bibliothèque bootstrappe elle-même le DOM (page quasi-vide)
+const BOOTSTRAP_CSS = `
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;padding:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'DejaVu Sans',Arial,sans-serif;background:#fff;color:#1a1a1a}
+#ow-content{padding:2rem max(2rem,5vw);max-width:900px;margin:0 auto}
+#app{line-height:1.7}
+#app h1,#app h2,#app h3{margin-top:1.5rem}
+#app table{border-collapse:collapse;width:100%}
+#app th,#app td{border:1px solid #e2e8f0;padding:.4rem .75rem}
+#app th{background:#f8fafc}
+#app pre{background:#f1f5f9;border-radius:6px;padding:1rem;overflow-x:auto}
+#app code{background:#f1f5f9;border-radius:3px;padding:.1em .3em;font-size:.875em}
+#app pre code{background:none;padding:0}
+#app a{color:#0369a1}
+#app a:hover{color:#0ea5e9}
+#app blockquote{border-left:4px solid #e2e8f0;margin-left:0;padding-left:1rem;color:#64748b}
+#floating-menu{position:fixed;top:1rem;left:1rem;z-index:1000}
+#floating-toggle{width:46px;height:46px;border-radius:50%;background:#e91e8c;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(233,30,140,.35);padding:0;transition:background .2s,box-shadow .2s}
+#floating-toggle:hover{background:#c01a79;box-shadow:0 4px 14px rgba(233,30,140,.45)}
+#floating-toggle svg{display:block}
+.ow-float-panel{display:none;margin-top:.5rem;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:.5rem;box-shadow:0 4px 16px rgba(0,0,0,.12);min-width:150px}
+#floating-menu.open .ow-float-panel{display:block}
+.ow-lang-btns{display:flex;gap:.4rem;padding:.25rem .25rem .5rem;border-bottom:1px solid #f0f0f0;margin-bottom:.25rem}
+.ow-lang-btn{background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px;padding:.2rem .6rem;font-size:.85rem;text-decoration:none;color:#334155;font-weight:500}
+.ow-lang-btn:hover{background:#e2e8f0}
+.ow-lang-btn.active{background:#fce4f3;border-color:#e91e8c;color:#a01060}
+body.ow-theme-dark .ow-float-panel{background:#1e293b;border-color:#334155}
+body.ow-theme-dark .ow-lang-btn{background:#334155;border-color:#475569;color:#cbd5e1}
+body.ow-theme-sepia .ow-float-panel{background:#f4ede4;border-color:#c8b8a8}
+.hidden-by-config{display:none!important}
+#floating-menu .ow-ux-toolbar{display:flex!important;flex-direction:column!important;gap:.2rem!important;margin:0!important;padding:0!important;border:none!important}
+#floating-menu .ow-theme-btn{border-radius:6px!important;text-align:left!important;width:100%}
+@media(max-width:600px){#ow-content{padding:1rem}#floating-toggle{width:40px;height:40px}}
+`
+
+/**
+ * Bootstrappe le DOM quand la page est quasi-vide (pas de #app fourni par l'utilisateur).
+ * Crée #app, le menu flottant icône-vague et injecte les styles de base.
+ */
+function bootstrapDom(cfg: Record<string, unknown>): void {
+  if (document.getElementById('app')) return  // page avec HTML custom → rien à faire
+
+  if (!document.getElementById('ow-bootstrap-styles')) {
+    const style = document.createElement('style')
+    style.id = 'ow-bootstrap-styles'
+    style.textContent = BOOTSTRAP_CSS
+    document.head.appendChild(style)
+  }
+
+  const wrapper = document.createElement('div')
+  wrapper.id = 'ow-content'
+  const app = document.createElement('div')
+  app.id = 'app'
+  wrapper.appendChild(app)
+  document.body.appendChild(wrapper)
+
+  if (document.getElementById('floating-menu')) return
+
+  const i18n = (cfg?.i18n as Record<string, unknown>) ?? {}
+  const roots = (cfg?.roots as Array<{ base: string }>) ?? []
+  const langs = ((i18n.supported as string[] | undefined) ?? roots.map(r => r.base))
+    .filter((b): b is string => typeof b === 'string' && b !== '' && b !== '/')
+
+  const floatingMenu = document.createElement('div')
+  floatingMenu.id = 'floating-menu'
+
+  const toggle = document.createElement('button')
+  toggle.id = 'floating-toggle'
+  toggle.setAttribute('aria-label', 'Menu OntoWave')
+  toggle.setAttribute('aria-expanded', 'false')
+  toggle.innerHTML = '<svg viewBox="0 0 28 28" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 17 Q5 9 8 17 Q11 25 14 17 Q17 9 20 17 Q23 25 26 17" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+
+  const panel = document.createElement('div')
+  panel.className = 'ow-float-panel'
+
+  if (langs.length > 1) {
+    const langBtns = document.createElement('div')
+    langBtns.className = 'ow-lang-btns'
+    langBtns.id = 'ow-lang-btns'
+    for (const lang of langs) {
+      const btn = document.createElement('a')
+      btn.className = 'ow-lang-btn'
+      btn.id = `ow-lang-${lang}`
+      btn.href = `#${lang}/index`
+      btn.textContent = lang.toUpperCase()
+      langBtns.appendChild(btn)
+    }
+    panel.appendChild(langBtns)
+  }
+
+  floatingMenu.appendChild(toggle)
+  floatingMenu.appendChild(panel)
+  document.body.appendChild(floatingMenu)
+
+  toggle.addEventListener('click', (e: MouseEvent) => {
+    e.stopPropagation()
+    const open = floatingMenu.classList.toggle('open')
+    toggle.setAttribute('aria-expanded', String(open))
+  })
+  document.addEventListener('click', (e: MouseEvent) => {
+    if (!floatingMenu.contains(e.target as Node)) {
+      floatingMenu.classList.remove('open')
+      toggle.setAttribute('aria-expanded', 'false')
+    }
+  })
+
+  const updateLangLinks = () => {
+    const hash = (location.hash || '').replace(/^#\/?/, '')
+    const seg = hash.split('/')
+    const currentLang = langs.includes(seg[0]) ? seg[0] : (langs[0] ?? '')
+    const path = (langs.includes(seg[0]) ? seg.slice(1).join('/') : hash) || 'index'
+    for (const lang of langs) {
+      const btn = document.getElementById(`ow-lang-${lang}`)
+      if (btn) {
+        btn.setAttribute('href', `#${lang}/${path}`)
+        btn.classList.toggle('active', lang === currentLang)
+      }
+    }
+  }
+  window.addEventListener('hashchange', updateLangLinks)
+  updateLangLinks()
+}
+
 ;(async () => {
   // Toggle engine via config.json; fallback v2 par défaut si absent
   const cfg = getJsonFromBundle('/config.json') || await fetch('/config.json', { cache: 'no-cache' }).then(r => r.json())
+  // Bootstrapper le DOM si la page est quasi-vide (pas de #app fourni)
+  bootstrapDom(cfg as Record<string, unknown>)
   const engine = cfg.engine ?? 'v2'
   // UI options
   try {

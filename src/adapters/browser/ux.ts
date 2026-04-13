@@ -330,7 +330,9 @@ export function injectUxToolbar(container: HTMLElement | null, showNotes = true)
   if (!container) return
   // Si la page a un #floating-menu (chrome CDN), on y injecte la barre
   const floatingMenu = document.getElementById('floating-menu')
-  const toolbarTarget = floatingMenu ?? container
+  // Préférer le panneau .ow-float-panel s'il existe (mode minimal avec icône vague)
+  const floatPanel = floatingMenu ? (floatingMenu.querySelector('.ow-float-panel') as HTMLElement | null) : null
+  const toolbarTarget = (floatPanel ?? floatingMenu) ?? container
   const existing = document.getElementById('ow-ux-toolbar')
   if (existing) existing.remove()
   // Supprimer aussi l'ancien panneau de notes s'il existe

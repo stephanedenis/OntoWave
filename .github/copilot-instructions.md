@@ -2,7 +2,10 @@
 
 ## Présentation du projet
 
-**OntoWave** est une bibliothèque JavaScript legère (zéro dépendance, un seul fichier distribué) qui transforme des fichiers Markdown en documentation interactive dans le navigateur. Elle supporte le multilingue, les tableaux alignés, KaTeX, Mermaid, PlantUML et les diagrammes SVG inline.
+**OntoWave** est un noyau de navigation (~100KB, **zéro dépendance**) pour sites statiques et applications web. Il transforme des fichiers Markdown en documentation interactive dans le navigateur, avec routing SPA basé sur le hash URL et chargement d'extensions à la demande (Mermaid, KaTeX, PlantUML, etc.).
+
+> **Contrainte « zéro dépendance »** : s'applique au **noyau** `dist/ontowave.js` uniquement.
+> Les extensions vivent dans `dist/extensions/` et sont chargées dynamiquement — elles peuvent avoir des dépendances.
 
 - Package npm : `ontowave`
 - Sites : https://ontowave.org et https://ontowave.com (identiques)
@@ -10,6 +13,39 @@
 - Les sites sont traduits automatiquement en anglais (fichiers `.en.md` générés ou maintenus en parallèle)
 - Licence : CC-BY-NC-SA-4.0
 - Auteur : Stéphane Denis
+
+## État actuel de l'implémentation
+
+> **Important pour les agents** : distinguer ce qui est **déjà implémenté** de ce qui est **à faire**.
+
+### Implémenté (dans `main`)
+
+- `bootstrapDom(cfg)` dans `src/main.ts` : la librairie crée tout le DOM (shell, menu, layout)
+- `docs/index.html` est quasi-vide : juste `<script src="/ontowave.min.js">` — c'est la référence
+- Routing SPA hash-based via `src/router.ts`
+- Fetch + cache de fichiers Markdown
+- Rendu Markdown, KaTeX, Mermaid, Highlight, PlantUML, SVG inline (**tout bundlé dans un seul fichier, ~4.7MB actuellement**)
+
+### À faire (issues ouvertes)
+
+| Milestone | Issues | Objet |
+|---|---|---|
+| v1.1 | #76, #17 | Menu flottant (spec visuelle) + responsive |
+| v2.0 | #72, #73, #74, #75 | Architecture modulaire : extraire les moteurs lourds en extensions lazy-load |
+| v2.0 | #77 | Mode composant `createApp({ container })` |
+
+### Architecture cible (NE PAS anticiper avant les issues correspondantes)
+
+```
+dist/ontowave.js   ≤ 200KB   ← noyau (zéro dépendance)
+dist/extensions/
+  ├── markdown.js             ← chargé par default
+  ├── mermaid.js              ← chargé si bloc ```mermaid détecté
+  ├── katex.js
+  └── ...
+```
+
+Spécifications complètes : [docs/specs/architecture.fr.md](../docs/specs/architecture.fr.md) et [docs/specs/roadmap.fr.md](../docs/specs/roadmap.fr.md).
 
 ## Stack technique
 
@@ -60,6 +96,45 @@ tests/          # Tests Vitest (unitaires) et Playwright (E2E sur les pages de d
 - Chaque nouvelle fonctionnalité doit avoir un test dans `tests/` ET une page de démo dans `docs/`
 - Les tests Playwright vérifient : absence d'erreurs console, rendu du contenu, régression visuelle (screenshots)
 
+## Mode de travail — Chat vs Agents (non négociable)
+
+> **Le chat VS Code est réservé aux spécifications et aux décisions de conception.**
+> **Toute implémentation est déléguée aux agents GitHub Copilot via des issues.**
+
+### Rôles
+
+| Contexte | Rôle |
+|---|---|
+| Chat VS Code | Spécifications, discussions d'architecture, rédaction de `docs/specs/*.fr.md` |
+| Issues GitHub + agents | Implémentation, tests, refactoring, corrections |
+
+### Règles
+
+1. **Aucune implémentation dans le chat** — si une décision de conception est prise, elle doit aboutir à une issue, pas à un changement de code dans le chat
+2. **Chaque issue référence sa spec** — tout travail d'implémentation doit citer le fichier `docs/specs/` correspondant
+3. **Une issue = une tâche atomique** — suffisamment bien spécifiée pour qu'un agent puisse l'exécuter de façon autonome sans questions
+4. **Les agents Copilot sont assignés par défaut** — c'est le mode de travail préféré pour toutes les tâches définies
+5. **Le chat valide** — après qu'un agent a terminé, le chat peut examiner le résultat et éventuellement créer de nouvelles issues
+
+### Format d'une bonne issue pour agent
+
+```markdown
+## Contexte
+Référence à la spec : docs/specs/xxx.fr.md §N
+
+## Travail demandé
+- [ ] Tâche précise 1
+- [ ] Tâche précise 2
+
+## Critères d'acceptation
+- npm test passe
+- npm run build:package passe
+- [critère fonctionnel spécifique]
+
+## À ne pas faire
+- [contrainte explicite]
+```
+
 ## Workflow Git & Livraison
 
 ### Règles de branchement (non négociables)
@@ -77,6 +152,39 @@ Avant tout merge, les conditions suivantes doivent être satisfaites :
 2. Les tests Vitest passent : `npm test`
 3. Les tests de régression Playwright passent sur le serveur local : `npm run test:e2e`
 4. `npm run check` passe sans erreur (lint + type-check + tests + spell + build)
+
+### Pipeline d'automatisation (minimum d'intervention humaine)
+
+```
+Issue GitHub (spec claire)
+  → Copilot coding agent → branche feat/<n>-slug → implémentation → PR
+    → GitHub Actions CI (gate bloquant sur main)
+      ├── Vitest (tests unitaires) — BLOQUANT
+      ├── Playwright E2E local (tests de régression) — BLOQUANT
+      ├── lint + type-check + build — BLOQUANT
+      └── Si tout vert → auto-merge automatique
+        → npm publish (patch bump) → GitHub Pages
+          → Smoke-test Playwright sur https://ontowave.org
+            → Si échec → issue GitHub créée automatiquement
+```
+
+#### Rôles dans le pipeline
+
+| Acteur | Rôle |
+|---|---|
+| **Chat VS Code** | Spécifications, décisions d'architecture, revue des résultats, création d'issues |
+| **Copilot coding agents** | Implémentation des issues, création de branches et PRs |
+| **GitHub Actions CI** | Gate automatique — bloque le merge si tests échouent |
+| **Auto-merge** | Merge automatique dès que CI est vert (activé sur le repo) |
+| **Humain** | Uniquement en cas d'échec inattendu ou décision d'architecture |
+
+#### Protection de branche `main` (active)
+
+- Aucun push direct dans `main` — tout passe par une PR
+- Le job CI `build` doit passer (Vitest + Playwright + lint + build)
+- 0 approbation humaine requise — CI suffit
+- Force-push et suppression interdits
+- Branche source supprimée automatiquement après merge
 
 ### Pipeline de déploiement (déclenché par merge dans `main`)
 
@@ -111,9 +219,30 @@ Après que le tag `latest` npm est mis à jour, un smoke-test Playwright doit ê
 - `normalizePath()` dans `src/core/logic.ts` est la référence pour la normalisation des chemins
 - Quand on crée ou modifie un fichier `.fr.md`, toujours créer ou mettre à jour le `.en.md` correspondant
 
+## Principe fondateur — HTML minimal
+
+> **La page HTML est quasi-vide. La librairie crée tout le DOM.**
+
+La spécification complète est dans [docs/specs/interface.fr.md](../docs/specs/interface.fr.md).
+
+### `docs/index.html` — Invariants anti-dérive (non négociables)
+
+`docs/index.html` est la **référence utilisateur**. Elle ne doit contenir que : DOCTYPE + head (meta/title) + `<noscript>` SEO + `<script src="/ontowave.min.js">`.
+
+Tout `<style>`, `#site-header`, `#sidebar`, `#layout` ou `#toc` dans `docs/index.html` est une **dérive de conception** — à corriger immédiatement.
+
+### Menu flottant — Identité visuelle de référence
+
+- **Fond** : `rgba(255,255,255,0.95)` + `backdrop-filter: blur(10px)` + `border: 1px solid #e1e4e8`
+- **Icône** : `&#127754;` (🌊 emoji natif), cercle compact ≈ 66×66px
+- **Expansion** : horizontale (pill), révèle brand + options + boutons langue
+- **Drag & Drop** : obligatoire, session uniquement
+- **Pas de** header fixe, sidebar, TOC dans le DOM — navigation via le menu flottant uniquement
+
 ## À éviter
 
 - N'ajoute pas de dépendances npm dans `dependencies` — la lib doit rester zéro-dépendance
 - N'utilise pas d'API navigateur dans `src/core/` (DOM, fetch, localStorage…)
 - N'introduis pas de code-splitting ou de chunks dynamiques dans le build de distribution
 - N'écris pas de tests `it.only` ou `test.only` sans retirer le `.only` avant commit
+- N'ajoute pas de `<style>`, `#site-header`, `#sidebar` ou `#layout` dans `docs/index.html`
