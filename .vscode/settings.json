@@ -1,4 +1,21 @@
 {
+  // Nom du workspace affiché dans la barre de titre
+  "window.title": "🌊 OntoWave — ${activeEditorShort}${separator}${rootName}",
+
+  // Couleurs harmonisées au logo OntoWave (bleu marine + bleu ciel)
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#1e293b",
+    "titleBar.activeForeground": "#f1f5f9",
+    "titleBar.inactiveBackground": "#1e293b99",
+    "titleBar.inactiveForeground": "#94a3b8",
+    "titleBar.border": "#38bdf820",
+    "statusBar.background": "#0369a1",
+    "statusBar.foreground": "#f0f9ff",
+    "statusBar.noFolderBackground": "#1e293b",
+    "statusBarItem.hoverBackground": "#0ea5e940",
+    "statusBar.border": "#38bdf820"
+  },
+
   // Interface VS Code en français (si pack installé)
   "locale": "fr",
 
