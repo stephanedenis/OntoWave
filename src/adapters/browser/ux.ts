@@ -270,7 +270,7 @@ body.ow-theme-dark td {
   #sidebar,
   #toc,
   #site-header,
-  #floating-menu,
+  #ontowave-floating-menu,
   .ow-ux-toolbar,
   .ow-notes-panel,
   nav {
@@ -328,11 +328,9 @@ function createThemeLabel(theme: ReadingTheme): string {
 
 export function injectUxToolbar(container: HTMLElement | null, showNotes = true): void {
   if (!container) return
-  // Si la page a un #floating-menu (chrome CDN), on y injecte la barre
-  const floatingMenu = document.getElementById('floating-menu')
-  // Préférer le panneau .ow-float-panel s'il existe (mode minimal avec icône vague)
-  const floatPanel = floatingMenu ? (floatingMenu.querySelector('.ow-float-panel') as HTMLElement | null) : null
-  const toolbarTarget = (floatPanel ?? floatingMenu) ?? container
+  // Si la page a un #ontowave-floating-menu (chrome CDN), on y injecte la barre
+  const floatingMenu = document.getElementById('ontowave-floating-menu')
+  const toolbarTarget = floatingMenu ?? container
   const existing = document.getElementById('ow-ux-toolbar')
   if (existing) existing.remove()
   // Supprimer aussi l'ancien panneau de notes s'il existe

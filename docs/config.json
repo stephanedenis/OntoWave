@@ -6,8 +6,5 @@
   "i18n": {
     "default": "fr",
     "supported": ["fr", "en"]
-  },
-  "ui": {
-    "minimal": true
   }
 }

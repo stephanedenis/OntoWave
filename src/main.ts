@@ -27,23 +27,21 @@ body{margin:0;padding:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'D
 #app a{color:#0369a1}
 #app a:hover{color:#0ea5e9}
 #app blockquote{border-left:4px solid #e2e8f0;margin-left:0;padding-left:1rem;color:#64748b}
-#floating-menu{position:fixed;top:1rem;left:1rem;z-index:1000}
-#floating-toggle{width:46px;height:46px;border-radius:50%;background:#e91e8c;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(233,30,140,.35);padding:0;transition:background .2s,box-shadow .2s}
-#floating-toggle:hover{background:#c01a79;box-shadow:0 4px 14px rgba(233,30,140,.45)}
-#floating-toggle svg{display:block}
-.ow-float-panel{display:none;margin-top:.5rem;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:.5rem;box-shadow:0 4px 16px rgba(0,0,0,.12);min-width:150px}
-#floating-menu.open .ow-float-panel{display:block}
-.ow-lang-btns{display:flex;gap:.4rem;padding:.25rem .25rem .5rem;border-bottom:1px solid #f0f0f0;margin-bottom:.25rem}
-.ow-lang-btn{background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px;padding:.2rem .6rem;font-size:.85rem;text-decoration:none;color:#334155;font-weight:500}
-.ow-lang-btn:hover{background:#e2e8f0}
-.ow-lang-btn.active{background:#fce4f3;border-color:#e91e8c;color:#a01060}
-body.ow-theme-dark .ow-float-panel{background:#1e293b;border-color:#334155}
-body.ow-theme-dark .ow-lang-btn{background:#334155;border-color:#475569;color:#cbd5e1}
-body.ow-theme-sepia .ow-float-panel{background:#f4ede4;border-color:#c8b8a8}
 .hidden-by-config{display:none!important}
-#floating-menu .ow-ux-toolbar{display:flex!important;flex-direction:column!important;gap:.2rem!important;margin:0!important;padding:0!important;border:none!important}
-#floating-menu .ow-theme-btn{border-radius:6px!important;text-align:left!important;width:100%}
-@media(max-width:600px){#ow-content{padding:1rem}#floating-toggle{width:40px;height:40px}}
+@media(max-width:600px){#ow-content{padding:1rem}}
+#ontowave-floating-menu{position:fixed;top:20px;left:20px;z-index:1000;cursor:move;transition:all 0.3s ease}
+#ontowave-floating-menu:not(.expanded){width:66px;height:66px;border-radius:44px;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid #e1e4e8;box-shadow:0 4px 12px rgba(27,31,35,0.15);display:flex;align-items:center;justify-content:center}
+#ontowave-floating-menu:not(.expanded):hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(27,31,35,0.25)}
+.ontowave-menu-icon{font-size:30px;line-height:1;cursor:pointer;user-select:none}
+#ontowave-floating-menu.expanded{border-radius:22px;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid #e1e4e8;box-shadow:0 4px 12px rgba(27,31,35,0.15);padding:10px 18px;display:flex;align-items:center;gap:10px;cursor:default}
+.ontowave-menu-brand{font-weight:600;font-size:0.9rem;color:#1a1a1a;text-decoration:none;white-space:nowrap}
+.ontowave-menu-option{background:none;border:1px solid #d0d7de;border-radius:6px;padding:4px 10px;font-size:0.85rem;cursor:pointer;color:#1a1a1a;text-decoration:none}
+.ontowave-menu-option:hover{transform:translateY(-1px);background:#f6f8fa}
+.ontowave-lang-btn{background:#f8f9fa;border:1px solid #d0d7de;border-radius:4px;padding:3px 8px;font-size:0.8rem;cursor:pointer;color:#1a1a1a;font-weight:500}
+.ontowave-lang-btn.active{background:#28a745;border-color:#28a745;color:#fff}
+#ontowave-floating-menu:not(.expanded) .ontowave-menu-brand,
+#ontowave-floating-menu:not(.expanded) .ontowave-menu-option,
+#ontowave-floating-menu:not(.expanded) .ontowave-lang-btn{display:none}
 `
 
 /**
@@ -67,71 +65,120 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   wrapper.appendChild(app)
   document.body.appendChild(wrapper)
 
-  if (document.getElementById('floating-menu')) return
+  if (document.getElementById('ontowave-floating-menu')) return
 
-  const i18n = (cfg?.i18n as Record<string, unknown>) ?? {}
-  const roots = (cfg?.roots as Array<{ base: string }>) ?? []
-  const langs = ((i18n.supported as string[] | undefined) ?? roots.map(r => r.base))
-    .filter((b): b is string => typeof b === 'string' && b !== '' && b !== '/')
+  const i18n = cfg.i18n as Record<string, unknown> | undefined
+  const roots = (cfg.roots as Array<{ base: string; root: string }>) || []
+  const defaultLang = (i18n?.default as string | undefined)
+    || (roots[0]?.base && roots[0].base !== '/' ? roots[0].base : null)
+    || null
+  const homeHref = defaultLang ? `#${defaultLang}/index` : '#/index'
 
   const floatingMenu = document.createElement('div')
-  floatingMenu.id = 'floating-menu'
-
-  const toggle = document.createElement('button')
-  toggle.id = 'floating-toggle'
-  toggle.setAttribute('aria-label', 'Menu OntoWave')
-  toggle.setAttribute('aria-expanded', 'false')
-  toggle.innerHTML = '<svg viewBox="0 0 28 28" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 17 Q5 9 8 17 Q11 25 14 17 Q17 9 20 17 Q23 25 26 17" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-
-  const panel = document.createElement('div')
-  panel.className = 'ow-float-panel'
-
-  if (langs.length > 1) {
-    const langBtns = document.createElement('div')
-    langBtns.className = 'ow-lang-btns'
-    langBtns.id = 'ow-lang-btns'
-    for (const lang of langs) {
-      const btn = document.createElement('a')
-      btn.className = 'ow-lang-btn'
-      btn.id = `ow-lang-${lang}`
-      btn.href = `#${lang}/index`
-      btn.textContent = lang.toUpperCase()
-      langBtns.appendChild(btn)
-    }
-    panel.appendChild(langBtns)
-  }
-
-  floatingMenu.appendChild(toggle)
-  floatingMenu.appendChild(panel)
+  floatingMenu.id = 'ontowave-floating-menu'
   document.body.appendChild(floatingMenu)
 
-  toggle.addEventListener('click', (e: MouseEvent) => {
+  // Icon
+  const icon = document.createElement('span')
+  icon.className = 'ontowave-menu-icon'
+  icon.setAttribute('role', 'button')
+  icon.setAttribute('aria-label', 'Menu OntoWave')
+  icon.setAttribute('aria-expanded', 'false')
+  icon.textContent = '🌊'
+  floatingMenu.appendChild(icon)
+
+  // Brand
+  const menuBrand = document.createElement('a')
+  menuBrand.className = 'ontowave-menu-brand'
+  menuBrand.href = 'https://ontowave.org'
+  menuBrand.target = '_blank'
+  menuBrand.rel = 'noopener'
+  menuBrand.textContent = 'OntoWave.org'
+  floatingMenu.appendChild(menuBrand)
+
+  // Home option
+  const homeBtn = document.createElement('a')
+  homeBtn.className = 'ontowave-menu-option'
+  homeBtn.href = homeHref
+  homeBtn.textContent = '🏠 Accueil'
+  floatingMenu.appendChild(homeBtn)
+
+  // Language buttons (dynamically from cfg.roots)
+  const updateLangActive = () => {
+    const hash = location.hash || ''
+    floatingMenu.querySelectorAll<HTMLButtonElement>('.ontowave-lang-btn').forEach(btn => {
+      const base = btn.dataset.lang || ''
+      btn.classList.toggle('active', hash.startsWith(`#${base}/`) || hash.startsWith(`#/${base}/`))
+    })
+  }
+  if (roots.length > 1) {
+    for (const root of roots) {
+      if (!root.base || root.base === '/') continue
+      const langBtn = document.createElement('button')
+      langBtn.className = 'ontowave-lang-btn'
+      langBtn.dataset.lang = root.base
+      langBtn.textContent = root.base.toUpperCase()
+      langBtn.addEventListener('click', () => {
+        location.hash = `#${root.base}/index`
+        floatingMenu.classList.remove('expanded')
+        icon.setAttribute('aria-expanded', 'false')
+      })
+      floatingMenu.appendChild(langBtn)
+    }
+    updateLangActive()
+    window.addEventListener('hashchange', updateLangActive)
+  }
+
+  // Toggle expand/collapse on icon click
+  icon.addEventListener('click', (e) => {
     e.stopPropagation()
-    const open = floatingMenu.classList.toggle('open')
-    toggle.setAttribute('aria-expanded', String(open))
+    const expanded = floatingMenu.classList.toggle('expanded')
+    icon.setAttribute('aria-expanded', String(expanded))
   })
-  document.addEventListener('click', (e: MouseEvent) => {
+
+  // Close when clicking outside
+  document.addEventListener('click', (e) => {
     if (!floatingMenu.contains(e.target as Node)) {
-      floatingMenu.classList.remove('open')
-      toggle.setAttribute('aria-expanded', 'false')
+      floatingMenu.classList.remove('expanded')
+      icon.setAttribute('aria-expanded', 'false')
     }
   })
 
-  const updateLangLinks = () => {
-    const hash = (location.hash || '').replace(/^#\/?/, '')
-    const seg = hash.split('/')
-    const currentLang = langs.includes(seg[0]) ? seg[0] : (langs[0] ?? '')
-    const path = (langs.includes(seg[0]) ? seg.slice(1).join('/') : hash) || 'index'
-    for (const lang of langs) {
-      const btn = document.getElementById(`ow-lang-${lang}`)
-      if (btn) {
-        btn.setAttribute('href', `#${lang}/${path}`)
-        btn.classList.toggle('active', lang === currentLang)
-      }
-    }
-  }
-  window.addEventListener('hashchange', updateLangLinks)
-  updateLangLinks()
+  // Drag & Drop — session uniquement (pas de localStorage)
+  let dragging = false, dx = 0, dy = 0
+  floatingMenu.addEventListener('mousedown', (e) => {
+    if (floatingMenu.classList.contains('expanded')) return
+    dragging = true
+    dx = e.clientX - floatingMenu.offsetLeft
+    dy = e.clientY - floatingMenu.offsetTop
+  })
+  document.addEventListener('mousemove', (e) => {
+    if (!dragging) return
+    const x = Math.max(0, Math.min(e.clientX - dx, window.innerWidth - floatingMenu.offsetWidth))
+    const y = Math.max(0, Math.min(e.clientY - dy, window.innerHeight - floatingMenu.offsetHeight))
+    floatingMenu.style.left = x + 'px'
+    floatingMenu.style.top = y + 'px'
+  })
+  document.addEventListener('mouseup', () => { dragging = false })
+
+  // Touch drag support
+  let tx = 0, ty = 0
+  floatingMenu.addEventListener('touchstart', (e) => {
+    if (floatingMenu.classList.contains('expanded')) return
+    const touch = e.touches[0]
+    tx = touch.clientX - floatingMenu.offsetLeft
+    ty = touch.clientY - floatingMenu.offsetTop
+    dragging = true
+  }, { passive: true })
+  document.addEventListener('touchmove', (e) => {
+    if (!dragging) return
+    const touch = e.touches[0]
+    const x = Math.max(0, Math.min(touch.clientX - tx, window.innerWidth - floatingMenu.offsetWidth))
+    const y = Math.max(0, Math.min(touch.clientY - ty, window.innerHeight - floatingMenu.offsetHeight))
+    floatingMenu.style.left = x + 'px'
+    floatingMenu.style.top = y + 'px'
+  }, { passive: true })
+  document.addEventListener('touchend', () => { dragging = false })
 }
 
 ;(async () => {
@@ -140,12 +187,13 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   // Bootstrapper le DOM si la page est quasi-vide (pas de #app fourni)
   bootstrapDom(cfg as Record<string, unknown>)
   const engine = cfg.engine ?? 'v2'
+
   // UI options
   try {
     const H = document.getElementById('site-header')
     const S = document.getElementById('sidebar')
     const T = document.getElementById('toc')
-    const F = document.getElementById('floating-menu')
+    const F = document.getElementById('ontowave-floating-menu')
     const ui = cfg.ui || {}
     if (ui.minimal) {
   document.body.classList.add('minimal')
@@ -373,7 +421,7 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
         const hasSitemap = await check('/sitemap.json')
         const needs = !hasNav || (!hasSearchIdx && !hasSitemap)
         if (needs) {
-          const a = document.querySelector('.floating-menu a[href="#/config"]') as HTMLAnchorElement | null
+          const a = document.querySelector('#ontowave-floating-menu a[href="#/config"]') as HTMLAnchorElement | null
           if (a && !(a.textContent || '').includes('⚠️')) a.textContent = (a.textContent || 'Configuration') + ' ⚠️'
         }
       } catch {}

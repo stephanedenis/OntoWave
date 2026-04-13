@@ -65,12 +65,11 @@ test.describe('Page principale (docs/index.html)', () => {
     // Mode minimal : le chrome (header, sidebar) est masqué
     await expect(page.locator('#site-header')).toBeHidden()
 
-    // Menu flottant avec icône vague (toujours visible)
-    await expect(page.locator('#floating-menu')).toBeVisible()
-    await expect(page.locator('#floating-toggle')).toBeVisible()
+    // Menu flottant (créé par bootstrapDom)
+    await expect(page.locator('#ontowave-floating-menu')).toBeVisible()
 
-    // Le panneau de langue doit exister dans le DOM
-    await expect(page.locator('.ow-lang-btn')).toHaveCount(2)
+    // Les boutons de langue doivent exister dans le DOM
+    await expect(page.locator('.ontowave-lang-btn')).toHaveCount(2)
 
     // En mode bootstrap minimal, sidebar n'est pas créé par la lib (pas nécessaire)
     // #app doit exister et contenir du contenu
@@ -90,5 +89,50 @@ test.describe('Page principale (docs/index.html)', () => {
 
     expect(hasLibrary, 'ontowave.min.js doit être chargé').toBe(true)
     expect(hasSPA, 'Les assets SPA Vite ne doivent PAS être chargés en production').toBe(false)
+  })
+
+  test('menu flottant — clic icône → état étendu, brand visible', async ({ page }) => {
+    await page.goto('/')
+    await page.waitForFunction(() => {
+      const menu = document.getElementById('ontowave-floating-menu')
+      return menu && menu.querySelector('.ontowave-menu-icon')
+    }, { timeout: 15000 })
+
+    const menu = page.locator('#ontowave-floating-menu')
+    const icon = page.locator('.ontowave-menu-icon')
+    const brand = page.locator('.ontowave-menu-brand')
+
+    // État initial : compact, brand masqué
+    await expect(menu).not.toHaveClass(/expanded/)
+
+    // Clic → état étendu
+    await icon.click()
+    await expect(menu).toHaveClass(/expanded/)
+    await expect(brand).toBeVisible()
+    const ariaExpanded = await icon.getAttribute('aria-expanded')
+    expect(ariaExpanded).toBe('true')
+
+    // Clic à nouveau → retour compact, brand masqué
+    await icon.click()
+    await expect(menu).not.toHaveClass(/expanded/)
+    await expect(brand).not.toBeVisible()
+    const ariaExpanded2 = await icon.getAttribute('aria-expanded')
+    expect(ariaExpanded2).toBe('false')
+  })
+
+  test('menu flottant — contient icône 🌊 et lien 🏠', async ({ page }) => {
+    await page.goto('/')
+    await page.waitForFunction(() => {
+      const menu = document.getElementById('ontowave-floating-menu')
+      return menu && menu.querySelector('.ontowave-menu-icon')
+    }, { timeout: 15000 })
+
+    const icon = page.locator('.ontowave-menu-icon')
+    await expect(icon).toContainText('🌊')
+
+    await icon.click()
+    const homeBtn = page.locator('.ontowave-menu-option')
+    await expect(homeBtn).toBeVisible()
+    await expect(homeBtn).toContainText('🏠')
   })
 })

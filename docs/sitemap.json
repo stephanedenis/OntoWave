@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-04-10T19:48:33.336Z",
-  "count": 68,
+  "generatedAt": "2026-04-13T15:29:11.095Z",
+  "count": 80,
   "i18n": {
     "default": "fr",
     "supported": [
@@ -204,13 +204,49 @@
     {
       "path": "docs/index.en.md",
       "route": "#/en/index",
-      "title": "OntoWave [v1.0.44](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)",
+      "title": "OntoWave [v1.0.45](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)",
       "base": "fr"
     },
     {
       "path": "docs/index.en.md",
       "route": "#/en/index",
-      "title": "OntoWave [v1.0.44](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)",
+      "title": "OntoWave [v1.0.45](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)",
+      "base": "en"
+    },
+    {
+      "path": "docs/specs/architecture.en.md",
+      "route": "#/en/specs/architecture",
+      "title": "OntoWave Modular Architecture",
+      "base": "fr"
+    },
+    {
+      "path": "docs/specs/architecture.en.md",
+      "route": "#/en/specs/architecture",
+      "title": "OntoWave Modular Architecture",
+      "base": "en"
+    },
+    {
+      "path": "docs/specs/interface.en.md",
+      "route": "#/en/specs/interface",
+      "title": "Specifications — OntoWave Bootstrap Interface",
+      "base": "fr"
+    },
+    {
+      "path": "docs/specs/interface.en.md",
+      "route": "#/en/specs/interface",
+      "title": "Specifications — OntoWave Bootstrap Interface",
+      "base": "en"
+    },
+    {
+      "path": "docs/specs/roadmap.en.md",
+      "route": "#/en/specs/roadmap",
+      "title": "OntoWave Roadmap",
+      "base": "fr"
+    },
+    {
+      "path": "docs/specs/roadmap.en.md",
+      "route": "#/en/specs/roadmap",
+      "title": "OntoWave Roadmap",
       "base": "en"
     },
     {
@@ -408,13 +444,49 @@
     {
       "path": "docs/index.fr.md",
       "route": "#/fr/index",
-      "title": "OntoWave [v1.0.44](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)",
+      "title": "OntoWave [v1.0.45](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)",
       "base": "fr"
     },
     {
       "path": "docs/index.fr.md",
       "route": "#/fr/index",
-      "title": "OntoWave [v1.0.44](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)",
+      "title": "OntoWave [v1.0.45](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)",
+      "base": "en"
+    },
+    {
+      "path": "docs/specs/architecture.fr.md",
+      "route": "#/fr/specs/architecture",
+      "title": "Architecture modulaire OntoWave",
+      "base": "fr"
+    },
+    {
+      "path": "docs/specs/architecture.fr.md",
+      "route": "#/fr/specs/architecture",
+      "title": "Architecture modulaire OntoWave",
+      "base": "en"
+    },
+    {
+      "path": "docs/specs/interface.fr.md",
+      "route": "#/fr/specs/interface",
+      "title": "Spécifications — Interface Bootstrap OntoWave",
+      "base": "fr"
+    },
+    {
+      "path": "docs/specs/interface.fr.md",
+      "route": "#/fr/specs/interface",
+      "title": "Spécifications — Interface Bootstrap OntoWave",
+      "base": "en"
+    },
+    {
+      "path": "docs/specs/roadmap.fr.md",
+      "route": "#/fr/specs/roadmap",
+      "title": "Roadmap OntoWave",
+      "base": "fr"
+    },
+    {
+      "path": "docs/specs/roadmap.fr.md",
+      "route": "#/fr/specs/roadmap",
+      "title": "Roadmap OntoWave",
       "base": "en"
     }
   ]
