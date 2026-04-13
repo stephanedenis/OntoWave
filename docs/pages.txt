@@ -31,7 +31,13 @@ en/fr/demos/03-ux/themes.md
 en/fr/demos/03-ux/ux.md
 en/fr/demos/index.md
 en/fr/index.md
+en/fr/specs/architecture.md
+en/fr/specs/interface.md
+en/fr/specs/roadmap.md
 en/index.md
+en/specs/architecture.md
+en/specs/interface.md
+en/specs/roadmap.md
 fr/demos/01-base/markdown.md
 fr/demos/01-base/mermaid.md
 fr/demos/01-base/plantuml.md
@@ -65,4 +71,10 @@ fr/en/demos/03-ux/themes.md
 fr/en/demos/03-ux/ux.md
 fr/en/demos/index.md
 fr/en/index.md
+fr/en/specs/architecture.md
+fr/en/specs/interface.md
+fr/en/specs/roadmap.md
 fr/index.md
+fr/specs/architecture.md
+fr/specs/interface.md
+fr/specs/roadmap.md

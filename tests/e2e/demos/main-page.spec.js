@@ -54,7 +54,7 @@ test.describe('Page principale (docs/index.html)', () => {
     }, { timeout: 15000 })
   })
 
-  test('doit avoir le chrome de page (header, sidebar, floating menu)', async ({ page }) => {
+  test('doit avoir le menu flottant (icône vague)', async ({ page }) => {
     await page.goto('/')
     // Attendre contenu
     await page.waitForFunction(() => {
@@ -62,30 +62,18 @@ test.describe('Page principale (docs/index.html)', () => {
       return app && app.textContent && app.textContent.trim().length > 50
     }, { timeout: 15000 })
 
-    // Header avec le brand
-    await expect(page.locator('#site-header')).toBeVisible()
-    await expect(page.locator('#brand')).toBeVisible()
+    // Mode minimal : le chrome (header, sidebar) est masqué
+    await expect(page.locator('#site-header')).toBeHidden()
 
     // Menu flottant (créé par bootstrapDom)
     await expect(page.locator('#ontowave-floating-menu')).toBeVisible()
 
-    // Sidebar (peut être vide si pas de nav.yml/sitemap, mais doit exister)
-    await expect(page.locator('#sidebar')).toBeAttached()
-  })
+    // Les boutons de langue doivent exister dans le DOM
+    await expect(page.locator('.ontowave-lang-btn')).toHaveCount(2)
 
-  test('doit charger ontowave.min.js (pas les assets SPA Vite)', async ({ page }) => {
-    const scripts = []
-    page.on('request', req => {
-      if (req.resourceType() === 'script') scripts.push(req.url())
-    })
-    await page.goto('/')
-    await page.waitForLoadState('networkidle')
-
-    const hasLibrary = scripts.some(s => s.includes('ontowave.min.js'))
-    const hasSPA = scripts.some(s => s.includes('/assets/index-'))
-
-    expect(hasLibrary, 'ontowave.min.js doit être chargé').toBe(true)
-    expect(hasSPA, 'Les assets SPA Vite ne doivent PAS être chargés en production').toBe(false)
+    // En mode bootstrap minimal, sidebar n'est pas créé par la lib (pas nécessaire)
+    // #app doit exister et contenir du contenu
+    await expect(page.locator('#app')).toBeAttached()
   })
 
   test('doit charger ontowave.min.js (pas les assets SPA Vite)', async ({ page }) => {

@@ -11,112 +11,72 @@ import { renderConfigPage } from './adapters/browser/configPage'
 import { getJsonFromBundle, getTextFromBundle } from './adapters/browser/bundle'
 import { initUx } from './adapters/browser/ux'
 
+// CSS injecté quand la bibliothèque bootstrappe elle-même le DOM (page quasi-vide)
 const BOOTSTRAP_CSS = `
-#ontowave-floating-menu {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  z-index: 1000;
-  cursor: move;
-  transition: all 0.3s ease;
-}
-#ontowave-floating-menu:not(.expanded) {
-  width: 66px;
-  height: 66px;
-  border-radius: 44px;
-  background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid #e1e4e8;
-  box-shadow: 0 4px 12px rgba(27,31,35,0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-#ontowave-floating-menu:not(.expanded):hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(27,31,35,0.25);
-}
-.ontowave-menu-icon {
-  font-size: 30px;
-  line-height: 1;
-  cursor: pointer;
-  user-select: none;
-}
-#ontowave-floating-menu.expanded {
-  border-radius: 22px;
-  background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid #e1e4e8;
-  box-shadow: 0 4px 12px rgba(27,31,35,0.15);
-  padding: 10px 18px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: default;
-}
-.ontowave-menu-brand {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: #1a1a1a;
-  text-decoration: none;
-  white-space: nowrap;
-}
-.ontowave-menu-option {
-  background: none;
-  border: 1px solid #d0d7de;
-  border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  color: #1a1a1a;
-  text-decoration: none;
-}
-.ontowave-menu-option:hover {
-  transform: translateY(-1px);
-  background: #f6f8fa;
-}
-.ontowave-lang-btn {
-  background: #f8f9fa;
-  border: 1px solid #d0d7de;
-  border-radius: 4px;
-  padding: 3px 8px;
-  font-size: 0.8rem;
-  cursor: pointer;
-  color: #1a1a1a;
-  font-weight: 500;
-}
-.ontowave-lang-btn.active {
-  background: #28a745;
-  border-color: #28a745;
-  color: #fff;
-}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;padding:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'DejaVu Sans',Arial,sans-serif;background:#fff;color:#1a1a1a}
+#ow-content{padding:2rem max(2rem,5vw);max-width:900px;margin:0 auto}
+#app{line-height:1.7}
+#app h1,#app h2,#app h3{margin-top:1.5rem}
+#app table{border-collapse:collapse;width:100%}
+#app th,#app td{border:1px solid #e2e8f0;padding:.4rem .75rem}
+#app th{background:#f8fafc}
+#app pre{background:#f1f5f9;border-radius:6px;padding:1rem;overflow-x:auto}
+#app code{background:#f1f5f9;border-radius:3px;padding:.1em .3em;font-size:.875em}
+#app pre code{background:none;padding:0}
+#app a{color:#0369a1}
+#app a:hover{color:#0ea5e9}
+#app blockquote{border-left:4px solid #e2e8f0;margin-left:0;padding-left:1rem;color:#64748b}
+.hidden-by-config{display:none!important}
+@media(max-width:600px){#ow-content{padding:1rem}}
+#ontowave-floating-menu{position:fixed;top:20px;left:20px;z-index:1000;cursor:move;transition:all 0.3s ease}
+#ontowave-floating-menu:not(.expanded){width:66px;height:66px;border-radius:44px;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid #e1e4e8;box-shadow:0 4px 12px rgba(27,31,35,0.15);display:flex;align-items:center;justify-content:center}
+#ontowave-floating-menu:not(.expanded):hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(27,31,35,0.25)}
+.ontowave-menu-icon{font-size:30px;line-height:1;cursor:pointer;user-select:none}
+#ontowave-floating-menu.expanded{border-radius:22px;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid #e1e4e8;box-shadow:0 4px 12px rgba(27,31,35,0.15);padding:10px 18px;display:flex;align-items:center;gap:10px;cursor:default}
+.ontowave-menu-brand{font-weight:600;font-size:0.9rem;color:#1a1a1a;text-decoration:none;white-space:nowrap}
+.ontowave-menu-option{background:none;border:1px solid #d0d7de;border-radius:6px;padding:4px 10px;font-size:0.85rem;cursor:pointer;color:#1a1a1a;text-decoration:none}
+.ontowave-menu-option:hover{transform:translateY(-1px);background:#f6f8fa}
+.ontowave-lang-btn{background:#f8f9fa;border:1px solid #d0d7de;border-radius:4px;padding:3px 8px;font-size:0.8rem;cursor:pointer;color:#1a1a1a;font-weight:500}
+.ontowave-lang-btn.active{background:#28a745;border-color:#28a745;color:#fff}
 #ontowave-floating-menu:not(.expanded) .ontowave-menu-brand,
 #ontowave-floating-menu:not(.expanded) .ontowave-menu-option,
-#ontowave-floating-menu:not(.expanded) .ontowave-lang-btn {
-  display: none;
-}
+#ontowave-floating-menu:not(.expanded) .ontowave-lang-btn{display:none}
 `
 
+/**
+ * Bootstrappe le DOM quand la page est quasi-vide (pas de #app fourni par l'utilisateur).
+ * Crée #app, le menu flottant icône-vague et injecte les styles de base.
+ */
 function bootstrapDom(cfg: Record<string, unknown>): void {
-  if (document.getElementById('ontowave-floating-menu')?.querySelector('.ontowave-menu-icon')) return
+  if (document.getElementById('app')) return  // page avec HTML custom → rien à faire
 
-  // Inject CSS
-  if (!document.getElementById('ow-menu-css')) {
+  if (!document.getElementById('ow-bootstrap-styles')) {
     const style = document.createElement('style')
-    style.id = 'ow-menu-css'
+    style.id = 'ow-bootstrap-styles'
     style.textContent = BOOTSTRAP_CSS
     document.head.appendChild(style)
   }
 
-  // Get or create the menu container
-  let floatingMenu = document.getElementById('ontowave-floating-menu')
-  if (!floatingMenu) {
-    floatingMenu = document.createElement('div')
-    floatingMenu.id = 'ontowave-floating-menu'
-    document.body.appendChild(floatingMenu)
-  }
+  const wrapper = document.createElement('div')
+  wrapper.id = 'ow-content'
+  const app = document.createElement('div')
+  app.id = 'app'
+  wrapper.appendChild(app)
+  document.body.appendChild(wrapper)
+
+  if (document.getElementById('ontowave-floating-menu')) return
+
+  const i18n = cfg.i18n as Record<string, unknown> | undefined
+  const roots = (cfg.roots as Array<{ base: string; root: string }>) || []
+  const defaultLang = (i18n?.default as string | undefined)
+    || (roots[0]?.base && roots[0].base !== '/' ? roots[0].base : null)
+    || null
+  const homeHref = defaultLang ? `#${defaultLang}/index` : '#/index'
+
+  const floatingMenu = document.createElement('div')
+  floatingMenu.id = 'ontowave-floating-menu'
+  document.body.appendChild(floatingMenu)
 
   // Icon
   const icon = document.createElement('span')
@@ -128,21 +88,15 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   floatingMenu.appendChild(icon)
 
   // Brand
-  const brand = document.createElement('a')
-  brand.className = 'ontowave-menu-brand'
-  brand.href = 'https://ontowave.org'
-  brand.target = '_blank'
-  brand.rel = 'noopener'
-  brand.textContent = 'OntoWave.org'
-  floatingMenu.appendChild(brand)
+  const menuBrand = document.createElement('a')
+  menuBrand.className = 'ontowave-menu-brand'
+  menuBrand.href = 'https://ontowave.org'
+  menuBrand.target = '_blank'
+  menuBrand.rel = 'noopener'
+  menuBrand.textContent = 'OntoWave.org'
+  floatingMenu.appendChild(menuBrand)
 
   // Home option
-  const i18n = cfg.i18n as Record<string, unknown> | undefined
-  const roots = (cfg.roots as Array<{ base: string; root: string }>) || []
-  const defaultLang = (i18n?.default as string | undefined)
-    || (roots[0]?.base && roots[0].base !== '/' ? roots[0].base : null)
-    || null
-  const homeHref = defaultLang ? `#${defaultLang}/index` : '#/index'
   const homeBtn = document.createElement('a')
   homeBtn.className = 'ontowave-menu-option'
   homeBtn.href = homeHref
@@ -152,7 +106,7 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   // Language buttons (dynamically from cfg.roots)
   const updateLangActive = () => {
     const hash = location.hash || ''
-    floatingMenu!.querySelectorAll<HTMLButtonElement>('.ontowave-lang-btn').forEach(btn => {
+    floatingMenu.querySelectorAll<HTMLButtonElement>('.ontowave-lang-btn').forEach(btn => {
       const base = btn.dataset.lang || ''
       btn.classList.toggle('active', hash.startsWith(`#${base}/`) || hash.startsWith(`#/${base}/`))
     })
@@ -166,7 +120,7 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
       langBtn.textContent = root.base.toUpperCase()
       langBtn.addEventListener('click', () => {
         location.hash = `#${root.base}/index`
-        floatingMenu!.classList.remove('expanded')
+        floatingMenu.classList.remove('expanded')
         icon.setAttribute('aria-expanded', 'false')
       })
       floatingMenu.appendChild(langBtn)
@@ -178,14 +132,14 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   // Toggle expand/collapse on icon click
   icon.addEventListener('click', (e) => {
     e.stopPropagation()
-    const expanded = floatingMenu!.classList.toggle('expanded')
+    const expanded = floatingMenu.classList.toggle('expanded')
     icon.setAttribute('aria-expanded', String(expanded))
   })
 
   // Close when clicking outside
   document.addEventListener('click', (e) => {
-    if (!floatingMenu!.contains(e.target as Node)) {
-      floatingMenu!.classList.remove('expanded')
+    if (!floatingMenu.contains(e.target as Node)) {
+      floatingMenu.classList.remove('expanded')
       icon.setAttribute('aria-expanded', 'false')
     }
   })
@@ -193,36 +147,36 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   // Drag & Drop — session uniquement (pas de localStorage)
   let dragging = false, dx = 0, dy = 0
   floatingMenu.addEventListener('mousedown', (e) => {
-    if (floatingMenu!.classList.contains('expanded')) return
+    if (floatingMenu.classList.contains('expanded')) return
     dragging = true
-    dx = e.clientX - floatingMenu!.offsetLeft
-    dy = e.clientY - floatingMenu!.offsetTop
+    dx = e.clientX - floatingMenu.offsetLeft
+    dy = e.clientY - floatingMenu.offsetTop
   })
   document.addEventListener('mousemove', (e) => {
     if (!dragging) return
-    const x = Math.max(0, Math.min(e.clientX - dx, window.innerWidth - floatingMenu!.offsetWidth))
-    const y = Math.max(0, Math.min(e.clientY - dy, window.innerHeight - floatingMenu!.offsetHeight))
-    floatingMenu!.style.left = x + 'px'
-    floatingMenu!.style.top = y + 'px'
+    const x = Math.max(0, Math.min(e.clientX - dx, window.innerWidth - floatingMenu.offsetWidth))
+    const y = Math.max(0, Math.min(e.clientY - dy, window.innerHeight - floatingMenu.offsetHeight))
+    floatingMenu.style.left = x + 'px'
+    floatingMenu.style.top = y + 'px'
   })
   document.addEventListener('mouseup', () => { dragging = false })
 
   // Touch drag support
   let tx = 0, ty = 0
   floatingMenu.addEventListener('touchstart', (e) => {
-    if (floatingMenu!.classList.contains('expanded')) return
+    if (floatingMenu.classList.contains('expanded')) return
     const touch = e.touches[0]
-    tx = touch.clientX - floatingMenu!.offsetLeft
-    ty = touch.clientY - floatingMenu!.offsetTop
+    tx = touch.clientX - floatingMenu.offsetLeft
+    ty = touch.clientY - floatingMenu.offsetTop
     dragging = true
   }, { passive: true })
   document.addEventListener('touchmove', (e) => {
     if (!dragging) return
     const touch = e.touches[0]
-    const x = Math.max(0, Math.min(touch.clientX - tx, window.innerWidth - floatingMenu!.offsetWidth))
-    const y = Math.max(0, Math.min(touch.clientY - ty, window.innerHeight - floatingMenu!.offsetHeight))
-    floatingMenu!.style.left = x + 'px'
-    floatingMenu!.style.top = y + 'px'
+    const x = Math.max(0, Math.min(touch.clientX - tx, window.innerWidth - floatingMenu.offsetWidth))
+    const y = Math.max(0, Math.min(touch.clientY - ty, window.innerHeight - floatingMenu.offsetHeight))
+    floatingMenu.style.left = x + 'px'
+    floatingMenu.style.top = y + 'px'
   }, { passive: true })
   document.addEventListener('touchend', () => { dragging = false })
 }
@@ -230,10 +184,9 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
 ;(async () => {
   // Toggle engine via config.json; fallback v2 par défaut si absent
   const cfg = getJsonFromBundle('/config.json') || await fetch('/config.json', { cache: 'no-cache' }).then(r => r.json())
+  // Bootstrapper le DOM si la page est quasi-vide (pas de #app fourni)
+  bootstrapDom(cfg as Record<string, unknown>)
   const engine = cfg.engine ?? 'v2'
-
-  // Bootstrap menu flottant
-  bootstrapDom(cfg)
 
   // UI options
   try {
