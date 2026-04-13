@@ -31,6 +31,7 @@ body{margin:0;padding:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'D
 @media(max-width:600px){#ow-content{padding:1rem}}
 #ontowave-floating-menu{position:fixed;top:20px;left:20px;z-index:1000;cursor:move;transition:all 0.3s ease}
 #ontowave-floating-menu:not(.expanded){width:66px;height:66px;border-radius:44px;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid #e1e4e8;box-shadow:0 4px 12px rgba(27,31,35,0.15);display:flex;align-items:center;justify-content:center;overflow:hidden}
+#ontowave-floating-menu:not(.expanded) .ow-ux-toolbar{display:none!important}
 #ontowave-floating-menu:not(.expanded):hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(27,31,35,0.25)}
 .ontowave-menu-icon{font-size:30px;line-height:1;cursor:pointer;user-select:none;flex-shrink:0}
 #ontowave-floating-menu.expanded{border-radius:22px;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid #e1e4e8;box-shadow:0 4px 12px rgba(27,31,35,0.15);padding:10px 18px;display:flex;align-items:center;gap:10px;cursor:default}
