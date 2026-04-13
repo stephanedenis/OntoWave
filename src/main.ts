@@ -145,21 +145,36 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   })
 
   // Drag & Drop — session uniquement (pas de localStorage)
-  let dragging = false, dx = 0, dy = 0
+  const DRAG_THRESHOLD = 6
+  let dragging = false, pendingDrag = false, dx = 0, dy = 0, startX = 0, startY = 0
   floatingMenu.addEventListener('mousedown', (e) => {
     if (floatingMenu.classList.contains('expanded')) return
-    dragging = true
+    const target = e.target as HTMLElement | null
+    if (target?.closest('.ontowave-menu-icon')) return
+    pendingDrag = true
+    dragging = false
+    startX = e.clientX
+    startY = e.clientY
     dx = e.clientX - floatingMenu.offsetLeft
     dy = e.clientY - floatingMenu.offsetTop
   })
   document.addEventListener('mousemove', (e) => {
-    if (!dragging) return
+    if (!pendingDrag && !dragging) return
+    if (!dragging) {
+      const movedX = e.clientX - startX
+      const movedY = e.clientY - startY
+      if (Math.hypot(movedX, movedY) < DRAG_THRESHOLD) return
+      dragging = true
+    }
     const x = Math.max(0, Math.min(e.clientX - dx, window.innerWidth - floatingMenu.offsetWidth))
     const y = Math.max(0, Math.min(e.clientY - dy, window.innerHeight - floatingMenu.offsetHeight))
     floatingMenu.style.left = x + 'px'
     floatingMenu.style.top = y + 'px'
   })
-  document.addEventListener('mouseup', () => { dragging = false })
+  document.addEventListener('mouseup', () => {
+    dragging = false
+    pendingDrag = false
+  })
 
   // Touch drag support
   let tx = 0, ty = 0
