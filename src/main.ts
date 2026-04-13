@@ -34,7 +34,8 @@ body{margin:0;padding:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'D
 #ontowave-floating-menu:not(.expanded):hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(27,31,35,0.25)}
 .ontowave-menu-icon{font-size:30px;line-height:1;cursor:pointer;user-select:none}
 #ontowave-floating-menu.expanded{border-radius:22px;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid #e1e4e8;box-shadow:0 4px 12px rgba(27,31,35,0.15);padding:10px 18px;display:flex;align-items:center;gap:10px;cursor:default}
-.ontowave-menu-brand{font-weight:600;font-size:0.9rem;color:#1a1a1a;text-decoration:none;white-space:nowrap}
+.ontowave-menu-brand{font-weight:600;font-size:0.9rem;color:#1a1a1a;text-decoration:none;white-space:nowrap;display:flex;flex-direction:column;align-items:flex-start;line-height:1.2}
+.ontowave-menu-version{font-size:0.7rem;font-weight:400;color:#57606a;display:block}
 .ontowave-menu-option{background:none;border:1px solid #d0d7de;border-radius:6px;padding:4px 10px;font-size:0.85rem;cursor:pointer;color:#1a1a1a;text-decoration:none}
 .ontowave-menu-option:hover{transform:translateY(-1px);background:#f6f8fa}
 .ontowave-lang-btn{background:#f8f9fa;border:1px solid #d0d7de;border-radius:4px;padding:3px 8px;font-size:0.8rem;cursor:pointer;color:#1a1a1a;font-weight:500}
@@ -94,6 +95,10 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   menuBrand.target = '_blank'
   menuBrand.rel = 'noopener'
   menuBrand.textContent = 'OntoWave.org'
+  const versionSpan = document.createElement('span')
+  versionSpan.className = 'ontowave-menu-version'
+  versionSpan.textContent = 'v' + __APP_VERSION__
+  menuBrand.appendChild(versionSpan)
   floatingMenu.appendChild(menuBrand)
 
   // Home option
