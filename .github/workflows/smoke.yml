@@ -1,0 +1,80 @@
+name: Smoke Test (post-deploy)
+
+on:
+  workflow_run:
+    workflows: ["Deploy to GitHub Pages"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Wait for CDN propagation (30s)
+        # 30s is sufficient for GitHub Pages / jsDelivr propagation after a successful deploy
+        run: sleep 30
+
+      - name: Run smoke tests on https://ontowave.org
+        id: smoke
+        run: npx playwright test --config playwright.config.smoke.js
+        continue-on-error: true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-test-results
+          path: test-results/
+          if-no-files-found: ignore
+
+      - name: Create issue on failure
+        if: steps.smoke.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const date = new Date().toISOString();
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[smoke] Échec smoke-test post-deploy ${date.split('T')[0]} (run ${context.runId})`,
+              body: [
+                '## 🚨 Smoke-test échoué après déploiement',
+                '',
+                `**Date** : ${date}`,
+                `**Workflow** : [Voir les logs](${runUrl})`,
+                '**Déclenché par** : déploiement GitHub Pages sur `main`',
+                '',
+                '## Rapport',
+                '',
+                `Les tests Playwright sur https://ontowave.org ont échoué.`,
+                `Consulter les [logs du workflow](${runUrl}) et les artefacts \`smoke-test-results\` pour le détail des erreurs.`,
+                '',
+                '## Actions à entreprendre',
+                '',
+                '- [ ] Vérifier que https://ontowave.org fonctionne normalement',
+                `- [ ] Consulter les logs du workflow : ${runUrl}`,
+                '- [ ] Corriger le problème et fermer cette issue',
+              ].join('\n'),
+            });
