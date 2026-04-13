@@ -26,8 +26,7 @@ jobs:
       - name: Type check
         run: npm run type-check
       - name: Test
-        run: npm run test:ci --if-present || echo "Tests skipped or failed (non-blocking)"
-        continue-on-error: true
+        run: npm run test:ci
       - name: Build
         run: npm run build:package
       - name: Verify docs/index.html is CDN (not SPA)
