@@ -1,8 +1,6 @@
-# OntoWave
+# OntoWave [v1.0.45](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)
 
 Micro-application JavaScript légère (~245KB, ~85KB gzippé) pour sites statiques avec support multilingue, coloration syntaxique, formules mathématiques et diagrammes.
-
-[📋 Voir le changelog](CHANGELOG.md)
 
 ## Fonctionnalités
 
@@ -21,7 +19,7 @@ Micro-application JavaScript légère (~245KB, ~85KB gzippé) pour sites statiqu
 
 ### 🧪 Démonstrations Interactives
 
-Explorez OntoWave à travers des **démos interactives et testées** :
+Explorez OntoWave v1.0.25 à travers des **démos interactives et testées** :
 
 #### ✨ Capacités de Base (sans configuration)
 - **[Markdown Features](demos/01-base/markdown.html)** - Tables, listes, liens, formatage
