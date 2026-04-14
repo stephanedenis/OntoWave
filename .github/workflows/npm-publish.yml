@@ -125,5 +125,3 @@ jobs:
             ```html
             <script src="https://unpkg.com/ontowave/dist/ontowave.min.js"></script>
             ```
-
-          prerelease: false
