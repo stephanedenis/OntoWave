@@ -144,7 +144,7 @@ export async function enhancePage(appEl: HTMLElement, html: string) {
   // Submodules delegation: détecter _delegate.json ou CNAME dans un sous-dossier immédiatement sous la base (en/fr/...), et proposer une bascule
   try {
     const getBaseMap = async () => {
-  const cfg = getJsonFromBundle('/config.json') || await fetch('/config.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => ({}))
+  const cfg = getJsonFromBundle('/config.json') || {}
       const map: Record<string, string> = {}
       for (const r of (cfg.roots || [])) {
         const base = (r.base === '/' ? '' : String(r.base || '').replace(/^\/+|\/+$/g, ''))
@@ -198,7 +198,7 @@ export async function enhancePage(appEl: HTMLElement, html: string) {
 
   // Glossary: annotate terms with dotted underline and sidebar tooltips
   try {
-    const cfg: AppConfig = getJsonFromBundle('/config.json') || await fetch('/config.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).catch(() => null) || {}
+    const cfg: AppConfig = getJsonFromBundle('/config.json') || {} as AppConfig
     if (cfg.glossary?.enabled !== false && cfg.glossary?.sources?.length) {
       await applyGlossary(appEl, cfg.glossary)
     }

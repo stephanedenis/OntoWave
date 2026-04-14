@@ -188,7 +188,7 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
 
 ;(async () => {
   // Toggle engine via config.json; fallback v2 par défaut si absent
-  const cfg = getJsonFromBundle('/config.json') || await fetch('/config.json', { cache: 'no-cache' }).then(r => r.json())
+  const cfg = getJsonFromBundle('/config.json') || {}
   // Bootstrapper le DOM si la page est quasi-vide (pas de #app fourni)
   bootstrapDom(cfg as Record<string, unknown>)
   const engine = cfg.engine ?? 'v2'
@@ -409,8 +409,7 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
       }
       // Route dédiée de config
       if (location.hash.replace(/^#/, '') === '/config') {
-        const resCfg = await fetch('/config.json', { cache: 'no-cache' })
-        const cfgJson = await resCfg.json()
+        const cfgJson = getJsonFromBundle('/config.json') || {}
         await renderConfigPage(appEl, cfgJson)
       }
       // Marqueur ⚠️ dans le menu si éléments auxiliaires manquants
