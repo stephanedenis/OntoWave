@@ -1,18 +1,30 @@
 name: NPM Publish
 
+# Stratégie de tags npm :
+#   @latest  — fix/*, chore/*  → patch bump  (ex: 1.0.45 → 1.0.46) — production stable
+#   @preview — feat/*          → minor+pre   (ex: 1.0.45 → 1.1.0-preview.1) — fonctionnalités récentes
+
 on:
-  push:
-    branches: [ main ]
-    tags:
-      - 'v*'
   pull_request:
     branches: [ main ]
     types: [ closed ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version exacte à publier (ex: 1.2.0 ou 1.2.0-preview.3)'
+        required: true
+      npm_tag:
+        description: 'Tag npm'
+        required: true
+        default: 'latest'
+        type: choice
+        options:
+          - latest
+          - preview
 
 jobs:
-  # Job pour les PR mergés : bump de version patch et publication
-  publish-pr:
-    if: github.event.pull_request.merged == true || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+  publish:
+    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -23,114 +35,95 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-          
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
-          
-      - name: Install dependencies
-        run: npm ci || npm install
-        
-      - name: Run tests
-        run: npm run test --if-present || echo "Tests skipped or failed - continuing"
-        continue-on-error: true
-        
-      - name: Build package
-        run: |
-          npm run build
-          npm run build:package
 
-      - name: Calculate next version from git tags
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Determine version and npm tag
         run: |
           git fetch --tags
-          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0")
-          VERSION=${LAST_TAG#v}
-          MAJOR="${VERSION%%.*}"
-          MINOR_PATCH="${VERSION#*.}"
-          MINOR="${MINOR_PATCH%%.*}"
-          PATCH="${MINOR_PATCH##*.}"
-          NEW_VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            NEW_VERSION="${{ github.event.inputs.version }}"
+            NPM_TAG="${{ github.event.inputs.npm_tag }}"
+          else
+            BRANCH="${{ github.head_ref }}"
+            LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0")
+            VERSION=${LAST_TAG#v}
+            MAJOR="${VERSION%%.*}"
+            MINOR_PATCH="${VERSION#*.}"
+            MINOR="${MINOR_PATCH%%.*}"
+            PATCH="${MINOR_PATCH##*.}"
+            if [[ "$BRANCH" == feat/* ]]; then
+              # Fonctionnalité → @preview (minor bump + prerelease)
+              NEW_MINOR=$((MINOR + 1))
+              PREVIEW_COUNT=$(git tag --list "v${MAJOR}.${NEW_MINOR}.0-preview.*" | wc -l | tr -d ' ')
+              NEW_VERSION="${MAJOR}.${NEW_MINOR}.0-preview.$((PREVIEW_COUNT + 1))"
+              NPM_TAG="preview"
+            else
+              # Fix / chore → @latest (patch bump)
+              NEW_VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))"
+              NPM_TAG="latest"
+            fi
+          fi
           echo "NEW_VERSION=${NEW_VERSION}" >> $GITHUB_ENV
-          npm version ${NEW_VERSION} --no-git-tag-version
-          echo "Version bump: ${VERSION} → ${NEW_VERSION}"
-          
+          echo "NPM_TAG=${NPM_TAG}" >> $GITHUB_ENV
+          # Bump package.json AVANT le build (APP_VERSION est lu au build time)
+          npm version "${NEW_VERSION}" --no-git-tag-version
+          echo "✅ Publish: v${NEW_VERSION} → npm @${NPM_TAG}"
+
+      - name: Build package
+        # APP_VERSION dans le bundle reflète la nouvelle version
+        run: npm run build:package
+
       - name: Publish to NPM
-        run: npm publish
+        run: npm publish --tag ${{ env.NPM_TAG }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create and push release tag
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git tag "v${{ env.NEW_VERSION }}"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git tag "v${{ env.NEW_VERSION }}" -m "Release v${{ env.NEW_VERSION }} (@${{ env.NPM_TAG }})"
           git push origin "v${{ env.NEW_VERSION }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # Job pour les tags manuels uniquement (pas ceux créés par publish-pr)
-  publish-tag:
-    if: startsWith(github.ref, 'refs/tags/v') && github.actor != 'github-actions[bot]'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
-          
-      - name: Install dependencies
-        run: npm ci || npm install
-        
-      - name: Run tests
-        run: npm run test --if-present || echo "Tests skipped or failed - continuing"
-        continue-on-error: true
-        
-      - name: Build package
-        run: |
-          npm run build
-          npm run build:package
-          
-      - name: Set version from tag
-        run: |
-          TAG_VERSION=${GITHUB_REF#refs/tags/v}
-          npm version $TAG_VERSION --no-git-tag-version
-          
-      - name: Publish to NPM
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          
       - name: Create GitHub Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref }}
-          release_name: OntoWave ${{ github.ref }}
+          tag_name: "v${{ env.NEW_VERSION }}"
+          name: "OntoWave v${{ env.NEW_VERSION }}"
+          prerelease: ${{ env.NPM_TAG == 'preview' }}
+          generate_release_notes: true
           body: |
-            ## Nouvelle version OntoWave
-            
-            ### Changements inclus dans cette version :
-            - Fix des alignements de tableaux markdown
-            - Injection CSS directe dans le DOM
-            - Support complet des alignements `:---`, `:---:`, `---:`
-            
-            ### Installation :
+            **Tag npm** : `@${{ env.NPM_TAG }}`
+
+            ### Installation
             ```bash
-            npm install ontowave@${{ github.ref }}
+            # Production stable
+            npm install ontowave@latest
+
+            # Preview (fonctionnalités récentes, non-éprouvées)
+            npm install ontowave@preview
             ```
-            
-            ### CDN :
+
+            ### CDN — version épinglée
             ```html
-            <script src="https://cdn.jsdelivr.net/npm/ontowave@${{ github.ref }}/dist/ontowave.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/ontowave@${{ env.NEW_VERSION }}/dist/ontowave.min.js"></script>
             ```
-          draft: false
+
+            ### CDN — dernier stable
+            ```html
+            <script src="https://unpkg.com/ontowave/dist/ontowave.min.js"></script>
+            ```
+
           prerelease: false
