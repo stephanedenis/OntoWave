@@ -18,6 +18,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 1
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -55,26 +58,69 @@ jobs:
           script: |
             const date = new Date().toISOString();
             const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            await github.rest.issues.create({
+
+            // Check for an already-open smoke issue to avoid spamming the tracker
+            const { data: existing } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `[smoke] Échec smoke-test post-deploy ${date.split('T')[0]} (run ${context.runId})`,
-              body: [
-                '## 🚨 Smoke-test échoué après déploiement',
-                '',
-                `**Date** : ${date}`,
-                `**Workflow** : [Voir les logs](${runUrl})`,
-                '**Déclenché par** : déploiement GitHub Pages sur `main`',
-                '',
-                '## Rapport',
-                '',
-                `Les tests Playwright sur https://ontowave.org ont échoué.`,
-                `Consulter les [logs du workflow](${runUrl}) et les artefacts \`smoke-test-results\` pour le détail des erreurs.`,
-                '',
-                '## Actions à entreprendre',
-                '',
-                '- [ ] Vérifier que https://ontowave.org fonctionne normalement',
-                `- [ ] Consulter les logs du workflow : ${runUrl}`,
-                '- [ ] Corriger le problème et fermer cette issue',
-              ].join('\n'),
+              labels: 'smoke',
+              state: 'open',
+              per_page: 1,
             });
+
+            if (existing.length > 0) {
+              // Comment on the existing issue instead of opening a new one
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing[0].number,
+                body: [
+                  `## 🔁 Nouvel échec smoke-test — ${date}`,
+                  '',
+                  `**Workflow** : [Voir les logs](${runUrl})`,
+                  `Le site https://ontowave.org est toujours en erreur après un nouveau déploiement.`,
+                ].join('\n'),
+              });
+            } else {
+              // Ensure the 'smoke' label exists before creating the issue
+              try {
+                await github.rest.issues.getLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: 'smoke',
+                });
+              } catch {
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: 'smoke',
+                  color: 'e11d48',
+                  description: 'Échec du smoke-test post-déploiement',
+                });
+              }
+
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: ['smoke'],
+                title: `[smoke] Échec smoke-test post-deploy ${date.split('T')[0]}`,
+                body: [
+                  '## 🚨 Smoke-test échoué après déploiement',
+                  '',
+                  `**Date** : ${date}`,
+                  `**Workflow** : [Voir les logs](${runUrl})`,
+                  '**Déclenché par** : déploiement GitHub Pages sur `main`',
+                  '',
+                  '## Rapport',
+                  '',
+                  `Les tests Playwright sur https://ontowave.org ont échoué.`,
+                  `Consulter les [logs du workflow](${runUrl}) et les artefacts \`smoke-test-results\` pour le détail des erreurs.`,
+                  '',
+                  '## Actions à entreprendre',
+                  '',
+                  '- [ ] Vérifier que https://ontowave.org fonctionne normalement',
+                  `- [ ] Consulter les logs du workflow : ${runUrl}`,
+                  '- [ ] Corriger le problème et fermer cette issue',
+                ].join('\n'),
+              });
+            }
