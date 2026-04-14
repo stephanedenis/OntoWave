@@ -23,9 +23,9 @@ This file tells GitHub Pages to serve the site under `ontowave.org`. GitHub Page
 |---|---|---|---|
 | `ontowave.org` | A / ALIAS | GitHub Pages IPs (`185.199.108.153`, etc.) | Primary domain |
 | `www.ontowave.org` | CNAME | `stephanedenis.github.io` | www alias |
-| `ontowave.com` | CNAME | `ontowave.org` | Redirect to canonical domain |
+| `ontowave.com` | CNAME | `ontowave.org` | DNS alias toward the canonical host |
 
-> **Note**: The redirect from `ontowave.com` to `ontowave.org` is handled at the DNS level (registrar CNAME). Do not configure `ontowave.com` as a GitHub Pages domain — this would cause a CNAME conflict.
+> **Note**: A DNS `CNAME` only aliases name resolution. It does **not** create an HTTP `301/302` redirect by itself and does **not** guarantee HTTPS for `ontowave.com`. If `ontowave.com` must redirect at the HTTP level, that behavior must be provided by the registrar's web forwarding service or by infrastructure serving `ontowave.com` with a valid certificate. Do not configure `ontowave.com` as a GitHub Pages domain unless you intentionally want GitHub Pages to serve that hostname too.
 
 ## SEO Canonical Link
 
@@ -40,20 +40,31 @@ This tag tells search engines that `https://ontowave.org/` is the reference URL,
 ## SSL / HTTPS
 
 - GitHub Pages manages the SSL certificate for `ontowave.org` automatically (Let's Encrypt).
-- `ontowave.com` inherits the `ontowave.org` certificate via the DNS CNAME redirect.
-- If `ontowave.com` generates an SSL error, verify that the registrar CNAME points to `ontowave.org` (not directly to `stephanedenis.github.io`).
+- A certificate for `ontowave.org` does **not** automatically cover `ontowave.com` just because DNS uses a `CNAME`.
+- If `https://ontowave.com/` must be reachable, the endpoint serving that hostname must present a certificate valid for `ontowave.com`.
+- If `ontowave.com` is only intended as a DNS alias and not as an HTTPS entrypoint, do not rely on `https://ontowave.com/` for verification.
 
 ## Verification
 
 To validate the configuration:
 
 ```bash
-# Verify DNS resolution of ontowave.com
-dig CNAME ontowave.com
+# Verify DNS aliasing of ontowave.com
+dig +short CNAME ontowave.com
 
-# Verify that ontowave.com correctly redirects to ontowave.org
-curl -v https://ontowave.com/ 2>&1 | grep -E "Location|HTTP/"
+# If the registrar provides an actual HTTP redirect, verify the status and Location header explicitly
+curl -I http://ontowave.com/
+curl -I https://ontowave.com/
+
+# If HTTPS is expected on ontowave.com, verify the served certificate covers that hostname
+openssl s_client -connect ontowave.com:443 -servername ontowave.com </dev/null 2>/dev/null | openssl x509 -noout -subject -issuer -ext subjectAltName
 ```
+
+Expected results depend on the chosen setup:
+
+- **DNS alias only**: `dig` returns `ontowave.org.` and there may be no HTTP `Location` header at all.
+- **HTTP forwarding enabled**: `curl -I` shows a `301` or `302` with `Location: https://ontowave.org/`.
+- **HTTPS served on `ontowave.com`**: the certificate output must include `ontowave.com` in the SAN list.
 
 ## What Not to Do
 
