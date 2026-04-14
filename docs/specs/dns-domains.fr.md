@@ -40,8 +40,9 @@ Ce tag indique aux moteurs de recherche que `https://ontowave.org/` est l'URL de
 ## SSL / HTTPS
 
 - GitHub Pages gère le certificat SSL pour `ontowave.org` automatiquement (Let's Encrypt).
-- `ontowave.com` hérite du certificat `ontowave.org` via la redirection CNAME DNS.
-- Si `ontowave.com` génère une erreur SSL, il faut vérifier que le CNAME registrar pointe bien vers `ontowave.org` (et non vers `stephanedenis.github.io` directement).
+- Un enregistrement CNAME ne transmet pas automatiquement le certificat SSL de `ontowave.org` à `ontowave.com` : en TLS, le certificat présenté dépend du nom demandé (`ontowave.com`) via SNI.
+- Pour que `https://ontowave.com/` fonctionne sans erreur, il faut qu'un service réponde explicitement pour `ontowave.com` avec un certificat valide pour ce domaine — par exemple un service de redirection HTTPS du registrar, ou une configuration de domaine/alias côté hébergeur.
+- Si `ontowave.com` génère une erreur SSL, il faut vérifier le service qui termine HTTPS pour `ontowave.com` et le certificat servi pour ce nom ; vérifier uniquement le CNAME ne suffit pas.
 
 ## Vérification
 
