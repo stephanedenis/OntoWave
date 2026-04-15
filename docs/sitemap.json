@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-13T15:29:11.095Z",
+  "generatedAt": "2026-04-14T17:14:39.283Z",
   "count": 80,
   "i18n": {
     "default": "fr",
@@ -204,13 +204,13 @@
     {
       "path": "docs/index.en.md",
       "route": "#/en/index",
-      "title": "OntoWave [v1.0.45](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)",
+      "title": "OntoWave",
       "base": "fr"
     },
     {
       "path": "docs/index.en.md",
       "route": "#/en/index",
-      "title": "OntoWave [v1.0.45](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)",
+      "title": "OntoWave",
       "base": "en"
     },
     {
@@ -444,13 +444,13 @@
     {
       "path": "docs/index.fr.md",
       "route": "#/fr/index",
-      "title": "OntoWave [v1.0.45](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)",
+      "title": "OntoWave",
       "base": "fr"
     },
     {
       "path": "docs/index.fr.md",
       "route": "#/fr/index",
-      "title": "OntoWave [v1.0.45](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)",
+      "title": "OntoWave",
       "base": "en"
     },
     {

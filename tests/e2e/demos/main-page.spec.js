@@ -102,8 +102,9 @@ test.describe('Page principale (docs/index.html)', () => {
     const icon = page.locator('.ontowave-menu-icon')
     const brand = page.locator('.ontowave-menu-brand')
 
-    // État initial : compact, brand masqué
+    // État initial : compact, brand masqué (display:none par défaut)
     await expect(menu).not.toHaveClass(/expanded/)
+    await expect(brand).toBeHidden()
 
     // Clic → état étendu
     await icon.click()

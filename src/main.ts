@@ -30,19 +30,19 @@ body{margin:0;padding:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'D
 .hidden-by-config{display:none!important}
 @media(max-width:600px){#ow-content{padding:1rem}}
 #ontowave-floating-menu{position:fixed;top:20px;left:20px;z-index:1000;cursor:move;transition:all 0.3s ease}
-#ontowave-floating-menu:not(.expanded){width:66px;height:66px;border-radius:44px;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid #e1e4e8;box-shadow:0 4px 12px rgba(27,31,35,0.15);display:flex;align-items:center;justify-content:center}
+#ontowave-floating-menu:not(.expanded){width:66px;height:66px;border-radius:44px;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid #e1e4e8;box-shadow:0 4px 12px rgba(27,31,35,0.15);display:flex;align-items:center;justify-content:center;overflow:hidden}
 #ontowave-floating-menu:not(.expanded):hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(27,31,35,0.25)}
-.ontowave-menu-icon{font-size:30px;line-height:1;cursor:pointer;user-select:none}
+.ontowave-menu-icon{font-size:30px;line-height:1;cursor:pointer;user-select:none;flex-shrink:0}
 #ontowave-floating-menu.expanded{border-radius:22px;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid #e1e4e8;box-shadow:0 4px 12px rgba(27,31,35,0.15);padding:10px 18px;display:flex;align-items:center;gap:10px;cursor:default}
-.ontowave-menu-brand{font-weight:600;font-size:0.9rem;color:#1a1a1a;text-decoration:none;white-space:nowrap;display:flex;flex-direction:column;align-items:flex-start;line-height:1.2}
+.ontowave-menu-brand{display:none;font-weight:600;font-size:0.9rem;color:#1a1a1a;text-decoration:none;white-space:nowrap;flex-direction:column;align-items:flex-start;line-height:1.2}
 .ontowave-menu-version{font-size:0.7rem;font-weight:400;color:#57606a;display:block}
-.ontowave-menu-option{background:none;border:1px solid #d0d7de;border-radius:6px;padding:4px 10px;font-size:0.85rem;cursor:pointer;color:#1a1a1a;text-decoration:none}
+.ontowave-menu-option{display:none;background:none;border:1px solid #d0d7de;border-radius:6px;padding:4px 10px;font-size:0.85rem;cursor:pointer;color:#1a1a1a;text-decoration:none}
 .ontowave-menu-option:hover{transform:translateY(-1px);background:#f6f8fa}
-.ontowave-lang-btn{background:#f8f9fa;border:1px solid #d0d7de;border-radius:4px;padding:3px 8px;font-size:0.8rem;cursor:pointer;color:#1a1a1a;font-weight:500}
+.ontowave-lang-btn{display:none;background:#f8f9fa;border:1px solid #d0d7de;border-radius:4px;padding:3px 8px;font-size:0.8rem;cursor:pointer;color:#1a1a1a;font-weight:500}
 .ontowave-lang-btn.active{background:#28a745;border-color:#28a745;color:#fff}
-#ontowave-floating-menu:not(.expanded) .ontowave-menu-brand,
-#ontowave-floating-menu:not(.expanded) .ontowave-menu-option,
-#ontowave-floating-menu:not(.expanded) .ontowave-lang-btn{display:none}
+#ontowave-floating-menu.expanded .ontowave-menu-brand{display:flex}
+#ontowave-floating-menu.expanded .ontowave-menu-option,
+#ontowave-floating-menu.expanded .ontowave-lang-btn{display:inline-flex;align-items:center}
 `
 
 /**
@@ -188,7 +188,7 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
 
 ;(async () => {
   // Toggle engine via config.json; fallback v2 par défaut si absent
-  const cfg = getJsonFromBundle('/config.json') || await fetch('/config.json', { cache: 'no-cache' }).then(r => r.json())
+  const cfg = getJsonFromBundle('/config.json') || {}
   // Bootstrapper le DOM si la page est quasi-vide (pas de #app fourni)
   bootstrapDom(cfg as Record<string, unknown>)
   const engine = cfg.engine ?? 'v2'
@@ -409,8 +409,7 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
       }
       // Route dédiée de config
       if (location.hash.replace(/^#/, '') === '/config') {
-        const resCfg = await fetch('/config.json', { cache: 'no-cache' })
-        const cfgJson = await resCfg.json()
+        const cfgJson = getJsonFromBundle('/config.json') || {}
         await renderConfigPage(appEl, cfgJson)
       }
       // Marqueur ⚠️ dans le menu si éléments auxiliaires manquants

@@ -30,7 +30,7 @@ export async function initOntoWave() {
   console.log('[OntoWave] initOntoWave() called')
   
   // Toggle engine via config.json; fallback v2 par défaut si absent
-  const cfg = getJsonFromBundle('/config.json') || await fetch('/config.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).catch(() => null) || { engine: 'v2' }
+  const cfg = getJsonFromBundle('/config.json') || { engine: 'v2' }
   const engine = cfg.engine ?? 'v2'
   console.log('[OntoWave] Engine:', engine, 'Config:', cfg)
   
