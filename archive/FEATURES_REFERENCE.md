@@ -1,10 +1,10 @@
-# 📚 OntoWave v1.0.0 - Référence Comportementale Complète
+# 📚 OntoWave v1.0.46 - Référence comportementale (archivée)
 
-**Date**: 2025-10-19  
-**Version**: 1.0.0 (commit 4efe55a)  
-**Bundle**: dist/ontowave.min.js (70 Ko)  
-**Tests**: 10/14 passés (reverse engineering)  
-**Captures**: 22 screenshots
+**Date**: 2026-04-15  
+**Version**: 1.0.46  
+**Statut**: document historique archivé (non maintenu)  
+**Référence active**: `CHANGELOG.md`  
+**Origine**: base de reverse engineering v1.0.0
 
 ---
 
