@@ -311,13 +311,18 @@ MarkdownProcessor --&gt; PlantUMLPlugin : uses
 </noscript>
 <!-- noscript:seo:end -->
     <script>
-      window.ontoWaveConfig = {
-        roots: [
-          { base: 'fr', root: '/' },
-          { base: 'en', root: '/' }
-        ],
-        i18n: { default: 'fr', supported: ['fr', 'en'] }
+      window.__ONTOWAVE_BUNDLE__ = {
+        '/config.json': JSON.stringify({
+          roots: [
+            { base: 'fr', root: '/' },
+            { base: 'en', root: '/' }
+          ],
+          i18n: { default: 'fr', supported: ['fr', 'en'] }
+        })
       };
+      if (!location.hash || location.hash === '#/' || location.hash === '#') {
+        location.hash = '#fr/index';
+      }
     </script>
     <script src="/ontowave.min.js"></script>
 </body>
