@@ -29,6 +29,8 @@ jobs:
         run: npm run test:ci
       - name: Build
         run: npm run build:package
+      - name: Install fonts for consistent rendering
+        run: sudo apt-get install -y fonts-roboto
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         with:

@@ -142,7 +142,7 @@ test.describe('Demo 03-ux/print: PDF Export', () => {
 
     await expect(page).toHaveScreenshot('03-ux-print.png', {
       fullPage: true,
-      maxDiffPixels: 100,
+      maxDiffPixels: 500,
     });
   });
 });

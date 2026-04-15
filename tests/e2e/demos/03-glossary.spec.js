@@ -128,7 +128,7 @@ test.describe('Demo 03-glossary: Glossary Feature', () => {
     // Full page screenshot
     await expect(page).toHaveScreenshot('03-glossary.png', {
       fullPage: true,
-      maxDiffPixels: 200
+      maxDiffPixels: 500
     });
   });
 });

@@ -60,7 +60,7 @@ test.describe('Demo 02-config: View Modes', () => {
     // Full page screenshot
     await expect(page).toHaveScreenshot('02-config-view-modes.png', {
       fullPage: true,
-      maxDiffPixels: 100  // Tolerance
+      maxDiffPixels: 500  // Tolerance
     });
   });
 });

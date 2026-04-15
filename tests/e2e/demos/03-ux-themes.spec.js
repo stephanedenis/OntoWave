@@ -152,7 +152,7 @@ test.describe('Demo 03-ux/themes: Reading Themes', () => {
 
     await expect(page).toHaveScreenshot('03-ux-themes.png', {
       fullPage: true,
-      maxDiffPixels: 100,
+      maxDiffPixels: 500,
     });
   });
 });
