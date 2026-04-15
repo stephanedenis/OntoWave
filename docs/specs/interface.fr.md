@@ -1,7 +1,5 @@
 # Spécifications — Interface Bootstrap OntoWave
 
-**Version de référence** : `ontowave.js` mars 2026 (classe JS pure)  
-**Applicable à** : `dist/ontowave.min.js` v1.x et supérieur  
 **Langue** : Français (référence) — [English version](interface.en.md)  
 **Statut** : Document vivant — toute implémentation doit y être conforme
 
@@ -31,9 +29,13 @@ La librairie détecte automatiquement la configuration, crée l'interface et cha
 
 ---
 
-## 2. Configuration inline optionnelle
+## 2. Injection de la configuration
 
-Il est possible de passer une configuration directement dans la page, avant le `<script>` de la librairie :
+OntoWave **ne requête jamais de fichier de configuration externe**. La configuration doit être injectée par la page hôte avant le chargement de la librairie. Deux API sont disponibles.
+
+### Option A — `window.ontoWaveConfig` (recommandée)
+
+L'API la plus simple : déclarer l'objet de configuration directement dans la page.
 
 ```html
 <body>
@@ -46,15 +48,34 @@ Il est possible de passer une configuration directement dans la page, avant le `
       i18n: { default: 'fr', supported: ['fr', 'en'] }
     };
   </script>
-  <script src="https://unpkg.com/ontowave/dist/ontowave.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
 </body>
 ```
 
-**Priorité de résolution de la configuration** (ordre décroissant) :
+La librairie lit `window.ontoWaveConfig` et le convertit automatiquement en entrée de `window.__ONTOWAVE_BUNDLE__['/config.json']`.
 
-1. `window.ontoWaveConfig` (inline dans la page)
-2. Config bundlée dans la librairie (`config.json` embarqué)
-3. `config.json` fetché à la racine du site
+### Option B — `window.__ONTOWAVE_BUNDLE__` (API bas niveau)
+
+Pour les pages qui doivent injecter plusieurs fichiers en une seule opération (config, nav, sitemap, search-index) — utilisé notamment par les pages de démo.
+
+```html
+<script>
+  window.__ONTOWAVE_BUNDLE__ = {
+    '/config.json': JSON.stringify({ roots: [...], i18n: {...} }),
+    '/nav.yml': '[]',
+    '/sitemap.json': '{"items":[]}',
+    '/search-index.json': '[]'
+  };
+</script>
+```
+
+### Comportement sans configuration
+
+Si aucune API n'est définie, OntoWave démarre en **mode unilingue minimal** :
+
+- Config par défaut : `{ roots: [{ base: '/', root: '/' }] }`
+- Charge la page d'accueil : `#/index.md`
+- Aucune requête réseau pour trouver une configuration
 
 ---
 
@@ -63,8 +84,9 @@ Il est possible de passer une configuration directement dans la page, avant le `
 Au chargement, la librairie applique l'algorithme suivant :
 
 ```
-1. Lire la configuration (selon priorité §2)
-2. Si document.getElementById('app') existe → STOP (mode custom)
+1. Lire la configuration (window.ontoWaveConfig ou window.__ONTOWAVE_BUNDLE__)
+2. Si document.getElementById('app') existe → STOP TOTAL (mode custom)
+   → Aucun DOM créé, aucun style injecté, aucun menu flottant
 3. Sinon → créer le DOM complet :
    a. Injecter <style id="ow-bootstrap-styles"> avec le CSS de base
    b. Créer <div id="ow-content"><div id="app"></div></div>
@@ -72,7 +94,7 @@ Au chargement, la librairie applique l'algorithme suivant :
    d. Initialiser le routeur et charger la page par défaut
 ```
 
-**Le guard `#app` est idempotent** : les pages de démo qui définissent `<div id="app">` dans leur HTML ne sont pas affectées par le bootstrap.
+**Le guard `#app` est exclusif** : toute page qui pré-définit `<div id="app">` prend le contrôle total du DOM. OntoWave ne crée rien.
 
 ---
 
@@ -221,7 +243,7 @@ Pendant que le panneau est ouvert :
 
 ## 9. Règle anti-dérive pour `docs/index.html`
 
-`docs/index.html` est la **référence utilisateur** du projet. Elle doit satisfaire toutes les contraintes de cette spec. Elle ne doit donc contenir que :
+`docs/index.html` est la **référence utilisateur** du projet. Elle doit satisfaire toutes les contraintes de cette spec. Elle ne doit contenir que :
 
 ```html
 <!DOCTYPE html>
@@ -233,11 +255,16 @@ Pendant que le panneau est ouvert :
   <meta name="description" content="...">
 </head>
 <body>
-  <noscript><!-- Contenu SEO bilingue --></noscript>
+  <noscript><!-- Contenu SEO bilingue (exception documentée) --></noscript>
+  <script>
+    window.ontoWaveConfig = { roots: [...], i18n: {...} };
+  </script>
   <script src="/ontowave.min.js"></script>
 </body>
 </html>
 ```
+
+**Exception noscript** : le bloc `<noscript>` contenant du contenu SEO bilingue est la seule exception autorisée au principe "HTML quasi-vide". Ce bloc est destiné aux moteurs de recherche et lecteurs sans JavaScript. Il ne constitue pas une dérive de conception.
 
 **Invariants vérifiables (à tester en CI)** :
 
@@ -245,11 +272,49 @@ Pendant que le panneau est ouvert :
 - `docs/index.html` ne contient pas `#sidebar`
 - `docs/index.html` ne contient pas `#layout`
 - `docs/index.html` ne contient pas de bloc `<style>` hors du `<noscript>`
-- Le nombre de lignes hors `<noscript>` est ≤ 15
+- Le nombre de lignes hors `<noscript>` est ≤ 20
 
 ---
 
-## 10. Contrat de non-régression
+## 10. Multilinguisme
+
+### Modes supportés
+
+| Mode | Config | Exemple URL |
+|------|--------|-------------|
+| **Unilingue** (défaut) | Sans `i18n` ni `roots` avec bases | `#/index.md`, `#/guide/intro.md` |
+| **Côte-à-côte** | Fichiers `.fr.md` et `.en.md` dans le même dossier | `#/fr/index` → charge `index.fr.md` |
+| **Dossiers séparés** | Un dossier par langue sous une base | `#/fr/index` → root `/content/fr/` |
+
+### Règle fondamentale
+
+Le multilinguisme est **toujours explicite** — il doit être déclaré dans la config. Sans déclaration `i18n`, OntoWave est unilingue et charge les fichiers `.md` (sans suffixe de langue).
+
+### Détection de la langue initiale
+
+1. Paramètre hash si déjà présent (navigation directe vers `#/fr/...`)
+2. `i18n.default` de la config
+3. `navigator.language` si la langue détectée est dans `i18n.supported`
+4. Première base déclarée dans `roots`
+
+---
+
+## 11. Pages de démo — Deux versions
+
+Les pages de démo dans `docs/demos/` existent en deux versions :
+
+| Version | URL / Fichier | But |
+|---------|---------------|-----|
+| **CDN** | `*.html` (référencé dans le site) | Démontre l'usage réel avec `@latest` |
+| **Locale** | `*.local.html` (ou equivalent CI) | Tests E2E Playwright — charge `/ontowave.min.js` local |
+
+Cette dualité garantit :
+- Que le site public démontre toujours l'usage CDN standard
+- Que la CI teste toujours le code en cours de développement (pas la version publiée)
+
+---
+
+## 12. Contrat de non-régression
 
 Tout commit modifiant `src/main.ts` ou `src/adapters/` doit satisfaire :
 

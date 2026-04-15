@@ -1,11 +1,13 @@
 # OntoWave Roadmap
 
-> Version: 1.0 — April 12, 2026  
-> Status: **approved**
+> Status: **approved** — versioned by git
 
 ## Vision
 
-**OntoWave** is an independent navigation core (~100KB, zero dependencies) for static sites and web applications. Lightweight extensions are loaded on demand based on content: Markdown, diagrams, math formulas, and beyond.
+**OntoWave** is a navigation library for static sites and web applications. It transforms Markdown files into interactive documentation in the browser, with hash URL-based SPA routing.
+
+**Current state (v1.x)**: monolithic bundle (~4.7MB unzipped), everything is bundled.  
+**v2.0 target**: core ≤ 200KB (zero dependencies) + extensions loaded on demand.
 
 OntoWave integrates naturally into the Panini ecosystem (PaniniFS, PublicationEngine, Pensine-web) but does not depend on it and does not assume it. It can be used standalone by any project.
 
@@ -13,14 +15,13 @@ OntoWave integrates naturally into the Panini ecosystem (PaniniFS, PublicationEn
 
 | What OntoWave is | What it is not |
 |---|---|
-| Navigation core (SPA, routing, fetch) | Static site generator |
+| Navigation library (SPA, routing, fetch) | Static site generator |
 | Embeddable presentation layer | Application framework |
-| Lazy-load extension registry | CMS |
-| Zero-dependency library (core) | Monolithic bundle |
+| Zero-dependency library (core target v2.0) | CMS |
 
-## v1.1 — Reference Interface
+## v1.1 — Interface and Configuration API
 
-**Goal**: stabilize what the user sees and touches. Immutable visual foundation.
+**Goal**: stabilize what the user sees and touches + recommended configuration API. Immutable foundation for v2.0.
 
 **Completion criterion**: `npm run check` passes + `docs/index.html` respects the invariants of [specs/interface.en.md](interface.en.md).
 
@@ -28,6 +29,8 @@ OntoWave integrates naturally into the Panini ecosystem (PaniniFS, PublicationEn
 |---|---|---|
 | #76 | Floating menu — frosted glass, pill, drag & drop | Full spec in [interface.en.md §4-5](interface.en.md) |
 | #17 | Responsive and mobile-first interface | |
+| to create | Implement `window.ontoWaveConfig` as syntactic sugar | Ref: [interface.en.md §2](interface.en.md) — converts object to `__ONTOWAVE_BUNDLE__['/config.json']` |
+| to create | Demo pages in two versions (CDN @latest + local CI) | Ref: [interface.en.md §11](interface.en.md) |
 
 ## v2.0 — Universal Content Navigator
 
