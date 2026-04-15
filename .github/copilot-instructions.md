@@ -2,10 +2,13 @@
 
 ## Présentation du projet
 
-**OntoWave** est un noyau de navigation (~100KB, **zéro dépendance**) pour sites statiques et applications web. Il transforme des fichiers Markdown en documentation interactive dans le navigateur, avec routing SPA basé sur le hash URL et chargement d'extensions à la demande (Mermaid, KaTeX, PlantUML, etc.).
+**OntoWave** est une bibliothèque de navigation pour sites statiques et applications web. Elle transforme des fichiers Markdown en documentation interactive dans le navigateur, avec routing SPA basé sur le hash URL.
 
-> **Contrainte « zéro dépendance »** : s'applique au **noyau** `dist/ontowave.js` uniquement.
-> Les extensions vivent dans `dist/extensions/` et sont chargées dynamiquement — elles peuvent avoir des dépendances.
+> **État actuel (v1.x)** : bundle monolithique unique `dist/ontowave.min.js` (~4.7MB non-gzippé). Tout est bundlé : Markdown, Mermaid, KaTeX, Highlight, PlantUML.
+>
+> **Architecture cible (v2.0)** : noyau ≤ 200KB + extensions chargées à la demande. Décrit dans [docs/specs/architecture.fr.md](../docs/specs/architecture.fr.md). **NE PAS anticiper cette architecture avant les issues correspondantes.**
+>
+> **Contrainte « zéro dépendance »** : s'applique au **noyau** `dist/ontowave.js` uniquement (objectif v2.0).
 
 - Package npm : `ontowave`
 - Sites : https://ontowave.org et https://ontowave.com (identiques)
@@ -20,8 +23,9 @@
 
 ### Implémenté (dans `main`)
 
-- `bootstrapDom(cfg)` dans `src/main.ts` : la librairie crée tout le DOM (shell, menu, layout)
-- `docs/index.html` est quasi-vide : juste `<script src="/ontowave.min.js">` — c'est la référence
+- `bootstrapDom(cfg)` dans `src/main.ts` : la librairie crée tout le DOM (shell, menu, layout).
+  Guard `#app` : si l'élément préexiste → STOP TOTAL (aucun DOM, aucun style, aucun menu)
+- `docs/index.html` : `<noscript>` SEO + `window.ontoWaveConfig` + `<script src="/ontowave.min.js">` — c'est la référence
 - Routing SPA hash-based via `src/router.ts`
 - Fetch + cache de fichiers Markdown
 - Rendu Markdown, KaTeX, Mermaid, Highlight, PlantUML, SVG inline (**tout bundlé dans un seul fichier, ~4.7MB actuellement**)
@@ -213,35 +217,45 @@ Après que le tag `latest` npm est mis à jour, un smoke-test Playwright doit ê
 ## Multilingue
 
 - **Langue source : français** (`*.fr.md`) — c'est la version de référence à rédiger en premier
-- **Traduction anglaise obligatoire** (`*.en.md`) — chaque page française doit avoir son équivalent anglais pour les sites ontowave.org/com
-- Les fichiers de contenu utilisent le suffixe de langue : `index.fr.md`, `index.en.md`
-- La configuration de `roots` dans le config JSON permet de mapper des `base` URL vers des `root` de fichiers
+- **Traduction anglaise obligatoire** (`*.en.md`) — chaque page française doit avoir son équivalent anglais
+- Les fichiers utilisent le suffixe de langue : `index.fr.md`, `index.en.md`
+- **Multilinguisme = explicite** : sans déclaration `i18n` dans la config, OntoWave est unilingue et charge `*.md` sans suffixe
+- Deux patterns de structuration supportés : côte-à-côte (`index.fr.md` + `index.en.md` dans le même dossier) OU dossiers séparés (`/fr/index.md` + `/en/index.md`)
 - `normalizePath()` dans `src/core/logic.ts` est la référence pour la normalisation des chemins
 - Quand on crée ou modifie un fichier `.fr.md`, toujours créer ou mettre à jour le `.en.md` correspondant
+
+## Principes fondamentaux non-négociables
+
+> Ces règles gouvernent tout le code. Tout commit qui les viole doit être corrigé immédiatement.
+
+1. **Jamais de fetch externe sans directive explicite** : OntoWave ne requête jamais un fichier de configuration ou de contenu sans que l'intégrateur en ait déclaré l'intention. La config vient exclusivement de `window.ontoWaveConfig` ou `window.__ONTOWAVE_BUNDLE__`.
+
+2. **`window.ontoWaveConfig = {roots, i18n}` est l'API d'injection recommandée** : objet de config directement, converti en `__ONTOWAVE_BUNDLE__['/config.json']` par la lib. `__ONTOWAVE_BUNDLE__` reste l'API bas niveau pour injecter plusieurs fichiers à la fois.
+
+3. **La page HTML est quasi-vide** : `<noscript>` SEO + `window.ontoWaveConfig` + `<script src="...ontowave.min.js">`. Rien d'autre. Spec complète : [docs/specs/interface.fr.md](../docs/specs/interface.fr.md).
+
+4. **Guard `#app` = STOP total** : si `document.getElementById('app')` préexiste, `bootstrapDom()` ne crée rien (ni menu, ni styles, ni layout).
+
+5. **Hash routing = contrainte documentée** : v1.x prend possession exclusive de `window.location.hash`. Compatible uniquement avec les sites statiques où toutes les URLs se résolvent vers `index.html`. Le mode composant (v2.0, issue #77) résoudra cette contrainte.
 
 ## Principe fondateur — HTML minimal
 
 > **La page HTML est quasi-vide. La librairie crée tout le DOM.**
 
-La spécification complète est dans [docs/specs/interface.fr.md](../docs/specs/interface.fr.md).
+Spec complète dans [docs/specs/interface.fr.md](../docs/specs/interface.fr.md).
 
 ### `docs/index.html` — Invariants anti-dérive (non négociables)
 
-`docs/index.html` est la **référence utilisateur**. Elle ne doit contenir que : DOCTYPE + head (meta/title) + `<noscript>` SEO + `<script src="/ontowave.min.js">`.
+`docs/index.html` est la **référence utilisateur**. Elle ne doit contenir que : DOCTYPE + head + `<noscript>` SEO + `window.ontoWaveConfig` + `<script src="/ontowave.min.js">`.
 
 Tout `<style>`, `#site-header`, `#sidebar`, `#layout` ou `#toc` dans `docs/index.html` est une **dérive de conception** — à corriger immédiatement.
 
-### Menu flottant — Identité visuelle de référence
-
-- **Fond** : `rgba(255,255,255,0.95)` + `backdrop-filter: blur(10px)` + `border: 1px solid #e1e4e8`
-- **Icône** : `&#127754;` (🌊 emoji natif), cercle compact ≈ 66×66px
-- **Expansion** : horizontale (pill), révèle brand + options + boutons langue
-- **Drag & Drop** : obligatoire, session uniquement
-- **Pas de** header fixe, sidebar, TOC dans le DOM — navigation via le menu flottant uniquement
+**Exception légitime** : le bloc `<noscript>` pour le SEO. Ce n'est pas une dérive.
 
 ## À éviter
 
-- N'ajoute pas de dépendances npm dans `dependencies` — la lib doit rester zéro-dépendance
+- N'ajoute pas de `fetch()` pour lire une configuration ou un fichier externe sans que la page hôte l'ait déclaré explicitement via `window.ontoWaveConfig` ou `window.__ONTOWAVE_BUNDLE__`
+- N'ajoute pas de dépendances npm dans `dependencies` — la lib doit rester zéro-dépendance (objectif noyau v2.0)
 - N'utilise pas d'API navigateur dans `src/core/` (DOM, fetch, localStorage…)
 - N'introduis pas de code-splitting ou de chunks dynamiques dans le build de distribution
 - N'écris pas de tests `it.only` ou `test.only` sans retirer le `.only` avant commit

@@ -13,7 +13,7 @@ export function createSearch() {
 
   async function loadConfig() {
     try {
-  const cfg = getJsonFromBundle('/config.json') || await fetch('/config.json', { cache: 'no-cache' }).then(r => r.json())
+  const cfg = getJsonFromBundle('/config.json') || {}
       roots = (cfg.roots || []).map((r: any) => ({ base: String(r.base || '').replace(/^\/+|\/+$/g, ''), root: String(r.root || '') }))
     } catch {}
   }

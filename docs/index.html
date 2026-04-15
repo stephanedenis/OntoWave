@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OntoWave - Micro-application pour sites statiques</title>
     <meta name="description" content="Micro-application JavaScript légère pour sites statiques avec support multilingue, Mermaid, PlantUML et Markdown">
+    <link rel="canonical" href="https://ontowave.org/">
 </head>
 <body>
 <!-- noscript:seo:start -->
 <noscript>
   <div lang="fr">
-<h1>OntoWave <a href="https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md">v1.0.25</a></h1>
+<h1>OntoWave <a href="https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md">v1.0.45</a></h1>
 <p>Micro-application JavaScript légère (~245KB, ~85KB gzippé) pour sites statiques avec support multilingue, coloration syntaxique, formules mathématiques et diagrammes.</p>
 <h2>Fonctionnalités</h2>
 <ul>
@@ -159,7 +160,7 @@ MarkdownProcessor --&gt; PlantUMLPlugin : utilise
 <p><strong>Code source :</strong> <a href="https://github.com/stephanedenis/OntoWave">GitHub - OntoWave</a></p>
   </div>
   <div lang="en">
-<h1>OntoWave <a href="https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md">v1.0.25</a></h1>
+<h1>OntoWave <a href="https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md">v1.0.45</a></h1>
 <p>Lightweight JavaScript micro-application (~245KB, ~85KB gzipped) for static sites with multilingual support, syntax highlighting, math formulas and diagrams.</p>
 <h2>Features</h2>
 <ul>
@@ -309,6 +310,15 @@ MarkdownProcessor --&gt; PlantUMLPlugin : uses
   </div>
 </noscript>
 <!-- noscript:seo:end -->
+    <script>
+      window.ontoWaveConfig = {
+        roots: [
+          { base: 'fr', root: '/' },
+          { base: 'en', root: '/' }
+        ],
+        i18n: { default: 'fr', supported: ['fr', 'en'] }
+      };
+    </script>
     <script src="/ontowave.min.js"></script>
 </body>
 </html>
