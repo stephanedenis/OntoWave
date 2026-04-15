@@ -1,11 +1,13 @@
 # Roadmap OntoWave
 
-> Version : 1.0 — 12 avril 2026  
-> Statut : **approuvée**
+> Statut : **approuvée** — version gérée par git
 
 ## Vision
 
-**OntoWave** est un noyau de navigation indépendant (~100KB, zéro dépendance) pour sites statiques et applications web. Des extensions légères sont chargées à la demande selon le contenu : Markdown, diagrammes, formules mathématiques, et au-delà.
+**OntoWave** est une bibliothèque de navigation pour sites statiques et applications web. Elle transforme des fichiers Markdown en documentation interactive dans le navigateur, avec routing SPA basé sur le hash URL.
+
+**État actuel (v1.x)** : bundle monolithique (~4.7MB non-gzippé), tout est bundlé.  
+**Objectif v2.0** : noyau ≤ 200KB (zéro dépendance) + extensions chargées à la demande.
 
 OntoWave s'intègre naturellement dans l'écosystème Panini (PaniniFS, PublicationEngine, Pensine-web) mais n'en dépend pas et ne le suppose pas. Il est utilisable seul par n'importe quel projet.
 
@@ -13,14 +15,13 @@ OntoWave s'intègre naturellement dans l'écosystème Panini (PaniniFS, Publicat
 
 | Ce qu'est OntoWave | Ce qu'il n'est pas |
 |---|---|
-| Noyau de navigation (SPA, routing, fetch) | Générateur de site statique |
+| Bibliothèque de navigation (SPA, routing, fetch) | Générateur de site statique |
 | Couche de présentation embarquable | Framework applicatif |
-| Registre d'extensions lazy-load | CMS |
-| Bibliothèque zéro dépendance (noyau) | Bundle monolithique |
+| Bibliothèque zéro dépendance (objectif noyau v2.0) | CMS |
 
-## Palier v1.1 — Interface de référence
+## Palier v1.1 — Interface et API de configuration
 
-**Objectif** : stabiliser ce que l'utilisateur voit et touche. Fondation visuelle immuable.
+**Objectif** : stabiliser ce que l'utilisateur voit et touche + API de configuration recommandée. Fondation immuable pour v2.0.
 
 **Critère de clôture** : `npm run check` passe + `docs/index.html` respecte les invariants de [specs/interface.fr.md](interface.fr.md).
 
@@ -28,6 +29,8 @@ OntoWave s'intègre naturellement dans l'écosystème Panini (PaniniFS, Publicat
 |---|---|---|
 | #76 | Menu flottant — verre givré, pill, drag & drop | Spec complète dans [interface.fr.md §4-5](interface.fr.md) |
 | #17 | Interface responsive et mobile-first | |
+| à créer | Implémenter `window.ontoWaveConfig` comme sucre syntaxique | Ref : [interface.fr.md §2](interface.fr.md) — convertit l'objet en `__ONTOWAVE_BUNDLE__['/config.json']` |
+| à créer | Pages de démo en deux versions (CDN @latest + local CI) | Ref : [interface.fr.md §11](interface.fr.md) |
 
 ## Palier v2.0 — Navigateur de contenu universel
 

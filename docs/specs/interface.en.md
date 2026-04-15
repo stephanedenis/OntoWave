@@ -1,9 +1,7 @@
 # Specifications — OntoWave Bootstrap Interface
 
-**Reference version**: `ontowave.js` March 2026 (pure JS class)  
-**Applies to**: `dist/ontowave.min.js` v1.x and above  
 **Language**: English (translation) — [Version française](interface.fr.md)  
-**Status**: Living document — all implementations must conform
+**Status**: Living document — all implementations must conform — versioned by git
 
 ---
 
@@ -22,18 +20,25 @@ A correct OntoWave page contains only:
   <title>My site</title>
 </head>
 <body>
-  <script src="https://unpkg.com/ontowave/dist/ontowave.min.js"></script>
+  <script>
+    window.ontoWaveConfig = { roots: [{ base: '/', root: '/' }] };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
 </body>
 </html>
 ```
 
-The library automatically detects configuration, creates the interface and loads content. **The user defines nothing in HTML.**
+The library creates the entire interface. **The user defines no DOM in HTML.**
 
 ---
 
-## 2. Optional Inline Configuration
+## 2. Configuration Injection
 
-Configuration can be passed directly in the page, before the library `<script>`:
+OntoWave **never fetches an external configuration file**. Configuration must be injected by the host page. Two APIs are available:
+
+### Option A — `window.ontoWaveConfig` (recommended)
+
+The simplest API. Declare the configuration object directly in the page, before the library `<script>`:
 
 ```html
 <body>
@@ -46,25 +51,44 @@ Configuration can be passed directly in the page, before the library `<script>`:
       i18n: { default: 'en', supported: ['en', 'fr'] }
     };
   </script>
-  <script src="https://unpkg.com/ontowave/dist/ontowave.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
 </body>
 ```
 
-**Configuration resolution priority** (descending order):
+The library reads `window.ontoWaveConfig` and automatically converts it to `window.__ONTOWAVE_BUNDLE__['/config.json']`.
 
-1. `window.ontoWaveConfig` (inline in the page)
-2. Config bundled in the library (embedded `config.json`)
-3. `config.json` fetched from the site root
+### Option B — `window.__ONTOWAVE_BUNDLE__` (low-level API)
+
+Advanced API for pages/tools that need to inject multiple files (config, nav, sitemap, search-index) in a single operation:
+
+```html
+<script>
+  window.__ONTOWAVE_BUNDLE__ = {
+    '/config.json': JSON.stringify({ roots: [...], i18n: {...} }),
+    '/nav.yml': '[]',
+    '/sitemap.json': '{"items":[]}',
+    '/search-index.json': '[]'
+  };
+</script>
+```
+
+### Behavior without configuration
+
+If neither API is defined, OntoWave starts in **minimal monolingual mode**:
+- Default config: `{ roots: [{ base: '/', root: '/' }] }`
+- Loads the home page: `#/index.md`
+- No network request to find a configuration
 
 ---
 
 ## 3. Automatic Bootstrap
 
-On load, the library applies this algorithm:
+On load, `bootstrapDom()` applies this algorithm:
 
 ```
-1. Read configuration (per §2 priority)
-2. If document.getElementById('app') exists → STOP (custom mode)
+1. Read configuration (§2 — injection only, never fetch)
+2. If document.getElementById('app') exists → COMPLETE STOP
+   (no DOM, no style, no menu — integration mode)
 3. Otherwise → create full DOM:
    a. Inject <style id="ow-bootstrap-styles"> with base CSS
    b. Create <div id="ow-content"><div id="app"></div></div>
@@ -72,7 +96,7 @@ On load, the library applies this algorithm:
    d. Initialize router and load default page
 ```
 
-**The `#app` guard is idempotent**: demo pages that define `<div id="app">` in their HTML are not affected by bootstrap.
+**The `#app` guard is a complete stop**: if `#app` pre-exists, nothing is created — no menu, no styles, no layout. This allows embedding OntoWave in an existing interface.
 
 ---
 
@@ -233,11 +257,16 @@ While the panel is open:
   <meta name="description" content="...">
 </head>
 <body>
-  <noscript><!-- Bilingual SEO content --></noscript>
+  <noscript><!-- Bilingual SEO content — legitimate exception --></noscript>
+  <script>
+    window.ontoWaveConfig = { roots: [...], i18n: {...} };
+  </script>
   <script src="/ontowave.min.js"></script>
 </body>
 </html>
 ```
+
+**Legitimate exception**: the `<noscript>` block for SEO (static bilingual content for crawlers). This is not a design drift.
 
 **Verifiable invariants (to test in CI)**:
 
@@ -245,11 +274,51 @@ While the panel is open:
 - `docs/index.html` does not contain `#sidebar`
 - `docs/index.html` does not contain `#layout`
 - `docs/index.html` does not contain a `<style>` block outside `<noscript>`
-- Line count excluding `<noscript>` is ≤ 15
+- Non-`<noscript>` content is ≤ 20 lines
 
 ---
 
-## 10. Non-Regression Contract
+## 10. Multilingualism
+
+**By default, OntoWave is monolingual**. Multilingualism is always **explicit** — declared in the configuration:
+
+```javascript
+window.ontoWaveConfig = {
+  roots: [
+    { base: 'fr', root: 'content/fr/' },
+    { base: 'en', root: 'content/en/' }
+  ],
+  i18n: { default: 'en', supported: ['en', 'fr'] }
+};
+```
+
+Without `i18n` declaration: monolingual — loads `*.md` files without language suffix.
+
+### Two supported file patterns
+
+**Pattern 1 — Side by side**: `index.fr.md` and `index.en.md` in the same folder  
+**Pattern 2 — Separate folders**: `/fr/index.md` and `/en/index.md`
+
+Both patterns are fully supported. Choose according to your content organization.
+
+---
+
+## 11. Demo Pages — Two Versions
+
+Each demo page in `docs/` must exist in **two copies**:
+
+| Version | `<script src>` | Use |
+|---------|----------------|-----|
+| `demo-xxx.html` | CDN `@latest` via jsdelivr | Published site, always up to date |
+| `demo-xxx.ci.html` | `/ontowave.min.js` (local) | Playwright CI, reproducible tests |
+
+This separation ensures:
+- The published site always shows the latest released version
+- CI tests run against the exact local build being validated
+
+---
+
+## 12. Non-Regression Contract
 
 Any commit modifying `src/main.ts` or `src/adapters/` must satisfy:
 
