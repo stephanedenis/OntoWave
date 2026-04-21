@@ -187,6 +187,14 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
 }
 
 ;(async () => {
+  // Spec §2 : window.ontoWaveConfig est l'API d'injection recommandée.
+  // Convertir en __ONTOWAVE_BUNDLE__['/config.json'] pour que getJsonFromBundle() le trouve.
+  try {
+    const _owc = (window as any).ontoWaveConfig
+    if (_owc && typeof _owc === 'object' && !window.__ONTOWAVE_BUNDLE__) {
+      window.__ONTOWAVE_BUNDLE__ = { '/config.json': JSON.stringify(_owc) }
+    }
+  } catch {}
   // Toggle engine via config.json; fallback v2 par défaut si absent
   const cfg = getJsonFromBundle('/config.json') || {}
   // Bootstrapper le DOM si la page est quasi-vide (pas de #app fourni)
