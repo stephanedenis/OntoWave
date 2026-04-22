@@ -30,7 +30,9 @@ jobs:
       - name: Build
         run: npm run build:package
       - name: Install fonts for consistent rendering
-        run: sudo apt-get install -y fonts-roboto
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends fonts-roboto
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         with:
