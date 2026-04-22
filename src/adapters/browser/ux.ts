@@ -342,7 +342,9 @@ export function injectUxToolbar(container: HTMLElement | null, showNotes = true)
   toolbar.className = 'ow-ux-toolbar'
   // Style compact si dans le floating-menu, barre horizontale si inline dans #app
   if (floatingMenu) {
-    toolbar.style.cssText = 'display:flex; flex-direction:column; gap:0.25rem; font-size:0.85em;'
+    // Pas de display:flex inline : le CSS de BOOTSTRAP_CSS contrôle la visibilité
+    // (#ontowave-floating-menu #ow-ux-toolbar{display:none} / .expanded → display:flex)
+    toolbar.style.cssText = 'flex-direction:column; gap:0.25rem; font-size:0.85em;'
   } else {
     toolbar.style.cssText = 'display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; margin-bottom:1rem; padding:0.4rem 0; border-bottom:1px solid var(--ow-border,#e0e0e0); font-size:0.85em;'
   }
@@ -359,15 +361,17 @@ export function injectUxToolbar(container: HTMLElement | null, showNotes = true)
   })
   toolbar.appendChild(themeBtn)
 
-  // Bouton print/PDF
-  const printBtn = document.createElement('button')
-  printBtn.className = 'ow-theme-btn'
-  printBtn.title = 'Exporter en PDF (impression)'
-  printBtn.textContent = '🖨 PDF'
-  printBtn.addEventListener('click', () => window.print())
-  toolbar.appendChild(printBtn)
+  // Bouton print/PDF — uniquement hors menu flottant
+  if (!floatingMenu) {
+    const printBtn = document.createElement('button')
+    printBtn.className = 'ow-theme-btn'
+    printBtn.title = 'Exporter en PDF (impression)'
+    printBtn.textContent = '🖨 PDF'
+    printBtn.addEventListener('click', () => window.print())
+    toolbar.appendChild(printBtn)
+  }
 
-  if (showNotes) {
+  if (showNotes && !floatingMenu) {
     // Bouton notes
     let notesVisible = false
     const notesBtn = document.createElement('button')

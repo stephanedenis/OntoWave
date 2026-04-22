@@ -40,9 +40,11 @@ body{margin:0;padding:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'D
 .ontowave-menu-option:hover{transform:translateY(-1px);background:#f6f8fa}
 .ontowave-lang-btn{display:none;background:#f8f9fa;border:1px solid #d0d7de;border-radius:4px;padding:3px 8px;font-size:0.8rem;cursor:pointer;color:#1a1a1a;font-weight:500}
 .ontowave-lang-btn.active{background:#28a745;border-color:#28a745;color:#fff}
+#ontowave-floating-menu #ow-ux-toolbar{display:none}
 #ontowave-floating-menu.expanded .ontowave-menu-brand{display:flex}
 #ontowave-floating-menu.expanded .ontowave-menu-option,
 #ontowave-floating-menu.expanded .ontowave-lang-btn{display:inline-flex;align-items:center}
+#ontowave-floating-menu.expanded #ow-ux-toolbar{display:flex;flex-direction:column;gap:0.25rem;font-size:0.85em}
 `
 
 /**
