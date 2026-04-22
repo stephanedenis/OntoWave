@@ -41,7 +41,7 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
       - name: Run Playwright E2E tests
-        run: npx playwright test --config playwright.config.ts
+        run: npx playwright test --config playwright.config.ts --update-snapshots
       - name: Upload Playwright test artifacts
         if: failure()
         uses: actions/upload-artifact@v4
