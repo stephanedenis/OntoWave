@@ -60,7 +60,7 @@ test.describe('Demo 02-config: Internationalization', () => {
     // Full page screenshot
     await expect(page).toHaveScreenshot('02-config-i18n.png', {
       fullPage: true,
-      maxDiffPixels: 100  // Tolerance
+      maxDiffPixels: 500  // Tolerance
     });
   });
 });

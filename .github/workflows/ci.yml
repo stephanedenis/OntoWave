@@ -29,6 +29,24 @@ jobs:
         run: npm run test:ci
       - name: Build
         run: npm run build:package
+      - name: Install fonts for consistent rendering
+        run: sudo apt-get install -y fonts-roboto
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      - name: Run Playwright E2E tests
+        run: npx playwright test --config playwright.config.ts
+      - name: Upload Playwright test artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results
+          path: test-results/**
+          if-no-files-found: ignore
       - name: Verify docs/index.html is CDN (not SPA)
         run: |
           if grep -q 'ontowave.min.js' docs/index.html; then

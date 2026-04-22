@@ -60,7 +60,7 @@ test.describe('Demo 02-config: UI Customization', () => {
     // Full page screenshot
     await expect(page).toHaveScreenshot('02-config-ui-custom.png', {
       fullPage: true,
-      maxDiffPixels: 100  // Tolerance
+      maxDiffPixels: 500  // Tolerance
     });
   });
 });

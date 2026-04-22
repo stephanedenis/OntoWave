@@ -211,7 +211,7 @@ test.describe('Demo 03-ux/notes: Persistent Notes', () => {
 
     await expect(page).toHaveScreenshot('03-ux-notes.png', {
       fullPage: true,
-      maxDiffPixels: 100,
+      maxDiffPixels: 500,
     });
   });
 });

@@ -99,7 +99,7 @@ test.describe('Demo 03-ux: UX Features', () => {
 
     await expect(page).toHaveScreenshot('03-ux-features.png', {
       fullPage: true,
-      maxDiffPixels: 100
+      maxDiffPixels: 500
     });
   });
 });

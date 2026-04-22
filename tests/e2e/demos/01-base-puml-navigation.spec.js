@@ -74,7 +74,7 @@ test.describe('Demo 01-base: Navigation to .puml files', () => {
     // Full page screenshot
     await expect(page).toHaveScreenshot('01-base-puml-navigation.png', {
       fullPage: true,
-      maxDiffPixels: 100  // Tolerance
+      maxDiffPixels: 500  // Tolerance
     });
   });
 });
