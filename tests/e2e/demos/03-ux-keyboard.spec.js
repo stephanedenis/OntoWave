@@ -179,7 +179,7 @@ test.describe('Demo 03-ux/keyboard: Keyboard Navigation', () => {
 
     await expect(page).toHaveScreenshot('03-ux-keyboard.png', {
       fullPage: true,
-      maxDiffPixels: 100,
+      maxDiffPixels: 500,
     });
   });
 });

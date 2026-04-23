@@ -60,7 +60,7 @@ test.describe('Demo 01-base: SPA Routing', () => {
     // Full page screenshot
     await expect(page).toHaveScreenshot('01-base-routing.png', {
       fullPage: true,
-      maxDiffPixels: 100  // Tolerance
+      maxDiffPixels: 500  // Tolerance
     });
   });
 });

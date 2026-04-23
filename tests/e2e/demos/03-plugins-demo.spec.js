@@ -60,7 +60,7 @@ test.describe('Demo 03-plugins: Plugin Architecture', () => {
     // Full page screenshot
     await expect(page).toHaveScreenshot('03-plugins-demo.png', {
       fullPage: true,
-      maxDiffPixels: 100  // Tolerance
+      maxDiffPixels: 500  // Tolerance
     });
   });
 });

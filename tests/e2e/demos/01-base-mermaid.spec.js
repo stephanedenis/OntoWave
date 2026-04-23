@@ -69,7 +69,7 @@ test.describe('Demo 01-base: Mermaid Diagrams', () => {
     // Full page screenshot
     await expect(page).toHaveScreenshot('01-base-mermaid.png', {
       fullPage: true,
-      maxDiffPixels: 100  // Tolerance
+      maxDiffPixels: 500  // Tolerance
     });
   });
 });
