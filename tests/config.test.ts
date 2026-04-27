@@ -3,12 +3,12 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 // Helper : simule un environnement navigateur minimal avec window
 function setupWindow(overrides: Record<string, unknown> = {}) {
   const win: Record<string, unknown> = { ...overrides }
-  ;(global as any).window = win
+  ;(globalThis as any).window = win
   return win
 }
 
 function teardownWindow() {
-  delete (global as any).window
+  delete (globalThis as any).window
 }
 
 describe('browserConfig.load()', () => {
@@ -23,19 +23,19 @@ describe('browserConfig.load()', () => {
 
   it('convertit window.ontoWaveConfig en __ONTOWAVE_BUNDLE__["/config.json"]', async () => {
     const cfg = { roots: [{ base: '/docs', root: '/docs' }] }
-    ;(global as any).window = { ontoWaveConfig: cfg }
+    ;(globalThis as any).window = { ontoWaveConfig: cfg }
 
     // Import dynamique pour contourner le cache de module lors des tests
     const { browserConfig } = await import('../src/adapters/browser/config')
     const result = await browserConfig.load()
 
     expect(result).toEqual(cfg)
-    expect((global as any).window.__ONTOWAVE_BUNDLE__['/config.json']).toBe(JSON.stringify(cfg))
+    expect((globalThis as any).window.__ONTOWAVE_BUNDLE__['/config.json']).toBe(JSON.stringify(cfg))
   })
 
   it('utilise __ONTOWAVE_BUNDLE__["/config.json"] directement si ontoWaveConfig absent', async () => {
     const cfg = { roots: [{ base: '/content', root: '/content' }] }
-    ;(global as any).window = {
+    ;(globalThis as any).window = {
       __ONTOWAVE_BUNDLE__: { '/config.json': JSON.stringify(cfg) }
     }
 
@@ -46,7 +46,7 @@ describe('browserConfig.load()', () => {
   })
 
   it('retourne le fallback minimal si aucune config n\'est fournie', async () => {
-    ;(global as any).window = {}
+    ;(globalThis as any).window = {}
 
     const { browserConfig } = await import('../src/adapters/browser/config')
     const result = await browserConfig.load()
@@ -57,7 +57,7 @@ describe('browserConfig.load()', () => {
   it('window.ontoWaveConfig a priorité sur __ONTOWAVE_BUNDLE__ existant', async () => {
     const cfgConfig = { roots: [{ base: '/from-config', root: '/from-config' }] }
     const cfgBundle = { roots: [{ base: '/from-bundle', root: '/from-bundle' }] }
-    ;(global as any).window = {
+    ;(globalThis as any).window = {
       ontoWaveConfig: cfgConfig,
       __ONTOWAVE_BUNDLE__: { '/config.json': JSON.stringify(cfgBundle) }
     }
