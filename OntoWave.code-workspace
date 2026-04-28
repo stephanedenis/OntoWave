@@ -1,0 +1,24 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    // Titre de la fenêtre avec l'icône OntoWave
+    "window.title": "🌊 OntoWave — ${activeEditorShort}${separator}${dirty}",
+
+    // Barre de titre : bleu océan profond (sky-900) + texte bleu clair
+    // Contraste : #0c4a6e / #e0f2fe ≈ 10:1 (WCAG AAA)
+    "workbench.colorCustomizations": {
+      "statusBar.noFolderBackground": "#0c4a6e",
+      "statusBar.noFolderForeground": "#e0f2fe",
+      "statusBarItem.activeBackground": "#0a3d5c"
+    },
+
+    // Orthographe en français (cohérent avec .vscode/settings.json)
+    "cSpell.enabled": true,
+    "cSpell.language": "fr",
+    "cSpell.locale": "fr"
+  }
+}

@@ -9,3 +9,9 @@ test-results/
 .playwright-mcp/
 docs/standalone/
 dist/ontowave.umd.cjs
+
+# Artefacts de build / tests
+coverage/
+docs/assets/
+scroll-*.png
+playwright-report/
