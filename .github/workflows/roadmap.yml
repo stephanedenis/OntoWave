@@ -18,7 +18,7 @@ jobs:
       issues: write
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
       - name: Ensure Roadmap issue exists
         uses: peter-evans/create-issue-from-file@v5
         with:
