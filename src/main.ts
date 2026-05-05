@@ -43,6 +43,7 @@ body{margin:0;padding:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'D
 #ontowave-floating-menu.expanded .ontowave-menu-brand{display:flex}
 #ontowave-floating-menu.expanded .ontowave-menu-option,
 #ontowave-floating-menu.expanded .ontowave-lang-btn{display:inline-flex;align-items:center}
+#ontowave-floating-menu:not(.expanded) #ow-ux-toolbar{display:none!important}
 `
 
 /**
