@@ -118,20 +118,21 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Commit version bump to main
+      - name: Skip repository write on protected main
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add package.json package-lock.json dist/ontowave.js dist/ontowave.min.js docs/ontowave.min.js
-          git diff --cached --quiet || git commit -m "chore: bump version to v${{ env.NEW_VERSION }} [skip ci]"
-          git push origin HEAD:main
+          echo "main est protégée: aucun commit automatique n'est poussé par ce workflow."
+          echo "La version est publiée sur npm et tracée via tag + GitHub Release."
 
       - name: Create and push release tag
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git tag "v${{ env.NEW_VERSION }}" -m "Release v${{ env.NEW_VERSION }} (@${{ env.NPM_TAG }})"
-          git push origin "v${{ env.NEW_VERSION }}"
+          if git ls-remote --tags origin "refs/tags/v${{ env.NEW_VERSION }}" | grep -q .; then
+            echo "Tag v${{ env.NEW_VERSION }} déjà présent sur origin, skip."
+          else
+            git tag "v${{ env.NEW_VERSION }}" -m "Release v${{ env.NEW_VERSION }} (@${{ env.NPM_TAG }})"
+            git push origin "v${{ env.NEW_VERSION }}"
+          fi
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
