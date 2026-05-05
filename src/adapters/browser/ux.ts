@@ -14,7 +14,6 @@ import { getJsonFromBundle } from './bundle'
 export type ReadingTheme = 'light' | 'sepia' | 'dark'
 
 const LS_THEME_KEY = 'ow-reading-theme'
-const LS_NOTES_PREFIX = 'ow-note:'
 const MARKOV_KEY = 'ow-markov'
 const MARKOV_MAX_ENTRIES = 200
 
@@ -129,45 +128,7 @@ async function prefetchRoute(route: string): Promise<void> {
 }
 
 // ---------------------------------------------------------------------------
-// Notes légères
-// ---------------------------------------------------------------------------
-
-export function saveNote(route: string, text: string): void {
-  try {
-    const key = LS_NOTES_PREFIX + route
-    if (text.trim()) {
-      localStorage.setItem(key, text)
-    } else {
-      localStorage.removeItem(key)
-    }
-  } catch {}
-}
-
-export function loadNote(route: string): string {
-  try {
-    return localStorage.getItem(LS_NOTES_PREFIX + route) || ''
-  } catch {
-    return ''
-  }
-}
-
-export function getAllNotes(): Array<{ route: string; text: string }> {
-  const notes: Array<{ route: string; text: string }> = []
-  try {
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i)
-      if (key?.startsWith(LS_NOTES_PREFIX)) {
-        const route = key.slice(LS_NOTES_PREFIX.length)
-        const text = localStorage.getItem(key) || ''
-        if (text) notes.push({ route, text })
-      }
-    }
-  } catch {}
-  return notes
-}
-
-// ---------------------------------------------------------------------------
-// Injection des styles CSS (thèmes + print)
+// Injection des styles CSS (thèmes)
 // ---------------------------------------------------------------------------
 
 const UX_CSS = `
@@ -243,69 +204,9 @@ body.ow-theme-dark td {
   opacity: 1;
 }
 
-/* === Notes légères === */
-.ow-notes-panel {
-  margin: 1.5rem 0;
-  padding: 0.75rem;
-  border: 1px solid var(--ow-border, #e0e0e0);
-  border-radius: 6px;
-  background: var(--ow-code-bg, #f5f5f5);
-}
-.ow-notes-panel textarea {
-  width: 100%;
-  min-height: 80px;
-  border: 1px solid var(--ow-border, #ccc);
-  border-radius: 4px;
-  padding: 0.5rem;
-  font-family: inherit;
-  font-size: 0.9em;
-  resize: vertical;
-  background: var(--ow-bg, #fff);
-  color: var(--ow-text, #1a1a1a);
-  box-sizing: border-box;
-}
-
-/* === CSS d'impression (PDF) === */
-@media print {
-  #sidebar,
-  #toc,
-  #site-header,
-  #ontowave-floating-menu,
-  .ow-ux-toolbar,
-  .ow-notes-panel,
-  nav {
-    display: none !important;
-  }
-  body {
-    background: #fff !important;
-    color: #000 !important;
-    font-size: 12pt;
-  }
-  #app, main, article {
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-  a[href]::after {
-    content: " (" attr(href) ")";
-    font-size: 0.8em;
-    color: #666;
-  }
-  a[href^="#"]::after,
-  a[href^="javascript"]::after {
-    content: "";
-  }
-  pre, code {
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-  h1, h2, h3 {
-    page-break-after: avoid;
-  }
-  p, li {
-    orphans: 3;
-    widows: 3;
-  }
+/* === Masquer la barre UX quand le menu flottant est fermé === */
+#ontowave-floating-menu:not(.expanded) #ow-ux-toolbar {
+  display: none !important;
 }
 `
 
@@ -326,23 +227,20 @@ function createThemeLabel(theme: ReadingTheme): string {
   return labels[theme]
 }
 
-export function injectUxToolbar(container: HTMLElement | null, showNotes = true): void {
+export function injectUxToolbar(container: HTMLElement | null): void {
   if (!container) return
   // Si la page a un #ontowave-floating-menu (chrome CDN), on y injecte la barre
   const floatingMenu = document.getElementById('ontowave-floating-menu')
   const toolbarTarget = floatingMenu ?? container
   const existing = document.getElementById('ow-ux-toolbar')
   if (existing) existing.remove()
-  // Supprimer aussi l'ancien panneau de notes s'il existe
-  const existingPanel = container.querySelector('.ow-notes-panel')
-  if (existingPanel) existingPanel.remove()
 
   const toolbar = document.createElement('div')
   toolbar.id = 'ow-ux-toolbar'
   toolbar.className = 'ow-ux-toolbar'
   // Style compact si dans le floating-menu, barre horizontale si inline dans #app
   if (floatingMenu) {
-    toolbar.style.cssText = 'display:flex; flex-direction:column; gap:0.25rem; font-size:0.85em;'
+    toolbar.style.cssText = 'display:flex; flex-direction:row; gap:0.5rem; align-items:center; font-size:0.85em;'
   } else {
     toolbar.style.cssText = 'display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; margin-bottom:1rem; padding:0.4rem 0; border-bottom:1px solid var(--ow-border,#e0e0e0); font-size:0.85em;'
   }
@@ -359,53 +257,6 @@ export function injectUxToolbar(container: HTMLElement | null, showNotes = true)
   })
   toolbar.appendChild(themeBtn)
 
-  // Dans le menu flottant, seul le bouton thème est conservé
-  if (!floatingMenu) {
-    // Bouton print/PDF
-    const printBtn = document.createElement('button')
-    printBtn.className = 'ow-theme-btn'
-    printBtn.title = 'Exporter en PDF (impression)'
-    printBtn.textContent = '🖨 PDF'
-    printBtn.addEventListener('click', () => window.print())
-    toolbar.appendChild(printBtn)
-  }
-
-  if (showNotes && !floatingMenu) {
-    // Bouton notes
-    let notesVisible = false
-    const notesBtn = document.createElement('button')
-    notesBtn.className = 'ow-theme-btn'
-    notesBtn.title = 'Afficher/masquer les notes pour cette page'
-    notesBtn.textContent = '📝 Notes'
-
-    const notesPanel = document.createElement('div')
-    notesPanel.className = 'ow-notes-panel'
-    notesPanel.style.display = 'none'
-
-    const textarea = document.createElement('textarea')
-    textarea.placeholder = 'Vos notes pour cette page… (sauvegardées automatiquement)'
-    textarea.value = loadNote(location.hash || '#/')
-    let saveTimer: ReturnType<typeof setTimeout> | null = null
-    textarea.addEventListener('input', () => {
-      // Capturer la route au moment de la saisie pour éviter une sauvegarde sur la mauvaise page
-      const currentRoute = location.hash || '#/'
-      if (saveTimer) clearTimeout(saveTimer)
-      saveTimer = setTimeout(() => {
-        saveNote(currentRoute, textarea.value)
-      }, 600)
-    })
-    notesPanel.appendChild(textarea)
-
-    notesBtn.addEventListener('click', () => {
-      notesVisible = !notesVisible
-      notesPanel.style.display = notesVisible ? 'block' : 'none'
-      if (notesVisible) textarea.focus()
-    })
-    toolbar.appendChild(notesBtn)
-
-    container.prepend(notesPanel)
-  }
-
   // Injecter la barre dans le floating-menu ou dans le contenu (inline)
   if (floatingMenu) {
     toolbarTarget.appendChild(toolbar)
@@ -413,7 +264,6 @@ export function injectUxToolbar(container: HTMLElement | null, showNotes = true)
     toolbarTarget.prepend(toolbar)
   }
 }
-
 
 // ---------------------------------------------------------------------------
 // Navigation au clavier
@@ -459,8 +309,6 @@ export interface UxOptions {
   themes?: boolean
   /** Active/désactive la navigation clavier. Défaut : true */
   keyboard?: boolean
-  /** Active/désactive les notes. Défaut : true */
-  notes?: boolean
   /** Active/désactive le prefetch Markov. Défaut : true */
   prefetch?: boolean
 }
@@ -471,7 +319,6 @@ export function initUx(options: UxOptions = {}): {
   const opts = {
     themes: options.themes !== false,
     keyboard: options.keyboard !== false,
-    notes: options.notes !== false,
     prefetch: options.prefetch !== false,
   }
 
@@ -501,9 +348,9 @@ export function initUx(options: UxOptions = {}): {
 
     currentPrevNext = prevNext
 
-    if (opts.notes || opts.themes) {
+    if (opts.themes) {
       const appEl = document.getElementById('app')
-      if (appEl) injectUxToolbar(appEl, opts.notes)
+      if (appEl) injectUxToolbar(appEl)
     }
   }
 

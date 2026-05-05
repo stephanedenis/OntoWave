@@ -86,4 +86,4 @@ and synchronizes with the library's internal router.
 
 ---
 
-← [Themes](themes) | → [PDF Export](print)
+← [Themes](themes)
