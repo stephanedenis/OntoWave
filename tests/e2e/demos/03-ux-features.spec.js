@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 /**
- * Demo: UX Features — Reading Themes, Keyboard Navigation, Notes, PDF
+ * Demo: UX Features — Reading Themes, Keyboard Navigation, Markov Prefetch
  */
 test.describe('Demo 03-ux: UX Features', () => {
   let consoleErrors = [];
@@ -69,27 +69,18 @@ test.describe('Demo 03-ux: UX Features', () => {
     console.log('✅ Theme cycled:', initialText, '->', newText);
   });
 
-  test('should toggle notes panel', async ({ page }) => {
+  test('should not expose removed notes/pdf controls', async ({ page }) => {
     await page.goto('/demos/03-ux/ux.html');
     await page.waitForSelector('#ow-ux-toolbar', { timeout: 6000 });
 
-    // Notes panel hidden initially
-    const panelBefore = await page.$('.ow-notes-panel');
-    if (panelBefore) {
-      const display = await panelBefore.evaluate(el => window.getComputedStyle(el).display);
-      expect(display).toBe('none');
-    }
+    const notesBtnCount = await page.locator('button.ow-theme-btn').filter({ hasText: '📝' }).count();
+    const pdfBtnCount = await page.locator('button.ow-theme-btn').filter({ hasText: '🖨' }).count();
+    const notesPanelCount = await page.locator('.ow-notes-panel').count();
 
-    // Click notes button
-    const notesBtn = page.locator('button.ow-theme-btn').filter({ hasText: '📝' });
-    await notesBtn.click();
-
-    // Panel should be visible
-    const panelAfter = await page.$('.ow-notes-panel');
-    expect(panelAfter).toBeTruthy();
-    const displayAfter = await panelAfter.evaluate(el => window.getComputedStyle(el).display);
-    expect(displayAfter).not.toBe('none');
-    console.log('✅ Notes panel visible after click');
+    expect(notesBtnCount).toBe(0);
+    expect(pdfBtnCount).toBe(0);
+    expect(notesPanelCount).toBe(0);
+    console.log('✅ Notes/PDF controls are absent as expected');
   });
 
   test('should match visual snapshot', async ({ page }) => {
