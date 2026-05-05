@@ -42,13 +42,13 @@ jobs:
           fi
 
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4.3.0
+        uses: actions/setup-node@v5
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -63,6 +63,11 @@ jobs:
       - name: Determine version and npm tag
         run: |
           git fetch --tags
+
+          pick_higher_version() {
+            printf '%s\n%s\n' "$1" "$2" | sort -V | tail -n 1
+          }
+
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             NEW_VERSION="${{ github.event.inputs.version }}"
             NPM_TAG="${{ github.event.inputs.npm_tag }}"
@@ -78,14 +83,18 @@ jobs:
             fi
             LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0")
             VERSION=${LAST_TAG#v}
-            MAJOR="${VERSION%%.*}"
-            MINOR_PATCH="${VERSION#*.}"
+            NPM_LATEST=$(npm view ontowave version 2>/dev/null || echo "0.0.0")
+            BASE_VERSION=$(pick_higher_version "$VERSION" "$NPM_LATEST")
+            MAJOR="${BASE_VERSION%%.*}"
+            MINOR_PATCH="${BASE_VERSION#*.}"
             MINOR="${MINOR_PATCH%%.*}"
             PATCH="${MINOR_PATCH##*.}"
             if [[ "$BRANCH" == feat/* ]]; then
               # Fonctionnalité → @preview (minor bump + prerelease)
               NEW_MINOR=$((MINOR + 1))
-              PREVIEW_COUNT=$(git tag --list "v${MAJOR}.${NEW_MINOR}.0-preview.*" | wc -l | tr -d ' ')
+              PREVIEW_TAG_COUNT=$(git tag --list "v${MAJOR}.${NEW_MINOR}.0-preview.*" | wc -l | tr -d ' ')
+              PREVIEW_NPM_COUNT=$(node -e "const { execSync } = require('node:child_process'); try { const raw = execSync('npm view ontowave versions --json', { stdio: ['ignore', 'pipe', 'ignore'] }).toString(); const versions = JSON.parse(raw); const list = Array.isArray(versions) ? versions : [versions]; const re = new RegExp('^${MAJOR}\\.${NEW_MINOR}\\.0-preview\\.\\d+$'); process.stdout.write(String(list.filter((v) => re.test(v)).length)); } catch { process.stdout.write('0'); }")
+              PREVIEW_COUNT=$(( PREVIEW_TAG_COUNT > PREVIEW_NPM_COUNT ? PREVIEW_TAG_COUNT : PREVIEW_NPM_COUNT ))
               NEW_VERSION="${MAJOR}.${NEW_MINOR}.0-preview.$((PREVIEW_COUNT + 1))"
               NPM_TAG="preview"
             else
