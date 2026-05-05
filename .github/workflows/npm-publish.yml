@@ -5,7 +5,10 @@ name: NPM Publish
 #   @preview — feat/*          → minor+pre   (ex: 1.0.45 → 1.1.0-preview.1) — fonctionnalités récentes
 
 on:
-  pull_request:
+  # Utiliser pull_request_target pour garantir l'accès aux secrets après merge.
+  # Sur pull_request (classique), les secrets peuvent être indisponibles selon le contexte,
+  # ce qui casse `npm publish` avec un "Process completed with exit code 1" peu explicite.
+  pull_request_target:
     branches: [ main ]
     types: [ closed ]
   workflow_dispatch:
@@ -30,6 +33,15 @@ jobs:
       contents: write
       packages: write
     steps:
+      - name: Validate NPM token availability
+        if: github.event_name != 'workflow_dispatch'
+        run: |
+          if [[ -z "${{ secrets.NPM_TOKEN }}" ]]; then
+            echo "::error::NPM_TOKEN secret is not available in this workflow context."
+            echo "::error::Use pull_request_target (merged PR) or workflow_dispatch with proper secrets."
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@v4.2.2
         with:
