@@ -27,24 +27,6 @@ Keyboard shortcuts work when focus is not in an input field:
 | `n` | Go to next page (if available)              |
 | `p` | Go to previous page (if available)          |
 
-## PDF Export
-
-The **🖨 PDF** button triggers the browser print dialog. A print CSS automatically hides navigation, sidebar, and the UX toolbar to produce a clean document.
-
-Elements hidden when printing:
-- Header (`#site-header`)
-- Sidebar (`#sidebar`)
-- Table of contents (`#toc`)
-- Floating menu (`#floating-menu`)
-- UX toolbar (`.ow-ux-toolbar`)
-- Notes panel (`.ow-notes-panel`)
-
-## Light Notes
-
-The **📝 Notes** button opens a free-text input panel anchored to the current page. Notes are automatically saved in `localStorage` with key `ow-note:<route-hash>`.
-
-Notes are page-specific and persist between sessions.
-
 ## Markov Prefetch
 
 OntoWave tracks your navigation transitions and builds a Markov table in `localStorage`. On every page change, the most likely destinations (based on history) are prefetched in the background.
@@ -68,7 +50,6 @@ Or for fine-grained configuration:
   "ux": {
     "themes": true,
     "keyboard": true,
-    "notes": true,
     "prefetch": true
   }
 }

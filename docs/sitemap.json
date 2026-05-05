@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-04-14T17:14:39.283Z",
-  "count": 80,
+  "generatedAt": "2026-05-05T19:16:27.638Z",
+  "count": 76,
   "i18n": {
     "default": "fr",
     "supported": [
@@ -142,30 +142,6 @@
       "base": "en"
     },
     {
-      "path": "docs/demos/03-ux/notes.en.md",
-      "route": "#/en/demos/03-ux/notes",
-      "title": "Persistent Notes",
-      "base": "fr"
-    },
-    {
-      "path": "docs/demos/03-ux/notes.en.md",
-      "route": "#/en/demos/03-ux/notes",
-      "title": "Persistent Notes",
-      "base": "en"
-    },
-    {
-      "path": "docs/demos/03-ux/print.en.md",
-      "route": "#/en/demos/03-ux/print",
-      "title": "PDF Export and Printing",
-      "base": "fr"
-    },
-    {
-      "path": "docs/demos/03-ux/print.en.md",
-      "route": "#/en/demos/03-ux/print",
-      "title": "PDF Export and Printing",
-      "base": "en"
-    },
-    {
       "path": "docs/demos/03-ux/themes.en.md",
       "route": "#/en/demos/03-ux/themes",
       "title": "Reading Themes",
@@ -204,13 +180,13 @@
     {
       "path": "docs/index.en.md",
       "route": "#/en/index",
-      "title": "OntoWave",
+      "title": "OntoWave [v1.0.57](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)",
       "base": "fr"
     },
     {
       "path": "docs/index.en.md",
       "route": "#/en/index",
-      "title": "OntoWave",
+      "title": "OntoWave [v1.0.57](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)",
       "base": "en"
     },
     {
@@ -223,6 +199,18 @@
       "path": "docs/specs/architecture.en.md",
       "route": "#/en/specs/architecture",
       "title": "OntoWave Modular Architecture",
+      "base": "en"
+    },
+    {
+      "path": "docs/specs/dns-domains.en.md",
+      "route": "#/en/specs/dns-domains",
+      "title": "DNS Configuration — Dual Domain ontowave.org + ontowave.com",
+      "base": "fr"
+    },
+    {
+      "path": "docs/specs/dns-domains.en.md",
+      "route": "#/en/specs/dns-domains",
+      "title": "DNS Configuration — Dual Domain ontowave.org + ontowave.com",
       "base": "en"
     },
     {
@@ -382,30 +370,6 @@
       "base": "en"
     },
     {
-      "path": "docs/demos/03-ux/notes.fr.md",
-      "route": "#/fr/demos/03-ux/notes",
-      "title": "Notes persistantes",
-      "base": "fr"
-    },
-    {
-      "path": "docs/demos/03-ux/notes.fr.md",
-      "route": "#/fr/demos/03-ux/notes",
-      "title": "Notes persistantes",
-      "base": "en"
-    },
-    {
-      "path": "docs/demos/03-ux/print.fr.md",
-      "route": "#/fr/demos/03-ux/print",
-      "title": "Export PDF et impression",
-      "base": "fr"
-    },
-    {
-      "path": "docs/demos/03-ux/print.fr.md",
-      "route": "#/fr/demos/03-ux/print",
-      "title": "Export PDF et impression",
-      "base": "en"
-    },
-    {
       "path": "docs/demos/03-ux/themes.fr.md",
       "route": "#/fr/demos/03-ux/themes",
       "title": "Thèmes de lecture",
@@ -444,13 +408,13 @@
     {
       "path": "docs/index.fr.md",
       "route": "#/fr/index",
-      "title": "OntoWave",
+      "title": "OntoWave [v1.0.57](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)",
       "base": "fr"
     },
     {
       "path": "docs/index.fr.md",
       "route": "#/fr/index",
-      "title": "OntoWave",
+      "title": "OntoWave [v1.0.57](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md)",
       "base": "en"
     },
     {
@@ -463,6 +427,18 @@
       "path": "docs/specs/architecture.fr.md",
       "route": "#/fr/specs/architecture",
       "title": "Architecture modulaire OntoWave",
+      "base": "en"
+    },
+    {
+      "path": "docs/specs/dns-domains.fr.md",
+      "route": "#/fr/specs/dns-domains",
+      "title": "Configuration DNS — Double domaine ontowave.org + ontowave.com",
+      "base": "fr"
+    },
+    {
+      "path": "docs/specs/dns-domains.fr.md",
+      "route": "#/fr/specs/dns-domains",
+      "title": "Configuration DNS — Double domaine ontowave.org + ontowave.com",
       "base": "en"
     },
     {

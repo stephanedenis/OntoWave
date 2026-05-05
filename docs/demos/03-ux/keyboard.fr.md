@@ -87,4 +87,4 @@ et se synchronise avec le routeur interne de la bibliothèque.
 
 ---
 
-← [Thèmes](themes) | → [Export PDF](print)
+← [Thèmes](themes)

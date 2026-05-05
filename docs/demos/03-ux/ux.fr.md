@@ -27,24 +27,6 @@ Les raccourcis clavier fonctionnent lorsque le focus n'est pas dans un champ de 
 | `n`    | Aller à la page suivante (si disponible)       |
 | `p`    | Aller à la page précédente (si disponible)     |
 
-## Export PDF
-
-Le bouton **🖨 PDF** déclenche l'impression du navigateur. Un CSS d'impression masque automatiquement la navigation, la barre latérale et la barre d'outils UX pour produire un document propre.
-
-Éléments masqués à l'impression :
-- En-tête (`#site-header`)
-- Barre latérale (`#sidebar`)
-- Table des matières (`#toc`)
-- Menu flottant (`#floating-menu`)
-- Barre d'outils UX (`.ow-ux-toolbar`)
-- Panneau de notes (`.ow-notes-panel`)
-
-## Notes légères
-
-Le bouton **📝 Notes** ouvre un panneau de saisie libre ancré à la page courante. Les notes sont automatiquement sauvegardées dans `localStorage` avec la clé `ow-note:<hash-de-la-route>`.
-
-Les notes sont spécifiques à chaque page et persistent entre les sessions.
-
 ## Prefetch Markov
 
 OntoWave observe vos transitions de navigation et construit une table de Markov en `localStorage`. À chaque changement de page, les destinations les plus probables (basées sur l'historique) sont préchargées en arrière-plan.
@@ -68,7 +50,6 @@ Ou pour une configuration fine :
   "ux": {
     "themes": true,
     "keyboard": true,
-    "notes": true,
     "prefetch": true
   }
 }

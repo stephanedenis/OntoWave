@@ -26,8 +26,6 @@ Bienvenue dans la galerie de démonstrations d'OntoWave. Chaque page illustre un
 |------|-------------|
 | [Thèmes](03-ux/themes) | Modes clair, sépia, sombre — variables CSS — persistance |
 | [Navigation clavier](03-ux/keyboard) | Raccourcis j/k (défilement), n/p (navigation inter-pages) |
-| [Export PDF](03-ux/print) | CSS d'impression, masquage de l'interface, URLs dans le PDF |
-| [Notes](03-ux/notes) | Notes persistantes par page (localStorage, debounce 600 ms) |
 
 ## Extensibilité
 
