@@ -359,60 +359,6 @@ export function injectUxToolbar(container: HTMLElement | null, showNotes = true)
   })
   toolbar.appendChild(themeBtn)
 
-  // Dans le menu flottant, seul le bouton thème est conservé
-  if (!floatingMenu) {
-    // Bouton print/PDF
-    const printBtn = document.createElement('button')
-    printBtn.className = 'ow-theme-btn'
-    printBtn.title = 'Exporter en PDF (impression)'
-    printBtn.textContent = '🖨 PDF'
-    printBtn.addEventListener('click', () => window.print())
-    toolbar.appendChild(printBtn)
-  }
-
-  if (showNotes && !floatingMenu) {
-    // Bouton notes
-    let notesVisible = false
-    const notesBtn = document.createElement('button')
-    notesBtn.className = 'ow-theme-btn'
-    notesBtn.title = 'Afficher/masquer les notes pour cette page'
-    notesBtn.textContent = '📝 Notes'
-
-    const notesPanel = document.createElement('div')
-    notesPanel.className = 'ow-notes-panel'
-    notesPanel.style.display = 'none'
-
-    const textarea = document.createElement('textarea')
-    textarea.placeholder = 'Vos notes pour cette page… (sauvegardées automatiquement)'
-    textarea.value = loadNote(location.hash || '#/')
-    let saveTimer: ReturnType<typeof setTimeout> | null = null
-    textarea.addEventListener('input', () => {
-      // Capturer la route au moment de la saisie pour éviter une sauvegarde sur la mauvaise page
-      const currentRoute = location.hash || '#/'
-      if (saveTimer) clearTimeout(saveTimer)
-      saveTimer = setTimeout(() => {
-        saveNote(currentRoute, textarea.value)
-      }, 600)
-    })
-    notesPanel.appendChild(textarea)
-
-    notesBtn.addEventListener('click', () => {
-      notesVisible = !notesVisible
-      notesPanel.style.display = notesVisible ? 'block' : 'none'
-      if (notesVisible) textarea.focus()
-    })
-    toolbar.appendChild(notesBtn)
-
-    container.prepend(notesPanel)
-  }
-
-  // Injecter la barre dans le floating-menu ou dans le contenu (inline)
-  if (floatingMenu) {
-    toolbarTarget.appendChild(toolbar)
-  } else {
-    toolbarTarget.prepend(toolbar)
-  }
-}
 
 
 // ---------------------------------------------------------------------------
