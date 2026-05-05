@@ -359,15 +359,18 @@ export function injectUxToolbar(container: HTMLElement | null, showNotes = true)
   })
   toolbar.appendChild(themeBtn)
 
-  // Bouton print/PDF
-  const printBtn = document.createElement('button')
-  printBtn.className = 'ow-theme-btn'
-  printBtn.title = 'Exporter en PDF (impression)'
-  printBtn.textContent = '🖨 PDF'
-  printBtn.addEventListener('click', () => window.print())
-  toolbar.appendChild(printBtn)
+  // Dans le menu flottant, seul le bouton thème est conservé
+  if (!floatingMenu) {
+    // Bouton print/PDF
+    const printBtn = document.createElement('button')
+    printBtn.className = 'ow-theme-btn'
+    printBtn.title = 'Exporter en PDF (impression)'
+    printBtn.textContent = '🖨 PDF'
+    printBtn.addEventListener('click', () => window.print())
+    toolbar.appendChild(printBtn)
+  }
 
-  if (showNotes) {
+  if (showNotes && !floatingMenu) {
     // Bouton notes
     let notesVisible = false
     const notesBtn = document.createElement('button')
@@ -410,6 +413,7 @@ export function injectUxToolbar(container: HTMLElement | null, showNotes = true)
     toolbarTarget.prepend(toolbar)
   }
 }
+
 
 // ---------------------------------------------------------------------------
 // Navigation au clavier
