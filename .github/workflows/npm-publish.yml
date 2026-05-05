@@ -5,12 +5,11 @@ name: NPM Publish
 #   @preview — feat/*          → minor+pre   (ex: 1.0.45 → 1.1.0-preview.1) — fonctionnalités récentes
 
 on:
-  # Utiliser pull_request_target pour garantir l'accès aux secrets après merge.
-  # Sur pull_request (classique), les secrets peuvent être indisponibles selon le contexte,
-  # ce qui casse `npm publish` avec un "Process completed with exit code 1" peu explicite.
-  pull_request_target:
+  # Déclenché sur push dans main (= après merge d'une PR).
+  # Le trigger push expose les secrets du repo de manière sûre, contrairement à
+  # pull_request_target qui est vulnérable au "pwn request" (CodeQL critical).
+  push:
     branches: [ main ]
-    types: [ closed ]
   workflow_dispatch:
     inputs:
       version:
@@ -27,7 +26,7 @@ on:
 
 jobs:
   publish:
-    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -38,7 +37,7 @@ jobs:
         run: |
           if [[ -z "${{ secrets.NPM_TOKEN }}" ]]; then
             echo "::error::NPM_TOKEN secret is not available in this workflow context."
-            echo "::error::Use pull_request_target (merged PR) or workflow_dispatch with proper secrets."
+            echo "::error::Configurez le secret NPM_TOKEN dans les paramètres du repo GitHub."
             exit 1
           fi
 
@@ -68,7 +67,15 @@ jobs:
             NEW_VERSION="${{ github.event.inputs.version }}"
             NPM_TAG="${{ github.event.inputs.npm_tag }}"
           else
-            BRANCH="${{ github.head_ref }}"
+            # Extraire le nom de la branche source depuis le message du commit de merge.
+            # Merge commit standard : "Merge pull request #N from owner/feat/branch-name"
+            # Squash merge : titre de la PR (peut contenir feat:, fix:, chore:)
+            MERGE_MSG=$(git log -1 --format="%s")
+            if echo "$MERGE_MSG" | grep -qiE '(feat/|^feat:)'; then
+              BRANCH="feat/auto"
+            else
+              BRANCH="fix/auto"
+            fi
             LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0")
             VERSION=${LAST_TAG#v}
             MAJOR="${VERSION%%.*}"
