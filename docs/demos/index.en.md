@@ -26,8 +26,6 @@ Welcome to the OntoWave demonstration gallery. Each page illustrates a specific 
 |------|-------------|
 | [Themes](03-ux/themes) | Light, sepia, dark modes — CSS variables — persistence |
 | [Keyboard navigation](03-ux/keyboard) | j/k shortcuts (scroll), n/p (page navigation) |
-| [PDF Export](03-ux/print) | Print CSS, UI hiding, URLs in PDF output |
-| [Notes](03-ux/notes) | Persistent per-page notes (localStorage, 600 ms debounce) |
 
 ## Extensibility
 
