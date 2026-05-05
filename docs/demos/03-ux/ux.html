@@ -86,20 +86,6 @@
 </tr>
 </tbody>
 </table>
-<h2>Export PDF</h2>
-<p>Le bouton <strong>🖨 PDF</strong> déclenche l’impression du navigateur. Un CSS d’impression masque automatiquement la navigation, la barre latérale et la barre d’outils UX pour produire un document propre.</p>
-<p>Éléments masqués à l’impression :</p>
-<ul>
-<li>En-tête (<code>#site-header</code>)</li>
-<li>Barre latérale (<code>#sidebar</code>)</li>
-<li>Table des matières (<code>#toc</code>)</li>
-<li>Menu flottant (<code>#floating-menu</code>)</li>
-<li>Barre d’outils UX (<code>.ow-ux-toolbar</code>)</li>
-<li>Panneau de notes (<code>.ow-notes-panel</code>)</li>
-</ul>
-<h2>Notes légères</h2>
-<p>Le bouton <strong>📝 Notes</strong> ouvre un panneau de saisie libre ancré à la page courante. Les notes sont automatiquement sauvegardées dans <code>localStorage</code> avec la clé <code>ow-note:&lt;hash-de-la-route&gt;</code>.</p>
-<p>Les notes sont spécifiques à chaque page et persistent entre les sessions.</p>
 <h2>Prefetch Markov</h2>
 <p>OntoWave observe vos transitions de navigation et construit une table de Markov en <code>localStorage</code>. À chaque changement de page, les destinations les plus probables (basées sur l’historique) sont préchargées en arrière-plan.</p>
 <p>Cela accélère la navigation répétée sur les mêmes chemins.</p>
@@ -114,7 +100,6 @@
   &quot;ux&quot;: {
     &quot;themes&quot;: true,
     &quot;keyboard&quot;: true,
-    &quot;notes&quot;: true,
     &quot;prefetch&quot;: true
   }
 }
@@ -177,20 +162,6 @@
 </tr>
 </tbody>
 </table>
-<h2>PDF Export</h2>
-<p>The <strong>🖨 PDF</strong> button triggers the browser print dialog. A print CSS automatically hides navigation, sidebar, and the UX toolbar to produce a clean document.</p>
-<p>Elements hidden when printing:</p>
-<ul>
-<li>Header (<code>#site-header</code>)</li>
-<li>Sidebar (<code>#sidebar</code>)</li>
-<li>Table of contents (<code>#toc</code>)</li>
-<li>Floating menu (<code>#floating-menu</code>)</li>
-<li>UX toolbar (<code>.ow-ux-toolbar</code>)</li>
-<li>Notes panel (<code>.ow-notes-panel</code>)</li>
-</ul>
-<h2>Light Notes</h2>
-<p>The <strong>📝 Notes</strong> button opens a free-text input panel anchored to the current page. Notes are automatically saved in <code>localStorage</code> with key <code>ow-note:&lt;route-hash&gt;</code>.</p>
-<p>Notes are page-specific and persist between sessions.</p>
 <h2>Markov Prefetch</h2>
 <p>OntoWave tracks your navigation transitions and builds a Markov table in <code>localStorage</code>. On every page change, the most likely destinations (based on history) are prefetched in the background.</p>
 <p>This speeds up repeated navigation on the same paths.</p>
@@ -205,7 +176,6 @@
   &quot;ux&quot;: {
     &quot;themes&quot;: true,
     &quot;keyboard&quot;: true,
-    &quot;notes&quot;: true,
     &quot;prefetch&quot;: true
   }
 }
