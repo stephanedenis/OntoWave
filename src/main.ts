@@ -125,7 +125,7 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   }
   const updateHomeHref = () => {
     const activeLanguage = getActiveLanguage()
-    homeBtn.href = activeLanguage ? `#${activeLanguage}/index` : '#/index'
+    homeBtn.href = activeLanguage ? `/#${activeLanguage}/index` : '/#/index'
   }
   const updateLangActive = () => {
     const hash = location.hash || ''

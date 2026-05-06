@@ -165,11 +165,26 @@ export async function enhancePage(appEl: HTMLElement, html: string) {
         const prefix = rootDir.replace(/\/$/, '') + '/' + folder
         // 1) _delegate.json
         let target: string | null = null
+        const normalizeHttpUrl = (value: string | null | undefined): string | null => {
+          if (!value) return null
+          const trimmed = String(value).trim()
+          try {
+            const parsed = new URL(trimmed)
+            if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return null
+            parsed.hash = ''
+            parsed.search = ''
+            return parsed.toString().replace(/\/$/, '')
+          } catch {
+            return null
+          }
+        }
         try {
           const j = await fetch(`${prefix}/_delegate.json`, { cache: 'no-cache' })
           if (j.ok) {
             const obj = await j.json().catch(() => null)
-            if (obj && typeof obj.baseUrl === 'string') target = obj.baseUrl.replace(/\/$/, '')
+            if (obj && typeof obj.baseUrl === 'string') {
+              target = normalizeHttpUrl(obj.baseUrl)
+            }
           }
         } catch {}
         // 2) CNAME
@@ -178,7 +193,9 @@ export async function enhancePage(appEl: HTMLElement, html: string) {
             const c = await fetch(`${prefix}/CNAME`, { cache: 'no-cache' })
             if (c.ok) {
               const domain = (await c.text()).trim()
-              if (domain) target = `https://${domain}`
+              if (/^[a-z0-9.-]+$/i.test(domain)) {
+                target = normalizeHttpUrl(`https://${domain}`)
+              }
             }
           } catch {}
         }
