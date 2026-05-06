@@ -10,7 +10,19 @@ import type {
   ViewRenderer,
   PostRenderEnhancer,
 } from './core/types'
-import { resolveCandidates as defaultResolve, resolvePumlCandidates } from './core/logic'
+import { resolveCandidates as defaultResolve, resolvePumlCandidates, splitHashRoute } from './core/logic'
+
+function scrollToHashAnchor(route: string): void {
+  if (typeof document === 'undefined') return
+  const { anchor } = splitHashRoute('#' + route.replace(/^#/, ''))
+  if (!anchor) return
+  const decoded = decodeURIComponent(anchor)
+  requestAnimationFrame(() => {
+    const target = document.getElementById(decoded)
+      || document.querySelector(`[id="${CSS.escape(decoded)}"]`)
+    if (target instanceof HTMLElement) target.scrollIntoView({ block: 'start' })
+  })
+}
 
 async function loadMarkdown(roots: AppConfig['roots'], path: string, content: ContentService, resolver: ContentPathStrategy): Promise<string> {
   // Ignore any query string / directives when resolving content path
@@ -55,7 +67,8 @@ export function createApp(deps: {
   async function renderRoute(path?: string) {
     if (!cfg) return
     const route = path ?? deps.router.get().path
-    const [routePath, queryStr] = route.split('?')
+    const { path: routedPath } = splitHashRoute('#' + route.replace(/^#/, ''))
+    const [routePath, queryStr] = routedPath.split('?')
     const params = new URLSearchParams(queryStr || '')
     const viewMode = params.get('view') || ''
 
@@ -125,6 +138,7 @@ export function createApp(deps: {
     const h1 = /<h1[^>]*>(.*?)<\/h1>/i.exec(html)?.[1]?.replace(/<[^>]+>/g, '').trim()
     if (h1) deps.view.setTitle(`${h1} — OntoWave`)
     await deps.enhance?.afterRender(html, route)
+    scrollToHashAnchor(route)
 
     // Plugin afterRender hooks
     for (const plugin of plugins) {

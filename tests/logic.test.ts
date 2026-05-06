@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { resolveCandidates, normalizePath, rewriteLinksHtml, resolvePumlCandidates, pickPreferredLanguage } from '../src/core/logic'
+import { resolveCandidates, normalizePath, rewriteLinksHtml, resolvePumlCandidates, pickPreferredLanguage, splitHashRoute } from '../src/core/logic'
 
 describe('core logic', () => {
   it('normalizes path', () => {
@@ -98,5 +98,8 @@ describe('core logic', () => {
   })
   it('falls back to the configured default language when navigator does not match', () => {
     expect(pickPreferredLanguage(['de-DE'], ['fr', 'en'], 'fr')).toBe('fr')
+  })
+  it('splits a routed hash from its in-page anchor', () => {
+    expect(splitHashRoute('#/fr/index#section-demo')).toEqual({ path: '/fr/index', anchor: 'section-demo' })
   })
 })

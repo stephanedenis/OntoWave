@@ -42,6 +42,16 @@ export function pickPreferredLanguage(
     : supported[0]
 }
 
+export function splitHashRoute(hash: string): { path: string; anchor: string } {
+  const raw = (hash || '#/').startsWith('#') ? (hash || '#/').slice(1) : (hash || '/')
+  const hashIndex = raw.indexOf('#')
+  const routePart = hashIndex >= 0 ? raw.slice(0, hashIndex) : raw
+  const anchorPart = hashIndex >= 0 ? raw.slice(hashIndex + 1) : ''
+  let path = routePart || '/'
+  if (!path.startsWith('/')) path = '/' + path
+  return { path, anchor: anchorPart }
+}
+
 export function normalizePath(path: string): string {
   const p = path.replace(/\/+/g, '/').replace(/\/$/, '')
   return p === '' ? '/' : (p.startsWith('/') ? p : '/' + p)

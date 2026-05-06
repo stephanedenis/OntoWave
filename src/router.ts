@@ -1,10 +1,25 @@
 export type Route = { path: string }
 
+import { splitHashRoute } from './core/logic'
+
+function getCurrentDocumentHash(): string {
+  const { path } = splitHashRoute(location.hash || '#/')
+  return path
+}
+
+function isInPageAnchor(href: string): boolean {
+  if (!href.startsWith('#') || href.startsWith('#/')) return false
+  const current = getCurrentDocumentHash()
+  return current.startsWith('/') && current !== '/'
+}
+
+function navigateToInPageAnchor(href: string): void {
+  const current = getCurrentDocumentHash()
+  location.hash = `#${current}${href}`
+}
+
 export function getCurrentRoute(): Route {
-  const hash = location.hash || '#/'
-  const raw = hash.startsWith('#') ? hash.slice(1) : hash
-  let path = raw
-  if (!path.startsWith('/')) path = '/' + path
+  const { path } = splitHashRoute(location.hash || '#/')
   return { path }
 }
 
@@ -16,6 +31,11 @@ export function onRouteChange(cb: (_r: Route) => void) {
     const a = (e.target as HTMLElement)?.closest?.('a[href]') as HTMLAnchorElement | null
     if (!a) return
     const href = a.getAttribute('href') || ''
+    if (isInPageAnchor(href)) {
+      e.preventDefault()
+      navigateToInPageAnchor(href)
+      return
+    }
     // Liens internes vers .md → convertir en route (résolution relative au dossier courant)
     if (href.endsWith('.md') && !/^(https?:)?\/\//.test(href)) {
       e.preventDefault()

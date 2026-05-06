@@ -1,11 +1,25 @@
 import type { Route } from '../../core/types'
+import { splitHashRoute } from '../../core/logic'
 
 function parse(): Route {
-  const hash = location.hash || '#/'
-  const raw = hash.startsWith('#') ? hash.slice(1) : hash
-  let path = raw
-  if (!path.startsWith('/')) path = '/' + path
+  const { path } = splitHashRoute(location.hash || '#/')
   return { path }
+}
+
+function getCurrentDocumentHash(): string {
+  const { path } = splitHashRoute(location.hash || '#/')
+  return path
+}
+
+function isInPageAnchor(href: string): boolean {
+  if (!href.startsWith('#') || href.startsWith('#/')) return false
+  const current = getCurrentDocumentHash()
+  return current.startsWith('/') && current !== '/'
+}
+
+function navigateToInPageAnchor(href: string): void {
+  const current = getCurrentDocumentHash()
+  location.hash = `#${current}${href}`
 }
 
 export const browserRouter = {
@@ -17,6 +31,11 @@ export const browserRouter = {
       const a = (e.target as HTMLElement)?.closest?.('a[href]') as HTMLAnchorElement | null
       if (!a) return
       const href = a.getAttribute('href') || ''
+      if (isInPageAnchor(href)) {
+        e.preventDefault()
+        navigateToInPageAnchor(href)
+        return
+      }
       if (href.endsWith('.md') && !/^(https?:)?\/\//.test(href)) {
         e.preventDefault()
         const clean = href.replace(/\.md$/i, '').replace(/^\.\//,'')
