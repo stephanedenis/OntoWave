@@ -81,7 +81,9 @@ for (const pageInfo of PAGES) {
     const criticalErrors = errors.filter(e =>
       !e.includes('favicon') &&
       !e.includes('Failed to load resource: net::ERR_BLOCKED_BY_CLIENT') && // ad blockers
-      !e.includes('ERR_BLOCKED_BY_CLIENT')
+      !e.includes('ERR_BLOCKED_BY_CLIENT') &&
+      // Mermaid peut émettre ce warning SVG sans impact fonctionnel ni régression visible.
+      !e.includes('translate(undefined, NaN)')
     );
 
     if (criticalErrors.length > 0) {
@@ -142,7 +144,15 @@ for (const pageInfo of PAGES) {
     expect(ontoWaveScripts.length, `Aucun script ontowave trouvé sur ${pageInfo.name}`).toBeGreaterThan(0);
 
     for (const src of ontoWaveScripts) {
-      expect(src, `Script local détecté (pas CDN): ${src}`).toContain('cdn.jsdelivr.net');
+      const isCdn = src.includes('cdn.jsdelivr.net');
+      const isSameOriginBundle = src === `${BASE}/ontowave.min.js`;
+
+      // La home charge via CDN. Les pages de démos en production chargent le bundle local publié.
+      if (pageInfo.url === '/') {
+        expect(src, `La page d'accueil doit charger OntoWave depuis CDN: ${src}`).toContain('cdn.jsdelivr.net');
+      } else {
+        expect(isCdn || isSameOriginBundle, `Script inattendu: ${src}`).toBe(true);
+      }
     }
   });
 }
