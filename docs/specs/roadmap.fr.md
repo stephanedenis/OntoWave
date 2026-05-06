@@ -87,6 +87,72 @@ Avec `container`, OntoWave s'insère dans l'élément existant sans toucher au D
 
 Cas d'usage Panini : Pensine-web et PublicationEngine peuvent embarquer OntoWave dans leur propre interface sans conflit DOM.
 
+### §3 Plan de réalisation (ordre recommandé)
+
+1. Lot A — contrats de types et garde-fous
+
+- Finaliser `ContentRenderer`, `ExtensionRegistry`, `ExtensionConfig` dans `src/core/types.ts`.
+- Verrouiller l'API minimale noyau (`.md` et `.txt`) sans dépendance externe.
+- Ajouter un test unitaire de contrat de type et de résolution d'extension.
+
+2. Lot B — registre dynamique côté navigateur
+
+- Implémenter `src/adapters/browser/extension-registry.ts` avec `register/load/resolve`.
+- Brancher le registre dans le flux de rendu sans modifier l'API publique existante.
+- Vérifier que l'absence d'extension n'empêche pas le rendu minimal noyau.
+
+3. Lot C — extraction du rendu Markdown en extension de base
+
+- Déplacer le rendu Markdown avancé vers `src/extensions/markdown.ts`.
+- Conserver un fallback noyau `.md` minimal si extension indisponible.
+- Ajouter des tests de non-régression de rendu Markdown de base.
+
+4. Lot D — extraction moteurs lourds en lazy extensions
+
+- Extraire Mermaid, KaTeX, Highlight, PlantUML en modules séparés.
+- Déclencher le chargement lazy selon détection de besoin dans le contenu.
+- Tester l'ordre de chargement et l'absence de chargement inutile.
+
+5. Lot E — split build + mode composant
+
+- Mettre à jour `vite.config.dist.ts` pour produire noyau + `dist/extensions/*`.
+- Implémenter `createApp({ container })` sans rupture du mode page complète.
+- Mesurer la taille finale du noyau et valider l'invariant ≤ 200KB.
+
+### §4 Plan de tests v2 (obligatoire)
+
+1. Tests unitaires (Vitest)
+
+- Résolution d'extensions par URL et content-type.
+- Fallback noyau `.md` et `.txt` quand aucune extension n'est disponible.
+- Sélection de langue initiale fr/en (hash, config, navigateur).
+- Réécriture des liens avec extensions explicites et ancres.
+
+2. Tests d'intégration navigateur
+
+- Chargement lazy effectif : extension non chargée avant usage, puis chargée à la demande.
+- Navigation hash sans régression sur liens explicites `.md`.
+- Mode composant : aucun effet de bord hors conteneur cible.
+
+3. Tests E2E Playwright
+
+- Parcours profond des liens docs/demos (FR + EN), sans erreur console.
+- Validation du comportement en cas d'extension manquante (dégradation propre).
+- Vérification de la présence du menu flottant par défaut (sauf `ui.menu === false`).
+
+4. Tests build et distribution
+
+- `npm run build:package` produit `dist/ontowave.js` et `dist/extensions/*.js`.
+- Contrôle automatique de taille : noyau minifié ≤ 200KB.
+- Vérification que `dist/ontowave.js` ne contient pas de moteurs lourds inline.
+
+5. Gate de validation avant merge
+
+- `npm test`
+- `npm run test:e2e`
+- `npm run check`
+- Vérification manuelle rapide sur `https://ontowave.org` après publication (`latest`).
+
 ## Ce qui n'est pas dans cette roadmap
 
 - **Packages npm séparés** (`@ontowave/ext-markdown`) : hors scope, à considérer si le projet gagne des contributeurs externes
