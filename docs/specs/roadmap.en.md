@@ -38,6 +38,21 @@ OntoWave integrates naturally into the Panini ecosystem (PaniniFS, PublicationEn
 
 **Completion criterion**: `dist/ontowave.js` ≤ 200KB minified + `createApp({ container })` works.
 
+### Scope Decision (current v2 direction)
+
+For now, the v2 core is limited to:
+
+- routing + content loading
+- **fr/en** internationalization (browser language + host config)
+- built-in minimal rendering for **`.md`** and **`.txt`** files
+
+Out of v2 core (for now):
+
+- structured navigation (`nav.yml`)
+- search (`search-index.json`)
+
+Everything else should be handled through lazy-loaded extensions, including advanced render engines and optional UI/tooling modules.
+
 | Issue | Title | Depends on | Notes |
 |---|---|---|---|
 | #72 | ContentRenderer and ExtensionRegistry types | — | Spec in [architecture.en.md §4-6](architecture.en.md) |

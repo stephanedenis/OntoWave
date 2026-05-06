@@ -38,6 +38,21 @@ OntoWave s'intègre naturellement dans l'écosystème Panini (PaniniFS, Publicat
 
 **Critère de clôture** : `dist/ontowave.js` ≤ 200KB minifié + `createApp({ container })` fonctionne.
 
+### Décision de périmètre (v2 en cours)
+
+Le noyau v2 se limite, pour l'instant, à :
+
+- routage + chargement de contenu
+- multilinguisme **fr/en** (langue navigateur + config hôte)
+- rendu minimal natif des fichiers **`.md`** et **`.txt`**
+
+Hors noyau v2 (pour l'instant) :
+
+- navigation structurée (`nav.yml`)
+- recherche (`search-index.json`)
+
+Tout le reste doit être traité via des extensions (lazy-load), y compris les moteurs de rendu avancés et les modules optionnels UI/outillage.
+
 | Issue | Titre | Dépend de | Notes |
 |---|---|---|---|
 | #72 | Types ContentRenderer et ExtensionRegistry | — | Spec dans [architecture.fr.md §4-6](architecture.fr.md) |
