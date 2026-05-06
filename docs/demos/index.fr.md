@@ -33,6 +33,12 @@ Bienvenue dans la galerie de démonstrations d'OntoWave. Chaque page illustre un
 |------|-------------|
 | [Plugins](03-plugins/plugins) | Architecture de plugins : hooks, événements, exemples |
 
+## Intégration composant
+
+| Démo | Description |
+|------|-------------|
+| [Mode composant](04-component/component) | `createApp({ container })` — intégration dans une application hôte existante |
+
 ## À propos
 
 Ces pages servent à la fois de **documentation utilisateur** et de **cas de test E2E** pour Playwright.

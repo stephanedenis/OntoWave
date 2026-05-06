@@ -24,6 +24,8 @@
 /demos/03-ux/themes.fr.md
 /demos/03-ux/ux.en.md
 /demos/03-ux/ux.fr.md
+/demos/04-component/component.en.md
+/demos/04-component/component.fr.md
 /demos/index.en.md
 /demos/index.fr.md
 /index.en.md
@@ -34,5 +36,7 @@
 /specs/dns-domains.fr.md
 /specs/interface.en.md
 /specs/interface.fr.md
+/specs/programmation-extensions.en.md
+/specs/programmation-extensions.fr.md
 /specs/roadmap.en.md
 /specs/roadmap.fr.md
