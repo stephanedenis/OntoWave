@@ -141,6 +141,22 @@ Quand le `ContentRenderer` Markdown détecte un bloc ` ```mermaid ` dans le
 source, il appelle `registry.load('mermaid', ...)` avant de finaliser le rendu.
 L'utilisateur ne voit jamais l'état intermédiaire sans Mermaid.
 
+### Rendu progressif en deux temps (obligatoire)
+
+Pour chaque type de fichier nécessitant une extension non encore chargée, le runtime applique :
+
+1. un rendu minimal immédiat (noyau) pour garantir une réponse rapide
+2. un second rendu automatique dès que l'extension pertinente est chargée
+
+Ce second rendu ne doit pas casser la navigation courante ni réinitialiser la position de scroll de manière visible.
+
+### Signalement d'état des extensions (UX)
+
+Entre le rendu initial et le second rendu, si une extension est en cours de chargement ou en échec, OntoWave expose un état d'avertissement UI :
+
+- badge `⚠️` sur l'icône du menu flottant en état fermé
+- détails lisibles dans le menu en état ouvert (extension concernée, statut, action possible)
+
 ## §6 Mise à jour de AppConfig
 
 ```typescript
@@ -152,10 +168,21 @@ type ExtensionConfig = {
   lazy?: string[]     // chargés à la demande
 }
 
+type I18nConfig = {
+  default: string
+  supported: string[]
+  mode: 'suffix' | 'folder' // obligatoire si i18n est défini
+}
+
 type AppConfig = {
   // ... champs existants inchangés ...
+  i18n?: I18nConfig
   extensions?: ExtensionConfig
 }
+
+// Contrat de validation:
+// - Sans i18n: mode unilingue par défaut
+// - Avec i18n: mode obligatoire, sinon erreur de configuration (signalée en UI + console)
 ```
 
 ## §7 Plan de migration — Option C (split de build Vite)

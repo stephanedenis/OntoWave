@@ -116,6 +116,8 @@ Au chargement, la librairie applique l'algorithme suivant :
 
 ### 4.2 État compact (défaut)
 
+Le menu flottant est **affiché par défaut** (signature visuelle OntoWave), sauf si la configuration définit explicitement `ui.menu === false`.
+
 - **Icône** : `&#127754;` (🌊 emoji natif)
 - **Taille de l'icône** : 30×30 px dans une zone de 44×44 px
 - **Bounding box réelle** : ≈ 66×66 px (padding + overflow)
@@ -170,6 +172,15 @@ Contenu visible de gauche à droite :
 - **Sur le menu compact** : `transform: scale(1.05)`, ombre renforcée `0 6px 20px rgba(27,31,35,0.25)`
 - **Sur un `menu-option`** : `transform: translateY(-1px)`, fond légèrement plus sombre
 - **Hover désactivé** quand le panneau de configuration est ouvert (classe `.has-config-panel`)
+
+### 4.6 Indicateur d'avertissement extension
+
+Pendant un chargement lazy ou en cas d'échec d'extension :
+
+- état compact : afficher un badge `⚠️` discret sur l'icône 🌊
+- état étendu : afficher un détail lisible (nom extension, statut, impact)
+
+Le badge disparaît automatiquement quand le rendu final est stabilisé.
 
 ---
 
@@ -283,14 +294,19 @@ Pendant que le panneau est ouvert :
 | Mode | Config | Exemple URL |
 |------|--------|-------------|
 | **Unilingue** (défaut) | Sans `i18n` ni `roots` avec bases | `#/index.md`, `#/guide/intro.md` |
-| **Côte-à-côte** | Fichiers `.fr.md` et `.en.md` dans le même dossier | `#/fr/index` → charge `index.fr.md` |
-| **Dossiers séparés** | Un dossier par langue sous une base | `#/fr/index` → root `/content/fr/` |
+| **Côte-à-côte** | `i18n.mode: "suffix"` + fichiers `.fr.md`/`.en.md` | `#/fr/index` → charge `index.fr.md` |
+| **Dossiers séparés** | `i18n.mode: "folder"` + dossiers langue dédiés | `#/fr/index` → root `/content/fr/` |
 
 ### Règle fondamentale
 
-Le multilinguisme est **toujours explicite** — il doit être déclaré dans la config. Sans déclaration `i18n`, OntoWave est unilingue et charge les fichiers `.md` (sans suffixe de langue).
+Par défaut, OntoWave est unilingue. Le multilinguisme est **toujours explicite** via `i18n`.
+
+Si `i18n` est défini, `i18n.mode` (`suffix` ou `folder`) est obligatoire.
+Sans ce mode, OntoWave doit signaler une erreur de configuration (`⚠️` UI + console) et ne pas basculer en mode multilingue implicite.
 
 ### Détection de la langue initiale
+
+Précondition : ce mécanisme s'applique uniquement si le multilinguisme est explicitement activé et valide.
 
 1. Paramètre hash si déjà présent (navigation directe vers `#/fr/...`)
 2. `i18n.default` de la config

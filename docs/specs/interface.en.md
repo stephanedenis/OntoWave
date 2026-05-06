@@ -118,6 +118,8 @@ On load, `bootstrapDom()` applies this algorithm:
 
 ### 4.2 Compact State (default)
 
+The floating menu is **shown by default** (OntoWave visual signature), unless configuration explicitly sets `ui.menu === false`.
+
 - **Icon**: `&#127754;` (🌊 native emoji)
 - **Icon size**: 30×30 px inside a 44×44 px area
 - **Real bounding box**: ≈ 66×66 px (padding + overflow)
@@ -172,6 +174,15 @@ Visible content from left to right:
 - **On compact menu**: `transform: scale(1.05)`, enhanced shadow `0 6px 20px rgba(27,31,35,0.25)`
 - **On a `menu-option`**: `transform: translateY(-1px)`, slightly darker background
 - **Hover disabled** when configuration panel is open (class `.has-config-panel`)
+
+### 4.6 Extension warning indicator
+
+During lazy loading or extension failure:
+
+- compact state: show a subtle `⚠️` badge on the 🌊 icon
+- expanded state: show readable details (extension name, status, impact)
+
+The badge is automatically removed when final rendering is stable.
 
 ---
 
@@ -296,10 +307,15 @@ Without `i18n` declaration: monolingual — loads `*.md` files without language 
 
 ### Two supported file patterns
 
-**Pattern 1 — Side by side**: `index.fr.md` and `index.en.md` in the same folder  
-**Pattern 2 — Separate folders**: `/fr/index.md` and `/en/index.md`
+**Pattern 1 — Side by side**: `i18n.mode: "suffix"` + `index.fr.md` and `index.en.md` in the same folder  
+**Pattern 2 — Separate folders**: `i18n.mode: "folder"` + `/fr/index.md` and `/en/index.md`
 
-Both patterns are fully supported. Choose according to your content organization.
+By default, OntoWave is monolingual. Multilingual mode must be explicitly configured.
+
+If `i18n` is present, `i18n.mode` (`suffix` or `folder`) is mandatory.
+If missing, OntoWave must report a configuration error (`⚠️` UI + console) and must not enable implicit multilingual mode.
+
+Both patterns are supported once mode is explicitly set.
 
 ---
 

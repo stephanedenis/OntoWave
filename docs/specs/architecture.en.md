@@ -140,6 +140,22 @@ When the Markdown `ContentRenderer` detects a ` ```mermaid ` block in the source
 it calls `registry.load('mermaid', ...)` before finalizing the render. The user
 never sees an intermediate state without Mermaid.
 
+### Progressive Two-Pass Rendering (mandatory)
+
+For each file type requiring an extension that is not yet loaded, the runtime applies:
+
+1. immediate minimal rendering (core) for fast response
+2. automatic second render as soon as the relevant extension is loaded
+
+This second render must not break current navigation or visibly reset scroll position.
+
+### Extension Status Signaling (UX)
+
+Between initial render and second render, if an extension is loading or has failed, OntoWave exposes a warning UI state:
+
+- `⚠️` badge on the floating menu icon in compact state
+- readable details in expanded menu state (affected extension, status, possible action)
+
 ## §6 AppConfig Update
 
 ```typescript
@@ -151,10 +167,21 @@ type ExtensionConfig = {
   lazy?: string[]     // loaded on demand
 }
 
+type I18nConfig = {
+  default: string
+  supported: string[]
+  mode: 'suffix' | 'folder' // mandatory when i18n is defined
+}
+
 type AppConfig = {
   // ... existing fields unchanged ...
+  i18n?: I18nConfig
   extensions?: ExtensionConfig
 }
+
+// Validation contract:
+// - Without i18n: default monolingual mode
+// - With i18n: mode is mandatory, otherwise configuration error (UI + console warning)
 ```
 
 ## §7 Migration Plan — Option C (Vite Build Split)

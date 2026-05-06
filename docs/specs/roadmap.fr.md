@@ -64,7 +64,13 @@ Tout le reste doit être traité via des extensions (lazy-load), y compris les m
 
 ### §1 Invariant de taille
 
-`dist/ontowave.js` **ne doit jamais dépasser 200KB** (minifié, avant gzip).
+`dist/ontowave.js` doit rester **strictement inférieur au seuil annoncé** pour l'itération en cours (minifié, avant gzip).
+
+Le seuil est ajustable pendant les premières itérations de refonte v2, mais :
+
+- la valeur active doit être documentée dans cette roadmap
+- le contrôle CI doit utiliser cette valeur comme gate bloquante
+- le seuil doit converger vers la cible finale (noyau le plus petit possible)
 
 Toute dépendance lourde vit dans `dist/extensions/`. Les extensions ne sont pas des dépendances du noyau.
 
@@ -105,6 +111,7 @@ Cas d'usage Panini : Pensine-web et PublicationEngine peuvent embarquer OntoWave
 
 - Déplacer le rendu Markdown avancé vers `src/extensions/markdown.ts`.
 - Conserver un fallback noyau `.md` minimal si extension indisponible.
+- Implémenter un rendu en deux temps : rendu minimal puis second rendu après chargement extension.
 - Ajouter des tests de non-régression de rendu Markdown de base.
 
 4. Lot D — extraction moteurs lourds en lazy extensions
@@ -119,6 +126,14 @@ Cas d'usage Panini : Pensine-web et PublicationEngine peuvent embarquer OntoWave
 - Implémenter `createApp({ container })` sans rupture du mode page complète.
 - Mesurer la taille finale du noyau et valider l'invariant ≤ 200KB.
 
+### §3 bis Stratégie de refonte
+
+La refonte v2 peut repartir d'une base nettoyée (suppression/reconstruction de code legacy) si les invariants suivants sont tenus :
+
+- compatibilité fonctionnelle des parcours documentaires existants
+- équivalence visuelle du menu flottant (signature actuelle conservée)
+- maintien des règles de configuration explicite et des signaux d'erreur `⚠️`
+
 ### §4 Plan de tests v2 (obligatoire)
 
 1. Tests unitaires (Vitest)
@@ -131,6 +146,7 @@ Cas d'usage Panini : Pensine-web et PublicationEngine peuvent embarquer OntoWave
 2. Tests d'intégration navigateur
 
 - Chargement lazy effectif : extension non chargée avant usage, puis chargée à la demande.
+- Vérification du rendu en deux temps (avant/après chargement extension).
 - Navigation hash sans régression sur liens explicites `.md`.
 - Mode composant : aucun effet de bord hors conteneur cible.
 
@@ -138,7 +154,14 @@ Cas d'usage Panini : Pensine-web et PublicationEngine peuvent embarquer OntoWave
 
 - Parcours profond des liens docs/demos (FR + EN), sans erreur console.
 - Validation du comportement en cas d'extension manquante (dégradation propre).
+- Vérification du badge `⚠️` en état compact + détail en état menu ouvert.
 - Vérification de la présence du menu flottant par défaut (sauf `ui.menu === false`).
+
+4.1 Tests configuration i18n
+
+- Mode unilingue par défaut sans `i18n`.
+- Erreur explicite si `i18n` est défini sans `i18n.mode`.
+- Validation des deux modes `suffix` et `folder`.
 
 4. Tests build et distribution
 

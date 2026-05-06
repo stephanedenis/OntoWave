@@ -64,7 +64,13 @@ Everything else should be handled through lazy-loaded extensions, including adva
 
 ### §1 Size Invariant
 
-`dist/ontowave.js` **must never exceed 200KB** (minified, before gzip).
+`dist/ontowave.js` must stay **strictly below the announced threshold** for the current iteration (minified, before gzip).
+
+The threshold may be adjusted during early v2 refactoring iterations, but:
+
+- the active value must be documented in this roadmap
+- CI must enforce that value as a blocking gate
+- the threshold must converge toward the final target (smallest possible core)
 
 All heavy dependencies live in `dist/extensions/`. Extensions are not dependencies of the core.
 
@@ -105,6 +111,7 @@ Panini use case: Pensine-web and PublicationEngine can embed OntoWave in their o
 
 - Move advanced Markdown rendering to `src/extensions/markdown.ts`.
 - Keep a minimal core `.md` fallback if the extension is unavailable.
+- Implement two-pass rendering: minimal render then second render after extension load.
 - Add non-regression tests for baseline Markdown rendering.
 
 4. Batch D — extract heavy engines as lazy extensions
@@ -119,6 +126,14 @@ Panini use case: Pensine-web and PublicationEngine can embed OntoWave in their o
 - Implement `createApp({ container })` without breaking full-page mode.
 - Measure final core size and validate the ≤ 200KB invariant.
 
+### §3 bis Refactor Strategy
+
+The v2 refactor may start from a cleaned baseline (legacy removal/rebuild) as long as the following invariants are preserved:
+
+- functional compatibility of existing documentation navigation flows
+- visual equivalence of the floating menu (current signature preserved)
+- explicit configuration rules and `⚠️` error signaling remain intact
+
 ### §4 v2 Test Plan (mandatory)
 
 1. Unit tests (Vitest)
@@ -131,6 +146,7 @@ Panini use case: Pensine-web and PublicationEngine can embed OntoWave in their o
 2. Browser integration tests
 
 - Effective lazy loading: extension not loaded before use, then loaded on demand.
+- Verify two-pass rendering behavior (before/after extension load).
 - Hash navigation non-regression for explicit `.md` links.
 - Component mode: no side effects outside target container.
 
@@ -138,7 +154,14 @@ Panini use case: Pensine-web and PublicationEngine can embed OntoWave in their o
 
 - Deep crawl of docs/demo links (FR + EN) with no console errors.
 - Behavior validation when an extension is missing (clean degradation).
+- Verify `⚠️` badge in compact state and details in expanded menu.
 - Floating menu present by default (except when `ui.menu === false`).
+
+4.1 i18n configuration tests
+
+- Default monolingual mode when `i18n` is absent.
+- Explicit error when `i18n` is defined without `i18n.mode`.
+- Validation for both `suffix` and `folder` modes.
 
 4. Build and distribution tests
 
