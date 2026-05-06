@@ -3,6 +3,7 @@ import type {
   ConfigService,
   ContentPathStrategy,
   ContentService,
+  ExtensionRegistry,
   MarkdownRenderer,
   OntoWavePlugin,
   PluginContext,
@@ -10,6 +11,7 @@ import type {
   ViewRenderer,
   PostRenderEnhancer,
 } from './core/types'
+import { minimalRender } from './core/minimal-md'
 import { resolveCandidates as defaultResolve, resolvePumlCandidates, splitHashRoute } from './core/logic'
 
 function scrollToHashAnchor(route: string): void {
@@ -58,11 +60,43 @@ export function createApp(deps: {
   md: MarkdownRenderer
   enhance?: PostRenderEnhancer
   plugins?: OntoWavePlugin[]
+  /** Registre des extensions — active le rendu en deux temps si fourni */
+  registry?: ExtensionRegistry
 }) {
   const resolver = deps.resolver ?? { resolveCandidates: defaultResolve }
   const plugins = deps.plugins ?? []
   let disposer: (() => void) | null = null
   let cfg: AppConfig | null = null
+
+  /** Applique le mode d'affichage (html / md / split) et met à jour la vue. */
+  function applyViewMode(html: string, mdSrc: string, viewMode: string): void {
+    const mode = viewMode.toLowerCase()
+    const esc = (s: string) =>
+      s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+
+    if (mode === 'split' || mode === 'sbs') {
+      deps.view.setHtml(`
+        <div style="display:flex; gap:1rem; align-items:flex-start;">
+          <div style="flex:1 1 50%; min-width:0; border:1px solid #ddd; border-radius:4px; overflow:auto; max-height:70vh;">
+            <div style="padding:0.5rem; font-weight:600; border-bottom:1px solid #eee; background:#fafafa;">Source (.md)</div>
+            <pre style="margin:0; padding:0.75rem; white-space:pre; overflow:auto; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size: 0.9em; line-height:1.4;">${esc(mdSrc)}</pre>
+          </div>
+          <div style="flex:1 1 50%; min-width:0; border:1px solid #ddd; border-radius:4px; overflow:auto; max-height:70vh;">
+            <div style="padding:0.5rem; font-weight:600; border-bottom:1px solid #eee; background:#fafafa;">Rendu (HTML/SVG)</div>
+            <div style="padding:0.75rem;">${html}</div>
+          </div>
+        </div>`)
+    } else if (mode === 'md') {
+      deps.view.setHtml(`
+        <div style="border:1px solid #ddd; border-radius:4px; overflow:auto;">
+          <div style="padding:0.5rem; font-weight:600; border-bottom:1px solid #eee; background:#fafafa;">Source (.md)</div>
+          <pre style="margin:0; padding:0.75rem; white-space:pre; overflow:auto; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size: 0.9em; line-height:1.4;">${esc(mdSrc)}</pre>
+        </div>`)
+    } else {
+      deps.view.setHtml(html)
+    }
+  }
 
   async function renderRoute(path?: string) {
     if (!cfg) return
@@ -97,44 +131,40 @@ export function createApp(deps: {
       mdSrc = (await plugin.beforeRender?.(mdSrc, route)) ?? mdSrc
     }
 
-    const html = deps.md.render(mdSrc)
-  const mode = viewMode.toLowerCase()
-  // Split view: show Markdown source and its rendered HTML side-by-side
-  if (mode === 'split' || mode === 'sbs') {
-      const escapeHtml = (s: string) => s
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;')
-      const combined = `
-        <div style="display:flex; gap:1rem; align-items:flex-start;">
-          <div style="flex:1 1 50%; min-width:0; border:1px solid #ddd; border-radius:4px; overflow:auto; max-height:70vh;">
-            <div style="padding:0.5rem; font-weight:600; border-bottom:1px solid #eee; background:#fafafa;">Source (.md)</div>
-            <pre style="margin:0; padding:0.75rem; white-space:pre; overflow:auto; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size: 0.9em; line-height:1.4;">${escapeHtml(mdSrc)}</pre>
-          </div>
-          <div style="flex:1 1 50%; min-width:0; border:1px solid #ddd; border-radius:4px; overflow:auto; max-height:70vh;">
-            <div style="padding:0.5rem; font-weight:600; border-bottom:1px solid #eee; background:#fafafa;">Rendu (HTML/SVG)</div>
-            <div style="padding:0.75rem;">${html}</div>
-          </div>
-        </div>`
-      deps.view.setHtml(combined)
-    } else if (mode === 'md') {
-      const escapeHtml = (s: string) => s
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;')
-      const only = `
-        <div style="border:1px solid #ddd; border-radius:4px; overflow:auto;">
-          <div style="padding:0.5rem; font-weight:600; border-bottom:1px solid #eee; background:#fafafa;">Source (.md)</div>
-          <pre style="margin:0; padding:0.75rem; white-space:pre; overflow:auto; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size: 0.9em; line-height:1.4;">${escapeHtml(mdSrc)}</pre>
-        </div>`
-      deps.view.setHtml(only)
+    const registry = deps.registry
+    let html: string
+
+    if (registry) {
+      // --- Rendu en deux temps ---
+      const fullRenderer = registry.resolve(routePath)
+
+      if (fullRenderer) {
+        // Phase unique : l'extension est déjà chargée
+        html = await fullRenderer.render(mdSrc, routePath)
+        applyViewMode(html, mdSrc, viewMode)
+      } else {
+        // Phase 1 : rendu minimal immédiat (noyau, sans dépendances lourdes)
+        html = minimalRender(mdSrc)
+        applyViewMode(html, mdSrc, viewMode)
+        const h1Phase1 = /<h1[^>]*>(.*?)<\/h1>/i.exec(html)?.[1]?.replace(/<[^>]+>/g, '').trim()
+        if (h1Phase1) deps.view.setTitle(`${h1Phase1} — OntoWave`)
+
+        // Phase 2 : charger l'extension Markdown et re-rendre
+        // Aucun reset de scroll/navigation — on met à jour uniquement le contenu
+        try {
+          const mdExt = await registry.load('markdown')
+          html = await mdExt.render(mdSrc, routePath)
+          applyViewMode(html, mdSrc, viewMode)
+        } catch {
+          // Extension en échec : garder le rendu minimal (le badge warning reste visible)
+        }
+      }
     } else {
-      deps.view.setHtml(html)
+      // Comportement existant : rendu synchrone via deps.md
+      html = deps.md.render(mdSrc)
+      applyViewMode(html, mdSrc, viewMode)
     }
+
     const h1 = /<h1[^>]*>(.*?)<\/h1>/i.exec(html)?.[1]?.replace(/<[^>]+>/g, '').trim()
     if (h1) deps.view.setTitle(`${h1} — OntoWave`)
     await deps.enhance?.afterRender(html, route)
