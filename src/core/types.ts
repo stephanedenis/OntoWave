@@ -42,12 +42,19 @@ export type GlossaryConfig = {
   ui?: GlossaryUiConfig
 }
 
+export type ExtensionConfig = {
+  base?: string[]
+  preload?: string[]
+  lazy?: string[]
+}
+
 export type AppConfig = {
   roots: Root[]
   engine?: 'legacy' | 'v2'
   i18n?: { default: string; supported: string[] }
   ui?: { header?: boolean; sidebar?: boolean; toc?: boolean; footer?: boolean; minimal?: boolean; menu?: boolean }
   glossary?: GlossaryConfig
+  extensions?: ExtensionConfig
 }
 
 export interface ConfigService {
@@ -81,6 +88,40 @@ export interface PostRenderEnhancer {
 
 export interface MarkdownRenderer {
   render(_mdSrc: string): string
+}
+
+// --- ContentRenderer / ExtensionRegistry API ---
+
+export interface ContentRenderer {
+  /** Unique extension identifier */
+  readonly name: string
+  /** File extensions handled, e.g. ['.md', '.markdown'] */
+  readonly handles: string[]
+  /**
+   * Sub-extension names required by this renderer.
+   * The registry will opportunistically preload them when this renderer activates.
+   */
+  readonly requires?: string[]
+  /** Returns true if this renderer can handle the given URL */
+  canRender(_url: string, _contentType?: string): boolean
+  /** Transforms source content into HTML */
+  render(_source: string, _url: string): Promise<string>
+}
+
+export type ExtensionStatus = 'loading' | 'ready' | 'error'
+
+export interface ExtensionRegistry {
+  /** Register an already-loaded extension */
+  register(_renderer: ContentRenderer): void
+  /**
+   * Load an extension by name.  url is a hint for future dynamic loading.
+   * Returns the extension, or rejects if unavailable.
+   */
+  load(_name: string, _url?: string): Promise<ContentRenderer>
+  /** Returns the extension capable of rendering the given URL, or null */
+  resolve(_url: string, _contentType?: string): ContentRenderer | null
+  /** Returns the current status of an extension */
+  getStatus(_name: string): ExtensionStatus | undefined
 }
 
 // --- Plugin API ---

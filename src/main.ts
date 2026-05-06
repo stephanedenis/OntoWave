@@ -12,6 +12,12 @@ import { getJsonFromBundle, getTextFromBundle } from './adapters/browser/bundle'
 import { primeInlineConfigBundle } from './adapters/browser/config'
 import { initUx } from './adapters/browser/ux'
 import { pickPreferredLanguage } from './core/logic'
+import { BrowserExtensionRegistry } from './adapters/browser/extension-registry'
+import markdownRenderer from './extensions/markdown'
+import mermaidRenderer from './extensions/mermaid'
+import katexRenderer from './extensions/katex'
+import highlightRenderer from './extensions/highlight'
+import plantumlRenderer from './extensions/plantuml'
 
 // CSS injecté quand la bibliothèque bootstrappe elle-même le DOM (page quasi-vide)
 const BOOTSTRAP_CSS = `
@@ -46,6 +52,10 @@ body{margin:0;padding:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'D
 #ontowave-floating-menu.expanded .ontowave-menu-option,
 #ontowave-floating-menu.expanded .ontowave-lang-btn{display:inline-flex;align-items:center}
 #ontowave-floating-menu:not(.expanded) #ow-ux-toolbar{display:none!important}
+.ow-ext-badge{position:absolute;top:-4px;right:-4px;width:14px;height:14px;background:#f59e0b;border-radius:50%;border:2px solid #fff;display:none;align-items:center;justify-content:center;font-size:8px;color:#fff;font-weight:700;pointer-events:none}
+.ow-ext-badge.ow-ext-badge--error{background:#ef4444}
+.ow-ext-badge.visible{display:flex}
+.ontowave-menu-icon{position:relative}
 `
 
 /**
@@ -97,6 +107,14 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   icon.setAttribute('aria-expanded', 'false')
   icon.textContent = '🌊'
   floatingMenu.appendChild(icon)
+
+  // Badge d'avertissement des extensions (affiché pendant chargement/échec)
+  const extBadge = document.createElement('span')
+  extBadge.className = 'ow-ext-badge'
+  extBadge.id = 'ow-ext-badge'
+  extBadge.title = 'Extension en cours de chargement…'
+  extBadge.textContent = '⚠'
+  icon.appendChild(extBadge)
 
   // Brand
   const menuBrand = document.createElement('a')
@@ -255,6 +273,53 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   // UX module: init si activé (cfg.ux !== false)
   const uxOptions = typeof cfg.ux === 'object' ? cfg.ux : {}
   const ux = cfg.ux !== false ? initUx(uxOptions) : null
+
+  // --- Registre des extensions ---
+  // Les extensions sont enregistrées ici (bundlé) ; dans une future étape (lot E),
+  // elles seront chargées dynamiquement depuis dist/extensions/*.js.
+  const extensionRegistry = new BrowserExtensionRegistry()
+  extensionRegistry.register(markdownRenderer)
+  extensionRegistry.register(mermaidRenderer)
+  extensionRegistry.register(katexRenderer)
+  extensionRegistry.register(highlightRenderer)
+  extensionRegistry.register(plantumlRenderer)
+
+  // Badge d'avertissement : écouter les événements d'état des extensions
+  const loadingExtensions = new Set<string>()
+  const failedExtensions = new Set<string>()
+  const updateExtBadge = () => {
+    const badge = document.getElementById('ow-ext-badge')
+    if (!badge) return
+    const hasLoading = loadingExtensions.size > 0
+    const hasError = failedExtensions.size > 0
+    if (hasLoading || hasError) {
+      badge.classList.add('visible')
+      badge.classList.toggle('ow-ext-badge--error', hasError && !hasLoading)
+      badge.title = hasError
+        ? `Extension(s) en échec : ${[...failedExtensions].join(', ')}`
+        : `Extension(s) en chargement : ${[...loadingExtensions].join(', ')}`
+    } else {
+      badge.classList.remove('visible', 'ow-ext-badge--error')
+      badge.title = ''
+    }
+  }
+  window.addEventListener('ow:extension:loading', (e: Event) => {
+    const name = (e as CustomEvent<{ name: string }>).detail.name
+    loadingExtensions.add(name)
+    updateExtBadge()
+  })
+  window.addEventListener('ow:extension:ready', (e: Event) => {
+    const name = (e as CustomEvent<{ name: string }>).detail.name
+    loadingExtensions.delete(name)
+    updateExtBadge()
+  })
+  window.addEventListener('ow:extension:error', (e: Event) => {
+    const name = (e as CustomEvent<{ name: string }>).detail.name
+    loadingExtensions.delete(name)
+    failedExtensions.add(name)
+    updateExtBadge()
+  })
+
   if (engine === 'v2') {
   const app = createApp({
       config: browserConfig,
@@ -262,9 +327,24 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
       router: browserRouter,
       view: browserView,
   md: createMdV2({ light: false }),
+      registry: extensionRegistry,
       enhance: { afterRender: async (html, _route) => {
         const appEl = document.getElementById('app')!
-        await enhancePage(appEl, html)
+        // Signaler le chargement des extensions actives (mermaid, plantuml)
+        // afin d'alimenter le badge d'avertissement pendant la phase de rendu enrichi.
+        const hasMermaid = html.includes('language-mermaid')
+        const hasKroki = ['language-plantuml','language-puml','language-uml','language-dot','language-d2','language-bpmn']
+          .some(cls => html.includes(cls))
+        if (hasMermaid) window.dispatchEvent(new CustomEvent('ow:extension:loading', { detail: { name: 'mermaid' } }))
+        if (hasKroki) window.dispatchEvent(new CustomEvent('ow:extension:loading', { detail: { name: 'plantuml' } }))
+        try {
+          await enhancePage(appEl, html)
+          if (hasMermaid) window.dispatchEvent(new CustomEvent('ow:extension:ready', { detail: { name: 'mermaid' } }))
+          if (hasKroki) window.dispatchEvent(new CustomEvent('ow:extension:ready', { detail: { name: 'plantuml' } }))
+        } catch {
+          if (hasMermaid) window.dispatchEvent(new CustomEvent('ow:extension:error', { detail: { name: 'mermaid', error: 'render failed' } }))
+          if (hasKroki) window.dispatchEvent(new CustomEvent('ow:extension:error', { detail: { name: 'plantuml', error: 'render failed' } }))
+        }
         // --- View Mode Support (html / md / split) ---
         try {
           // Cache structure on window to avoid refetching markdown repeatedly
