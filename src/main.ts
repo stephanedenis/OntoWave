@@ -229,6 +229,7 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
       if (ui.toc === false) T?.classList.add('hidden-by-config')
     }
     if (ui.menu === false) F?.classList.add('hidden-by-config')
+    else F?.classList.remove('hidden-by-config')
   } catch {}
   // i18n: détecter la langue préférée et rediriger vers la base correspondante si on est à la racine
   try {

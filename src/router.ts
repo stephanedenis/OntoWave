@@ -39,7 +39,7 @@ export function onRouteChange(cb: (_r: Route) => void) {
     // Liens internes vers .md → convertir en route (résolution relative au dossier courant)
     if (href.endsWith('.md') && !/^(https?:)?\/\//.test(href)) {
       e.preventDefault()
-      const clean = href.replace(/\.md$/i, '').replace(/^\.\//,'')
+      const clean = href.replace(/^\.\//,'')
       if (clean.startsWith('/')) {
         location.hash = '#' + clean
       } else {

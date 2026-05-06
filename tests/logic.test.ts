@@ -26,33 +26,38 @@ describe('core logic', () => {
   it('rewrites .md links to hash routes', () => {
     const html = '<a href="/guide.md">Guide</a> <a href="http://x.md">ext</a>'
     const out = rewriteLinksHtml(html)
-    expect(out).toContain('href="#/guide"')
+    expect(out).toContain('href="#/guide.md"')
     expect(out).toContain('href="http://x.md"')
   })
   it('resolves relative .md link from root page', () => {
     const html = '<a href="processus-unifie.md">Processus unifié</a>'
     const out = rewriteLinksHtml(html, '#/')
-    expect(out).toContain('href="#/processus-unifie"')
+    expect(out).toContain('href="#/processus-unifie.md"')
   })
   it('resolves relative .md link from sub-folder page (fix #40)', () => {
     const html = '<a href="processus-unifie.md">Processus unifié</a>'
     const out = rewriteLinksHtml(html, '#/portail-metho-prod/index')
-    expect(out).toContain('href="#/portail-metho-prod/processus-unifie"')
+    expect(out).toContain('href="#/portail-metho-prod/processus-unifie.md"')
   })
   it('resolves ./relative .md link from sub-folder page', () => {
     const html = '<a href="./processus-unifie.md">Processus unifié</a>'
     const out = rewriteLinksHtml(html, '#/portail-metho-prod/index')
-    expect(out).toContain('href="#/portail-metho-prod/processus-unifie"')
+    expect(out).toContain('href="#/portail-metho-prod/processus-unifie.md"')
   })
   it('resolves ../ relative .md link (parent directory)', () => {
     const html = '<a href="../autre.md">Autre</a>'
     const out = rewriteLinksHtml(html, '#/portail/sous-dossier/page')
-    expect(out).toContain('href="#/portail/autre"')
+    expect(out).toContain('href="#/portail/autre.md"')
   })
   it('resolves absolute /path.md link regardless of current page', () => {
     const html = '<a href="/racine/guide.md">Guide</a>'
     const out = rewriteLinksHtml(html, '#/portail-metho-prod/index')
-    expect(out).toContain('href="#/racine/guide"')
+    expect(out).toContain('href="#/racine/guide.md"')
+  })
+
+  it('resolves explicit extension routes without markdown guessing', () => {
+    const roots = [{ base: '/', root: '/content' }]
+    expect(resolveCandidates(roots as any, '/guide.md')).toEqual(['/content/guide.md', '/guide.md'])
   })
 
   // --- .puml link rewriting ---

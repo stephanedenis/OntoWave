@@ -60,6 +60,30 @@ export function normalizePath(path: string): string {
 export function resolveCandidates(roots: Root[], path: string): string[] {
   const candidates: string[] = []
   const p = normalizePath(path)
+
+  const hasExplicitExtension = /\.[a-z0-9][a-z0-9._-]*$/i.test((p.split('/').pop() || ''))
+  if (hasExplicitExtension) {
+    const tryRoots: Array<{ r: Root; sub: string }> = []
+    for (const r of roots) {
+      const base = r.base === '/' ? '/' : ('/' + String(r.base).replace(/^\/+|\/+$/g, ''))
+      if (base === '/' || p === base || p.startsWith(base + '/')) {
+        const sub = base === '/' ? p : (p.slice(base.length) || '/')
+        tryRoots.push({ r, sub })
+      }
+    }
+    if (tryRoots.length === 0) {
+      for (const r of roots) tryRoots.push({ r, sub: p })
+    }
+    for (const { r, sub } of tryRoots) {
+      const prefix = r.root.replace(/\/$/, '')
+      candidates.push(`${prefix}${sub}`)
+      const base = String(r.base || '').replace(/^\/+|\/+$/g, '')
+      if (base) candidates.push(`${prefix}/${base}${sub}`)
+    }
+    if (!candidates.includes(p)) candidates.push(p)
+    return [...new Set(candidates)]
+  }
+
   const tryRoots: Array<{ r: Root; sub: string }> = []
   for (const r of roots) {
     const base = r.base === '/' ? '/' : ('/' + String(r.base).replace(/^\/+|\/+$/g, ''))
@@ -106,7 +130,7 @@ export function resolveCandidates(roots: Root[], path: string): string[] {
 }
 
 export function rewriteLinksHtml(html: string, currentHash?: string): string {
-  // Réécrit les liens internes se terminant par .md en routes hash, avec résolution relative et ancre préservée
+  // Réécrit les liens internes se terminant par .md en routes hash, avec extension préservée
   const fullHash = (currentHash ?? (globalThis as any).location?.hash ?? '#/').toString()
   const [rawPath] = fullHash.split('?')
   const curr = rawPath.replace(/^#/, '') || '/'
@@ -126,18 +150,16 @@ export function rewriteLinksHtml(html: string, currentHash?: string): string {
     if (/^(https?:)?\/\//i.test(href)) return `href=${q}${href}${anchor || ''}${q}`
     // Absolute content path
     if (href.startsWith('/')) {
-      const clean = href.replace(/\.md$/i, '')
-      return `href=${q}#${clean}${anchor || ''}${q}`
+      return `href=${q}#${href}${anchor || ''}${q}`
     }
     // Language-prefixed path
     if (/^[a-z]{2}\//i.test(href)) {
-      const clean = href.replace(/\.md$/i, '')
-      return `href=${q}#/${clean}${anchor || ''}${q}`
+      return `href=${q}#/${href}${anchor || ''}${q}`
     }
     // Relative path from current directory
     const clean = href.replace(/^\.\//, '')
     const baseParts = currDirParts.length ? currDirParts : (currentLang ? [currentLang] : [])
-    const target = norm([...baseParts, ...clean.replace(/\.md$/i, '').split('/')])
+    const target = norm([...baseParts, ...clean.split('/')])
     return `href=${q}#${target}${anchor || ''}${q}`
   })
   // Réécrit les liens internes se terminant par .puml en routes hash (extension conservée)
