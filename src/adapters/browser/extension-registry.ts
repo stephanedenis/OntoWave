@@ -1,101 +1,92 @@
-import type { ContentRenderer, ExtensionRegistry, RuntimeWarning, WarningSink } from '../../core/types'
-
-/** Préfixes d'URL refusés pour `load()` afin d'éviter des imports arbitraires. */
-const BLOCKED_URL_SCHEMES = /^(https?:|data:|blob:|javascript:)/i
-
 /**
- * Crée un registre d'extensions dynamiques pour OntoWave.
+ * Registre des extensions ContentRenderer pour le navigateur.
+ * Gère l'état de chaque extension (loading / ready / error)
+ * et émet des événements DOM pour alimenter le badge d'avertissement du menu.
  *
- * Fonctionnalités :
- * - `register()` : enregistre une extension déjà instanciée
- * - `load()` : charge dynamiquement une extension via `import()` avec cache (un seul import par nom)
- * - `resolve()` : retourne l'extension capable de rendre une URL donnée
- * - `getWarnings()` + `addWarning()` : implémente `WarningSink` pour le menu flottant
+ * Événements émis sur window :
+ *   ow:extension:loading  { detail: { name: string } }
+ *   ow:extension:ready    { detail: { name: string } }
+ *   ow:extension:error    { detail: { name: string; error: unknown } }
  */
-export function createExtensionRegistry(): ExtensionRegistry & WarningSink {
-  const renderers = new Map<string, ContentRenderer>()
+import type { ContentRenderer, ExtensionRegistry, ExtensionStatus } from '../../core/types'
 
-  // Cache de promesses — évite les imports multiples de la même extension
-  const loadCache = new Map<string, Promise<ContentRenderer>>()
+function emitExtensionEvent(
+  type: 'ow:extension:loading' | 'ow:extension:ready' | 'ow:extension:error',
+  name: string,
+  error?: unknown,
+) {
+  if (typeof window === 'undefined') return
+  window.dispatchEvent(new CustomEvent(type, { detail: { name, error } }))
+}
 
-  // État runtime lisible par le menu flottant
-  const warnings: RuntimeWarning[] = []
+export class BrowserExtensionRegistry implements ExtensionRegistry {
+  private readonly renderers = new Map<string, ContentRenderer>()
+  private readonly statuses = new Map<string, ExtensionStatus>()
+  private readonly pending = new Map<string, Promise<ContentRenderer>>()
 
-  function register(renderer: ContentRenderer): void {
-    if (renderers.has(renderer.name)) {
-      console.warn(`[OntoWave] Extension "${renderer.name}" est déjà enregistrée`)
-      return
-    }
-    renderers.set(renderer.name, renderer)
+  register(renderer: ContentRenderer): void {
+    this.renderers.set(renderer.name, renderer)
+    this.statuses.set(renderer.name, 'ready')
+    emitExtensionEvent('ow:extension:ready', renderer.name)
   }
 
-  async function load(name: string, url: string): Promise<ContentRenderer> {
-    // Retourner l'extension si elle est déjà enregistrée (évite un import inutile)
-    const existing = renderers.get(name)
+  /**
+   * Charge une extension par nom.
+   * - Si déjà enregistrée : retourne immédiatement.
+   * - Si un chargement est en cours : renvoie la même Promise.
+   * - Sinon : tente un import() dynamique via url.
+   *
+   * Note : dans le build IIFE actuel (inlineDynamicImports: true) les imports
+   * dynamiques sont inlinés — le chargement est donc synchrone en pratique.
+   * L'API reste asynchrone pour la compatibilité avec le futur split de bundle.
+   */
+  async load(name: string, url?: string): Promise<ContentRenderer> {
+    const existing = this.renderers.get(name)
     if (existing) return existing
 
-    // Validation de l'URL : refuser les schémas dangereux
-    if (BLOCKED_URL_SCHEMES.test(url)) {
-      throw new Error(
-        `[OntoWave] URL d'extension refusée : "${url}". Seuls les chemins relatifs sont autorisés.`,
-      )
+    const inFlight = this.pending.get(name)
+    if (inFlight) return inFlight
+
+    if (!url) {
+      const err = new Error(`[OntoWave] Extension inconnue : ${name}`)
+      this.statuses.set(name, 'error')
+      emitExtensionEvent('ow:extension:error', name, err)
+      return Promise.reject(err)
     }
 
-    // Retourner la promesse en cours si un chargement est déjà en attente (cache)
-    const cached = loadCache.get(name)
-    if (cached) return cached
+    this.statuses.set(name, 'loading')
+    emitExtensionEvent('ow:extension:loading', name)
 
-    const promise = (async (): Promise<ContentRenderer> => {
-      try {
-        // Chargement dynamique — l'extension doit exporter un ContentRenderer comme export par défaut
-        const mod = await import(/* @vite-ignore */ url)
-        const renderer: ContentRenderer = mod.default ?? mod
-        if (!renderer || typeof renderer.render !== 'function') {
-          throw new Error(
-            `[OntoWave] Extension "${name}" (${url}) ne fournit pas d'objet ContentRenderer valide.`,
-          )
-        }
-        // Cohérence : imposer que renderer.name corresponde au name demandé
-        if (renderer.name !== name) {
-          throw new Error(
-            `[OntoWave] Extension "${name}" (${url}) déclare le nom "${renderer.name}". ` +
-            `Le nom demandé et renderer.name doivent correspondre.`,
-          )
-        }
-        // Utiliser renderer.name comme clé canonique (cohérence avec register())
-        renderers.set(renderer.name, renderer)
+    const p = import(/* @vite-ignore */ url)
+      .then((mod) => {
+        const renderer = (mod.default ?? mod) as ContentRenderer
+        this.renderers.set(name, renderer)
+        this.statuses.set(name, 'ready')
+        emitExtensionEvent('ow:extension:ready', name)
         return renderer
-      } catch (err) {
-        loadCache.delete(name)
-        const msg = err instanceof Error ? err.message : String(err)
-        const warning: RuntimeWarning = {
-          code: 'EXTENSION_LOAD_ERROR',
-          message: `[OntoWave] Échec du chargement de l'extension "${name}" depuis "${url}" : ${msg}`,
-        }
-        warnings.push(warning)
-        console.error(warning.message)
+      })
+      .catch((err) => {
+        this.statuses.set(name, 'error')
+        emitExtensionEvent('ow:extension:error', name, err)
+        this.pending.delete(name)
         throw err
-      }
-    })()
+      })
 
-    loadCache.set(name, promise)
-    return promise
+    this.pending.set(name, p)
+    return p
   }
 
-  function resolve(url: string, contentType?: string): ContentRenderer | null {
-    for (const renderer of renderers.values()) {
+  resolve(url: string, contentType?: string): ContentRenderer | null {
+    for (const renderer of this.renderers.values()) {
       if (renderer.canRender(url, contentType)) return renderer
     }
     return null
   }
 
-  function getWarnings(): RuntimeWarning[] {
-    return [...warnings]
+  getStatus(name: string): ExtensionStatus | undefined {
+    return this.statuses.get(name)
   }
-
-  function addWarning(warning: RuntimeWarning): void {
-    warnings.push(warning)
-  }
-
-  return { register, load, resolve, getWarnings, addWarning }
 }
+
+/** Instance partagée du registre (singleton pour le runtime navigateur). */
+export const browserExtensionRegistry = new BrowserExtensionRegistry()

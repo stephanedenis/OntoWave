@@ -42,36 +42,19 @@ export type GlossaryConfig = {
   ui?: GlossaryUiConfig
 }
 
-/** Configuration du rendu multilingue. Quand `i18n` est présent, `mode` est obligatoire. */
-export type I18nConfig = {
-  default: string
-  supported: string[]
-  /** Stratégie de résolution des fichiers localisés : suffixe (ex. `index.fr.md`) ou dossier (ex. `/fr/index.md`). */
-  mode: 'suffix' | 'folder'
-}
-
-/** Configuration des extensions de rendu chargées par le registry. */
 export type ExtensionConfig = {
-  /** Extensions chargées avec le noyau (ex. `['markdown']`). */
   base?: string[]
-  /** Extensions chargées juste après le premier rendu. */
   preload?: string[]
-  /** Extensions chargées à la demande si le contenu les requiert. */
   lazy?: string[]
 }
 
 export type AppConfig = {
   roots: Root[]
   engine?: 'legacy' | 'v2'
-  i18n?: I18nConfig
+  i18n?: { default: string; supported: string[] }
   ui?: { header?: boolean; sidebar?: boolean; toc?: boolean; footer?: boolean; minimal?: boolean; menu?: boolean }
   glossary?: GlossaryConfig
-  /** Déclare les extensions de rendu requises par le site. */
   extensions?: ExtensionConfig
-  /** Texte affiché dans le widget de marque (logo/nom du site). */
-  brand?: string
-  /** Options du module UX (thèmes, navigation clavier, prefetch). `false` désactive le module. */
-  ux?: { themes?: boolean; keyboard?: boolean; prefetch?: boolean } | false
 }
 
 export interface ConfigService {
@@ -107,76 +90,38 @@ export interface MarkdownRenderer {
   render(_mdSrc: string): string
 }
 
-// --- Modular rendering API (v2 architecture) ---
+// --- ContentRenderer / ExtensionRegistry API ---
 
-/**
- * Phase du rendu progressif en deux temps :
- * - `'initial'` : rendu minimal immédiat (noyau seul)
- * - `'enhanced'` : second rendu après chargement de l'extension appropriée
- */
-export type RenderPhase = 'initial' | 'enhanced'
-
-/**
- * Toute extension de rendu implémente cette interface.
- * Chaque extension est identifiée par un nom unique et déclare les extensions
- * de fichier qu'elle peut traiter.
- */
 export interface ContentRenderer {
-  /** Identifiant unique de l'extension (ex. `'markdown'`, `'mermaid'`). */
+  /** Unique extension identifier */
   readonly name: string
-
-  /** Extensions de fichier gérées, ex. `['.md', '.markdown']`. */
+  /** File extensions handled, e.g. ['.md', '.markdown'] */
   readonly handles: string[]
-
   /**
-   * Déclarations de sous-extensions requises.
-   * Si `['mermaid', 'katex']` est retourné, le registry les chargera
-   * dès que ce renderer sera activé (preload opportuniste).
+   * Sub-extension names required by this renderer.
+   * The registry will opportunistically preload them when this renderer activates.
    */
   readonly requires?: string[]
-
-  /** Retourne `true` si cette extension peut traiter l'URL donnée. */
-  canRender(url: string, contentType?: string): boolean
-
-  /** Transforme le contenu source en HTML. */
-  render(source: string, url: string): Promise<string>
+  /** Returns true if this renderer can handle the given URL */
+  canRender(_url: string, _contentType?: string): boolean
+  /** Transforms source content into HTML */
+  render(_source: string, _url: string): Promise<string>
 }
 
-/**
- * Registre des extensions de rendu.
- * Gère l'enregistrement, le chargement dynamique et la résolution des extensions.
- */
+export type ExtensionStatus = 'loading' | 'ready' | 'error'
+
 export interface ExtensionRegistry {
-  /** Enregistre une extension déjà chargée. */
-  register(renderer: ContentRenderer): void
-
+  /** Register an already-loaded extension */
+  register(_renderer: ContentRenderer): void
   /**
-   * Charge dynamiquement une extension par son identifiant.
-   * `url` = chemin relatif depuis `dist/` (ex. `'extensions/markdown.js'`).
-   * L'extension doit exporter un objet `ContentRenderer` comme export par défaut.
+   * Load an extension by name.  url is a hint for future dynamic loading.
+   * Returns the extension, or rejects if unavailable.
    */
-  load(name: string, url: string): Promise<ContentRenderer>
-
-  /** Retourne l'extension capable de rendre l'URL donnée, ou `null`. */
-  resolve(url: string, contentType?: string): ContentRenderer | null
-}
-
-/** Avertissement runtime exposé au menu flottant (code machine + message lisible). */
-export type RuntimeWarning = {
-  code: string
-  message: string
-}
-
-/**
- * Interface optionnelle pour les objets capables d'accumuler des avertissements runtime.
- * Implémentée par `createExtensionRegistry()` pour permettre à `createApp()` de transmettre
- * les erreurs de config sans caster le type `ExtensionRegistry`.
- */
-export interface WarningSink {
-  /** Ajoute un avertissement à la liste. */
-  addWarning(warning: RuntimeWarning): void
-  /** Retourne une copie de la liste des avertissements. */
-  getWarnings(): RuntimeWarning[]
+  load(_name: string, _url?: string): Promise<ContentRenderer>
+  /** Returns the extension capable of rendering the given URL, or null */
+  resolve(_url: string, _contentType?: string): ContentRenderer | null
+  /** Returns the current status of an extension */
+  getStatus(_name: string): ExtensionStatus | undefined
 }
 
 // --- Plugin API ---
