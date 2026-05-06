@@ -64,9 +64,15 @@ Everything else should be handled through lazy-loaded extensions, including adva
 
 ### §1 Size Invariant
 
-`dist/ontowave.js` must stay **strictly below the announced threshold** for the current iteration (minified, before gzip).
+`dist/ontowave.min.js` must stay **strictly below the announced threshold** for the current iteration (minified, before gzip).
 
-The threshold may be adjusted during early v2 refactoring iterations, but:
+**Active threshold: 200 KB** (v2.0 final target — aligned with the first split build)
+
+> First v2 iteration (issue #75): core separated from heavy extensions.
+> Measured size after split: **~149 KB** minified.
+> The threshold is directly aligned to the final target since the goal is already achieved.
+
+The threshold is automatically enforced by `node tools/check-dist-size.mjs` (blocking CI script).
 
 - the active value must be documented in this roadmap
 - CI must enforce that value as a blocking gate

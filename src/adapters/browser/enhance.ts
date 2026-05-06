@@ -1,6 +1,7 @@
 import { getJsonFromBundle } from './bundle'
 import { svgCache, compressSvg } from './svg-cache'
 import { applyGlossary } from './glossary'
+import { loadExt } from './ext-loader'
 import type { AppConfig } from '../../core/types'
 
 function buildTocFromHtml(html: string): string {
@@ -20,23 +21,14 @@ function buildTocFromHtml(html: string): string {
 async function renderMermaid(container: HTMLElement) {
   const blocks = Array.from(container.querySelectorAll('pre code.language-mermaid')) as HTMLElement[]
   if (blocks.length === 0) return
-  const { default: mermaid } = await import('mermaid')
-  mermaid.initialize({ startOnLoad: false, securityLevel: 'loose' as any })
-  let idx = 0
-  for (const code of blocks) {
-    const txt = code.textContent || ''
-    const pre = code.closest('pre')!
-    const wrapper = document.createElement('div')
-    wrapper.className = 'mermaid'
-    const id = `mmd-${Date.now()}-${idx++}`
-    try {
-      const { svg } = await mermaid.render(id, txt)
-      wrapper.innerHTML = svg
-    } catch {
-      // fallback: keep source text if render fails
-      wrapper.textContent = txt
+  try {
+    const m = await loadExt('mermaid') as { default?: { renderInPage?(c: HTMLElement): Promise<void> } }
+    const ext = m?.default
+    if (ext?.renderInPage) {
+      await ext.renderInPage(container)
     }
-    pre.replaceWith(wrapper)
+  } catch {
+    // fallback silencieux : les blocs mermaid restent en texte brut
   }
 }
 

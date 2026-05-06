@@ -11,15 +11,15 @@ import { browserConfig } from './adapters/browser/config'
 import { browserContent } from './adapters/browser/content'
 import { browserRouter } from './adapters/browser/router'
 import { browserView } from './adapters/browser/view'
-import { createMd as createMdV2 } from './adapters/browser/md'
 import { enhancePage } from './adapters/browser/enhance'
 import { buildSidebar, buildPrevNext } from './adapters/browser/navigation'
 import { getJsonFromBundle } from './adapters/browser/bundle'
 import { primeInlineConfigBundle } from './adapters/browser/config'
 import { initUx } from './adapters/browser/ux'
 import { createPluginManager } from './core/plugins'
-import type { OntoWavePlugin, PluginContext, PluginManager } from './core/types'
+import type { OntoWavePlugin, PluginContext, PluginManager, MarkdownRenderer } from './core/types'
 import { pickPreferredLanguage } from './core/logic'
+import { setExtBase, loadExt } from './adapters/browser/ext-loader'
 
 export { createPluginManager }
 export type { OntoWavePlugin, PluginContext, PluginManager }
@@ -83,12 +83,30 @@ export async function initOntoWave() {
   
   if (engine === 'v2') {
     console.log('[OntoWave] Creating app with engine v2')
+    // Configurer la base URL des extensions
+    setExtBase(
+      typeof document !== 'undefined' && document.currentScript instanceof HTMLScriptElement
+        ? document.currentScript.src.replace(/\/[^/?#]+(\?[^#]*)?$/, '') + '/extensions'
+        : '/extensions'
+    )
+    // Chargement dynamique de l'extension Markdown
+    let mdRenderer: MarkdownRenderer = {
+      render(src: string): string {
+        return `<pre style="white-space:pre-wrap">${src.replace(/[&<>"']/g, c =>
+          c === '&' ? '&amp;' : c === '<' ? '&lt;' : c === '>' ? '&gt;' : c === '"' ? '&quot;' : '&#39;'
+        )}</pre>`
+      }
+    }
+    try {
+      const mdExt = await loadExt('markdown') as { default?: { render?(src: string): string } }
+      if (mdExt?.default?.render) mdRenderer = mdExt.default as MarkdownRenderer
+    } catch {}
     const app = createApp({
       config: browserConfig,
       content: browserContent,
       router: browserRouter,
       view: browserView,
-      md: createMdV2({ light: false }),
+      md: mdRenderer,
       enhance: { 
         afterRender: async (html: string, _route: string) => {
           const appEl = document.getElementById('app')!
