@@ -42,12 +42,32 @@ export type GlossaryConfig = {
   ui?: GlossaryUiConfig
 }
 
+/** Configuration du rendu multilingue. Quand `i18n` est présent, `mode` est obligatoire. */
+export type I18nConfig = {
+  default: string
+  supported: string[]
+  /** Stratégie de résolution des fichiers localisés : suffixe (ex. `index.fr.md`) ou dossier (ex. `/fr/index.md`). */
+  mode: 'suffix' | 'folder'
+}
+
+/** Configuration des extensions de rendu chargées par le registry. */
+export type ExtensionConfig = {
+  /** Extensions chargées avec le noyau (ex. `['markdown']`). */
+  base?: string[]
+  /** Extensions chargées juste après le premier rendu. */
+  preload?: string[]
+  /** Extensions chargées à la demande si le contenu les requiert. */
+  lazy?: string[]
+}
+
 export type AppConfig = {
   roots: Root[]
   engine?: 'legacy' | 'v2'
-  i18n?: { default: string; supported: string[] }
+  i18n?: I18nConfig
   ui?: { header?: boolean; sidebar?: boolean; toc?: boolean; footer?: boolean; minimal?: boolean; menu?: boolean }
   glossary?: GlossaryConfig
+  /** Déclare les extensions de rendu requises par le site. */
+  extensions?: ExtensionConfig
 }
 
 export interface ConfigService {
@@ -81,6 +101,60 @@ export interface PostRenderEnhancer {
 
 export interface MarkdownRenderer {
   render(_mdSrc: string): string
+}
+
+// --- Modular rendering API (v2 architecture) ---
+
+/**
+ * Phase du rendu progressif en deux temps :
+ * - `'initial'` : rendu minimal immédiat (noyau seul)
+ * - `'enhanced'` : second rendu après chargement de l'extension appropriée
+ */
+export type RenderPhase = 'initial' | 'enhanced'
+
+/**
+ * Toute extension de rendu implémente cette interface.
+ * Chaque extension est identifiée par un nom unique et déclare les extensions
+ * de fichier qu'elle peut traiter.
+ */
+export interface ContentRenderer {
+  /** Identifiant unique de l'extension (ex. `'markdown'`, `'mermaid'`). */
+  readonly name: string
+
+  /** Extensions de fichier gérées, ex. `['.md', '.markdown']`. */
+  readonly handles: string[]
+
+  /**
+   * Déclarations de sous-extensions requises.
+   * Si `['mermaid', 'katex']` est retourné, le registry les chargera
+   * dès que ce renderer sera activé (preload opportuniste).
+   */
+  readonly requires?: string[]
+
+  /** Retourne `true` si cette extension peut traiter l'URL donnée. */
+  canRender(url: string, contentType?: string): boolean
+
+  /** Transforme le contenu source en HTML. */
+  render(source: string, url: string): Promise<string>
+}
+
+/**
+ * Registre des extensions de rendu.
+ * Gère l'enregistrement, le chargement dynamique et la résolution des extensions.
+ */
+export interface ExtensionRegistry {
+  /** Enregistre une extension déjà chargée. */
+  register(renderer: ContentRenderer): void
+
+  /**
+   * Charge dynamiquement une extension par son identifiant.
+   * `url` = chemin relatif depuis `dist/` (ex. `'extensions/markdown.js'`).
+   * L'extension doit exporter un objet `ContentRenderer` comme export par défaut.
+   */
+  load(name: string, url: string): Promise<ContentRenderer>
+
+  /** Retourne l'extension capable de rendre l'URL donnée, ou `null`. */
+  resolve(url: string, contentType?: string): ContentRenderer | null
 }
 
 // --- Plugin API ---
