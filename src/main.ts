@@ -3,7 +3,6 @@ import { browserConfig } from './adapters/browser/config'
 import { browserContent } from './adapters/browser/content'
 import { browserRouter } from './adapters/browser/router'
 import { browserView } from './adapters/browser/view'
-import { createMd as createMdV2 } from './adapters/browser/md'
 import { enhancePage } from './adapters/browser/enhance'
 import { buildSidebar, buildPrevNext } from './adapters/browser/navigation'
 import { createSearch } from './adapters/browser/search'
@@ -12,6 +11,25 @@ import { getJsonFromBundle, getTextFromBundle } from './adapters/browser/bundle'
 import { primeInlineConfigBundle } from './adapters/browser/config'
 import { initUx } from './adapters/browser/ux'
 import { pickPreferredLanguage } from './core/logic'
+import { setExtBase, loadExt } from './adapters/browser/ext-loader'
+import type { MarkdownRenderer } from './core/types'
+
+// Rendu Markdown minimal de secours (utilisé si l'extension ne charge pas)
+function _fallbackMdRender(mdSrc: string): string {
+  return `<pre style="white-space:pre-wrap">${mdSrc.replace(/[&<>"']/g, c =>
+    c === '&' ? '&amp;' : c === '<' ? '&lt;' : c === '>' ? '&gt;' : c === '"' ? '&quot;' : '&#39;'
+  )}</pre>`
+}
+
+// Capture de l'URL du script noyau pour dériver la base URL des extensions.
+// document.currentScript est disponible uniquement pendant l'exécution synchrone.
+const _owCoreScriptSrc: string =
+  typeof document !== 'undefined' && document.currentScript instanceof HTMLScriptElement
+    ? document.currentScript.src
+    : ''
+const _owExtBase: string = _owCoreScriptSrc
+  ? _owCoreScriptSrc.replace(/\/[^/?#]+(\?[^#]*)?$/, '') + '/extensions'
+  : '/extensions'
 
 // CSS injecté quand la bibliothèque bootstrappe elle-même le DOM (page quasi-vide)
 const BOOTSTRAP_CSS = `
@@ -213,6 +231,9 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   bootstrapDom(cfg as Record<string, unknown>)
   const engine = cfg.engine ?? 'v2'
 
+  // Configurer la base URL des extensions (dérivée de l'URL du script noyau)
+  setExtBase(_owExtBase)
+
   // UI options
   try {
     const H = document.getElementById('site-header')
@@ -256,12 +277,22 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   const uxOptions = typeof cfg.ux === 'object' ? cfg.ux : {}
   const ux = cfg.ux !== false ? initUx(uxOptions) : null
   if (engine === 'v2') {
+  // Chargement dynamique de l'extension Markdown (hors noyau)
+  let mdRenderer: MarkdownRenderer = { render: _fallbackMdRender }
+  try {
+    const mdExt = await loadExt('markdown') as { default?: { render?(src: string): string } }
+    if (mdExt?.default?.render) {
+      mdRenderer = mdExt.default as MarkdownRenderer
+    }
+  } catch {
+    // extension indisponible — rendu minimal de secours utilisé
+  }
   const app = createApp({
       config: browserConfig,
       content: browserContent,
       router: browserRouter,
       view: browserView,
-  md: createMdV2({ light: false }),
+  md: mdRenderer,
       enhance: { afterRender: async (html, _route) => {
         const appEl = document.getElementById('app')!
         await enhancePage(appEl, html)
@@ -459,14 +490,35 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
       } catch {}
     } catch {}
   } else {
-    // Legacy path: import legacy modules dynamically to keep bundle small if unused
-    const [{ getCurrentRoute, onRouteChange }, { createMd, rewriteLinks }] = await Promise.all([
-      import('./router'),
-      import('./markdown'),
-    ])
+    // Legacy path: use extension loader for markdown to keep core bundle light
+    const { getCurrentRoute, onRouteChange } = await import('./router')
     type Root = { base: string; root: string }
     const appEl = document.getElementById('app')!
-    const md = createMd()
+    // Charger l'extension markdown via le loader (évite d'inclure les dépendances lourdes dans le noyau)
+    const mdExtLegacy = await loadExt('markdown') as { default?: { render?: (src: string) => string } }
+    const renderLegacy: (src: string) => string = mdExtLegacy?.default?.render ?? _fallbackMdRender
+    // rewriteLinks minimal pour convertir les liens .md en routes hash
+    const rewriteLinksLegacy = (el: HTMLElement) => {
+      const hash = ((globalThis as Record<string, unknown>).location as Location)?.hash || '#/'
+      const dirParts = hash.replace(/^#/, '').split('/').filter(Boolean).slice(0, -1)
+      const resolve = (href: string): string => {
+        const clean = href.replace(/^\.\//,'')
+        if (clean.startsWith('/')) return '#' + clean
+        const out: string[] = []
+        for (const s of [...dirParts, ...clean.split('/')]) {
+          if (s === '' || s === '.') continue
+          if (s === '..') { out.pop(); continue }
+          out.push(s)
+        }
+        return '#/' + out.join('/')
+      }
+      el.querySelectorAll('a[href$=".md"]').forEach((a) => {
+        const href = a.getAttribute('href') || ''
+        if (!/^(https?:)?\/\//.test(href)) {
+          ;(a as HTMLAnchorElement).href = resolve(href.replace(/\.md$/i, ''))
+        }
+      })
+    }
     function resolveCandidates(roots: Root[], path: string) {
       const candidates: string[] = []
       const p = path.replace(/\/$/, '') || '/'
@@ -492,9 +544,9 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
     async function renderRoute() {
       const { path } = getCurrentRoute()
       const mdSrc = await loadMarkdown(cfg2.roots, path)
-      const html = md.render(mdSrc)
+      const html = renderLegacy(mdSrc)
       appEl.innerHTML = html
-      rewriteLinks(appEl)
+      rewriteLinksLegacy(appEl)
       const h1 = appEl.querySelector('h1')?.textContent?.trim()
       if (h1) document.title = `${h1} — OntoWave`
     }

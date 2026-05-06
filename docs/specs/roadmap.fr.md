@@ -64,9 +64,15 @@ Tout le reste doit être traité via des extensions (lazy-load), y compris les m
 
 ### §1 Invariant de taille
 
-`dist/ontowave.js` doit rester **strictement inférieur au seuil annoncé** pour l'itération en cours (minifié, avant gzip).
+`dist/ontowave.min.js` doit rester **strictement inférieur au seuil annoncé** pour l'itération en cours (minifié, avant gzip).
 
-Le seuil est ajustable pendant les premières itérations de refonte v2, mais :
+**Seuil actif : 200 KB** (cible finale v2.0 — alignée sur le premier split build)
+
+> Première itération v2 (issue #75) : noyau séparé des extensions lourdes.
+> Taille mesurée après split : **~149 KB** minifié.
+> Le seuil est aligné directement sur la cible finale car l'objectif est déjà atteint.
+
+Le seuil est vérifié automatiquement par `node tools/check-dist-size.mjs` (script CI bloquant).
 
 - la valeur active doit être documentée dans cette roadmap
 - le contrôle CI doit utiliser cette valeur comme gate bloquante

@@ -29,6 +29,22 @@ jobs:
         run: npm run test:ci
       - name: Build
         run: npm run build:package
+      - name: Vérifier la taille du noyau (gate CI — roadmap.fr.md §1)
+        run: node tools/check-dist-size.mjs
+      - name: Vérifier la présence des extensions
+        run: |
+          if [ -f dist/extensions/markdown.js ]; then
+            echo "✅ dist/extensions/markdown.js présent ($(du -h dist/extensions/markdown.js | cut -f1))"
+          else
+            echo "❌ dist/extensions/markdown.js absent"
+            exit 1
+          fi
+          if [ -f dist/extensions/mermaid.js ]; then
+            echo "✅ dist/extensions/mermaid.js présent ($(du -h dist/extensions/mermaid.js | cut -f1))"
+          else
+            echo "❌ dist/extensions/mermaid.js absent"
+            exit 1
+          fi
       - name: Install fonts for consistent rendering
         run: |
           sudo apt-get update

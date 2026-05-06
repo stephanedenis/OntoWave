@@ -42,12 +42,34 @@ export type GlossaryConfig = {
   ui?: GlossaryUiConfig
 }
 
+// --- Extension API (v2.0 modular architecture) ---
+
+export interface ContentRenderer {
+  /** Identifiant unique de l'extension */
+  readonly name: string
+  /** Extensions de fichier gérées, ex. ['.md', '.markdown'] */
+  readonly handles: string[]
+  /** Déclarations de sous-extensions requises */
+  readonly requires?: string[]
+  /** Retourne true si cette extension peut traiter l'URL donnée */
+  canRender(url: string, contentType?: string): boolean
+  /** Transforme le contenu source en HTML */
+  render(source: string, url: string): Promise<string>
+}
+
+export type ExtensionConfig = {
+  base?: string[]    // chargés avec le noyau
+  preload?: string[] // chargés juste après le premier rendu
+  lazy?: string[]    // chargés à la demande
+}
+
 export type AppConfig = {
   roots: Root[]
   engine?: 'legacy' | 'v2'
   i18n?: { default: string; supported: string[] }
   ui?: { header?: boolean; sidebar?: boolean; toc?: boolean; footer?: boolean; minimal?: boolean; menu?: boolean }
   glossary?: GlossaryConfig
+  extensions?: ExtensionConfig
 }
 
 export interface ConfigService {

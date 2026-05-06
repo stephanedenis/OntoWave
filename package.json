@@ -8,6 +8,7 @@
   "files": [
     "dist/ontowave.js",
     "dist/ontowave.min.js",
+    "dist/extensions",
     "README.md",
     "LICENSE"
   ],
@@ -44,7 +45,11 @@
     "noscript": "node tools/inject-noscript.mjs",
     "postbuild": "bash tools/restore-github-pages-files.sh && node tools/inject-noscript.mjs",
     "build:lib": "vite build --config vite.config.dist.ts",
-    "build:package": "npm run build:lib && node_modules/.bin/uglifyjs dist/ontowave.js -o dist/ontowave.min.js -c -m && cp dist/ontowave.min.js docs/ontowave.min.js",
+    "build:ext:markdown": "vite build --config vite.config.extensions.ts --mode markdown",
+    "build:ext:mermaid": "vite build --config vite.config.extensions.ts --mode mermaid",
+    "build:extensions": "npm run build:ext:markdown && npm run build:ext:mermaid",
+    "build:package": "npm run build:lib && npm run build:extensions && node_modules/.bin/uglifyjs dist/ontowave.js -o dist/ontowave.min.js -c -m && cp dist/ontowave.min.js docs/ontowave.min.js && rm -rf docs/extensions && cp -r dist/extensions docs/extensions",
+    "check:dist-size": "node tools/check-dist-size.mjs",
     "build:standalone": "npm run build && node tools/build-standalone.mjs",
     "serve:docs": "npx http-server ./docs -p 8080 -c-1 --cors",
     "preview": "vite preview",
