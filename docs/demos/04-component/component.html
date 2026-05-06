@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoWave — Démo Mode Composant</title>
+    <style>
+        /* Styles de la page hôte — simulant une application existante */
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+            background: #f0f4f8;
+            color: #1a1a1a;
+        }
+        .host-header {
+            background: #1e293b;
+            color: #fff;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .host-header h1 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        .host-badge {
+            background: #3b82f6;
+            color: #fff;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+        .host-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            min-height: calc(100vh - 56px);
+        }
+        .host-sidebar {
+            background: #fff;
+            border-right: 1px solid #e2e8f0;
+            padding: 1.5rem 1rem;
+        }
+        .host-sidebar h2 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #64748b;
+            margin: 0 0 0.75rem 0;
+        }
+        .host-sidebar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .host-sidebar li {
+            padding: 0.35rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: #374151;
+        }
+        .host-sidebar li:hover {
+            background: #f1f5f9;
+        }
+        .host-sidebar li.active {
+            background: #eff6ff;
+            color: #2563eb;
+            font-weight: 500;
+        }
+        .host-main {
+            padding: 2rem;
+        }
+        .host-main h2 {
+            font-size: 1rem;
+            color: #64748b;
+            margin: 0 0 1rem 0;
+            font-weight: 500;
+        }
+        /* Conteneur OntoWave dans l'app hôte */
+        #ow-viewer {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            min-height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+        .host-footer {
+            border-top: 1px solid #e2e8f0;
+            padding: 0.75rem 2rem;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            background: #fff;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+    <script>
+        // Configuration OntoWave en mode composant
+        // Le bundle détecte `container` et crée le DOM dans #ow-viewer
+        window.__ONTOWAVE_BUNDLE__ = {
+            '/config.json': JSON.stringify({
+                container: '#ow-viewer',
+                roots: [
+                    { base: 'fr', root: '/demos/04-component' },
+                    { base: 'en', root: '/demos/04-component' }
+                ],
+                i18n: { default: 'fr', supported: ['fr', 'en'] }
+            }),
+            '/nav.yml': '[]',
+            '/sitemap.json': '{"items":[]}',
+            '/search-index.json': '[]'
+        };
+        if (!location.hash || location.hash === '#/' || location.hash === '#') {
+            location.hash = '#fr/component';
+        }
+    </script>
+</head>
+<body>
+    <!-- Interface de l'application hôte (simulée) -->
+    <header class="host-header">
+        <h1>🏗️ Application Hôte</h1>
+        <span class="host-badge">Simulation</span>
+        <span style="margin-left:auto; font-size:0.85rem; opacity:0.7">OntoWave intégré en mode composant</span>
+    </header>
+    <div class="host-layout">
+        <aside class="host-sidebar">
+            <h2>Navigation hôte</h2>
+            <ul>
+                <li>📊 Tableau de bord</li>
+                <li class="active">📖 Documentation</li>
+                <li>⚙️ Paramètres</li>
+                <li>👤 Profil</li>
+            </ul>
+        </aside>
+        <main class="host-main">
+            <h2>📖 Documentation intégrée via OntoWave</h2>
+            <!-- Zone OntoWave : le bundle va créer tout le DOM ici -->
+            <div id="ow-viewer"></div>
+        </main>
+    </div>
+    <footer class="host-footer">
+        <span>Application Hôte v1.0</span>
+        <span>OntoWave mode composant — aucun conflit DOM hors <code>#ow-viewer</code></span>
+    </footer>
+
+    <!-- Bundle OntoWave : détecte `container` dans la config et s'insère dans #ow-viewer -->
+    <script src="/ontowave.min.js"></script>
+
+<!-- noscript:seo:start -->
+<noscript>
+  <div lang="fr">
+<h1>Mode composant — createApp({ container })</h1>
+<p>OntoWave peut s'intégrer dans une application hôte existante sans prendre possession de la page entière.</p>
+  </div>
+  <div lang="en">
+<h1>Component Mode — createApp({ container })</h1>
+<p>OntoWave can integrate into an existing host application without taking over the entire page.</p>
+  </div>
+</noscript>
+<!-- noscript:seo:end -->
+</body>
+</html>

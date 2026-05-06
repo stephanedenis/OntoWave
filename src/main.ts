@@ -1,4 +1,4 @@
-import { createApp } from './app'
+import { createApp as _createInternalApp } from './app'
 import { browserConfig } from './adapters/browser/config'
 import { browserContent } from './adapters/browser/content'
 import { browserRouter } from './adapters/browser/router'
@@ -46,31 +46,17 @@ body{margin:0;padding:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'D
 #ontowave-floating-menu.expanded .ontowave-menu-option,
 #ontowave-floating-menu.expanded .ontowave-lang-btn{display:inline-flex;align-items:center}
 #ontowave-floating-menu:not(.expanded) #ow-ux-toolbar{display:none!important}
+.ow-warn-badge{font-size:0.55em;vertical-align:super;line-height:1;display:none}
+#ontowave-floating-menu.has-warnings:not(.expanded) .ow-warn-badge{display:inline}
+.ow-warn-detail{font-size:0.82rem;color:#d97706;display:none;white-space:nowrap}
+#ontowave-floating-menu.has-warnings.expanded .ow-warn-detail{display:inline-flex;align-items:center}
 `
 
 /**
- * Bootstrappe le DOM quand la page est quasi-vide (pas de #app fourni par l'utilisateur).
- * Crée #app, le menu flottant icône-vague et injecte les styles de base.
+ * Crée le menu flottant OntoWave et l'attache à parentEl.
+ * Utilisé en mode page complète (parentEl = document.body) et en mode composant (parentEl = container).
  */
-function bootstrapDom(cfg: Record<string, unknown>): void {
-  if (document.getElementById('app')) return  // page avec HTML custom → rien à faire
-
-  if (!document.getElementById('ow-bootstrap-styles')) {
-    const style = document.createElement('style')
-    style.id = 'ow-bootstrap-styles'
-    style.textContent = BOOTSTRAP_CSS
-    document.head.appendChild(style)
-  }
-
-  const wrapper = document.createElement('div')
-  wrapper.id = 'ow-content'
-  const app = document.createElement('div')
-  app.id = 'app'
-  wrapper.appendChild(app)
-  document.body.appendChild(wrapper)
-
-  if (document.getElementById('ontowave-floating-menu')) return
-
+function createFloatingMenu(parentEl: HTMLElement, cfg: Record<string, unknown>): HTMLElement {
   const i18n = cfg.i18n as Record<string, unknown> | undefined
   const roots = (cfg.roots as Array<{ base: string; root: string }>) || []
   const supportedLanguages = ((i18n?.supported as string[] | undefined) || roots.map(root => root.base))
@@ -87,15 +73,20 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
 
   const floatingMenu = document.createElement('div')
   floatingMenu.id = 'ontowave-floating-menu'
-  document.body.appendChild(floatingMenu)
+  parentEl.appendChild(floatingMenu)
 
-  // Icon
+  // Icon avec badge avertissement
   const icon = document.createElement('span')
   icon.className = 'ontowave-menu-icon'
   icon.setAttribute('role', 'button')
   icon.setAttribute('aria-label', 'Menu OntoWave')
   icon.setAttribute('aria-expanded', 'false')
+  const warnBadge = document.createElement('span')
+  warnBadge.className = 'ow-warn-badge'
+  warnBadge.setAttribute('aria-label', 'avertissement')
+  warnBadge.textContent = '⚠️'
   icon.textContent = '🌊'
+  icon.appendChild(warnBadge)
   floatingMenu.appendChild(icon)
 
   // Brand
@@ -154,6 +145,11 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
     window.addEventListener('hashchange', updateLangActive)
   }
 
+  // Détail avertissement (état étendu)
+  const warnDetail = document.createElement('span')
+  warnDetail.className = 'ow-warn-detail'
+  floatingMenu.appendChild(warnDetail)
+
   // Toggle expand/collapse on icon click
   icon.addEventListener('click', (e) => {
     e.stopPropagation()
@@ -204,13 +200,226 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
     floatingMenu.style.top = y + 'px'
   }, { passive: true })
   document.addEventListener('touchend', () => { dragging = false })
+
+  return floatingMenu
+}
+
+/**
+ * Bootstrappe le DOM quand la page est quasi-vide (pas de #app fourni par l'utilisateur).
+ * Crée #app, le menu flottant icône-vague et injecte les styles de base.
+ */
+function bootstrapDom(cfg: Record<string, unknown>): void {
+  if (document.getElementById('app')) return  // page avec HTML custom → rien à faire
+
+  if (!document.getElementById('ow-bootstrap-styles')) {
+    const style = document.createElement('style')
+    style.id = 'ow-bootstrap-styles'
+    style.textContent = BOOTSTRAP_CSS
+    document.head.appendChild(style)
+  }
+
+  const wrapper = document.createElement('div')
+  wrapper.id = 'ow-content'
+  const app = document.createElement('div')
+  app.id = 'app'
+  wrapper.appendChild(app)
+  document.body.appendChild(wrapper)
+
+  if (document.getElementById('ontowave-floating-menu')) return
+
+  createFloatingMenu(document.body, cfg)
+}
+
+/**
+ * Bootstrappe le DOM en mode composant : crée le contenu à l'intérieur du conteneur cible.
+ * Retourne l'élément app créé dans le conteneur.
+ */
+function bootstrapContainer(containerEl: HTMLElement, cfg: Record<string, unknown>): HTMLElement {
+  if (!document.getElementById('ow-bootstrap-styles')) {
+    const style = document.createElement('style')
+    style.id = 'ow-bootstrap-styles'
+    style.textContent = BOOTSTRAP_CSS
+    document.head.appendChild(style)
+  }
+
+  const wrapper = document.createElement('div')
+  wrapper.className = 'ow-content'
+  const app = document.createElement('div')
+  app.className = 'ow-app'
+  // Identifiant unique pour éviter les conflits si plusieurs instances conteneur coexistent
+  const uid = `ow-app-${Date.now()}`
+  app.id = uid
+  app.setAttribute('data-ow-container', 'true')
+  wrapper.appendChild(app)
+  containerEl.appendChild(wrapper)
+
+  const ui = cfg.ui as Record<string, unknown> | undefined
+  if (ui?.menu !== false) {
+    if (!containerEl.querySelector('#ontowave-floating-menu')) {
+      createFloatingMenu(containerEl, cfg)
+    }
+  }
+
+  return app
+}
+
+/**
+ * Crée une instance d'application OntoWave en mode composant dans un conteneur cible.
+ * Retourne un objet { start(), stop() } pour contrôler le cycle de vie.
+ *
+ * @example
+ * // Via le bundle CDN
+ * const app = window.OntoWave.createApp({ container: '#viewer', roots: [{ base: '/', root: '/docs' }] })
+ * app.start()
+ *
+ * @example
+ * // Via window.ontoWaveConfig (déclaratif)
+ * window.ontoWaveConfig = { container: '#viewer', roots: [...] }
+ */
+export function createApp(opts: {
+  container: string | HTMLElement
+  roots?: Array<{ base: string; root: string }>
+  i18n?: { default: string; supported: string[] }
+  ui?: { menu?: boolean; footer?: boolean; header?: boolean; sidebar?: boolean; toc?: boolean; minimal?: boolean }
+}) {
+  const cfg: Record<string, unknown> = {
+    roots: opts.roots || [],
+    i18n: opts.i18n,
+    ui: opts.ui || {},
+  }
+
+  return {
+    async start() {
+      // Résoudre l'élément conteneur
+      let containerEl: HTMLElement | null = null
+      if (typeof opts.container === 'string') {
+        containerEl = document.querySelector<HTMLElement>(opts.container)
+      } else if (opts.container instanceof HTMLElement) {
+        containerEl = opts.container
+      }
+      if (!containerEl) {
+        console.error(`[OntoWave] createApp: conteneur introuvable: ${opts.container}`)
+        return
+      }
+      await initContainerMode(containerEl, cfg)
+    },
+    stop() {
+      // Nettoyage basique : vider le contenu du conteneur et retirer le menu
+      try {
+        let containerEl: HTMLElement | null = null
+        if (typeof opts.container === 'string') {
+          containerEl = document.querySelector<HTMLElement>(opts.container)
+        } else if (opts.container instanceof HTMLElement) {
+          containerEl = opts.container
+        }
+        if (containerEl) {
+          const menu = containerEl.querySelector('#ontowave-floating-menu')
+          menu?.remove()
+          const wrap = containerEl.querySelector('.ow-content')
+          wrap?.remove()
+        }
+      } catch {}
+    }
+  }
+}
+
+/**
+ * Initialise OntoWave en mode composant dans un conteneur existant.
+ * Crée le DOM dans le conteneur, démarre l'application et rendu le contenu.
+ */
+async function initContainerMode(containerEl: HTMLElement, cfg: Record<string, unknown>): Promise<void> {
+  const appEl = bootstrapContainer(containerEl, cfg)
+  const roots = (cfg.roots as Array<{ base: string; root: string }>) || []
+
+  // i18n : rediriger vers la langue préférée si à la racine
+  try {
+    if (location.hash === '' || location.hash === '#/' || location.hash === '#') {
+      const i18n = cfg.i18n as Record<string, unknown> | undefined
+      const supportedLanguages = ((i18n?.supported as string[] | undefined) || roots.map(root => root.base))
+        .map(base => String(base || '').replace(/^\/+|\/+$/g, ''))
+        .filter(base => base && base !== '/')
+      const fallbackLanguage = (i18n?.default as string | undefined)
+        || (roots[0]?.base && roots[0].base !== '/' ? roots[0].base : null)
+        || null
+      const preferredLanguage = pickPreferredLanguage(
+        typeof navigator !== 'undefined' ? navigator.languages : undefined,
+        supportedLanguages,
+        fallbackLanguage,
+      )
+      if (preferredLanguage) {
+        location.hash = `#${preferredLanguage}/index`
+      } else {
+        location.hash = '#/index'
+      }
+    }
+  } catch {}
+
+  // Adaptateur de vue scopé au conteneur (pas de getElementById global)
+  const scopedView = {
+    setHtml(html: string) { appEl.innerHTML = html },
+    setTitle(title: string) { document.title = title },
+  }
+
+  // Adaptateur de config scopé aux options fournies
+  const scopedConfig = {
+    async load() {
+      return {
+        roots: roots,
+        i18n: cfg.i18n as { default: string; supported: string[] } | undefined,
+        ui: cfg.ui as { header?: boolean; sidebar?: boolean; toc?: boolean; footer?: boolean; minimal?: boolean; menu?: boolean } | undefined,
+      }
+    }
+  }
+
+  const app = _createInternalApp({
+    config: scopedConfig,
+    content: browserContent,
+    router: browserRouter,
+    view: scopedView,
+    md: createMdV2({ light: false }),
+    enhance: {
+      afterRender: async (html: string, _route: string) => {
+        await enhancePage(appEl, html)
+        // Prev/Next footer optionnel
+        const ui = cfg.ui as Record<string, unknown> | undefined
+        if (ui?.footer !== false && !ui?.minimal) {
+          const pn = await buildPrevNext(location.hash || '#/')
+          if (pn.prev || pn.next) {
+            const footer = document.createElement('div')
+            footer.style.marginTop = '2rem'
+            footer.innerHTML = `
+              <hr/>
+              <div style="display:flex; justify-content:space-between">
+                <span>${pn.prev ? `<a href="${pn.prev}">← Précédent</a>` : ''}</span>
+                <span>${pn.next ? `<a href="${pn.next}">Suivant →</a>` : ''}</span>
+              </div>`
+            appEl.appendChild(footer)
+          }
+        }
+      }
+    }
+  })
+  await app.start()
 }
 
 ;(async () => {
   // Toggle engine via config.json; fallback v2 par défaut si absent
   const cfg = primeInlineConfigBundle() || getJsonFromBundle('/config.json') || {}
+  const rawCfg = cfg as Record<string, unknown>
+
+  // Mode composant : si container est spécifié dans la config, déléguer à initContainerMode
+  const containerSpec = rawCfg.container as string | undefined
+  if (containerSpec) {
+    const containerEl = document.querySelector<HTMLElement>(containerSpec)
+    if (containerEl) {
+      await initContainerMode(containerEl, rawCfg)
+      return
+    }
+  }
+
+  // Mode page complète (comportement existant)
   // Bootstrapper le DOM si la page est quasi-vide (pas de #app fourni)
-  bootstrapDom(cfg as Record<string, unknown>)
+  bootstrapDom(rawCfg)
   const engine = cfg.engine ?? 'v2'
 
   // UI options
@@ -256,7 +465,7 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   const uxOptions = typeof cfg.ux === 'object' ? cfg.ux : {}
   const ux = cfg.ux !== false ? initUx(uxOptions) : null
   if (engine === 'v2') {
-  const app = createApp({
+  const app = _createInternalApp({
       config: browserConfig,
       content: browserContent,
       router: browserRouter,
@@ -453,6 +662,12 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
         const hasSitemap = await check('/sitemap.json')
         const needs = !hasNav || (!hasSearchIdx && !hasSitemap)
         if (needs) {
+          const floatingMenuEl = document.getElementById('ontowave-floating-menu')
+          if (floatingMenuEl) {
+            floatingMenuEl.classList.add('has-warnings')
+            const warnDetailEl = floatingMenuEl.querySelector('.ow-warn-detail')
+            if (warnDetailEl) warnDetailEl.textContent = '⚠️ Configuration requise'
+          }
           const a = document.querySelector('#ontowave-floating-menu a[href="#/config"]') as HTMLAnchorElement | null
           if (a && !(a.textContent || '').includes('⚠️')) a.textContent = (a.textContent || 'Configuration') + ' ⚠️'
         }

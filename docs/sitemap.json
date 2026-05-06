@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-06T00:28:19.736Z",
-  "count": 76,
+  "generatedAt": "2026-05-06T20:34:38.988Z",
+  "count": 84,
   "i18n": {
     "default": "fr",
     "supported": [
@@ -166,6 +166,18 @@
       "base": "en"
     },
     {
+      "path": "/demos/04-component/component.en.md",
+      "route": "#/en/demos/04-component/component",
+      "title": "Component Mode — createApp({ container })",
+      "base": "fr"
+    },
+    {
+      "path": "/demos/04-component/component.en.md",
+      "route": "#/en/demos/04-component/component",
+      "title": "Component Mode — createApp({ container })",
+      "base": "en"
+    },
+    {
       "path": "/demos/index.en.md",
       "route": "#/en/demos/index",
       "title": "OntoWave Demo Gallery",
@@ -223,6 +235,18 @@
       "path": "/specs/interface.en.md",
       "route": "#/en/specs/interface",
       "title": "Specifications — OntoWave Bootstrap Interface",
+      "base": "en"
+    },
+    {
+      "path": "/specs/programmation-extensions.en.md",
+      "route": "#/en/specs/programmation-extensions",
+      "title": "Guide — OntoWave Programming & Extensions",
+      "base": "fr"
+    },
+    {
+      "path": "/specs/programmation-extensions.en.md",
+      "route": "#/en/specs/programmation-extensions",
+      "title": "Guide — OntoWave Programming & Extensions",
       "base": "en"
     },
     {
@@ -394,6 +418,18 @@
       "base": "en"
     },
     {
+      "path": "/demos/04-component/component.fr.md",
+      "route": "#/fr/demos/04-component/component",
+      "title": "Mode composant — createApp({ container })",
+      "base": "fr"
+    },
+    {
+      "path": "/demos/04-component/component.fr.md",
+      "route": "#/fr/demos/04-component/component",
+      "title": "Mode composant — createApp({ container })",
+      "base": "en"
+    },
+    {
       "path": "/demos/index.fr.md",
       "route": "#/fr/demos/index",
       "title": "Galerie de démos OntoWave",
@@ -451,6 +487,18 @@
       "path": "/specs/interface.fr.md",
       "route": "#/fr/specs/interface",
       "title": "Spécifications — Interface Bootstrap OntoWave",
+      "base": "en"
+    },
+    {
+      "path": "/specs/programmation-extensions.fr.md",
+      "route": "#/fr/specs/programmation-extensions",
+      "title": "Guide — Programmation & Extensions OntoWave",
+      "base": "fr"
+    },
+    {
+      "path": "/specs/programmation-extensions.fr.md",
+      "route": "#/fr/specs/programmation-extensions",
+      "title": "Guide — Programmation & Extensions OntoWave",
       "base": "en"
     },
     {

@@ -45,6 +45,7 @@ export type GlossaryConfig = {
 export type AppConfig = {
   roots: Root[]
   engine?: 'legacy' | 'v2'
+  container?: string
   i18n?: { default: string; supported: string[] }
   ui?: { header?: boolean; sidebar?: boolean; toc?: boolean; footer?: boolean; minimal?: boolean; menu?: boolean }
   glossary?: GlossaryConfig
