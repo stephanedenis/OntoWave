@@ -9,7 +9,9 @@ import { buildSidebar, buildPrevNext } from './adapters/browser/navigation'
 import { createSearch } from './adapters/browser/search'
 import { renderConfigPage } from './adapters/browser/configPage'
 import { getJsonFromBundle, getTextFromBundle } from './adapters/browser/bundle'
+import { primeInlineConfigBundle } from './adapters/browser/config'
 import { initUx } from './adapters/browser/ux'
+import { pickPreferredLanguage } from './core/logic'
 
 // CSS injecté quand la bibliothèque bootstrappe elle-même le DOM (page quasi-vide)
 const BOOTSTRAP_CSS = `
@@ -71,10 +73,17 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
 
   const i18n = cfg.i18n as Record<string, unknown> | undefined
   const roots = (cfg.roots as Array<{ base: string; root: string }>) || []
-  const defaultLang = (i18n?.default as string | undefined)
+  const supportedLanguages = ((i18n?.supported as string[] | undefined) || roots.map(root => root.base))
+    .map(base => String(base || '').replace(/^\/+|\/+$/g, ''))
+    .filter(base => base && base !== '/')
+  const fallbackLanguage = (i18n?.default as string | undefined)
     || (roots[0]?.base && roots[0].base !== '/' ? roots[0].base : null)
     || null
-  const homeHref = defaultLang ? `#${defaultLang}/index` : '#/index'
+  const preferredLanguage = pickPreferredLanguage(
+    typeof navigator !== 'undefined' ? navigator.languages : undefined,
+    supportedLanguages,
+    fallbackLanguage,
+  )
 
   const floatingMenu = document.createElement('div')
   floatingMenu.id = 'ontowave-floating-menu'
@@ -95,9 +104,7 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   menuBrand.href = 'https://ontowave.org'
   menuBrand.target = '_blank'
   menuBrand.rel = 'noopener'
-  const brandName = document.createElement('span')
-  brandName.textContent = 'OntoWave.org'
-  menuBrand.appendChild(brandName)
+  menuBrand.textContent = 'OntoWave.org'
   const versionSpan = document.createElement('span')
   versionSpan.className = 'ontowave-menu-version'
   versionSpan.textContent = `v${__APP_VERSION__}`
@@ -107,18 +114,28 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   // Home option
   const homeBtn = document.createElement('a')
   homeBtn.className = 'ontowave-menu-option'
-  homeBtn.href = homeHref
   homeBtn.textContent = '🏠 Accueil'
   floatingMenu.appendChild(homeBtn)
 
   // Language buttons (dynamically from cfg.roots)
+  const getActiveLanguage = (): string | null => {
+    const path = (location.hash || '').replace(/^#\/?/, '')
+    const firstSegment = path.split('/')[0] || ''
+    return supportedLanguages.includes(firstSegment) ? firstSegment : preferredLanguage
+  }
+  const updateHomeHref = () => {
+    const activeLanguage = getActiveLanguage()
+    homeBtn.href = activeLanguage ? `#${activeLanguage}/index` : '#/index'
+  }
   const updateLangActive = () => {
     const hash = location.hash || ''
+    updateHomeHref()
     floatingMenu.querySelectorAll<HTMLButtonElement>('.ontowave-lang-btn').forEach(btn => {
       const base = btn.dataset.lang || ''
       btn.classList.toggle('active', hash.startsWith(`#${base}/`) || hash.startsWith(`#/${base}/`))
     })
   }
+  updateHomeHref()
   if (roots.length > 1) {
     for (const root of roots) {
       if (!root.base || root.base === '/') continue
@@ -190,16 +207,8 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
 }
 
 ;(async () => {
-  // Spec §2 : window.ontoWaveConfig est l'API d'injection recommandée.
-  // Convertir en __ONTOWAVE_BUNDLE__['/config.json'] pour que getJsonFromBundle() le trouve.
-  try {
-    const _owc = (window as any).ontoWaveConfig
-    if (_owc && typeof _owc === 'object' && !window.__ONTOWAVE_BUNDLE__) {
-      window.__ONTOWAVE_BUNDLE__ = { '/config.json': JSON.stringify(_owc) }
-    }
-  } catch {}
   // Toggle engine via config.json; fallback v2 par défaut si absent
-  const cfg = getJsonFromBundle('/config.json') || {}
+  const cfg = primeInlineConfigBundle() || getJsonFromBundle('/config.json') || {}
   // Bootstrapper le DOM si la page est quasi-vide (pas de #app fourni)
   bootstrapDom(cfg as Record<string, unknown>)
   const engine = cfg.engine ?? 'v2'
@@ -224,11 +233,18 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   // i18n: détecter la langue préférée et rediriger vers la base correspondante si on est à la racine
   try {
     if (location.hash === '' || location.hash === '#/' || location.hash === '#') {
-      // Construire la redirection initiale depuis i18n.default ou le premier root
-      const defaultLang = cfg.i18n?.default
+      const supportedLanguages = ((cfg.i18n?.supported as string[] | undefined) || (cfg.roots || []).map((root: any) => root.base))
+        .map((base: string) => String(base || '').replace(/^\/+|\/+$/g, ''))
+        .filter((base: string) => base && base !== '/')
+      const fallbackLanguage = cfg.i18n?.default
         || (cfg.roots?.[0]?.base && cfg.roots[0].base !== '/' ? cfg.roots[0].base : null)
         || null
-      location.hash = defaultLang ? `#${defaultLang}/index` : '#/index'
+      const preferredLanguage = pickPreferredLanguage(
+        typeof navigator !== 'undefined' ? navigator.languages : undefined,
+        supportedLanguages,
+        fallbackLanguage,
+      )
+      location.hash = preferredLanguage ? `#${preferredLanguage}/index` : '#/index'
       // Pas de return : l'app continue de s'initialiser avec le nouveau hash
     }
   } catch {}

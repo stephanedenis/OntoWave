@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { resolveCandidates, normalizePath, rewriteLinksHtml, resolvePumlCandidates } from '../src/core/logic'
+import { resolveCandidates, normalizePath, rewriteLinksHtml, resolvePumlCandidates, pickPreferredLanguage } from '../src/core/logic'
 
 describe('core logic', () => {
   it('normalizes path', () => {
@@ -92,5 +92,11 @@ describe('core logic', () => {
     const roots = [{ base: 'en', root: '/content/en' }]
     const cands = resolvePumlCandidates(roots as any, '/other/arch.puml')
     expect(cands).toContain('/other/arch.puml')
+  })
+  it('picks the navigator preferred language when supported', () => {
+    expect(pickPreferredLanguage(['en-US', 'fr-FR'], ['fr', 'en'], 'fr')).toBe('en')
+  })
+  it('falls back to the configured default language when navigator does not match', () => {
+    expect(pickPreferredLanguage(['de-DE'], ['fr', 'en'], 'fr')).toBe('fr')
   })
 })

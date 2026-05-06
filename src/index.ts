@@ -15,9 +15,11 @@ import { createMd as createMdV2 } from './adapters/browser/md'
 import { enhancePage } from './adapters/browser/enhance'
 import { buildSidebar, buildPrevNext } from './adapters/browser/navigation'
 import { getJsonFromBundle } from './adapters/browser/bundle'
+import { primeInlineConfigBundle } from './adapters/browser/config'
 import { initUx } from './adapters/browser/ux'
 import { createPluginManager } from './core/plugins'
 import type { OntoWavePlugin, PluginContext, PluginManager } from './core/types'
+import { pickPreferredLanguage } from './core/logic'
 
 export { createPluginManager }
 export type { OntoWavePlugin, PluginContext, PluginManager }
@@ -30,7 +32,7 @@ export async function initOntoWave() {
   console.log('[OntoWave] initOntoWave() called')
   
   // Toggle engine via config.json; fallback v2 par défaut si absent
-  const cfg = getJsonFromBundle('/config.json') || { engine: 'v2' }
+  const cfg = primeInlineConfigBundle() || getJsonFromBundle('/config.json') || { engine: 'v2' }
   const engine = cfg.engine ?? 'v2'
   console.log('[OntoWave] Engine:', engine, 'Config:', cfg)
   
@@ -55,10 +57,18 @@ export async function initOntoWave() {
   // i18n: détecter la langue préférée et rediriger vers la base correspondante si on est à la racine
   try {
     if (location.hash === '' || location.hash === '#/' || location.hash === '#') {
-      const defaultLang = cfg.i18n?.default
+      const supportedLanguages = ((cfg.i18n?.supported as string[] | undefined) || (cfg.roots || []).map((root: any) => root.base))
+        .map((base: string) => String(base || '').replace(/^\/+|\/+$/g, ''))
+        .filter((base: string) => base && base !== '/')
+      const fallbackLanguage = cfg.i18n?.default
         || (cfg.roots?.[0]?.base && cfg.roots[0].base !== '/' ? cfg.roots[0].base : null)
         || null
-      location.hash = defaultLang ? `#${defaultLang}/index` : '#/index'
+      const preferredLanguage = pickPreferredLanguage(
+        typeof navigator !== 'undefined' ? navigator.languages : undefined,
+        supportedLanguages,
+        fallbackLanguage,
+      )
+      location.hash = preferredLanguage ? `#${preferredLanguage}/index` : '#/index'
       // Pas de return : l'app continue de s'initialiser avec le nouveau hash
     }
   } catch {}

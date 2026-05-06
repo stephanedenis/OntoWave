@@ -19,7 +19,13 @@ export function createSearch() {
   }
 
   function routeFromPath(mdPath: string, base?: string): string {
-    const p = mdPath.replace(/\.md$/i, '')
+    const publicPath = mdPath.replace(/^\/+/, '').replace(/^docs\//, '')
+    const suffixMatch = /^(.*)\.([a-z]{2})\.md$/i.exec(publicPath)
+    if (suffixMatch) {
+      const [, routePath, lang] = suffixMatch
+      return '#/' + lang.toLowerCase() + '/' + routePath.replace(/^\/+/, '')
+    }
+    const p = publicPath.replace(/\.md$/i, '')
     if (base) return '#/' + base.replace(/^\/+|\/+$/g, '') + '/' + p.replace(/^\/+/, '')
     return '#/' + p.replace(/^\/+/, '')
   }

@@ -19,6 +19,29 @@ export function resolvePumlCandidates(roots: Root[], path: string): string[] {
   return [...new Set(candidates)]
 }
 
+export function pickPreferredLanguage(
+  preferredLanguages: readonly string[] | undefined,
+  supportedLanguages: readonly string[] | undefined,
+  fallbackLanguage: string | null = null,
+): string | null {
+  const supported = (supportedLanguages || [])
+    .map(lang => String(lang || '').trim().toLowerCase())
+    .filter(Boolean)
+  if (supported.length === 0) return fallbackLanguage
+
+  for (const preferred of preferredLanguages || []) {
+    const normalized = String(preferred || '').trim().toLowerCase()
+    if (!normalized) continue
+    if (supported.includes(normalized)) return normalized
+    const primary = normalized.split('-')[0]
+    if (primary && supported.includes(primary)) return primary
+  }
+
+  return fallbackLanguage && supported.includes(fallbackLanguage.toLowerCase())
+    ? fallbackLanguage.toLowerCase()
+    : supported[0]
+}
+
 export function normalizePath(path: string): string {
   const p = path.replace(/\/+/g, '/').replace(/\/$/, '')
   return p === '' ? '/' : (p.startsWith('/') ? p : '/' + p)

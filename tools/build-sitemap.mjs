@@ -49,9 +49,10 @@ async function walk(dir, base = dir, acc = []) {
     if (e.isDirectory()) await walk(p, base, acc);
     else if (e.isFile() && e.name.toLowerCase().endsWith('.md')) {
       const rel = path.relative(base, p);
+      const publicPath = '/' + path.relative('docs', p).replace(/\\/g, '/');
       const route = '#/' + normalizeRelToRoute(rel);
       const title = await extractTitle(p);
-      acc.push({ path: p, route, title });
+      acc.push({ path: publicPath, route, title });
     }
   }
   return acc;
@@ -67,7 +68,7 @@ async function main() {
       if (!exist) continue;
       const listed = await walk(dir);
       const byKey = new Map();
-      const push = (it) => { const k = `${it.route}@@${it.path}`; if (!byKey.has(k)) byKey.set(k, it) };
+      const push = (it) => { const k = it.route; if (!byKey.has(k)) byKey.set(k, it) };
       for (const it of listed) {
         // If route already starts with a language segment (from suffix), keep as is; else, prefix base as fallback
         const plain = it.route.replace(/^#\//, '');

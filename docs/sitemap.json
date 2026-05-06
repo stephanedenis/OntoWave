@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-05T23:42:54.598Z",
+  "generatedAt": "2026-05-06T00:28:19.736Z",
   "count": 76,
   "i18n": {
     "default": "fr",
@@ -10,457 +10,457 @@
   },
   "items": [
     {
-      "path": "docs/demos/01-base/markdown.en.md",
+      "path": "/demos/01-base/markdown.en.md",
       "route": "#/en/demos/01-base/markdown",
       "title": "Markdown Features",
       "base": "fr"
     },
     {
-      "path": "docs/demos/01-base/markdown.en.md",
+      "path": "/demos/01-base/markdown.en.md",
       "route": "#/en/demos/01-base/markdown",
       "title": "Markdown Features",
       "base": "en"
     },
     {
-      "path": "docs/demos/01-base/mermaid.en.md",
+      "path": "/demos/01-base/mermaid.en.md",
       "route": "#/en/demos/01-base/mermaid",
       "title": "Mermaid Diagrams",
       "base": "fr"
     },
     {
-      "path": "docs/demos/01-base/mermaid.en.md",
+      "path": "/demos/01-base/mermaid.en.md",
       "route": "#/en/demos/01-base/mermaid",
       "title": "Mermaid Diagrams",
       "base": "en"
     },
     {
-      "path": "docs/demos/01-base/plantuml.en.md",
+      "path": "/demos/01-base/plantuml.en.md",
       "route": "#/en/demos/01-base/plantuml",
       "title": "PlantUML Diagrams",
       "base": "fr"
     },
     {
-      "path": "docs/demos/01-base/plantuml.en.md",
+      "path": "/demos/01-base/plantuml.en.md",
       "route": "#/en/demos/01-base/plantuml",
       "title": "PlantUML Diagrams",
       "base": "en"
     },
     {
-      "path": "docs/demos/01-base/puml-navigation.en.md",
+      "path": "/demos/01-base/puml-navigation.en.md",
       "route": "#/en/demos/01-base/puml-navigation",
       "title": "Navigation to .puml files",
       "base": "fr"
     },
     {
-      "path": "docs/demos/01-base/puml-navigation.en.md",
+      "path": "/demos/01-base/puml-navigation.en.md",
       "route": "#/en/demos/01-base/puml-navigation",
       "title": "Navigation to .puml files",
       "base": "en"
     },
     {
-      "path": "docs/demos/01-base/routing.en.md",
+      "path": "/demos/01-base/routing.en.md",
       "route": "#/en/demos/01-base/routing",
       "title": "Hash URL Routing",
       "base": "fr"
     },
     {
-      "path": "docs/demos/01-base/routing.en.md",
+      "path": "/demos/01-base/routing.en.md",
       "route": "#/en/demos/01-base/routing",
       "title": "Hash URL Routing",
       "base": "en"
     },
     {
-      "path": "docs/demos/02-config/i18n.en.md",
+      "path": "/demos/02-config/i18n.en.md",
       "route": "#/en/demos/02-config/i18n",
       "title": "Internationalisation (i18n)",
       "base": "fr"
     },
     {
-      "path": "docs/demos/02-config/i18n.en.md",
+      "path": "/demos/02-config/i18n.en.md",
       "route": "#/en/demos/02-config/i18n",
       "title": "Internationalisation (i18n)",
       "base": "en"
     },
     {
-      "path": "docs/demos/02-config/ui-custom.en.md",
+      "path": "/demos/02-config/ui-custom.en.md",
       "route": "#/en/demos/02-config/ui-custom",
       "title": "Custom UI",
       "base": "fr"
     },
     {
-      "path": "docs/demos/02-config/ui-custom.en.md",
+      "path": "/demos/02-config/ui-custom.en.md",
       "route": "#/en/demos/02-config/ui-custom",
       "title": "Custom UI",
       "base": "en"
     },
     {
-      "path": "docs/demos/02-config/view-modes.en.md",
+      "path": "/demos/02-config/view-modes.en.md",
       "route": "#/en/demos/02-config/view-modes",
       "title": "View Modes",
       "base": "fr"
     },
     {
-      "path": "docs/demos/02-config/view-modes.en.md",
+      "path": "/demos/02-config/view-modes.en.md",
       "route": "#/en/demos/02-config/view-modes",
       "title": "View Modes",
       "base": "en"
     },
     {
-      "path": "docs/demos/03-glossary/glossary.en.md",
+      "path": "/demos/03-glossary/glossary.en.md",
       "route": "#/en/demos/03-glossary/glossary",
       "title": "Glossary — Dictionary with dotted underline and sidebar tooltip",
       "base": "fr"
     },
     {
-      "path": "docs/demos/03-glossary/glossary.en.md",
+      "path": "/demos/03-glossary/glossary.en.md",
       "route": "#/en/demos/03-glossary/glossary",
       "title": "Glossary — Dictionary with dotted underline and sidebar tooltip",
       "base": "en"
     },
     {
-      "path": "docs/demos/03-plugins/plugins.en.md",
+      "path": "/demos/03-plugins/plugins.en.md",
       "route": "#/en/demos/03-plugins/plugins",
       "title": "OntoWave Plugin System",
       "base": "fr"
     },
     {
-      "path": "docs/demos/03-plugins/plugins.en.md",
+      "path": "/demos/03-plugins/plugins.en.md",
       "route": "#/en/demos/03-plugins/plugins",
       "title": "OntoWave Plugin System",
       "base": "en"
     },
     {
-      "path": "docs/demos/03-ux/keyboard.en.md",
+      "path": "/demos/03-ux/keyboard.en.md",
       "route": "#/en/demos/03-ux/keyboard",
       "title": "Keyboard Navigation",
       "base": "fr"
     },
     {
-      "path": "docs/demos/03-ux/keyboard.en.md",
+      "path": "/demos/03-ux/keyboard.en.md",
       "route": "#/en/demos/03-ux/keyboard",
       "title": "Keyboard Navigation",
       "base": "en"
     },
     {
-      "path": "docs/demos/03-ux/themes.en.md",
+      "path": "/demos/03-ux/themes.en.md",
       "route": "#/en/demos/03-ux/themes",
       "title": "Reading Themes",
       "base": "fr"
     },
     {
-      "path": "docs/demos/03-ux/themes.en.md",
+      "path": "/demos/03-ux/themes.en.md",
       "route": "#/en/demos/03-ux/themes",
       "title": "Reading Themes",
       "base": "en"
     },
     {
-      "path": "docs/demos/03-ux/ux.en.md",
+      "path": "/demos/03-ux/ux.en.md",
       "route": "#/en/demos/03-ux/ux",
       "title": "UX Features — Reading and Navigation",
       "base": "fr"
     },
     {
-      "path": "docs/demos/03-ux/ux.en.md",
+      "path": "/demos/03-ux/ux.en.md",
       "route": "#/en/demos/03-ux/ux",
       "title": "UX Features — Reading and Navigation",
       "base": "en"
     },
     {
-      "path": "docs/demos/index.en.md",
+      "path": "/demos/index.en.md",
       "route": "#/en/demos/index",
       "title": "OntoWave Demo Gallery",
       "base": "fr"
     },
     {
-      "path": "docs/demos/index.en.md",
+      "path": "/demos/index.en.md",
       "route": "#/en/demos/index",
       "title": "OntoWave Demo Gallery",
       "base": "en"
     },
     {
-      "path": "docs/index.en.md",
+      "path": "/index.en.md",
       "route": "#/en/index",
       "title": "OntoWave ([Changelog](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md))",
       "base": "fr"
     },
     {
-      "path": "docs/index.en.md",
+      "path": "/index.en.md",
       "route": "#/en/index",
       "title": "OntoWave ([Changelog](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md))",
       "base": "en"
     },
     {
-      "path": "docs/specs/architecture.en.md",
+      "path": "/specs/architecture.en.md",
       "route": "#/en/specs/architecture",
       "title": "OntoWave Modular Architecture",
       "base": "fr"
     },
     {
-      "path": "docs/specs/architecture.en.md",
+      "path": "/specs/architecture.en.md",
       "route": "#/en/specs/architecture",
       "title": "OntoWave Modular Architecture",
       "base": "en"
     },
     {
-      "path": "docs/specs/dns-domains.en.md",
+      "path": "/specs/dns-domains.en.md",
       "route": "#/en/specs/dns-domains",
       "title": "DNS Configuration — Dual Domain ontowave.org + ontowave.com",
       "base": "fr"
     },
     {
-      "path": "docs/specs/dns-domains.en.md",
+      "path": "/specs/dns-domains.en.md",
       "route": "#/en/specs/dns-domains",
       "title": "DNS Configuration — Dual Domain ontowave.org + ontowave.com",
       "base": "en"
     },
     {
-      "path": "docs/specs/interface.en.md",
+      "path": "/specs/interface.en.md",
       "route": "#/en/specs/interface",
       "title": "Specifications — OntoWave Bootstrap Interface",
       "base": "fr"
     },
     {
-      "path": "docs/specs/interface.en.md",
+      "path": "/specs/interface.en.md",
       "route": "#/en/specs/interface",
       "title": "Specifications — OntoWave Bootstrap Interface",
       "base": "en"
     },
     {
-      "path": "docs/specs/roadmap.en.md",
+      "path": "/specs/roadmap.en.md",
       "route": "#/en/specs/roadmap",
       "title": "OntoWave Roadmap",
       "base": "fr"
     },
     {
-      "path": "docs/specs/roadmap.en.md",
+      "path": "/specs/roadmap.en.md",
       "route": "#/en/specs/roadmap",
       "title": "OntoWave Roadmap",
       "base": "en"
     },
     {
-      "path": "docs/demos/01-base/markdown.fr.md",
+      "path": "/demos/01-base/markdown.fr.md",
       "route": "#/fr/demos/01-base/markdown",
       "title": "Fonctionnalités Markdown",
       "base": "fr"
     },
     {
-      "path": "docs/demos/01-base/markdown.fr.md",
+      "path": "/demos/01-base/markdown.fr.md",
       "route": "#/fr/demos/01-base/markdown",
       "title": "Fonctionnalités Markdown",
       "base": "en"
     },
     {
-      "path": "docs/demos/01-base/mermaid.fr.md",
+      "path": "/demos/01-base/mermaid.fr.md",
       "route": "#/fr/demos/01-base/mermaid",
       "title": "Diagrammes Mermaid",
       "base": "fr"
     },
     {
-      "path": "docs/demos/01-base/mermaid.fr.md",
+      "path": "/demos/01-base/mermaid.fr.md",
       "route": "#/fr/demos/01-base/mermaid",
       "title": "Diagrammes Mermaid",
       "base": "en"
     },
     {
-      "path": "docs/demos/01-base/plantuml.fr.md",
+      "path": "/demos/01-base/plantuml.fr.md",
       "route": "#/fr/demos/01-base/plantuml",
       "title": "Diagrammes PlantUML",
       "base": "fr"
     },
     {
-      "path": "docs/demos/01-base/plantuml.fr.md",
+      "path": "/demos/01-base/plantuml.fr.md",
       "route": "#/fr/demos/01-base/plantuml",
       "title": "Diagrammes PlantUML",
       "base": "en"
     },
     {
-      "path": "docs/demos/01-base/puml-navigation.fr.md",
+      "path": "/demos/01-base/puml-navigation.fr.md",
       "route": "#/fr/demos/01-base/puml-navigation",
       "title": "Navigation vers fichiers .puml",
       "base": "fr"
     },
     {
-      "path": "docs/demos/01-base/puml-navigation.fr.md",
+      "path": "/demos/01-base/puml-navigation.fr.md",
       "route": "#/fr/demos/01-base/puml-navigation",
       "title": "Navigation vers fichiers .puml",
       "base": "en"
     },
     {
-      "path": "docs/demos/01-base/routing.fr.md",
+      "path": "/demos/01-base/routing.fr.md",
       "route": "#/fr/demos/01-base/routing",
       "title": "Routing par hash URL",
       "base": "fr"
     },
     {
-      "path": "docs/demos/01-base/routing.fr.md",
+      "path": "/demos/01-base/routing.fr.md",
       "route": "#/fr/demos/01-base/routing",
       "title": "Routing par hash URL",
       "base": "en"
     },
     {
-      "path": "docs/demos/02-config/i18n.fr.md",
+      "path": "/demos/02-config/i18n.fr.md",
       "route": "#/fr/demos/02-config/i18n",
       "title": "Internationalisation (i18n)",
       "base": "fr"
     },
     {
-      "path": "docs/demos/02-config/i18n.fr.md",
+      "path": "/demos/02-config/i18n.fr.md",
       "route": "#/fr/demos/02-config/i18n",
       "title": "Internationalisation (i18n)",
       "base": "en"
     },
     {
-      "path": "docs/demos/02-config/ui-custom.fr.md",
+      "path": "/demos/02-config/ui-custom.fr.md",
       "route": "#/fr/demos/02-config/ui-custom",
       "title": "UI personnalisée",
       "base": "fr"
     },
     {
-      "path": "docs/demos/02-config/ui-custom.fr.md",
+      "path": "/demos/02-config/ui-custom.fr.md",
       "route": "#/fr/demos/02-config/ui-custom",
       "title": "UI personnalisée",
       "base": "en"
     },
     {
-      "path": "docs/demos/02-config/view-modes.fr.md",
+      "path": "/demos/02-config/view-modes.fr.md",
       "route": "#/fr/demos/02-config/view-modes",
       "title": "Modes d'affichage",
       "base": "fr"
     },
     {
-      "path": "docs/demos/02-config/view-modes.fr.md",
+      "path": "/demos/02-config/view-modes.fr.md",
       "route": "#/fr/demos/02-config/view-modes",
       "title": "Modes d'affichage",
       "base": "en"
     },
     {
-      "path": "docs/demos/03-glossary/glossary.fr.md",
+      "path": "/demos/03-glossary/glossary.fr.md",
       "route": "#/fr/demos/03-glossary/glossary",
       "title": "Glossaire — Dictionnaire avec soulignement et infobulle latérale",
       "base": "fr"
     },
     {
-      "path": "docs/demos/03-glossary/glossary.fr.md",
+      "path": "/demos/03-glossary/glossary.fr.md",
       "route": "#/fr/demos/03-glossary/glossary",
       "title": "Glossaire — Dictionnaire avec soulignement et infobulle latérale",
       "base": "en"
     },
     {
-      "path": "docs/demos/03-plugins/plugins.fr.md",
+      "path": "/demos/03-plugins/plugins.fr.md",
       "route": "#/fr/demos/03-plugins/plugins",
       "title": "Système de plugins OntoWave",
       "base": "fr"
     },
     {
-      "path": "docs/demos/03-plugins/plugins.fr.md",
+      "path": "/demos/03-plugins/plugins.fr.md",
       "route": "#/fr/demos/03-plugins/plugins",
       "title": "Système de plugins OntoWave",
       "base": "en"
     },
     {
-      "path": "docs/demos/03-ux/keyboard.fr.md",
+      "path": "/demos/03-ux/keyboard.fr.md",
       "route": "#/fr/demos/03-ux/keyboard",
       "title": "Navigation clavier",
       "base": "fr"
     },
     {
-      "path": "docs/demos/03-ux/keyboard.fr.md",
+      "path": "/demos/03-ux/keyboard.fr.md",
       "route": "#/fr/demos/03-ux/keyboard",
       "title": "Navigation clavier",
       "base": "en"
     },
     {
-      "path": "docs/demos/03-ux/themes.fr.md",
+      "path": "/demos/03-ux/themes.fr.md",
       "route": "#/fr/demos/03-ux/themes",
       "title": "Thèmes de lecture",
       "base": "fr"
     },
     {
-      "path": "docs/demos/03-ux/themes.fr.md",
+      "path": "/demos/03-ux/themes.fr.md",
       "route": "#/fr/demos/03-ux/themes",
       "title": "Thèmes de lecture",
       "base": "en"
     },
     {
-      "path": "docs/demos/03-ux/ux.fr.md",
+      "path": "/demos/03-ux/ux.fr.md",
       "route": "#/fr/demos/03-ux/ux",
       "title": "Fonctionnalités UX — Lecture et Navigation",
       "base": "fr"
     },
     {
-      "path": "docs/demos/03-ux/ux.fr.md",
+      "path": "/demos/03-ux/ux.fr.md",
       "route": "#/fr/demos/03-ux/ux",
       "title": "Fonctionnalités UX — Lecture et Navigation",
       "base": "en"
     },
     {
-      "path": "docs/demos/index.fr.md",
+      "path": "/demos/index.fr.md",
       "route": "#/fr/demos/index",
       "title": "Galerie de démos OntoWave",
       "base": "fr"
     },
     {
-      "path": "docs/demos/index.fr.md",
+      "path": "/demos/index.fr.md",
       "route": "#/fr/demos/index",
       "title": "Galerie de démos OntoWave",
       "base": "en"
     },
     {
-      "path": "docs/index.fr.md",
+      "path": "/index.fr.md",
       "route": "#/fr/index",
       "title": "OntoWave ([Changelog](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md))",
       "base": "fr"
     },
     {
-      "path": "docs/index.fr.md",
+      "path": "/index.fr.md",
       "route": "#/fr/index",
       "title": "OntoWave ([Changelog](https://github.com/stephanedenis/OntoWave/blob/main/CHANGELOG.md))",
       "base": "en"
     },
     {
-      "path": "docs/specs/architecture.fr.md",
+      "path": "/specs/architecture.fr.md",
       "route": "#/fr/specs/architecture",
       "title": "Architecture modulaire OntoWave",
       "base": "fr"
     },
     {
-      "path": "docs/specs/architecture.fr.md",
+      "path": "/specs/architecture.fr.md",
       "route": "#/fr/specs/architecture",
       "title": "Architecture modulaire OntoWave",
       "base": "en"
     },
     {
-      "path": "docs/specs/dns-domains.fr.md",
+      "path": "/specs/dns-domains.fr.md",
       "route": "#/fr/specs/dns-domains",
       "title": "Configuration DNS — Double domaine ontowave.org + ontowave.com",
       "base": "fr"
     },
     {
-      "path": "docs/specs/dns-domains.fr.md",
+      "path": "/specs/dns-domains.fr.md",
       "route": "#/fr/specs/dns-domains",
       "title": "Configuration DNS — Double domaine ontowave.org + ontowave.com",
       "base": "en"
     },
     {
-      "path": "docs/specs/interface.fr.md",
+      "path": "/specs/interface.fr.md",
       "route": "#/fr/specs/interface",
       "title": "Spécifications — Interface Bootstrap OntoWave",
       "base": "fr"
     },
     {
-      "path": "docs/specs/interface.fr.md",
+      "path": "/specs/interface.fr.md",
       "route": "#/fr/specs/interface",
       "title": "Spécifications — Interface Bootstrap OntoWave",
       "base": "en"
     },
     {
-      "path": "docs/specs/roadmap.fr.md",
+      "path": "/specs/roadmap.fr.md",
       "route": "#/fr/specs/roadmap",
       "title": "Roadmap OntoWave",
       "base": "fr"
     },
     {
-      "path": "docs/specs/roadmap.fr.md",
+      "path": "/specs/roadmap.fr.md",
       "route": "#/fr/specs/roadmap",
       "title": "Roadmap OntoWave",
       "base": "en"
