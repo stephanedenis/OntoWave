@@ -43,6 +43,89 @@ async function findHtmlFiles(dir, acc = []) {
   return acc;
 }
 
+async function findMarkdownFiles(dir, acc = []) {
+  const entries = await readdir(dir, { withFileTypes: true });
+  for (const e of entries) {
+    const p = join(dir, e.name);
+    if (e.isDirectory()) await findMarkdownFiles(p, acc);
+    else if (e.isFile() && e.name.endsWith('.md')) acc.push(p);
+  }
+  return acc;
+}
+
+function extractTitle(mdSource, fallback) {
+  const line = mdSource.split(/\r?\n/).find((l) => /^#\s+/.test(l.trim()));
+  if (!line) return fallback;
+  return line.replace(/^#\s+/, '').trim();
+}
+
+function escapeHtml(text) {
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function buildTree(items) {
+  const root = { folders: new Map(), files: [] };
+  for (const item of items) {
+    const parts = item.path.split('/');
+    const file = parts.pop();
+    let node = root;
+    for (const part of parts) {
+      if (!node.folders.has(part)) node.folders.set(part, { folders: new Map(), files: [] });
+      node = node.folders.get(part);
+    }
+    node.files.push({ ...item, file });
+  }
+  return root;
+}
+
+function renderTree(node) {
+  const folderNames = [...node.folders.keys()].sort((a, b) => a.localeCompare(b));
+  const files = [...node.files].sort((a, b) => a.path.localeCompare(b.path));
+  const parts = [];
+  if (folderNames.length > 0) {
+    for (const name of folderNames) {
+      const child = node.folders.get(name);
+      parts.push(`<li>${escapeHtml(name)}${renderTree(child)}</li>`);
+    }
+  }
+  if (files.length > 0) {
+    for (const f of files) {
+      const href = `/${f.path}`;
+      parts.push(`<li><a href="${escapeHtml(href)}">${escapeHtml(f.title)}</a></li>`);
+    }
+  }
+  return `<ul>${parts.join('')}</ul>`;
+}
+
+async function buildHomepageNoscript() {
+  const mdFiles = await findMarkdownFiles(docsDir);
+  const entries = [];
+  for (const filePath of mdFiles) {
+    const rel = relative(docsDir, filePath).replace(/\\/g, '/');
+    const raw = await readFile(filePath, 'utf8');
+    const fallback = basename(filePath, '.md');
+    entries.push({ path: rel, title: extractTitle(raw, fallback) });
+  }
+
+  const tree = buildTree(entries);
+  const treeHtml = renderTree(tree);
+
+  return [
+    '  <div lang="fr">',
+    '    <h1>OntoWave</h1>',
+    '    <p>OntoWave est une bibliothèque JavaScript de navigation documentaire pour sites statiques, avec routage hash-based, rendu Markdown et support multilingue.</p>',
+    '    <p>CDN : <a href="https://unpkg.com/ontowave/dist/ontowave.min.js">https://unpkg.com/ontowave/dist/ontowave.min.js</a></p>',
+    '    <h2>Arborescence des pages Markdown crawlables</h2>',
+    `    ${treeHtml}`,
+    '  </div>'
+  ].join('\n');
+}
+
 function stripMath(src) {
   // Supprime les blocs LaTeX $$...$$  et formules inline $...$
   // car la syntaxe brute nuit à la lisibilité pour les crawlers
@@ -57,6 +140,28 @@ async function processHtml(htmlPath, md) {
   const relPath = relative(docsDir, htmlPath);
 
   const blocks = [];
+  const isHomepage = relPath === 'index.html';
+
+  if (isHomepage) {
+    let html = await readFile(htmlPath, 'utf8');
+    const innerBlocks = await buildHomepageNoscript();
+    const noscriptBlock =
+      `${MARKER_START}\n<noscript>\n${innerBlocks}\n</noscript>\n${MARKER_END}`;
+
+    if (html.includes(MARKER_START)) {
+      html = html.replace(
+        new RegExp(`${MARKER_START}[\\s\\S]*?${MARKER_END}`),
+        noscriptBlock
+      );
+    } else {
+      html = html.replace('</body>', `\n${noscriptBlock}\n</body>`);
+    }
+
+    await writeFile(htmlPath, html, 'utf8');
+    console.log(`  ✅ ${relPath} [homepage-tree]`);
+    return true;
+  }
+
   for (const lang of ['fr', 'en']) {
     const mdPath = join(dir, `${name}.${lang}.md`);
     if (existsSync(mdPath)) {
