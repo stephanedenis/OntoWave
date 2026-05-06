@@ -108,6 +108,7 @@ Spécifications :
 - [docs/specs/architecture.fr.md](docs/specs/architecture.fr.md) — architecture modulaire
 - [docs/specs/interface.fr.md](docs/specs/interface.fr.md) — spécification visuelle
 - [docs/specs/roadmap.fr.md](docs/specs/roadmap.fr.md) — roadmap v1.1 / v2.0
+- [docs/specs/programmation-extensions.fr.md](docs/specs/programmation-extensions.fr.md) — guide programmation + extensions (état actuel et cible v2)
 
 ## Licence
 
