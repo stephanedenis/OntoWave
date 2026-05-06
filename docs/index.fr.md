@@ -51,6 +51,17 @@ Explorez OntoWave à travers des **démos interactives et testées** :
 
 C'est tout ! OntoWave se charge automatiquement et affiche son interface.
 
+### 📚 Documentation technique complète
+
+La page d'accueil donne une vue d'ensemble, mais la documentation technique détaillée est dans des pages dédiées :
+
+- **[Guide programmation & extensions](specs/programmation-extensions.fr.md)** — API actuelle (v1.x), plugins, limites et bonnes pratiques
+- **[Spécification interface bootstrap](specs/interface.fr.md)** — contrat d'intégration HTML minimal, config injectée, comportement du menu
+- **[Spécification architecture modulaire](specs/architecture.fr.md)** — `ContentRenderer`, `ExtensionRegistry`, stratégie lazy-load
+- **[Roadmap technique](specs/roadmap.fr.md)** — statut des chantiers v1.1 / v2.0
+
+> Recommandation : utilisez ces pages pour l'implémentation, la home restant volontairement synthétique.
+
 ### 🏗️ Architecture OntoWave
 
 #### Vue d'ensemble des composants

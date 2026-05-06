@@ -51,6 +51,17 @@ Explore OntoWave through **interactive and tested demos**:
 
 That's it! OntoWave loads automatically and displays its interface.
 
+### 📚 Full Technical Documentation
+
+The homepage is intentionally concise. Detailed technical documentation is available in dedicated pages:
+
+- **[Programming & Extensions Guide](specs/programmation-extensions.en.md)** — current API (v1.x), plugin model, constraints and best practices
+- **[Bootstrap Interface Specification](specs/interface.en.md)** — minimal host HTML contract, injected config, floating menu behavior
+- **[Modular Architecture Specification](specs/architecture.en.md)** — `ContentRenderer`, `ExtensionRegistry`, lazy-load strategy
+- **[Technical Roadmap](specs/roadmap.en.md)** — v1.1 / v2.0 workstream status
+
+> Recommendation: use these pages as implementation references; the homepage is a high-level overview.
+
 ### 🏗️ OntoWave Architecture
 
 #### Component Overview
