@@ -42,12 +42,70 @@ export type GlossaryConfig = {
   ui?: GlossaryUiConfig
 }
 
+// --- Extension API ---
+
+export interface ContentRenderer {
+  /** Identifiant unique de l'extension */
+  readonly name: string
+
+  /** Extensions de fichier gérées, ex. ['.md', '.markdown'] */
+  readonly handles: string[]
+
+  /**
+   * Déclarations de sous-extensions requises.
+   * Si ['mermaid', 'katex'] est retourné, le registry les chargera
+   * dès que ce renderer sera activé (preload opportuniste).
+   */
+  readonly requires?: string[]
+
+  /** Retourne true si cette extension peut traiter l'URL donnée */
+  canRender(url: string, contentType?: string): boolean
+
+  /** Transforme le contenu source en HTML */
+  render(source: string, url: string): Promise<string>
+}
+
+export interface ExtensionRegistry {
+  /** Enregistre une extension déjà chargée */
+  register(renderer: ContentRenderer): void
+
+  /**
+   * Charge dynamiquement une extension par son identifiant.
+   * url = chemin relatif depuis dist/ (ex. 'extensions/markdown.js')
+   * L'extension doit exporter un objet ContentRenderer comme export default.
+   */
+  load(name: string, url: string): Promise<ContentRenderer>
+
+  /** Retourne l'extension capable de rendre l'URL donnée, ou null */
+  resolve(url: string, contentType?: string): ContentRenderer | null
+}
+
+export type ExtensionConfig = {
+  base?: string[]    // chargés avec le noyau
+  preload?: string[] // chargés juste après le premier rendu
+  lazy?: string[]    // chargés à la demande
+}
+
+export type I18nConfig = {
+  default: string
+  supported: string[]
+  /** Obligatoire si i18n est défini. Validé à l'exécution. */
+  mode?: 'suffix' | 'folder'
+}
+
+/** Avertissement runtime exposé au menu flottant */
+export type RuntimeWarning = {
+  code: string
+  message: string
+}
+
 export type AppConfig = {
   roots: Root[]
   engine?: 'legacy' | 'v2'
-  i18n?: { default: string; supported: string[] }
+  i18n?: I18nConfig
   ui?: { header?: boolean; sidebar?: boolean; toc?: boolean; footer?: boolean; minimal?: boolean; menu?: boolean }
   glossary?: GlossaryConfig
+  extensions?: ExtensionConfig
 }
 
 export interface ConfigService {

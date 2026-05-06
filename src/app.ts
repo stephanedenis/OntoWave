@@ -3,14 +3,17 @@ import type {
   ConfigService,
   ContentPathStrategy,
   ContentService,
+  ExtensionRegistry,
   MarkdownRenderer,
   OntoWavePlugin,
   PluginContext,
   RouterService,
+  RuntimeWarning,
   ViewRenderer,
   PostRenderEnhancer,
 } from './core/types'
 import { resolveCandidates as defaultResolve, resolvePumlCandidates, splitHashRoute } from './core/logic'
+import { validateConfig } from './core/config-validator'
 
 function scrollToHashAnchor(route: string): void {
   if (typeof document === 'undefined') return
@@ -58,6 +61,7 @@ export function createApp(deps: {
   md: MarkdownRenderer
   enhance?: PostRenderEnhancer
   plugins?: OntoWavePlugin[]
+  registry?: ExtensionRegistry
 }) {
   const resolver = deps.resolver ?? { resolveCandidates: defaultResolve }
   const plugins = deps.plugins ?? []
@@ -148,6 +152,16 @@ export function createApp(deps: {
 
   async function start() {
     cfg = await deps.config.load()
+
+    // Validation de la configuration : signale les erreurs de config (ex. i18n sans mode)
+    const configWarnings = validateConfig(cfg)
+    for (const w of configWarnings) {
+      console.error(w.message)
+      // Transmettre les avertissements au registre si disponible (pour le menu flottant)
+      if (deps.registry && 'addWarning' in deps.registry) {
+        ;(deps.registry as { addWarning: (w: RuntimeWarning) => void }).addWarning(w)
+      }
+    }
 
     // Plugin onStart hooks
     const ctx: PluginContext = {
