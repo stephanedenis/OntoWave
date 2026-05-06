@@ -95,7 +95,9 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   menuBrand.href = 'https://ontowave.org'
   menuBrand.target = '_blank'
   menuBrand.rel = 'noopener'
-  menuBrand.textContent = 'OntoWave.org'
+  const brandName = document.createElement('span')
+  brandName.textContent = 'OntoWave.org'
+  menuBrand.appendChild(brandName)
   const versionSpan = document.createElement('span')
   versionSpan.className = 'ontowave-menu-version'
   versionSpan.textContent = `v${__APP_VERSION__}`
