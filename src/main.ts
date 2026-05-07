@@ -12,6 +12,7 @@ import { getJsonFromBundle, getTextFromBundle } from './adapters/browser/bundle'
 import { primeInlineConfigBundle } from './adapters/browser/config'
 import { initUx } from './adapters/browser/ux'
 import { pickPreferredLanguage } from './core/logic'
+import type { AppConfig } from './core/types'
 
 // CSS injecté quand la bibliothèque bootstrappe elle-même le DOM (page quasi-vide)
 const BOOTSTRAP_CSS = `
@@ -45,7 +46,6 @@ body{margin:0;padding:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'D
 #ontowave-floating-menu.expanded .ontowave-menu-brand{display:flex}
 #ontowave-floating-menu.expanded .ontowave-menu-option,
 #ontowave-floating-menu.expanded .ontowave-lang-btn{display:inline-flex;align-items:center}
-#ontowave-floating-menu:not(.expanded) #ow-ux-toolbar{display:none!important}
 `
 
 /**
@@ -208,7 +208,7 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
 
 ;(async () => {
   // Toggle engine via config.json; fallback v2 par défaut si absent
-  const cfg = primeInlineConfigBundle() || getJsonFromBundle('/config.json') || {}
+  const cfg: AppConfig = primeInlineConfigBundle() || getJsonFromBundle<AppConfig>('/config.json') || { roots: [] }
   // Bootstrapper le DOM si la page est quasi-vide (pas de #app fourni)
   bootstrapDom(cfg as Record<string, unknown>)
   const engine = cfg.engine ?? 'v2'
