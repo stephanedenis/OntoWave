@@ -68,6 +68,10 @@ export type AppConfig = {
   glossary?: GlossaryConfig
   /** Déclare les extensions de rendu requises par le site. */
   extensions?: ExtensionConfig
+  /** Texte affiché dans le widget de marque (logo/nom du site). */
+  brand?: string
+  /** Options du module UX (thèmes, navigation clavier, prefetch). `false` désactive le module. */
+  ux?: { themes?: boolean; keyboard?: boolean; prefetch?: boolean } | false
 }
 
 export interface ConfigService {
