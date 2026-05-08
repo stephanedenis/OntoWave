@@ -204,10 +204,6 @@ body.ow-theme-dark td {
   opacity: 1;
 }
 
-/* === Masquer la barre UX quand le menu flottant est fermé === */
-#ontowave-floating-menu:not(.expanded) #ow-ux-toolbar {
-  display: none !important;
-}
 `
 
 function injectStyles(): void {

@@ -12,6 +12,7 @@ import { getJsonFromBundle, getTextFromBundle } from './adapters/browser/bundle'
 import { primeInlineConfigBundle } from './adapters/browser/config'
 import { initUx } from './adapters/browser/ux'
 import { pickPreferredLanguage } from './core/logic'
+import type { AppConfig } from './core/types'
 import { BrowserExtensionRegistry } from './adapters/browser/extension-registry'
 import markdownRenderer from './extensions/markdown'
 import mermaidRenderer from './extensions/mermaid'
@@ -51,7 +52,6 @@ body{margin:0;padding:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'D
 #ontowave-floating-menu.expanded .ontowave-menu-brand{display:flex}
 #ontowave-floating-menu.expanded .ontowave-menu-option,
 #ontowave-floating-menu.expanded .ontowave-lang-btn{display:inline-flex;align-items:center}
-#ontowave-floating-menu:not(.expanded) #ow-ux-toolbar{display:none!important}
 .ow-ext-badge{position:absolute;top:-4px;right:-4px;width:14px;height:14px;background:#f59e0b;border-radius:50%;border:2px solid #fff;display:none;align-items:center;justify-content:center;font-size:8px;color:#fff;font-weight:700;pointer-events:none}
 .ow-ext-badge.ow-ext-badge--error{background:#ef4444}
 .ow-ext-badge.visible{display:flex}
@@ -226,7 +226,7 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
 
 ;(async () => {
   // Toggle engine via config.json; fallback v2 par défaut si absent
-  const cfg = primeInlineConfigBundle() || getJsonFromBundle('/config.json') || {}
+  const cfg: AppConfig = primeInlineConfigBundle() || getJsonFromBundle<AppConfig>('/config.json') || { roots: [] }
   // Bootstrapper le DOM si la page est quasi-vide (pas de #app fourni)
   bootstrapDom(cfg as Record<string, unknown>)
   const engine = cfg.engine ?? 'v2'

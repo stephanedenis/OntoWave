@@ -18,11 +18,11 @@ import { getJsonFromBundle } from './adapters/browser/bundle'
 import { primeInlineConfigBundle } from './adapters/browser/config'
 import { initUx } from './adapters/browser/ux'
 import { createPluginManager } from './core/plugins'
-import type { OntoWavePlugin, PluginContext, PluginManager } from './core/types'
+import type { OntoWavePlugin, PluginContext, PluginManager, ContentRenderer, ExtensionRegistry, ExtensionConfig, ExtensionStatus, I18nConfig, RenderPhase, AppConfig } from './core/types'
 import { pickPreferredLanguage } from './core/logic'
 
 export { createPluginManager }
-export type { OntoWavePlugin, PluginContext, PluginManager }
+export type { OntoWavePlugin, PluginContext, PluginManager, ContentRenderer, ExtensionRegistry, ExtensionConfig, ExtensionStatus, I18nConfig, RenderPhase }
 
 /**
  * Initialize OntoWave application
@@ -32,7 +32,7 @@ export async function initOntoWave() {
   console.log('[OntoWave] initOntoWave() called')
   
   // Toggle engine via config.json; fallback v2 par défaut si absent
-  const cfg = primeInlineConfigBundle() || getJsonFromBundle('/config.json') || { engine: 'v2' }
+  const cfg: AppConfig = primeInlineConfigBundle() || getJsonFromBundle<AppConfig>('/config.json') || { roots: [] }
   const engine = cfg.engine ?? 'v2'
   console.log('[OntoWave] Engine:', engine, 'Config:', cfg)
   
