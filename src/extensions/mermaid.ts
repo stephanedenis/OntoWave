@@ -4,6 +4,7 @@
  * Appelée après le rendu Markdown (phase 2) quand des blocs mermaid sont détectés.
  */
 import type { ContentRenderer } from '../core/types'
+import DOMPurify from 'dompurify'
 
 /** Retourne true si le HTML contient au moins un bloc mermaid. */
 export function hasMermaidBlocks(html: string): boolean {
@@ -28,7 +29,8 @@ export async function renderMermaidInContainer(container: HTMLElement): Promise<
     const id = `mmd-${Date.now()}-${idx++}`
     try {
       const { svg } = await mermaid.render(id, txt)
-      wrapper.innerHTML = svg
+      const safeSvg = DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true, html: true } })
+      wrapper.innerHTML = safeSvg
     } catch {
       wrapper.textContent = txt
     }
