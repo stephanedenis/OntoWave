@@ -8,9 +8,9 @@ import type {
   OntoWavePlugin,
   PluginContext,
   RouterService,
-  RuntimeWarning,
   ViewRenderer,
   PostRenderEnhancer,
+  WarningSink,
 } from './core/types'
 import { resolveCandidates as defaultResolve, resolvePumlCandidates, splitHashRoute } from './core/logic'
 import { validateConfig } from './core/config-validator'
@@ -61,6 +61,7 @@ export function createApp(deps: {
   md: MarkdownRenderer
   enhance?: PostRenderEnhancer
   plugins?: OntoWavePlugin[]
+  /** Registre d'extensions optionnel. Si fourni et implémente `WarningSink`, il recevra les avertissements de config. */
   registry?: ExtensionRegistry
 }) {
   const resolver = deps.resolver ?? { resolveCandidates: defaultResolve }
@@ -156,10 +157,10 @@ export function createApp(deps: {
     // Validation de la configuration : signale les erreurs de config (ex. i18n sans mode)
     const configWarnings = validateConfig(cfg)
     for (const w of configWarnings) {
-      console.error(w.message)
-      // Transmettre les avertissements au registre si disponible (pour le menu flottant)
+      console.warn(w.message)
+      // Transmettre les avertissements au registre s'il implémente WarningSink
       if (deps.registry && 'addWarning' in deps.registry) {
-        ;(deps.registry as { addWarning: (w: RuntimeWarning) => void }).addWarning(w)
+        ;(deps.registry as ExtensionRegistry & WarningSink).addWarning(w)
       }
     }
 

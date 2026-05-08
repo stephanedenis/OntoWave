@@ -1,21 +1,21 @@
-import type { ContentRenderer, ExtensionRegistry, RuntimeWarning } from '../../core/types'
+import type { ContentRenderer, ExtensionRegistry, RuntimeWarning, WarningSink } from '../../core/types'
+
+/** Préfixes d'URL refusés pour `load()` afin d'éviter des imports arbitraires. */
+const BLOCKED_URL_SCHEMES = /^(https?:|data:|blob:|javascript:)/i
 
 /**
  * Crée un registre d'extensions dynamiques pour OntoWave.
  *
  * Fonctionnalités :
  * - `register()` : enregistre une extension déjà instanciée
- * - `load()` : charge dynamiquement une extension via `import()` avec cache
+ * - `load()` : charge dynamiquement une extension via `import()` avec cache (un seul import par nom)
  * - `resolve()` : retourne l'extension capable de rendre une URL donnée
- * - `getWarnings()` : expose l'état runtime pour le menu flottant
+ * - `getWarnings()` + `addWarning()` : implémente `WarningSink` pour le menu flottant
  */
-export function createExtensionRegistry(): ExtensionRegistry & {
-  getWarnings(): RuntimeWarning[]
-  addWarning(warning: RuntimeWarning): void
-} {
+export function createExtensionRegistry(): ExtensionRegistry & WarningSink {
   const renderers = new Map<string, ContentRenderer>()
 
-  // Cache : évite les imports multiples de la même extension
+  // Cache de promesses — évite les imports multiples de la même extension
   const loadCache = new Map<string, Promise<ContentRenderer>>()
 
   // État runtime lisible par le menu flottant
@@ -30,9 +30,16 @@ export function createExtensionRegistry(): ExtensionRegistry & {
   }
 
   async function load(name: string, url: string): Promise<ContentRenderer> {
-    // Retourner l'extension si elle est déjà enregistrée
+    // Retourner l'extension si elle est déjà enregistrée (évite un import inutile)
     const existing = renderers.get(name)
     if (existing) return existing
+
+    // Validation de l'URL : refuser les schémas dangereux
+    if (BLOCKED_URL_SCHEMES.test(url)) {
+      throw new Error(
+        `[OntoWave] URL d'extension refusée : "${url}". Seuls les chemins relatifs sont autorisés.`,
+      )
+    }
 
     // Retourner la promesse en cours si un chargement est déjà en attente (cache)
     const cached = loadCache.get(name)
@@ -40,18 +47,23 @@ export function createExtensionRegistry(): ExtensionRegistry & {
 
     const promise = (async (): Promise<ContentRenderer> => {
       try {
-        // Chargement dynamique — l'extension doit exporter un ContentRenderer par défaut
+        // Chargement dynamique — l'extension doit exporter un ContentRenderer comme export par défaut
         const mod = await import(/* @vite-ignore */ url)
         const renderer: ContentRenderer = mod.default ?? mod
         if (!renderer || typeof renderer.render !== 'function') {
-          throw new Error(`[OntoWave] Extension "${name}" (${url}) ne fournit pas d'objet ContentRenderer valide.`)
-        }
-        if (renderer.name !== name) {
           throw new Error(
-            `[OntoWave] Extension "${name}" (${url}) déclare le nom "${renderer.name}". Le nom demandé et renderer.name doivent correspondre.`,
+            `[OntoWave] Extension "${name}" (${url}) ne fournit pas d'objet ContentRenderer valide.`,
           )
         }
-        renderers.set(name, renderer)
+        // Cohérence : imposer que renderer.name corresponde au name demandé
+        if (renderer.name !== name) {
+          throw new Error(
+            `[OntoWave] Extension "${name}" (${url}) déclare le nom "${renderer.name}". ` +
+            `Le nom demandé et renderer.name doivent correspondre.`,
+          )
+        }
+        // Utiliser renderer.name comme clé canonique (cohérence avec register())
+        renderers.set(renderer.name, renderer)
         return renderer
       } catch (err) {
         loadCache.delete(name)
