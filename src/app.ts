@@ -14,6 +14,14 @@ import type {
 import { minimalRender } from './core/minimal-md'
 import { resolveCandidates as defaultResolve, resolvePumlCandidates, splitHashRoute } from './core/logic'
 
+function htmlFragmentToText(input: string): string {
+  if (typeof document !== 'undefined') {
+    const parsed = new DOMParser().parseFromString(input, 'text/html')
+    return (parsed.body.textContent ?? '').trim()
+  }
+  return input.replace(/[<>]/g, '').trim()
+}
+
 function scrollToHashAnchor(route: string): void {
   if (typeof document === 'undefined') return
   const { anchor } = splitHashRoute('#' + route.replace(/^#/, ''))
@@ -146,7 +154,8 @@ export function createApp(deps: {
         // Phase 1 : rendu minimal immédiat (noyau, sans dépendances lourdes)
         html = minimalRender(mdSrc)
         applyViewMode(html, mdSrc, viewMode)
-        const h1Phase1 = /<h1[^>]*>(.*?)<\/h1>/i.exec(html)?.[1]?.replace(/<[^>]+>/g, '').trim()
+        const h1Phase1Raw = /<h1[^>]*>(.*?)<\/h1>/i.exec(html)?.[1]
+        const h1Phase1 = h1Phase1Raw ? htmlFragmentToText(h1Phase1Raw) : ''
         if (h1Phase1) deps.view.setTitle(`${h1Phase1} — OntoWave`)
 
         // Phase 2 : charger l'extension Markdown et re-rendre
@@ -165,7 +174,8 @@ export function createApp(deps: {
       applyViewMode(html, mdSrc, viewMode)
     }
 
-    const h1 = /<h1[^>]*>(.*?)<\/h1>/i.exec(html)?.[1]?.replace(/<[^>]+>/g, '').trim()
+    const h1Raw = /<h1[^>]*>(.*?)<\/h1>/i.exec(html)?.[1]
+    const h1 = h1Raw ? htmlFragmentToText(h1Raw) : ''
     if (h1) deps.view.setTitle(`${h1} — OntoWave`)
     await deps.enhance?.afterRender(html, route)
     scrollToHashAnchor(route)
