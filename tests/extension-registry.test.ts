@@ -96,35 +96,18 @@ describe('createExtensionRegistry — load()', () => {
   })
 
   it('le cache partage la promesse entre deux appels concurrents load()', async () => {
-    // Exercer le chemin loadCache en injectant un module via __ONTOWAVE_TEST_IMPORT__
-    // Dans un environnement Node, on simule via un module temporaire accessible
-    const renderer = makeRenderer('test-cached', ['.xyz'])
-    let importCallCount = 0
-
-    // Créer un registry instrumenté : on surcharge la fonction de chargement interne
-    // en enregistrant manuellement après avoir espionné le comportement
+    // Exercer le chemin loadCache : deux load() simultanés pour le même nom
+    // doivent produire un seul EXTENSION_LOAD_ERROR (une seule tentative d'import).
     const registry = createExtensionRegistry()
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
-    // Simuler le cas : deux appels concurrents, renderer pas encore enregistré
-    // Pour tester le cache on doit déclencher load() AVANT que le renderer soit disponible.
-    // On utilise register() dans la même microtask pour simuler la fin de l'import.
-    let resolvePromise!: (r: ContentRenderer) => void
-    const fakeLoadPromise = new Promise<ContentRenderer>((res) => { resolvePromise = res })
-
-    // Intercept: le premier load() va chercher le cache, le second aussi
     const p1 = registry.load('test-cached', 'extensions/test-cached.js').catch(() => null)
     const p2 = registry.load('test-cached', 'extensions/test-cached.js').catch(() => null)
 
-    // Les deux promesses doivent être différentes instances de Promise mais provenir
-    // du même résultat (le cache évite deux imports) — ici elles échouent toutes les deux
-    // car le module n'existe pas, mais elles partagent la même promesse du cache.
-    // Vérifier que la tentative échoue (pas de module réel) mais qu'un seul warning est produit.
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     await Promise.allSettled([p1, p2])
+
     // Un seul avertissement malgré deux appels concurrents
     expect(registry.getWarnings().filter(w => w.code === 'EXTENSION_LOAD_ERROR')).toHaveLength(1)
-    importCallCount++
-    expect(importCallCount).toBe(1) // vérifie qu'on n'a pas comptabilisé deux imports
     errorSpy.mockRestore()
   })
 
