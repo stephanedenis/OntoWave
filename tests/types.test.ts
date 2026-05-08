@@ -125,6 +125,9 @@ describe('ExtensionRegistry', () => {
       resolve(url: string): ContentRenderer | null {
         return store.find(r => r.canRender(url)) ?? null
       },
+      getStatus(name: string) {
+        return store.some(renderer => renderer.name === name) ? 'ready' : undefined
+      },
     }
 
     const mdRenderer: ContentRenderer = {
