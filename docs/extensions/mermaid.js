@@ -904,7 +904,7 @@ function Ve(e) {
 }
 function He() {
 	let e = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : nee(), t = (e) => He(e);
-	if (t.version = "3.4.1", t.removed = [], !e || !e.document || e.document.nodeType !== zt.document || !e.Element) return t.isSupported = !1, t;
+	if (t.version = "3.4.2", t.removed = [], !e || !e.document || e.document.nodeType !== zt.document || !e.Element) return t.isSupported = !1, t;
 	let { document: n } = e, r = n, i = r.currentScript, { DocumentFragment: a, HTMLTemplateElement: o, Node: s, Element: l, NodeFilter: u, NamedNodeMap: d = e.NamedNodeMap || e.MozNamedAttrMap, HTMLFormElement: f, DOMParser: p, trustedTypes: m } = e, h = l.prototype, g = Be(h, "cloneNode"), _ = Be(h, "remove"), v = Be(h, "nextSibling"), y = Be(h, "childNodes"), b = Be(h, "parentNode");
 	if (typeof o == "function") {
 		let e = n.createElement("template");
@@ -1142,8 +1142,9 @@ function He() {
 		}), e.textContent !== n && (nt(t.removed, { element: e.cloneNode() }), e.textContent = n)), At(O.afterSanitizeElements, e, null), !1);
 	}, Mt = function(e, t, r) {
 		if (ne[t] || ge && (t === "id" || t === "name") && (r in n || r in Ke)) return !1;
-		if (!(ae && !ne[t] && _t(M, t)) && !(ie && _t(N, t)) && !(re.attributeCheck instanceof Function && re.attributeCheck(t, e))) {
-			if (!z[t] || ne[t]) {
+		let i = z[t] || re.attributeCheck instanceof Function && re.attributeCheck(t, e);
+		if (!(ae && !ne[t] && _t(M, t)) && !(ie && _t(N, t))) {
+			if (!i || ne[t]) {
 				if (!(Ft(e) && (V.tagNameCheck instanceof RegExp && _t(V.tagNameCheck, e) || V.tagNameCheck instanceof Function && V.tagNameCheck(e)) && (V.attributeNameCheck instanceof RegExp && _t(V.attributeNameCheck, t) || V.attributeNameCheck instanceof Function && V.attributeNameCheck(t, e)) || t === "is" && V.allowCustomizedBuiltInElements && (V.tagNameCheck instanceof RegExp && _t(V.tagNameCheck, r) || V.tagNameCheck instanceof Function && V.tagNameCheck(r)))) return !1;
 			} else if (!Te[t] && !_t(L, ct(r, F, "")) && !((t === "src" || t === "xlink:href" || t === "href") && e !== "script" && lt(r, "data:") === 0 && we[e]) && !(oe && !_t(P, ct(r, F, ""))) && r) return !1;
 		}
@@ -125105,13 +125106,17 @@ var w1e = /* @__PURE__ */ _(function(e) {
 	detectType: Qo,
 	registerIconPacks: RS,
 	getRegisteredDiagramsMetadata: /* @__PURE__ */ _(() => Object.keys(Zo).map((e) => ({ id: e })), "getRegisteredDiagramsMetadata")
-}, O1e = $9, k1e = !1;
+}, O1e = $9;
+//#endregion
+//#region src/extensions/mermaid.ts
+Ut();
+var k1e = !1;
 async function A1e(e) {
 	let t = Array.from(e.querySelectorAll("pre code.language-mermaid"));
 	if (t.length === 0) return;
 	k1e ||= (O1e.initialize({
 		startOnLoad: !1,
-		securityLevel: "loose"
+		securityLevel: "strict"
 	}), !0);
 	let n = 0;
 	for (let e of t) {
@@ -125122,7 +125127,10 @@ async function A1e(e) {
 		let a = `mmd-${Date.now()}-${n++}`;
 		try {
 			let { svg: e } = await O1e.render(a, t);
-			i.innerHTML = e;
+			i.innerHTML = Ht.sanitize(e, { USE_PROFILES: {
+				svg: !0,
+				svgFilters: !0
+			} });
 		} catch {
 			i.textContent = t;
 		}
