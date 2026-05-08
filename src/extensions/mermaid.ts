@@ -11,6 +11,7 @@
  */
 
 import mermaid from 'mermaid'
+import DOMPurify from 'dompurify'
 
 let _initialized = false
 
@@ -21,7 +22,7 @@ async function renderMermaid(container: HTMLElement): Promise<void> {
   if (blocks.length === 0) return
 
   if (!_initialized) {
-    mermaid.initialize({ startOnLoad: false, securityLevel: 'loose' as never })
+    mermaid.initialize({ startOnLoad: false, securityLevel: 'strict' as never })
     _initialized = true
   }
 
@@ -35,7 +36,8 @@ async function renderMermaid(container: HTMLElement): Promise<void> {
     const id = `mmd-${Date.now()}-${idx++}`
     try {
       const { svg } = await mermaid.render(id, txt)
-      wrapper.innerHTML = svg
+      const safeSvg = DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true, svgFilters: true } })
+      wrapper.innerHTML = safeSvg
     } catch {
       // fallback : conserver le texte source si le rendu échoue
       wrapper.textContent = txt
