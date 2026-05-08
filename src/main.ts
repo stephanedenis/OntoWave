@@ -12,6 +12,7 @@ import { getJsonFromBundle, getTextFromBundle } from './adapters/browser/bundle'
 import { primeInlineConfigBundle } from './adapters/browser/config'
 import { initUx } from './adapters/browser/ux'
 import { pickPreferredLanguage } from './core/logic'
+import type { AppConfig } from './core/types'
 
 // CSS injecté quand la bibliothèque bootstrappe elle-même le DOM (page quasi-vide)
 const BOOTSTRAP_CSS = `
@@ -362,11 +363,11 @@ async function initContainerMode(containerEl: HTMLElement, cfg: Record<string, u
 
   // Adaptateur de config scopé aux options fournies
   const scopedConfig = {
-    async load() {
+    async load(): Promise<AppConfig> {
       return {
         roots: roots,
-        i18n: cfg.i18n as { default: string; supported: string[] } | undefined,
-        ui: cfg.ui as { header?: boolean; sidebar?: boolean; toc?: boolean; footer?: boolean; minimal?: boolean; menu?: boolean } | undefined,
+        i18n: cfg.i18n as AppConfig['i18n'],
+        ui: cfg.ui as AppConfig['ui'],
       }
     }
   }
@@ -404,11 +405,11 @@ async function initContainerMode(containerEl: HTMLElement, cfg: Record<string, u
 
 ;(async () => {
   // Toggle engine via config.json; fallback v2 par défaut si absent
-  const cfg = primeInlineConfigBundle() || getJsonFromBundle('/config.json') || {}
-  const rawCfg = cfg as Record<string, unknown>
+  const cfg: AppConfig = primeInlineConfigBundle() || getJsonFromBundle<AppConfig>('/config.json') || { roots: [] }
+  const rawCfg = cfg as unknown as Record<string, unknown>
 
   // Mode composant : si container est spécifié dans la config, déléguer à initContainerMode
-  const containerSpec = rawCfg.container as string | undefined
+  const containerSpec = cfg.container
   if (containerSpec) {
     const containerEl = document.querySelector<HTMLElement>(containerSpec)
     if (containerEl) {
