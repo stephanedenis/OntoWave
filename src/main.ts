@@ -13,7 +13,7 @@ import { primeInlineConfigBundle } from './adapters/browser/config'
 import { initUx } from './adapters/browser/ux'
 import { pickPreferredLanguage } from './core/logic'
 import type { AppConfig } from './core/types'
-import { BrowserExtensionRegistry } from './adapters/browser/extension-registry'
+import { createExtensionRegistry } from './adapters/browser/extension-registry'
 import markdownRenderer from './extensions/markdown'
 import mermaidRenderer from './extensions/mermaid'
 import katexRenderer from './extensions/katex'
@@ -277,7 +277,7 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   // --- Registre des extensions ---
   // Les extensions sont enregistrées ici (bundlé) ; dans une future étape (lot E),
   // elles seront chargées dynamiquement depuis dist/extensions/*.js.
-  const extensionRegistry = new BrowserExtensionRegistry()
+  const extensionRegistry = createExtensionRegistry()
   extensionRegistry.register(markdownRenderer)
   extensionRegistry.register(mermaidRenderer)
   extensionRegistry.register(katexRenderer)

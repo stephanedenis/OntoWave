@@ -18,11 +18,11 @@ import { getJsonFromBundle } from './adapters/browser/bundle'
 import { primeInlineConfigBundle } from './adapters/browser/config'
 import { initUx } from './adapters/browser/ux'
 import { createPluginManager } from './core/plugins'
-import type { OntoWavePlugin, PluginContext, PluginManager, ContentRenderer, ExtensionRegistry, ExtensionConfig, ExtensionStatus, I18nConfig, RenderPhase, AppConfig } from './core/types'
+import type { OntoWavePlugin, PluginContext, PluginManager, ContentRenderer, ExtensionRegistry, ExtensionConfig, ExtensionStatus, RuntimeWarning, WarningSink, I18nConfig, RenderPhase, AppConfig } from './core/types'
 import { pickPreferredLanguage } from './core/logic'
 
 export { createPluginManager }
-export type { OntoWavePlugin, PluginContext, PluginManager, ContentRenderer, ExtensionRegistry, ExtensionConfig, ExtensionStatus, I18nConfig, RenderPhase }
+export type { OntoWavePlugin, PluginContext, PluginManager, ContentRenderer, ExtensionRegistry, ExtensionConfig, ExtensionStatus, RuntimeWarning, WarningSink, I18nConfig, RenderPhase }
 
 /**
  * Initialize OntoWave application
