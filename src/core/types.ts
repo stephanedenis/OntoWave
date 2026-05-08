@@ -161,6 +161,24 @@ export interface ExtensionRegistry {
   resolve(url: string, contentType?: string): ContentRenderer | null
 }
 
+/** Avertissement runtime exposé au menu flottant (code machine + message lisible). */
+export type RuntimeWarning = {
+  code: string
+  message: string
+}
+
+/**
+ * Interface optionnelle pour les objets capables d'accumuler des avertissements runtime.
+ * Implémentée par `createExtensionRegistry()` pour permettre à `createApp()` de transmettre
+ * les erreurs de config sans caster le type `ExtensionRegistry`.
+ */
+export interface WarningSink {
+  /** Ajoute un avertissement à la liste. */
+  addWarning(warning: RuntimeWarning): void
+  /** Retourne une copie de la liste des avertissements. */
+  getWarnings(): RuntimeWarning[]
+}
+
 // --- Plugin API ---
 
 export interface PluginContext {
