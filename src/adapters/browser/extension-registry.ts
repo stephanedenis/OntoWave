@@ -46,6 +46,11 @@ export function createExtensionRegistry(): ExtensionRegistry & {
         if (!renderer || typeof renderer.render !== 'function') {
           throw new Error(`[OntoWave] Extension "${name}" (${url}) ne fournit pas d'objet ContentRenderer valide.`)
         }
+        if (renderer.name !== name) {
+          throw new Error(
+            `[OntoWave] Extension "${name}" (${url}) déclare le nom "${renderer.name}". Le nom demandé et renderer.name doivent correspondre.`,
+          )
+        }
         renderers.set(name, renderer)
         return renderer
       } catch (err) {
