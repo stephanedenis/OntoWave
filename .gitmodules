@@ -1,0 +1,3 @@
+[submodule "copilotage"]
+	path = copilotage
+	url = https://github.com/stephanedenis/Panini-Copilotage.git
