@@ -101,15 +101,18 @@ test.describe('Page principale (docs/index.html)', () => {
     const menu = page.locator('#ontowave-floating-menu')
     const icon = page.locator('.ontowave-menu-icon')
     const brand = page.locator('.ontowave-menu-brand')
+    const themeToolbar = page.locator('#ow-ux-toolbar')
 
     // État initial : compact, brand masqué (display:none par défaut)
     await expect(menu).not.toHaveClass(/expanded/)
     await expect(brand).toBeHidden()
+    await expect(themeToolbar).toBeHidden()
 
     // Clic → état étendu
     await icon.click()
     await expect(menu).toHaveClass(/expanded/)
     await expect(brand).toBeVisible()
+    await expect(themeToolbar).toBeVisible()
     const ariaExpanded = await icon.getAttribute('aria-expanded')
     expect(ariaExpanded).toBe('true')
 
@@ -117,6 +120,7 @@ test.describe('Page principale (docs/index.html)', () => {
     await icon.click()
     await expect(menu).not.toHaveClass(/expanded/)
     await expect(brand).not.toBeVisible()
+    await expect(themeToolbar).toBeHidden()
     const ariaExpanded2 = await icon.getAttribute('aria-expanded')
     expect(ariaExpanded2).toBe('false')
   })

@@ -204,6 +204,10 @@ body.ow-theme-dark td {
   opacity: 1;
 }
 
+#ontowave-floating-menu:not(.expanded) #ow-ux-toolbar {
+  display: none !important;
+}
+
 `
 
 function injectStyles(): void {
