@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OntoWave</title>
+    <meta name="description" content="OntoWave - site principal" />
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #0b1220;
+        --card: #ffffff;
+        --text: #111827;
+        --muted: #4b5563;
+        --accent: #0ea5e9;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text);
+        background: radial-gradient(1200px 600px at 10% 10%, #1f2937 0%, var(--bg) 60%);
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+      main {
+        width: min(760px, 100%);
+        background: var(--card);
+        border-radius: 16px;
+        padding: 28px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+      }
+      h1 {
+        margin: 0 0 10px;
+        line-height: 1.2;
+      }
+      p {
+        margin: 0 0 14px;
+        color: var(--muted);
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      a:hover { text-decoration: underline; }
+      .links {
+        margin-top: 16px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+      code {
+        background: #f3f4f6;
+        border-radius: 6px;
+        padding: 2px 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>OntoWave</h1>
+      <p>Le site GitHub Pages est de nouveau actif.</p>
+      <p>Cette page minimale existe pour garantir une racine stable pendant la transition du repository.</p>
+      <div class="links">
+        <a href="/">Accueil</a>
+        <a href="/journal-de-bord/">Journal de bord</a>
+        <a href="https://github.com/stephanedenis/OntoWave">Repository</a>
+      </div>
+      <p style="margin-top: 18px;">Si tu vois cette page sur <code>ontowave.org</code>, la publication fonctionne.</p>
+    </main>
+  </body>
+</html>
