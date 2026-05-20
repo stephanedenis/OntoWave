@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 Test des Nouveaux Logos OntoWave</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #007acc;
+        }
+        .logo-test {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid #e9ecef;
+        }
+        .logo-large {
+            font-size: 2em;
+        }
+        .before-after {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .comparison {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .old { border-left: 4px solid #dc3545; }
+        .new { border-left: 4px solid #28a745; }
+        
+        code {
+            background: #f1f3f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Test des Nouveaux Logos OntoWave</h1>
+        
+        <p>Cette page teste les améliorations des logos pour PlantUML et Mermaid, ainsi que la documentation des langages Prism supportés.</p>
+
+        <div class="test-section">
+            <h2>🏭 PlantUML - Nouveau Logo</h2>
+            <div class="before-after">
+                <div class="comparison old">
+                    <h4>❌ Avant</h4>
+                    <div class="logo-large">📊</div>
+                    <p>Logo générique "graphique"</p>
+                </div>
+                <div class="comparison new">
+                    <h4>✅ Après</h4>
+                    <div class="logo-large">🏭</div>
+                    <p>Logo "usine" (plant = factory)</p>
+                </div>
+            </div>
+            <p><strong>Amélioration :</strong> Le logo fait maintenant référence à "plant" = usine (fabrication de diagrammes), pas plante 🌱.</p>
+        </div>
+
+        <div class="test-section">
+            <h2>🧜‍♀️ Mermaid - Nouveau Logo</h2>
+            <div class="before-after">
+                <div class="comparison old">
+                    <h4>❌ Avant</h4>
+                    <div class="logo-large">📊</div>
+                    <p>Logo générique "graphique"</p>
+                </div>
+                <div class="comparison new">
+                    <h4>✅ Après</h4>
+                    <div class="logo-large">🧜‍♀️</div>
+                    <p>Logo "sirène" (Mermaid)</p>
+                </div>
+            </div>
+            <p><strong>Amélioration :</strong> Le logo fait maintenant référence au nom officiel "Mermaid" (sirène) du projet.</p>
+        </div>
+
+        <div class="test-section">
+            <h2>🔤 Langages Prism Supportés</h2>
+            
+            <h3>Langages Essentiels (chargés immédiatement)</h3>
+            <div class="logo-test">
+                <code>HTML</code>
+                <code>CSS</code>
+                <code>JavaScript</code>
+            </div>
+            
+            <h3>Langages Additionnels (chargement automatique)</h3>
+            <div class="logo-test">
+                <code>Python</code>
+                <code>Java</code>
+                <code>TypeScript</code>
+                <code>PHP</code>
+                <code>Bash</code>
+                <code>JSON</code>
+                <code>YAML</code>
+            </div>
+            
+            <p><strong>Total :</strong> 10 langages de programmation supportés avec coloration syntaxique complète.</p>
+        </div>
+
+        <div class="test-section">
+            <h2>📝 Test avec du Code Markdown</h2>
+            <p>Voici comment les nouveaux logos apparaissent dans du vrai contenu :</p>
+            
+            <div style="background: white; padding: 20px; border-radius: 8px; margin: 15px 0;">
+                <h4>Exemple de contenu Markdown traité par OntoWave :</h4>
+                
+                <div style="margin: 15px 0;">
+                    <div style="margin-bottom: 8px; font-weight: bold; color: #586069;">🏭 Diagramme PlantUML</div>
+                    <div style="background: #f6f8fa; padding: 15px; border-radius: 5px;">
+                        [Diagramme PlantUML s'afficherait ici]
+                    </div>
+                </div>
+                
+                <div style="margin: 15px 0;">
+                    <div style="margin-bottom: 8px; font-weight: bold; color: #586069;">🧜‍♀️ Diagramme Mermaid</div>
+                    <div style="background: #f6f8fa; padding: 15px; border-radius: 5px;">
+                        [Diagramme Mermaid s'afficherait ici]
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>✅ Améliorations Apportées</h2>
+            <ul>
+                <li>✅ Logo PlantUML : <code>📊</code> → <code>🏭</code> (référence à l'usine)</li>
+                <li>✅ Logo Mermaid : <code>📊</code> → <code>🧜‍♀️</code> (référence à la sirène)</li>
+                <li>✅ Ajout d'un titre cohérent pour les diagrammes Mermaid</li>
+                <li>✅ Documentation claire des 10 langages Prism supportés</li>
+                <li>✅ Mise à jour de la documentation utilisateur</li>
+                <li>✅ Issue #13 créée pour suivi complet</li>
+            </ul>
+        </div>
+
+        <p style="text-align: center; margin-top: 30px; color: #666;">
+            <strong>Ces améliorations rendent OntoWave plus professionnel et informatif ! 🚀</strong>
+        </p>
+    </div>
+
+    <!-- Test OntoWave (ne pas charger pour cette démo) -->
+    <script>
+        console.log('🎨 Test des logos OntoWave chargé');
+        console.log('PlantUML: 🏭 (usine - plant = factory)');
+        console.log('Mermaid: 🧜‍♀️ (sirène - nom officiel du projet)');
+        console.log('Langages Prism: HTML, CSS, JS, Python, Java, TS, PHP, Bash, JSON, YAML');
+    </script>
+</body>
+</html>
