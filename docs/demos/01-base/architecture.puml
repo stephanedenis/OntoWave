@@ -1,0 +1,28 @@
+@startuml Architecture OntoWave
+!theme plain
+
+package "OntoWave" {
+  component "index.html" as HTML
+  component "ontowave.min.js" as Core
+  component "config.json" as Cfg
+
+  package "Contenu" {
+    component "index.fr.md" as DocFR
+    component "index.en.md" as DocEN
+    component "architecture.puml" as Diag [[architecture.puml]]
+  }
+}
+
+HTML --> Core : charge
+Core --> Cfg : lit
+Cfg --> DocFR : route FR
+Cfg --> DocEN : route EN
+Core --> Diag : navigue
+
+note right of Diag
+  Cliquer sur un lien .puml
+  charge ce diagramme directement
+  dans OntoWave
+end note
+
+@enduml

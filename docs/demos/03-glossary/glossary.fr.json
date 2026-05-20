@@ -1,0 +1,34 @@
+{
+  "lang": "fr",
+  "terms": [
+    {
+      "term": "UAF",
+      "aliases": ["Unified Architecture Framework"],
+      "definition": "Standard OMG de modélisation d'architecture d'entreprise par vues et viewpoints.",
+      "href": "https://www.omg.org/spec/UAF/"
+    },
+    {
+      "term": "AEG",
+      "aliases": ["Architecture d'entreprise gouvernementale"],
+      "definition": "Directive SCT — cadre obligatoire d'architecture TI pour les organismes publics du Québec.",
+      "href": "#/demos/03-glossary/glossary"
+    },
+    {
+      "term": "LGGRI",
+      "definition": "Loi sur la gouvernance et la gestion des ressources informationnelles des organismes publics.",
+      "href": "#/demos/03-glossary/glossary"
+    },
+    {
+      "term": "Capabilité",
+      "aliases": ["Capability"],
+      "definition": "Aptitude mesurable d'une organisation à atteindre un résultat. Définition UAF — prioritaire sur TOGAF et AEG.",
+      "href": "#/demos/03-glossary/glossary"
+    },
+    {
+      "term": "Gouvernance IT",
+      "aliases": ["Gouvernance des TI"],
+      "definition": "Mécanismes d'orientation, de pilotage et de reddition de comptes des ressources informationnelles.",
+      "href": "#/demos/03-glossary/glossary"
+    }
+  ]
+}

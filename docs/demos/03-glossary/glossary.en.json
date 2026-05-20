@@ -1,0 +1,29 @@
+{
+  "lang": "en",
+  "terms": [
+    {
+      "term": "UAF",
+      "aliases": ["Unified Architecture Framework"],
+      "definition": "OMG standard for enterprise architecture modelling through views and viewpoints.",
+      "href": "https://www.omg.org/spec/UAF/"
+    },
+    {
+      "term": "Capability",
+      "aliases": ["Capabilité"],
+      "definition": "A measurable ability of an organisation to achieve a specific outcome. UAF definition — takes precedence over TOGAF and AEG.",
+      "href": "#/demos/03-glossary/glossary"
+    },
+    {
+      "term": "IT Governance",
+      "aliases": ["Gouvernance IT"],
+      "definition": "Mechanisms for directing, managing and accounting for IT resources in an organisation.",
+      "href": "#/demos/03-glossary/glossary"
+    },
+    {
+      "term": "Enterprise Architecture",
+      "aliases": ["AE"],
+      "definition": "Systematic description of an organisation — strategy, processes, information systems and infrastructure — from multiple coherent viewpoints.",
+      "href": "#/demos/03-glossary/glossary"
+    }
+  ]
+}
