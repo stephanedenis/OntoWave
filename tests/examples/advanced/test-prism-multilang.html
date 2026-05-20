@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Prism + Multilingue OntoWave</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+        }
+        .test-status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .test-pass { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .test-fail { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Diagnostic : Prism + Multilingue</h1>
+    
+    <div class="test-section">
+        <h2>Test 1 : Boutons de langue</h2>
+        <p>Les boutons de langue doivent apparaître en haut à droite :</p>
+        <div id="test1-result" class="test-status">⏳ Test en cours...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 2 : Coloration syntaxique HTML</h2>
+        <p>Ce bloc HTML doit être coloré :</p>
+        <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Test&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;script src="ontowave.min.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+        <div id="test2-result" class="test-status">⏳ Test en cours...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 3 : Bascule FR/EN</h2>
+        <div id="lang-fr" class="lang-content">
+            <p><strong>Contenu en français</strong> - Ce texte doit être visible par défaut</p>
+        </div>
+        <div id="lang-en" class="lang-content" style="display: none;">
+            <p><strong>English content</strong> - This text should be hidden initially</p>
+        </div>
+        <div id="test3-result" class="test-status">⏳ Test en cours...</div>
+    </div>
+
+    <div class="lang-toggle">
+        <button onclick="toggleLang('fr')" id="btn-fr">🇫🇷 Français</button>
+        <button onclick="toggleLang('en')" id="btn-en">🇬🇧 English</button>
+    </div>
+
+    <style>
+    .lang-toggle {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 999;
+        display: flex;
+        gap: 8px;
+    }
+
+    .lang-toggle button {
+        padding: 8px 12px;
+        border: 1px solid #d0d7de;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        cursor: pointer;
+        font-size: 0.8em;
+        transition: all 0.2s ease;
+    }
+
+    .lang-toggle button:hover {
+        background: #f8f9fa;
+        transform: translateY(-1px);
+    }
+
+    .lang-toggle button.active {
+        background: #0969da;
+        color: white;
+        border-color: #0969da;
+    }
+    </style>
+
+    <script>
+    // Tests automatiques
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            // Test 1: Boutons de langue
+            const langButtons = document.querySelectorAll('.lang-toggle button');
+            const test1 = document.getElementById('test1-result');
+            if (langButtons.length === 2) {
+                test1.textContent = '✅ Boutons de langue présents';
+                test1.className = 'test-status test-pass';
+            } else {
+                test1.textContent = '❌ Boutons de langue manquants';
+                test1.className = 'test-status test-fail';
+            }
+            
+            // Test 2: Prism (vérifier si la coloration est appliquée)
+            const test2 = document.getElementById('test2-result');
+            const codeBlock = document.querySelector('code.language-html');
+            if (codeBlock && window.Prism) {
+                if (codeBlock.innerHTML.includes('<span')) {
+                    test2.textContent = '✅ Coloration Prism active';
+                    test2.className = 'test-status test-pass';
+                } else {
+                    test2.textContent = '⚠️ Prism chargé mais coloration manquante';
+                    test2.className = 'test-status test-fail';
+                }
+            } else {
+                test2.textContent = '❌ Prism non chargé';
+                test2.className = 'test-status test-fail';
+            }
+            
+            // Test 3: Multilingue
+            const test3 = document.getElementById('test3-result');
+            const frContent = document.getElementById('lang-fr');
+            const enContent = document.getElementById('lang-en');
+            if (frContent && enContent) {
+                test3.textContent = '✅ Contenus multilingues présents';
+                test3.className = 'test-status test-pass';
+            } else {
+                test3.textContent = '❌ Contenus multilingues manquants';
+                test3.className = 'test-status test-fail';
+            }
+        }, 1000);
+    });
+
+    // Fonction pour changer de langue
+    function toggleLang(lang) {
+        document.querySelectorAll('.lang-content').forEach(el => {
+            el.style.display = 'none';
+        });
+        
+        const targetContent = document.getElementById('lang-' + lang);
+        if (targetContent) {
+            targetContent.style.display = 'block';
+        }
+        
+        document.querySelectorAll('.lang-toggle button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        const activeBtn = document.getElementById('btn-' + lang);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+        }
+        
+        localStorage.setItem('ontowave-lang', lang);
+    }
+
+    // Initialisation
+    toggleLang('fr');
+    </script>
+
+    <!-- OntoWave (pour Prism et autres fonctionnalités) -->
+    <script src="ontowave.min.js"></script>
+</body>
+</html>

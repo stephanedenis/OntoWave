@@ -1,0 +1,644 @@
+import { createApp } from './app'
+import { browserConfig } from './adapters/browser/config'
+import { browserContent } from './adapters/browser/content'
+import { browserRouter } from './adapters/browser/router'
+import { browserView } from './adapters/browser/view'
+import { createMd as createMdV2 } from './adapters/browser/md'
+import { enhancePage } from './adapters/browser/enhance'
+import { buildSidebar, buildPrevNext } from './adapters/browser/navigation'
+import { createSearch } from './adapters/browser/search'
+import { renderConfigPage } from './adapters/browser/configPage'
+import { getJsonFromBundle, getTextFromBundle } from './adapters/browser/bundle'
+import { primeInlineConfigBundle } from './adapters/browser/config'
+import { initUx } from './adapters/browser/ux'
+import { pickPreferredLanguage } from './core/logic'
+import { BrowserExtensionRegistry } from './adapters/browser/extension-registry'
+import markdownRenderer from './extensions/markdown'
+import mermaidRenderer from './extensions/mermaid'
+import katexRenderer from './extensions/katex'
+import highlightRenderer from './extensions/highlight'
+import plantumlRenderer from './extensions/plantuml'
+
+// CSS injecté quand la bibliothèque bootstrappe elle-même le DOM (page quasi-vide)
+const BOOTSTRAP_CSS = `
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;padding:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'DejaVu Sans',Arial,sans-serif;background:#fff;color:#1a1a1a}
+#ow-content{padding:2rem max(2rem,5vw);max-width:900px;margin:0 auto}
+#app{line-height:1.7}
+#app h1,#app h2,#app h3{margin-top:1.5rem}
+#app table{border-collapse:collapse;width:100%}
+#app th,#app td{border:1px solid #e2e8f0;padding:.4rem .75rem}
+#app th{background:#f8fafc}
+#app pre{background:#f1f5f9;border-radius:6px;padding:1rem;overflow-x:auto}
+#app code{background:#f1f5f9;border-radius:3px;padding:.1em .3em;font-size:.875em}
+#app pre code{background:none;padding:0}
+#app a{color:#0369a1}
+#app a:hover{color:#0ea5e9}
+#app blockquote{border-left:4px solid #e2e8f0;margin-left:0;padding-left:1rem;color:#64748b}
+.hidden-by-config{display:none!important}
+@media(max-width:600px){#ow-content{padding:1rem}}
+#ontowave-floating-menu{position:fixed;top:20px;left:20px;z-index:1000;cursor:move;transition:all 0.3s ease}
+#ontowave-floating-menu:not(.expanded){width:66px;height:66px;border-radius:44px;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid #e1e4e8;box-shadow:0 4px 12px rgba(27,31,35,0.15);display:flex;align-items:center;justify-content:center;overflow:hidden}
+#ontowave-floating-menu:not(.expanded):hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(27,31,35,0.25)}
+.ontowave-menu-icon{font-size:30px;line-height:1;cursor:pointer;user-select:none;flex-shrink:0}
+#ontowave-floating-menu.expanded{border-radius:22px;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid #e1e4e8;box-shadow:0 4px 12px rgba(27,31,35,0.15);padding:10px 18px;display:flex;align-items:center;gap:10px;cursor:default}
+.ontowave-menu-brand{display:none;font-weight:600;font-size:0.9rem;color:#1a1a1a;text-decoration:none;white-space:nowrap;flex-direction:column;align-items:flex-start;line-height:1.2}
+.ontowave-menu-version{font-size:0.7rem;font-weight:400;color:#57606a;display:block}
+.ontowave-menu-option{display:none;background:none;border:1px solid #d0d7de;border-radius:6px;padding:4px 10px;font-size:0.85rem;cursor:pointer;color:#1a1a1a;text-decoration:none}
+.ontowave-menu-option:hover{transform:translateY(-1px);background:#f6f8fa}
+.ontowave-lang-btn{display:none;background:#f8f9fa;border:1px solid #d0d7de;border-radius:4px;padding:3px 8px;font-size:0.8rem;cursor:pointer;color:#1a1a1a;font-weight:500}
+.ontowave-lang-btn.active{background:#28a745;border-color:#28a745;color:#fff}
+#ontowave-floating-menu.expanded .ontowave-menu-brand{display:flex}
+#ontowave-floating-menu.expanded .ontowave-menu-option,
+#ontowave-floating-menu.expanded .ontowave-lang-btn{display:inline-flex;align-items:center}
+#ontowave-floating-menu:not(.expanded) #ow-ux-toolbar{display:none!important}
+.ow-ext-badge{position:absolute;top:-4px;right:-4px;width:14px;height:14px;background:#f59e0b;border-radius:50%;border:2px solid #fff;display:none;align-items:center;justify-content:center;font-size:8px;color:#fff;font-weight:700;pointer-events:none}
+.ow-ext-badge.ow-ext-badge--error{background:#ef4444}
+.ow-ext-badge.visible{display:flex}
+.ontowave-menu-icon{position:relative}
+`
+
+/**
+ * Bootstrappe le DOM quand la page est quasi-vide (pas de #app fourni par l'utilisateur).
+ * Crée #app, le menu flottant icône-vague et injecte les styles de base.
+ */
+function bootstrapDom(cfg: Record<string, unknown>): void {
+  if (document.getElementById('app')) return  // page avec HTML custom → rien à faire
+
+  if (!document.getElementById('ow-bootstrap-styles')) {
+    const style = document.createElement('style')
+    style.id = 'ow-bootstrap-styles'
+    style.textContent = BOOTSTRAP_CSS
+    document.head.appendChild(style)
+  }
+
+  const wrapper = document.createElement('div')
+  wrapper.id = 'ow-content'
+  const app = document.createElement('div')
+  app.id = 'app'
+  wrapper.appendChild(app)
+  document.body.appendChild(wrapper)
+
+  if (document.getElementById('ontowave-floating-menu')) return
+
+  const i18n = cfg.i18n as Record<string, unknown> | undefined
+  const roots = (cfg.roots as Array<{ base: string; root: string }>) || []
+  const supportedLanguages = ((i18n?.supported as string[] | undefined) || roots.map(root => root.base))
+    .map(base => String(base || '').replace(/^\/+|\/+$/g, ''))
+    .filter(base => base && base !== '/')
+  const fallbackLanguage = (i18n?.default as string | undefined)
+    || (roots[0]?.base && roots[0].base !== '/' ? roots[0].base : null)
+    || null
+  const preferredLanguage = pickPreferredLanguage(
+    typeof navigator !== 'undefined' ? navigator.languages : undefined,
+    supportedLanguages,
+    fallbackLanguage,
+  )
+
+  const floatingMenu = document.createElement('div')
+  floatingMenu.id = 'ontowave-floating-menu'
+  document.body.appendChild(floatingMenu)
+
+  // Icon
+  const icon = document.createElement('span')
+  icon.className = 'ontowave-menu-icon'
+  icon.setAttribute('role', 'button')
+  icon.setAttribute('aria-label', 'Menu OntoWave')
+  icon.setAttribute('aria-expanded', 'false')
+  icon.textContent = '🌊'
+  floatingMenu.appendChild(icon)
+
+  // Badge d'avertissement des extensions (affiché pendant chargement/échec)
+  const extBadge = document.createElement('span')
+  extBadge.className = 'ow-ext-badge'
+  extBadge.id = 'ow-ext-badge'
+  extBadge.title = 'Extension en cours de chargement…'
+  extBadge.textContent = '⚠'
+  icon.appendChild(extBadge)
+
+  // Brand
+  const menuBrand = document.createElement('a')
+  menuBrand.className = 'ontowave-menu-brand'
+  menuBrand.href = 'https://ontowave.org'
+  menuBrand.target = '_blank'
+  menuBrand.rel = 'noopener'
+  menuBrand.textContent = 'OntoWave.org'
+  const versionSpan = document.createElement('span')
+  versionSpan.className = 'ontowave-menu-version'
+  versionSpan.textContent = `v${__APP_VERSION__}`
+  menuBrand.appendChild(versionSpan)
+  floatingMenu.appendChild(menuBrand)
+
+  // Home option
+  const homeBtn = document.createElement('a')
+  homeBtn.className = 'ontowave-menu-option'
+  homeBtn.textContent = '🏠 Accueil'
+  floatingMenu.appendChild(homeBtn)
+
+  // Language buttons (dynamically from cfg.roots)
+  const getActiveLanguage = (): string | null => {
+    const path = (location.hash || '').replace(/^#\/?/, '')
+    const firstSegment = path.split('/')[0] || ''
+    return supportedLanguages.includes(firstSegment) ? firstSegment : preferredLanguage
+  }
+  const updateHomeHref = () => {
+    const activeLanguage = getActiveLanguage()
+    homeBtn.href = activeLanguage ? `/#${activeLanguage}/index` : '/#/index'
+  }
+  const updateLangActive = () => {
+    const hash = location.hash || ''
+    updateHomeHref()
+    floatingMenu.querySelectorAll<HTMLButtonElement>('.ontowave-lang-btn').forEach(btn => {
+      const base = btn.dataset.lang || ''
+      btn.classList.toggle('active', hash.startsWith(`#${base}/`) || hash.startsWith(`#/${base}/`))
+    })
+  }
+  updateHomeHref()
+  if (roots.length > 1) {
+    for (const root of roots) {
+      if (!root.base || root.base === '/') continue
+      const langBtn = document.createElement('button')
+      langBtn.className = 'ontowave-lang-btn'
+      langBtn.dataset.lang = root.base
+      langBtn.textContent = root.base.toUpperCase()
+      langBtn.addEventListener('click', () => {
+        location.hash = `#${root.base}/index`
+        floatingMenu.classList.remove('expanded')
+        icon.setAttribute('aria-expanded', 'false')
+      })
+      floatingMenu.appendChild(langBtn)
+    }
+    updateLangActive()
+    window.addEventListener('hashchange', updateLangActive)
+  }
+
+  // Toggle expand/collapse on icon click
+  icon.addEventListener('click', (e) => {
+    e.stopPropagation()
+    const expanded = floatingMenu.classList.toggle('expanded')
+    icon.setAttribute('aria-expanded', String(expanded))
+  })
+
+  // Close when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!floatingMenu.contains(e.target as Node)) {
+      floatingMenu.classList.remove('expanded')
+      icon.setAttribute('aria-expanded', 'false')
+    }
+  })
+
+  // Drag & Drop — session uniquement (pas de localStorage)
+  let dragging = false, dx = 0, dy = 0
+  floatingMenu.addEventListener('mousedown', (e) => {
+    if (floatingMenu.classList.contains('expanded')) return
+    dragging = true
+    dx = e.clientX - floatingMenu.offsetLeft
+    dy = e.clientY - floatingMenu.offsetTop
+  })
+  document.addEventListener('mousemove', (e) => {
+    if (!dragging) return
+    const x = Math.max(0, Math.min(e.clientX - dx, window.innerWidth - floatingMenu.offsetWidth))
+    const y = Math.max(0, Math.min(e.clientY - dy, window.innerHeight - floatingMenu.offsetHeight))
+    floatingMenu.style.left = x + 'px'
+    floatingMenu.style.top = y + 'px'
+  })
+  document.addEventListener('mouseup', () => { dragging = false })
+
+  // Touch drag support
+  let tx = 0, ty = 0
+  floatingMenu.addEventListener('touchstart', (e) => {
+    if (floatingMenu.classList.contains('expanded')) return
+    const touch = e.touches[0]
+    tx = touch.clientX - floatingMenu.offsetLeft
+    ty = touch.clientY - floatingMenu.offsetTop
+    dragging = true
+  }, { passive: true })
+  document.addEventListener('touchmove', (e) => {
+    if (!dragging) return
+    const touch = e.touches[0]
+    const x = Math.max(0, Math.min(touch.clientX - tx, window.innerWidth - floatingMenu.offsetWidth))
+    const y = Math.max(0, Math.min(touch.clientY - ty, window.innerHeight - floatingMenu.offsetHeight))
+    floatingMenu.style.left = x + 'px'
+    floatingMenu.style.top = y + 'px'
+  }, { passive: true })
+  document.addEventListener('touchend', () => { dragging = false })
+}
+
+;(async () => {
+  // Toggle engine via config.json; fallback v2 par défaut si absent
+  const cfg = primeInlineConfigBundle() || getJsonFromBundle('/config.json') || {}
+  // Bootstrapper le DOM si la page est quasi-vide (pas de #app fourni)
+  bootstrapDom(cfg as Record<string, unknown>)
+  const engine = cfg.engine ?? 'v2'
+
+  // UI options
+  try {
+    const H = document.getElementById('site-header')
+    const S = document.getElementById('sidebar')
+    const T = document.getElementById('toc')
+    const F = document.getElementById('ontowave-floating-menu')
+    const ui = cfg.ui || {}
+    if (ui.minimal) {
+  document.body.classList.add('minimal')
+      H?.classList.add('hidden-by-config'); S?.classList.add('hidden-by-config'); T?.classList.add('hidden-by-config')
+    } else {
+      if (ui.header === false) H?.classList.add('hidden-by-config')
+      if (ui.sidebar === false) S?.classList.add('hidden-by-config')
+      if (ui.toc === false) T?.classList.add('hidden-by-config')
+    }
+    if (ui.menu === false) F?.classList.add('hidden-by-config')
+    else F?.classList.remove('hidden-by-config')
+  } catch {}
+  // i18n: détecter la langue préférée et rediriger vers la base correspondante si on est à la racine
+  try {
+    if (location.hash === '' || location.hash === '#/' || location.hash === '#') {
+      const supportedLanguages = ((cfg.i18n?.supported as string[] | undefined) || (cfg.roots || []).map((root: any) => root.base))
+        .map((base: string) => String(base || '').replace(/^\/+|\/+$/g, ''))
+        .filter((base: string) => base && base !== '/')
+      const fallbackLanguage = cfg.i18n?.default
+        || (cfg.roots?.[0]?.base && cfg.roots[0].base !== '/' ? cfg.roots[0].base : null)
+        || null
+      const preferredLanguage = pickPreferredLanguage(
+        typeof navigator !== 'undefined' ? navigator.languages : undefined,
+        supportedLanguages,
+        fallbackLanguage,
+      )
+      location.hash = preferredLanguage ? `#${preferredLanguage}/index` : '#/index'
+      // Pas de return : l'app continue de s'initialiser avec le nouveau hash
+    }
+  } catch {}
+  // Brand
+  const brand = document.getElementById('brand')
+  if (brand && typeof cfg.brand === 'string') brand.textContent = cfg.brand
+  // UX module: init si activé (cfg.ux !== false)
+  const uxOptions = typeof cfg.ux === 'object' ? cfg.ux : {}
+  const ux = cfg.ux !== false ? initUx(uxOptions) : null
+
+  // --- Registre des extensions ---
+  // Les extensions sont enregistrées ici (bundlé) ; dans une future étape (lot E),
+  // elles seront chargées dynamiquement depuis dist/extensions/*.js.
+  const extensionRegistry = new BrowserExtensionRegistry()
+  extensionRegistry.register(markdownRenderer)
+  extensionRegistry.register(mermaidRenderer)
+  extensionRegistry.register(katexRenderer)
+  extensionRegistry.register(highlightRenderer)
+  extensionRegistry.register(plantumlRenderer)
+
+  // Badge d'avertissement : écouter les événements d'état des extensions
+  const loadingExtensions = new Set<string>()
+  const failedExtensions = new Set<string>()
+  const updateExtBadge = () => {
+    const badge = document.getElementById('ow-ext-badge')
+    if (!badge) return
+    const hasLoading = loadingExtensions.size > 0
+    const hasError = failedExtensions.size > 0
+    if (hasLoading || hasError) {
+      badge.classList.add('visible')
+      badge.classList.toggle('ow-ext-badge--error', hasError && !hasLoading)
+      badge.title = hasError
+        ? `Extension(s) en échec : ${[...failedExtensions].join(', ')}`
+        : `Extension(s) en chargement : ${[...loadingExtensions].join(', ')}`
+    } else {
+      badge.classList.remove('visible', 'ow-ext-badge--error')
+      badge.title = ''
+    }
+  }
+  window.addEventListener('ow:extension:loading', (e: Event) => {
+    const name = (e as CustomEvent<{ name: string }>).detail.name
+    loadingExtensions.add(name)
+    updateExtBadge()
+  })
+  window.addEventListener('ow:extension:ready', (e: Event) => {
+    const name = (e as CustomEvent<{ name: string }>).detail.name
+    loadingExtensions.delete(name)
+    updateExtBadge()
+  })
+  window.addEventListener('ow:extension:error', (e: Event) => {
+    const name = (e as CustomEvent<{ name: string }>).detail.name
+    loadingExtensions.delete(name)
+    failedExtensions.add(name)
+    updateExtBadge()
+  })
+
+  if (engine === 'v2') {
+  const app = createApp({
+      config: browserConfig,
+      content: browserContent,
+      router: browserRouter,
+      view: browserView,
+  md: createMdV2({ light: false }),
+      registry: extensionRegistry,
+      enhance: { afterRender: async (html, _route) => {
+        const appEl = document.getElementById('app')!
+        // Signaler le chargement des extensions actives (mermaid, plantuml)
+        // afin d'alimenter le badge d'avertissement pendant la phase de rendu enrichi.
+        const hasMermaid = html.includes('language-mermaid')
+        const hasKroki = ['language-plantuml','language-puml','language-uml','language-dot','language-d2','language-bpmn']
+          .some(cls => html.includes(cls))
+        if (hasMermaid) window.dispatchEvent(new CustomEvent('ow:extension:loading', { detail: { name: 'mermaid' } }))
+        if (hasKroki) window.dispatchEvent(new CustomEvent('ow:extension:loading', { detail: { name: 'plantuml' } }))
+        try {
+          await enhancePage(appEl, html)
+          if (hasMermaid) window.dispatchEvent(new CustomEvent('ow:extension:ready', { detail: { name: 'mermaid' } }))
+          if (hasKroki) window.dispatchEvent(new CustomEvent('ow:extension:ready', { detail: { name: 'plantuml' } }))
+        } catch {
+          if (hasMermaid) window.dispatchEvent(new CustomEvent('ow:extension:error', { detail: { name: 'mermaid', error: 'render failed' } }))
+          if (hasKroki) window.dispatchEvent(new CustomEvent('ow:extension:error', { detail: { name: 'plantuml', error: 'render failed' } }))
+        }
+        // --- View Mode Support (html / md / split) ---
+        try {
+          // Cache structure on window to avoid refetching markdown repeatedly
+          // @ts-ignore
+          const g: any = (window as any)
+          if (!g.__owViewCache) g.__owViewCache = { lastHtml: '', lastRoute: '', lastMd: '', fetching: false }
+          const cache = g.__owViewCache
+          cache.lastHtml = appEl.innerHTML
+          cache.lastRoute = location.hash.split('?')[0]
+          const cfgRoots: Array<{ base: string; root: string }> = (cfg.roots || []).map((r: any) => ({ base: String(r.base||'').replace(/\/$/, ''), root: String(r.root||'').replace(/\/$/, '') }))
+          const escapeHtml = (s: string) => s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'} as any)[c] || c)
+          const parseRoutePath = () => {
+            const h = location.hash.replace(/^#/, '') || '/'
+            const p = h.split('?')[0]
+            return p
+          }
+          const getMode = (): string => {
+            const h = location.hash || '#/'
+            const [, q] = h.split('?')
+            const mode = new URLSearchParams(q || '').get('view') || 'html'
+            return mode
+          }
+          const fetchMarkdown = async () => {
+            if (cache.fetching) return
+            cache.fetching = true
+            try {
+              const p = parseRoutePath() // e.g. /fr/demo/mermaid
+              // Identify base (language) if first segment matches cfg base
+              const seg = p.split('/').filter(Boolean)
+              let base = seg[0] || ''
+              const rootCfg = cfgRoots.find(r => r.base === base)
+              let remainderSeg = seg.slice(1)
+              if (!rootCfg) {
+                // fallback first root
+                base = ''
+              }
+              const root = rootCfg ? rootCfg.root : (cfgRoots[0]?.root || '/content')
+              const remainder = remainderSeg.join('/')
+              const candidates: string[] = []
+              if (remainder) {
+                candidates.push(`${root}/${remainder}.md`)
+                candidates.push(`${root}/${remainder}/index.md`)
+              } else {
+                candidates.push(`${root}/index.md`)
+              }
+              for (const c of candidates) {
+                try {
+                  const res = await fetch(c, { cache: 'no-cache' })
+                  if (res.ok) { cache.lastMd = await res.text(); break }
+                } catch {}
+              }
+            } finally { cache.fetching = false }
+          }
+          const applyMode = async () => {
+            const mode = getMode()
+            const wasInOtherMode = document.body.classList.contains('mode-md') || document.body.classList.contains('mode-split')
+              try { document.body.classList.remove('mode-html','mode-md','mode-split') } catch {}
+              try { document.body.classList.add(`mode-${mode === 'sbs' ? 'split' : mode}`) } catch {}
+            if (mode === 'html') {
+              // Only restore innerHTML when switching back from md/split mode.
+              // On initial render enhancePage has already set the correct content
+              // with live event listeners; overwriting with innerHTML would strip them.
+              if (wasInOtherMode) appEl.innerHTML = cache.lastHtml
+              return
+            }
+            if (!cache.lastMd) await fetchMarkdown()
+            const raw = cache.lastMd ? escapeHtml(cache.lastMd) : '*Markdown introuvable*'
+            if (mode === 'md') {
+              appEl.innerHTML = `<div class="ow-md-only"><pre class="ow-raw-md">${raw}</pre></div>`
+            } else if (mode === 'split' || mode === 'sbs') {
+              appEl.innerHTML = `<div class="ow-split"><div class="ow-pane ow-raw"><pre class="ow-raw-md">${raw}</pre></div><div class="ow-pane ow-rendered">${cache.lastHtml}</div></div>`
+            }
+          }
+          // Apply immediately for current render
+          await applyMode()
+          // Install hashchange listener once
+          if (!g.__owViewListener) {
+            g.__owViewListener = true
+            window.addEventListener('hashchange', () => {
+              // If only the query part changed (view=) and route path same, re-apply
+              const currentPath = location.hash.split('?')[0]
+              if (currentPath === cache.lastRoute) {
+                applyMode()
+              }
+            })
+          }
+        } catch {}
+        // Floating view toggles (MD / HTML / SBS)
+        try {
+          const ct = document.getElementById('view-toggles')
+          if (ct) {
+            const setActive = (mode: string | null) => {
+              ct.querySelectorAll('.pill').forEach(el => el.classList.remove('active'))
+              const sel = mode === 'split' || mode === 'sbs' ? '[data-view="split"]' : (mode === 'md' ? '[data-view="md"]' : '[data-view="html"]')
+              const btn = ct.querySelector(sel)
+              if (btn) btn.classList.add('active')
+            }
+            const applyMode = (mode: string) => {
+              const hash = location.hash || '#/'
+              const [path, q] = hash.split('?')
+              const p = new URLSearchParams((q || '').replace(/^\?/,''))
+              if (mode === 'html') p.delete('view'); else p.set('view', mode)
+              const next = p.toString()
+              location.hash = next ? `${path}?${next}` : path
+            }
+            // Init active state
+            const [_, q] = (location.hash || '#/').split('?')
+            const mode = new URLSearchParams(q || '').get('view') || 'html'
+            setActive(mode)
+            // Bind clicks
+            ct.querySelectorAll('button[data-view]').forEach(btn => {
+              btn.addEventListener('click', (e) => {
+                const v = (e.currentTarget as HTMLElement).getAttribute('data-view') || 'html'
+                applyMode(v)
+              })
+            })
+          }
+        } catch {}
+        // Sidebar
+        const side = await buildSidebar()
+        if (side) {
+          const el = document.getElementById('sidebar')
+          if (el) el.innerHTML = side
+        }
+        // Prev/Next computation (used by footer and prefetch)
+        const pn = await buildPrevNext(location.hash || '#/')
+        // Prev/Next footer (optional)
+        const ui = cfg.ui || {}
+        if (ui.footer !== false && !ui.minimal) {
+          const footer = document.createElement('div')
+          footer.style.marginTop = '2rem'
+          footer.innerHTML = `
+            <hr/>
+            <div style="display:flex; justify-content:space-between">
+              <span>${pn.prev ? `<a href="${pn.prev}">← Précédent</a>` : ''}</span>
+              <span>${pn.next ? `<a href="${pn.next}">Suivant →</a>` : ''}</span>
+            </div>`
+          appEl.appendChild(footer)
+        }
+        // Prefetch prev/next pour accélérer la nav
+        const prefetch = async (href: string) => {
+          try {
+            const bundleData = getJsonFromBundle('/sitemap.json')
+            const resp = bundleData || await fetch('/sitemap.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).catch(() => null)
+            const items = resp?.items || []
+            const match = items.find((it: any) => it.route === href)
+            if (!match) return
+            const md = match.path?.replace(/^\//,'') || ''
+            if (md) { await fetch('/' + md, { cache: 'force-cache' }).catch(() => {}) }
+          } catch {}
+        }
+        if (pn.prev) prefetch(pn.prev)
+        if (pn.next) prefetch(pn.next)
+        // UX module: notifier le changement de route
+        if (ux) ux.onRouteChange(location.hash || '#/', pn)
+      } },
+    })
+    await app.start()
+    // Si la page d’accueil n’existe pas, afficher une page de configuration
+    try {
+      const appEl = document.getElementById('app')!
+      const isRoot = (location.hash === '' || location.hash === '#/' || location.hash === '#')
+      if (/404 — Not found/.test(appEl.textContent || '') && isRoot) {
+        appEl.innerHTML = `
+          <h1>Configuration requise</h1>
+          <p>Ajoutez un fichier <code>index.md</code> dans votre racine de contenu (<code>content/[lang]/index.md</code> avec i18n),
+          ou modifiez <code>public/config.json</code> pour pointer vers vos dossiers.</p>
+          <p>Vous pouvez aussi préparer la recherche en important un <code>pages.txt</code> via le menu Options, puis exporter <code>search-index.json</code> à déposer dans <code>docs/</code>.</p>
+        `
+      }
+      // Route dédiée de config
+      if (location.hash.replace(/^#/, '') === '/config') {
+        const cfgJson = getJsonFromBundle('/config.json') || {}
+        await renderConfigPage(appEl, cfgJson)
+      }
+      // Marqueur ⚠️ dans le menu si éléments auxiliaires manquants
+      try {
+        const check = async (url: string) => {
+          // Check bundle first to avoid unnecessary fetches
+          if (getJsonFromBundle(url) !== null) return true
+          if (getTextFromBundle(url) !== null) return true
+          try { const r = await fetch(url, { cache: 'no-cache' }); return r.ok } catch { return false }
+        }
+        const hasNav = await check('/nav.yml')
+        const hasSearchIdx = await check('/search-index.json')
+        const hasSitemap = await check('/sitemap.json')
+        const needs = !hasNav || (!hasSearchIdx && !hasSitemap)
+        if (needs) {
+          const a = document.querySelector('#ontowave-floating-menu a[href="#/config"]') as HTMLAnchorElement | null
+          if (a && !(a.textContent || '').includes('⚠️')) a.textContent = (a.textContent || 'Configuration') + ' ⚠️'
+        }
+      } catch {}
+    } catch {}
+  } else {
+    // Legacy path: import legacy modules dynamically to keep bundle small if unused
+    const [{ getCurrentRoute, onRouteChange }, { createMd, rewriteLinks }] = await Promise.all([
+      import('./router'),
+      import('./markdown'),
+    ])
+    type Root = { base: string; root: string }
+    const appEl = document.getElementById('app')!
+    const md = createMd()
+    function resolveCandidates(roots: Root[], path: string) {
+      const candidates: string[] = []
+      const p = path.replace(/\/$/, '') || '/'
+      for (const r of roots) {
+        const prefix = r.root.replace(/\/$/, '')
+        const base = p === '/' ? '/index' : p
+        candidates.push(`${prefix}${base}.md`)
+        candidates.push(`${prefix}${p}/index.md`)
+      }
+      return candidates
+    }
+  async function loadMarkdown(roots: Root[], routePath: string): Promise<string> {
+      const cands = resolveCandidates(roots, routePath)
+      for (const url of cands) {
+        try {
+          const res = await fetch(url, { cache: 'no-cache' })
+          if (res.ok) return await res.text()
+        } catch {}
+      }
+  return `# 404 — Not found\n\nAucun document pour \`${routePath}\``
+    }
+    const cfg2 = cfg
+    async function renderRoute() {
+      const { path } = getCurrentRoute()
+      const mdSrc = await loadMarkdown(cfg2.roots, path)
+      const html = md.render(mdSrc)
+      appEl.innerHTML = html
+      rewriteLinks(appEl)
+      const h1 = appEl.querySelector('h1')?.textContent?.trim()
+      if (h1) document.title = `${h1} — OntoWave`
+    }
+    await renderRoute()
+    onRouteChange(() => { void renderRoute() })
+  }
+
+  // Recherche opt-in: inactive par défaut à moins qu'un index préconstruit existe
+  try {
+    const box = document.getElementById('search') as HTMLInputElement | null
+    const resBox = document.getElementById('search-results')
+    const opt = document.getElementById('opt-search') as HTMLInputElement | null
+    const importBtn = document.getElementById('opt-pages') as HTMLInputElement | null
+  const exportBtn = document.getElementById('opt-export-index') as HTMLButtonElement | null
+  const dlPagesBtn = document.getElementById('opt-download-pages') as HTMLButtonElement | null
+    const state = document.getElementById('opt-state') as HTMLElement | null
+    const s = createSearch()
+    let active = false
+    const ensure = async () => {
+      if (!active) return
+      await s.init()
+      if (box && resBox) s.bind(box, resBox)
+      state && (state.textContent = s.hasReadyIndex() ? 'Index prêt' : 'Index minimal (titres)')
+    }
+    // Activer automatiquement si un index préconstruit existe
+    try {
+  const hasEmbedded = !!getJsonFromBundle('/search-index.json')
+  const ok = hasEmbedded || await fetch('/search-index.json', { cache: 'no-cache' }).then(r => r.ok).catch(() => false)
+  if (ok) { active = true; if (opt) opt.checked = true; await ensure() }
+    } catch {}
+    // Toggle manuel
+    opt?.addEventListener('change', async () => { active = !!opt.checked; if (active) await ensure() })
+    // Import pages.txt
+    importBtn?.addEventListener('change', async () => {
+      const f = importBtn.files?.[0]
+      if (!f) return
+      const text = await f.text()
+      await s.importPagesList(text)
+      await s.enableLiveIndexingFrom()
+      if (box && resBox) s.bind(box, resBox)
+      state && (state.textContent = 'Index en construction…')
+    })
+    // Export index JSON
+    exportBtn?.addEventListener('click', () => {
+      const data = s.exportIndex()
+      const blob = new Blob([data], { type: 'application/json' })
+      const a = document.createElement('a')
+      a.href = URL.createObjectURL(blob)
+      a.download = 'search-index.json'
+      a.click()
+      URL.revokeObjectURL(a.href)
+    })
+    // Télécharger pages.txt
+    dlPagesBtn?.addEventListener('click', async () => {
+      try {
+        const r = await fetch('/pages.txt', { cache: 'no-cache' })
+        const text = r.ok ? await r.text() : ''
+        const blob = new Blob([text], { type: 'text/plain' })
+        const a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = 'pages.txt'
+        a.click()
+        URL.revokeObjectURL(a.href)
+      } catch {}
+    })
+  } catch {}
+})()

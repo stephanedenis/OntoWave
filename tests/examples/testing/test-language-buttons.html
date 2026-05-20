@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Test des boutons de langue OntoWave</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-title {
+            color: #333;
+            border-bottom: 2px solid #e1e5e9;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Tests des boutons de langue OntoWave</h1>
+    
+    <div class="test-section">
+        <h2 class="test-title">Mode "fixed" (par défaut)</h2>
+        <div id="test-fixed" style="height: 400px; border: 1px solid #ddd; position: relative;"></div>
+        <div id="status-fixed" class="status info">⏳ Chargement...</div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">Mode "menu"</h2>
+        <div id="test-menu" style="height: 400px; border: 1px solid #ddd; position: relative;"></div>
+        <div id="status-menu" class="status info">⏳ Chargement...</div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">Mode "both"</h2>
+        <div id="test-both" style="height: 400px; border: 1px solid #ddd; position: relative;"></div>
+        <div id="status-both" class="status info">⏳ Chargement...</div>
+    </div>
+
+    <script src="dist/ontowave.js"></script>
+    <script>
+        function testMode(mode, containerId, statusId) {
+            const config = {
+                ui: { languageButtons: mode },
+                locales: ["fr", "en"],
+                content: `# Test ${mode.toUpperCase()}
+                
+Ceci est un test du mode "${mode}" pour les boutons de langue.
+
+## Fonctionnalités testées
+
+- 🌐 Boutons de langue
+- 📱 Responsive design  
+- ⚙️ Configuration flexible
+
+### Instructions
+
+${mode === 'fixed' ? '✅ Vous devriez voir des boutons fixes en haut à droite' : ''}
+${mode === 'menu' ? '✅ Cliquez sur le menu (☰) pour voir les boutons de langue' : ''}
+${mode === 'both' ? '✅ Vous devriez voir les boutons fixes ET dans le menu' : ''}
+                `
+            };
+            
+            try {
+                window.OntoWave.create(containerId, config);
+                
+                // Vérification après chargement
+                setTimeout(() => {
+                    const fixedButtons = document.querySelectorAll(`#${containerId} .ontowave-fixed-lang-buttons .ontowave-lang-btn`);
+                    const menuButtons = document.querySelectorAll(`#${containerId} .ontowave-menu .ontowave-lang-btn`);
+                    
+                    let results = [];
+                    
+                    if (mode === 'fixed') {
+                        results.push(`🔹 Boutons fixes: ${fixedButtons.length} (attendu: 2)`);
+                        results.push(`🔹 Boutons menu: ${menuButtons.length} (attendu: 0)`);
+                        results.push(fixedButtons.length === 2 && menuButtons.length === 0 ? '✅ Mode fixed OK' : '❌ Mode fixed KO');
+                    } else if (mode === 'menu') {
+                        // Pour menu, il faut ouvrir le menu d'abord
+                        const menuButton = document.querySelector(`#${containerId} .ontowave-menu-button`);
+                        if (menuButton) menuButton.click();
+                        
+                        setTimeout(() => {
+                            const menuButtonsAfterClick = document.querySelectorAll(`#${containerId} .ontowave-menu .ontowave-lang-btn`);
+                            results.push(`🔹 Boutons fixes: ${fixedButtons.length} (attendu: 0)`);
+                            results.push(`🔹 Boutons menu: ${menuButtonsAfterClick.length} (attendu: 2)`);
+                            results.push(fixedButtons.length === 0 && menuButtonsAfterClick.length === 2 ? '✅ Mode menu OK' : '❌ Mode menu KO');
+                            document.getElementById(statusId).innerHTML = results.join('<br>');
+                            document.getElementById(statusId).className = 'status success';
+                        }, 500);
+                        return;
+                    } else if (mode === 'both') {
+                        results.push(`🔹 Boutons fixes: ${fixedButtons.length} (attendu: 2)`);
+                        results.push(`🔹 Boutons menu: ${menuButtons.length} (attendu: 2)`);
+                        results.push(fixedButtons.length === 2 && menuButtons.length === 2 ? '✅ Mode both OK' : '❌ Mode both KO');
+                    }
+                    
+                    document.getElementById(statusId).innerHTML = results.join('<br>');
+                    document.getElementById(statusId).className = 'status success';
+                }, 1000);
+                
+            } catch (error) {
+                document.getElementById(statusId).innerHTML = `❌ Erreur: ${error.message}`;
+                document.getElementById(statusId).className = 'status error';
+            }
+        }
+
+        // Lancer les tests
+        setTimeout(() => {
+            testMode('fixed', 'test-fixed', 'status-fixed');
+        }, 100);
+        
+        setTimeout(() => {
+            testMode('menu', 'test-menu', 'status-menu');
+        }, 200);
+        
+        setTimeout(() => {
+            testMode('both', 'test-both', 'status-both');
+        }, 300);
+    </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+.DS_Store
+node_modules
+archive/
+test-results/
+.playwright-mcp/
+docs/standalone/
+dist/ontowave.umd.cjs
+
+# Artefacts de build / tests
+coverage/
+docs/assets/
+scroll-*.png
+playwright-report/
