@@ -2,7 +2,6 @@ import { defineConfig } from 'vite'
 import path from 'path'
 import pkg from './package.json'
 
-// Build configuration for dist/ package distribution
 export default defineConfig({
   base: './',
   define: {
@@ -15,14 +14,14 @@ export default defineConfig({
       entry: path.resolve(__dirname, 'src/main.ts'),
       name: 'OntoWave',
       fileName: () => 'ontowave.js',
-      formats: ['iife']
+      formats: ['iife'],
     },
     rollupOptions: {
       output: {
         inlineDynamicImports: true,
         entryFileNames: 'ontowave.js',
-        assetFileNames: 'ontowave.[ext]'
-      }
-    }
-  }
+        assetFileNames: 'ontowave.[ext]',
+      },
+    },
+  },
 })

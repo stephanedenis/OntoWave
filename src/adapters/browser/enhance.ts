@@ -20,24 +20,12 @@ function buildTocFromHtml(html: string): string {
 async function renderMermaid(container: HTMLElement) {
   const blocks = Array.from(container.querySelectorAll('pre code.language-mermaid')) as HTMLElement[]
   if (blocks.length === 0) return
-  const { default: mermaid } = await import('mermaid')
-  mermaid.initialize({ startOnLoad: false, securityLevel: 'loose' as any })
-  let idx = 0
-  for (const code of blocks) {
-    const txt = code.textContent || ''
-    const pre = code.closest('pre')!
-    const wrapper = document.createElement('div')
-    wrapper.className = 'mermaid'
-    const id = `mmd-${Date.now()}-${idx++}`
-    try {
-      const { svg } = await mermaid.render(id, txt)
-      wrapper.innerHTML = svg
-    } catch {
-      // fallback: keep source text if render fails
-      wrapper.textContent = txt
-    }
-    pre.replaceWith(wrapper)
-  }
+  const extBase = ((globalThis as any).__OW_EXTENSION_BASE_URL__ as string | undefined) || './extensions/'
+  const extUrl = `${extBase.replace(/\/?$/, '/') }mermaid.js`
+  const mod = await import(/* @vite-ignore */ extUrl)
+  const render = mod.renderMermaidInContainer as ((node: HTMLElement) => Promise<void>) | undefined
+  if (!render) return
+  await render(container)
 }
 
 async function fetchAndRenderDiagram(placeholder: HTMLElement): Promise<void> {

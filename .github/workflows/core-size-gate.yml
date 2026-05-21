@@ -1,0 +1,29 @@
+name: Core Size Gate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  core-size:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build package
+        run: npm run build:package
+
+      - name: Enforce core size threshold
+        run: npm run check:size-core

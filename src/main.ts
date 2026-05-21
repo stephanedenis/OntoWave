@@ -3,7 +3,6 @@ import { browserConfig } from './adapters/browser/config'
 import { browserContent } from './adapters/browser/content'
 import { browserRouter } from './adapters/browser/router'
 import { browserView } from './adapters/browser/view'
-import { createMd as createMdV2 } from './adapters/browser/md'
 import { enhancePage } from './adapters/browser/enhance'
 import { buildSidebar, buildPrevNext } from './adapters/browser/navigation'
 import { createSearch } from './adapters/browser/search'
@@ -12,12 +11,8 @@ import { getJsonFromBundle, getTextFromBundle } from './adapters/browser/bundle'
 import { primeInlineConfigBundle } from './adapters/browser/config'
 import { initUx } from './adapters/browser/ux'
 import { pickPreferredLanguage } from './core/logic'
+import { minimalRender } from './core/minimal-md'
 import { BrowserExtensionRegistry } from './adapters/browser/extension-registry'
-import markdownRenderer from './extensions/markdown'
-import mermaidRenderer from './extensions/mermaid'
-import katexRenderer from './extensions/katex'
-import highlightRenderer from './extensions/highlight'
-import plantumlRenderer from './extensions/plantuml'
 
 // CSS injecté quand la bibliothèque bootstrappe elle-même le DOM (page quasi-vide)
 const BOOTSTRAP_CSS = `
@@ -224,9 +219,35 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   document.addEventListener('touchend', () => { dragging = false })
 }
 
+function inferExtensionBaseUrl(): string {
+  if (typeof document === 'undefined') return './extensions/'
+
+  const scriptCandidates = Array.from(document.querySelectorAll('script[src]'))
+    .map((el) => (el as HTMLScriptElement).src)
+    .filter(Boolean)
+
+  const src = scriptCandidates.find((s) => /ontowave(\.min)?\.js(?:\?|$)/.test(s))
+  if (!src) return './extensions/'
+
+  try {
+    const url = new URL(src, window.location.href)
+    const path = url.pathname.replace(/[^/]*$/, '')
+    return `${url.origin}${path}extensions/`
+  } catch {
+    return './extensions/'
+  }
+}
+
 ;(async () => {
   // Toggle engine via config.json; fallback v2 par défaut si absent
   const cfg = primeInlineConfigBundle() || getJsonFromBundle('/config.json') || {}
+  const extensionBase = inferExtensionBaseUrl()
+  const rawExt = (cfg.extensions || {}) as { base?: string[]; preload?: string[]; lazy?: string[] }
+  const mergedExt = {
+    ...rawExt,
+    base: rawExt.base?.length ? rawExt.base : [extensionBase],
+  }
+  ;(cfg as Record<string, unknown>).extensions = mergedExt
   // Bootstrapper le DOM si la page est quasi-vide (pas de #app fourni)
   bootstrapDom(cfg as Record<string, unknown>)
   const engine = cfg.engine ?? 'v2'
@@ -275,14 +296,15 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   const ux = cfg.ux !== false ? initUx(uxOptions) : null
 
   // --- Registre des extensions ---
-  // Les extensions sont enregistrées ici (bundlé) ; dans une future étape (lot E),
-  // elles seront chargées dynamiquement depuis dist/extensions/*.js.
+  // Les extensions sont chargées dynamiquement depuis dist/extensions/*.js.
   const extensionRegistry = new BrowserExtensionRegistry()
-  extensionRegistry.register(markdownRenderer)
-  extensionRegistry.register(mermaidRenderer)
-  extensionRegistry.register(katexRenderer)
-  extensionRegistry.register(highlightRenderer)
-  extensionRegistry.register(plantumlRenderer)
+
+  const extBase = (mergedExt.base?.[0] || './extensions/').replace(/\/?$/, '/')
+  ;(globalThis as Record<string, unknown>).__OW_EXTENSION_BASE_URL__ = extBase
+  const preload = mergedExt.preload || []
+  for (const name of preload) {
+    void extensionRegistry.load(name, `${extBase}${name}.js`).catch(() => {})
+  }
 
   // Badge d'avertissement : écouter les événements d'état des extensions
   const loadingExtensions = new Set<string>()
@@ -326,7 +348,7 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
       content: browserContent,
       router: browserRouter,
       view: browserView,
-  md: createMdV2({ light: false }),
+      md: { render: (src: string) => minimalRender(src) },
       registry: extensionRegistry,
       enhance: { afterRender: async (html, _route) => {
         const appEl = document.getElementById('app')!

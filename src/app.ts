@@ -68,6 +68,12 @@ export function createApp(deps: {
   let disposer: (() => void) | null = null
   let cfg: AppConfig | null = null
 
+  function getExtensionUrl(name: string): string {
+    const configuredBase = cfg?.extensions?.base?.[0] || './extensions/'
+    const base = configuredBase.endsWith('/') ? configuredBase : `${configuredBase}/`
+    return `${base}${name}.js`
+  }
+
   /** Applique le mode d'affichage (html / md / split) et met à jour la vue. */
   function applyViewMode(html: string, mdSrc: string, viewMode: string): void {
     const mode = viewMode.toLowerCase()
@@ -113,7 +119,15 @@ export function createApp(deps: {
       const title = fileName.replace(/\.puml$/i, '')
       if (pumlSrc != null) {
         const mdSrc = `\`\`\`plantuml\n${pumlSrc}\n\`\`\``
-        const html = deps.md.render(mdSrc)
+        let html = deps.md.render(mdSrc)
+        if (deps.registry) {
+          try {
+            const mdExt = await deps.registry.load('markdown', getExtensionUrl('markdown'))
+            html = await mdExt.render(mdSrc, routePath)
+          } catch {
+            // fallback on minimal renderer if extension is unavailable
+          }
+        }
         deps.view.setHtml(html)
         deps.view.setTitle(`${title} — OntoWave`)
         await deps.enhance?.afterRender(html, route)
@@ -152,7 +166,7 @@ export function createApp(deps: {
         // Phase 2 : charger l'extension Markdown et re-rendre
         // Aucun reset de scroll/navigation — on met à jour uniquement le contenu
         try {
-          const mdExt = await registry.load('markdown')
+          const mdExt = await registry.load('markdown', getExtensionUrl('markdown'))
           html = await mdExt.render(mdSrc, routePath)
           applyViewMode(html, mdSrc, viewMode)
         } catch {

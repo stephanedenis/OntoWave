@@ -1,0 +1,1 @@
+var e={name:`katex`,handles:[],canRender(e){return!1},async render(e,t){return e}};export{e as default};
