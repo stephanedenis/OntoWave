@@ -561,47 +561,11 @@ function inferExtensionBaseUrl(): string {
       } catch {}
     } catch {}
   } else {
-    // Legacy path: import legacy modules dynamically to keep bundle small if unused
-    const [{ getCurrentRoute, onRouteChange }, { createMd, rewriteLinks }] = await Promise.all([
-      import('./router'),
-      import('./markdown'),
-    ])
-    type Root = { base: string; root: string }
-    const appEl = document.getElementById('app')!
-    const md = createMd()
-    function resolveCandidates(roots: Root[], path: string) {
-      const candidates: string[] = []
-      const p = path.replace(/\/$/, '') || '/'
-      for (const r of roots) {
-        const prefix = r.root.replace(/\/$/, '')
-        const base = p === '/' ? '/index' : p
-        candidates.push(`${prefix}${base}.md`)
-        candidates.push(`${prefix}${p}/index.md`)
-      }
-      return candidates
+    console.error('OntoWave: unknown engine', engine)
+    const appEl = document.getElementById('app')
+    if (appEl) {
+      appEl.innerHTML = `<p>Moteur non supporte: <code>${String(engine)}</code></p>`
     }
-  async function loadMarkdown(roots: Root[], routePath: string): Promise<string> {
-      const cands = resolveCandidates(roots, routePath)
-      for (const url of cands) {
-        try {
-          const res = await fetch(url, { cache: 'no-cache' })
-          if (res.ok) return await res.text()
-        } catch {}
-      }
-  return `# 404 — Not found\n\nAucun document pour \`${routePath}\``
-    }
-    const cfg2 = cfg
-    async function renderRoute() {
-      const { path } = getCurrentRoute()
-      const mdSrc = await loadMarkdown(cfg2.roots, path)
-      const html = md.render(mdSrc)
-      appEl.innerHTML = html
-      rewriteLinks(appEl)
-      const h1 = appEl.querySelector('h1')?.textContent?.trim()
-      if (h1) document.title = `${h1} — OntoWave`
-    }
-    await renderRoute()
-    onRouteChange(() => { void renderRoute() })
   }
 
   // Recherche opt-in: inactive par défaut à moins qu'un index préconstruit existe
