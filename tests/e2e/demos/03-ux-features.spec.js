@@ -6,6 +6,14 @@ import { test, expect } from '@playwright/test';
 test.describe('Demo 03-ux: UX Features', () => {
   let consoleErrors = [];
 
+  async function openFloatingMenu(page) {
+    const menuIcon = page.locator('#ontowave-floating-menu .ontowave-menu-icon');
+    await expect(menuIcon).toBeVisible({ timeout: 6000 });
+    await menuIcon.click();
+    await expect(page.locator('#ontowave-floating-menu')).toHaveClass(/expanded/);
+    await expect(page.locator('#ow-ux-toolbar')).toBeVisible({ timeout: 6000 });
+  }
+
   test.beforeEach(async ({ page }) => {
     consoleErrors = [];
 
@@ -50,7 +58,7 @@ test.describe('Demo 03-ux: UX Features', () => {
 
   test('should cycle reading themes on button click', async ({ page }) => {
     await page.goto('/demos/03-ux/ux.html');
-    await page.waitForSelector('#ow-ux-toolbar', { timeout: 6000 });
+    await openFloatingMenu(page);
 
     // Initial theme applied
     const hasThemeClass = await page.evaluate(() =>
@@ -71,7 +79,7 @@ test.describe('Demo 03-ux: UX Features', () => {
 
   test('should not expose removed notes/pdf controls', async ({ page }) => {
     await page.goto('/demos/03-ux/ux.html');
-    await page.waitForSelector('#ow-ux-toolbar', { timeout: 6000 });
+    await openFloatingMenu(page);
 
     const notesBtnCount = await page.locator('button.ow-theme-btn').filter({ hasText: '📝' }).count();
     const pdfBtnCount = await page.locator('button.ow-theme-btn').filter({ hasText: '🖨' }).count();
