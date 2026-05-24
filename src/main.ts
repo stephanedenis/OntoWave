@@ -58,7 +58,13 @@ body{margin:0;padding:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'D
  * Crée #app, le menu flottant icône-vague et injecte les styles de base.
  */
 function bootstrapDom(cfg: Record<string, unknown>): void {
-  if (document.getElementById('app')) return  // page avec HTML custom → rien à faire
+  const containerRoot = resolveContainerTarget((cfg as { container?: unknown }).container)
+  const getScopedById = (id: string) => {
+    if (containerRoot) return containerRoot.querySelector<HTMLElement>(`#${CSS.escape(id)}`)
+    return document.getElementById(id)
+  }
+
+  if (getScopedById('app')) return  // page avec HTML custom → rien à faire
 
   if (!document.getElementById('ow-bootstrap-styles')) {
     const style = document.createElement('style')
@@ -72,9 +78,14 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   const app = document.createElement('div')
   app.id = 'app'
   wrapper.appendChild(app)
-  document.body.appendChild(wrapper)
+  if (containerRoot) {
+    if (!containerRoot.style.position) containerRoot.style.position = 'relative'
+    containerRoot.appendChild(wrapper)
+  } else {
+    document.body.appendChild(wrapper)
+  }
 
-  if (document.getElementById('ontowave-floating-menu')) return
+  if (getScopedById('ontowave-floating-menu')) return
 
   const i18n = cfg.i18n as Record<string, unknown> | undefined
   const roots = (cfg.roots as Array<{ base: string; root: string }>) || []
@@ -92,7 +103,12 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
 
   const floatingMenu = document.createElement('div')
   floatingMenu.id = 'ontowave-floating-menu'
-  document.body.appendChild(floatingMenu)
+  if (containerRoot) {
+    floatingMenu.style.position = 'absolute'
+    containerRoot.appendChild(floatingMenu)
+  } else {
+    document.body.appendChild(floatingMenu)
+  }
 
   // Icon
   const icon = document.createElement('span')
@@ -219,6 +235,15 @@ function bootstrapDom(cfg: Record<string, unknown>): void {
   document.addEventListener('touchend', () => { dragging = false })
 }
 
+function resolveContainerTarget(target: unknown): HTMLElement | null {
+  if (typeof document === 'undefined') return null
+  if (target instanceof HTMLElement) return target
+  if (typeof target === 'string' && target.trim()) {
+    return document.querySelector<HTMLElement>(target) || null
+  }
+  return null
+}
+
 function inferExtensionBaseUrl(): string {
   if (typeof document === 'undefined') return './extensions/'
 
@@ -241,6 +266,11 @@ function inferExtensionBaseUrl(): string {
 ;(async () => {
   // Toggle engine via config.json; fallback v2 par défaut si absent
   const cfg = primeInlineConfigBundle() || getJsonFromBundle('/config.json') || {}
+  const containerRoot = resolveContainerTarget((cfg as { container?: unknown }).container)
+  const getScopedById = (id: string): HTMLElement | null => {
+    if (containerRoot) return containerRoot.querySelector<HTMLElement>(`#${CSS.escape(id)}`)
+    return document.getElementById(id)
+  }
   const extensionBase = inferExtensionBaseUrl()
   const rawExt = (cfg.extensions || {}) as { base?: string[]; preload?: string[]; lazy?: string[] }
   const mergedExt = {
@@ -254,13 +284,13 @@ function inferExtensionBaseUrl(): string {
 
   // UI options
   try {
-    const H = document.getElementById('site-header')
-    const S = document.getElementById('sidebar')
-    const T = document.getElementById('toc')
-    const F = document.getElementById('ontowave-floating-menu')
+    const H = getScopedById('site-header')
+    const S = getScopedById('sidebar')
+    const T = getScopedById('toc')
+    const F = getScopedById('ontowave-floating-menu')
     const ui = cfg.ui || {}
     if (ui.minimal) {
-  document.body.classList.add('minimal')
+      if (!containerRoot) document.body.classList.add('minimal')
       H?.classList.add('hidden-by-config'); S?.classList.add('hidden-by-config'); T?.classList.add('hidden-by-config')
     } else {
       if (ui.header === false) H?.classList.add('hidden-by-config')
@@ -289,7 +319,7 @@ function inferExtensionBaseUrl(): string {
     }
   } catch {}
   // Brand
-  const brand = document.getElementById('brand')
+  const brand = getScopedById('brand')
   if (brand && typeof cfg.brand === 'string') brand.textContent = cfg.brand
   // UX module: init si activé (cfg.ux !== false)
   const uxOptions = typeof cfg.ux === 'object' ? cfg.ux : {}
@@ -351,7 +381,8 @@ function inferExtensionBaseUrl(): string {
       md: { render: (src: string) => minimalRender(src) },
       registry: extensionRegistry,
       enhance: { afterRender: async (html, _route) => {
-        const appEl = document.getElementById('app')!
+        const appEl = getScopedById('app')
+        if (!appEl) return
         // Signaler le chargement des extensions actives (mermaid, plantuml)
         // afin d'alimenter le badge d'avertissement pendant la phase de rendu enrichi.
         const hasMermaid = html.includes('language-mermaid')
@@ -488,7 +519,7 @@ function inferExtensionBaseUrl(): string {
         // Sidebar
         const side = await buildSidebar()
         if (side) {
-          const el = document.getElementById('sidebar')
+          const el = getScopedById('sidebar')
           if (el) el.innerHTML = side
         }
         // Prev/Next computation (used by footer and prefetch)
@@ -527,7 +558,8 @@ function inferExtensionBaseUrl(): string {
     await app.start()
     // Si la page d’accueil n’existe pas, afficher une page de configuration
     try {
-      const appEl = document.getElementById('app')!
+      const appEl = getScopedById('app')
+      if (!appEl) return
       const isRoot = (location.hash === '' || location.hash === '#/' || location.hash === '#')
       if (/404 — Not found/.test(appEl.textContent || '') && isRoot) {
         appEl.innerHTML = `
@@ -555,14 +587,14 @@ function inferExtensionBaseUrl(): string {
         const hasSitemap = await check('/sitemap.json')
         const needs = !hasNav || (!hasSearchIdx && !hasSitemap)
         if (needs) {
-          const a = document.querySelector('#ontowave-floating-menu a[href="#/config"]') as HTMLAnchorElement | null
+          const a = (containerRoot || document).querySelector('#ontowave-floating-menu a[href="#/config"]') as HTMLAnchorElement | null
           if (a && !(a.textContent || '').includes('⚠️')) a.textContent = (a.textContent || 'Configuration') + ' ⚠️'
         }
       } catch {}
     } catch {}
   } else {
     console.error('OntoWave: unknown engine', engine)
-    const appEl = document.getElementById('app')
+    const appEl = getScopedById('app')
     if (appEl) {
       appEl.innerHTML = `<p>Moteur non supporte: <code>${String(engine)}</code></p>`
     }
@@ -570,13 +602,13 @@ function inferExtensionBaseUrl(): string {
 
   // Recherche opt-in: inactive par défaut à moins qu'un index préconstruit existe
   try {
-    const box = document.getElementById('search') as HTMLInputElement | null
-    const resBox = document.getElementById('search-results')
-    const opt = document.getElementById('opt-search') as HTMLInputElement | null
-    const importBtn = document.getElementById('opt-pages') as HTMLInputElement | null
-  const exportBtn = document.getElementById('opt-export-index') as HTMLButtonElement | null
-  const dlPagesBtn = document.getElementById('opt-download-pages') as HTMLButtonElement | null
-    const state = document.getElementById('opt-state') as HTMLElement | null
+    const box = getScopedById('search') as HTMLInputElement | null
+    const resBox = getScopedById('search-results')
+    const opt = getScopedById('opt-search') as HTMLInputElement | null
+    const importBtn = getScopedById('opt-pages') as HTMLInputElement | null
+    const exportBtn = getScopedById('opt-export-index') as HTMLButtonElement | null
+    const dlPagesBtn = getScopedById('opt-download-pages') as HTMLButtonElement | null
+    const state = getScopedById('opt-state') as HTMLElement | null
     const s = createSearch()
     let active = false
     const ensure = async () => {

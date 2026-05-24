@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OntoWave Demo 04 - Component Container</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        background: #f6f8fb;
+      }
+      .host-shell {
+        max-width: 1100px;
+        margin: 2rem auto;
+        padding: 1rem;
+      }
+      .host-panel {
+        background: #ffffff;
+        border: 1px solid #d8dee4;
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+      #notes-viewer {
+        position: relative;
+        min-height: 320px;
+        border: 2px dashed #8ca7c2;
+        border-radius: 12px;
+        background: #ffffff;
+        padding: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="host-shell">
+      <div id="host-header" class="host-panel">Host app header (outside OntoWave container)</div>
+      <div id="notes-viewer"></div>
+      <div id="host-footer" class="host-panel">Host app footer (outside OntoWave container)</div>
+    </div>
+
+    <script>
+      window.ontoWaveConfig = {
+        engine: 'v2',
+        container: '#notes-viewer',
+        roots: [{ base: 'fr', root: '/demos/04-component' }],
+        i18n: { default: 'fr', supported: ['fr'] },
+        ui: { header: false, sidebar: false, toc: false, footer: false, minimal: false, menu: true },
+      };
+    </script>
+    <script src="/ontowave.min.js"></script>
+  </body>
+</html>
