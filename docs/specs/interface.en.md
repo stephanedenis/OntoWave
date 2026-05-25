@@ -272,7 +272,7 @@ While the panel is open:
   <script>
     window.ontoWaveConfig = { roots: [...], i18n: {...} };
   </script>
-  <script src="/ontowave.min.js"></script>
+  <script src="https://unpkg.com/ontowave@latest/dist/ontowave.min.js"></script>
 </body>
 </html>
 ```

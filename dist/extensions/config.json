@@ -1,0 +1,10 @@
+{
+  "roots": [
+    { "base": "fr", "root": "/" },
+    { "base": "en", "root": "/" }
+  ],
+  "i18n": {
+    "default": "fr",
+    "supported": ["fr", "en"]
+  }
+}
