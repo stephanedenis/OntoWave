@@ -24,7 +24,7 @@ Ce guide centralise :
 OntoWave peut fonctionner sans code applicatif, via script CDN :
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ontowave@1.0.76/dist/ontowave.min.js"></script>
 ```
 
 La librairie initialise automatiquement le rendu.
@@ -48,7 +48,7 @@ window.ontoWaveConfig = {
   i18n: { default: 'fr', supported: ['fr', 'en'] }
 }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ontowave@1.0.76/dist/ontowave.min.js"></script>
 ```
 
 ### 2.3 Initialisation programmatique (bundle JS)

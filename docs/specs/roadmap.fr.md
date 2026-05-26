@@ -30,7 +30,7 @@ OntoWave s'intègre naturellement dans l'écosystème Panini (PaniniFS, Publicat
 | #76 | Menu flottant — verre givré, pill, drag & drop | Spec complète dans [interface.fr.md §4-5](interface.fr.md) |
 | #17 | Interface responsive et mobile-first | |
 | à créer | Implémenter `window.ontoWaveConfig` comme sucre syntaxique | Ref : [interface.fr.md §2](interface.fr.md) — convertit l'objet en `__ONTOWAVE_BUNDLE__['/config.json']` |
-| à créer | Pages de démo en deux versions (CDN @latest + local CI) | Ref : [interface.fr.md §11](interface.fr.md) |
+| à créer | Pages de démo en deux versions (CDN versionnée + local CI) | Ref : [interface.fr.md §11](interface.fr.md) |
 
 ## Palier v2.0 — Navigateur de contenu universel
 

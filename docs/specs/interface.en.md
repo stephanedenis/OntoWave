@@ -23,7 +23,7 @@ A correct OntoWave page contains only:
   <script>
     window.ontoWaveConfig = { roots: [{ base: '/', root: '/' }] };
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ontowave@1.0.76/dist/ontowave.min.js"></script>
 </body>
 </html>
 ```
@@ -51,7 +51,7 @@ The simplest API. Declare the configuration object directly in the page, before 
       i18n: { default: 'en', supported: ['en', 'fr'] }
     };
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ontowave@1.0.76/dist/ontowave.min.js"></script>
 </body>
 ```
 
@@ -272,7 +272,7 @@ While the panel is open:
   <script>
     window.ontoWaveConfig = { roots: [...], i18n: {...} };
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ontowave@1.0.76/dist/ontowave.min.js"></script>
 </body>
 </html>
 ```
@@ -325,11 +325,11 @@ Each demo page in `docs/` must exist in **two copies**:
 
 | Version | `<script src>` | Use |
 |---------|----------------|-----|
-| `demo-xxx.html` | CDN `@latest` via jsdelivr | Published site, always up to date |
+| `demo-xxx.html` | CDN pinned version via jsDelivr | Published site, always explicit |
 | `demo-xxx.ci.html` | `/ontowave.min.js` (local) | Playwright CI, reproducible tests |
 
 This separation ensures:
-- The published site always shows the latest released version
+- The published site always shows the pinned released version documented here
 - CI tests run against the exact local build being validated
 
 ---

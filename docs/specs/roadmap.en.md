@@ -30,7 +30,7 @@ OntoWave integrates naturally into the Panini ecosystem (PaniniFS, PublicationEn
 | #76 | Floating menu — frosted glass, pill, drag & drop | Full spec in [interface.en.md §4-5](interface.en.md) |
 | #17 | Responsive and mobile-first interface | |
 | to create | Implement `window.ontoWaveConfig` as syntactic sugar | Ref: [interface.en.md §2](interface.en.md) — converts object to `__ONTOWAVE_BUNDLE__['/config.json']` |
-| to create | Demo pages in two versions (CDN @latest + local CI) | Ref: [interface.en.md §11](interface.en.md) |
+| to create | Demo pages in two versions (versioned CDN + local CI) | Ref: [interface.en.md §11](interface.en.md) |
 
 ## v2.0 — Universal Content Navigator
 

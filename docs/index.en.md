@@ -44,7 +44,7 @@ Explore OntoWave through **interactive and tested demos**:
 </head>
 <body>
     <!-- CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ontowave@1.0.76/dist/ontowave.min.js"></script>
 </body>
 </html>
 ```

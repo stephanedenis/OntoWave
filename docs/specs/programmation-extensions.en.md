@@ -24,7 +24,7 @@ This guide centralizes:
 OntoWave works without custom app code via CDN script:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ontowave@1.0.76/dist/ontowave.min.js"></script>
 ```
 
 The library auto-initializes rendering.
@@ -48,7 +48,7 @@ window.ontoWaveConfig = {
   i18n: { default: 'fr', supported: ['fr', 'en'] }
 }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ontowave@1.0.76/dist/ontowave.min.js"></script>
 ```
 
 ### 2.3 Programmatic initialization (JS bundle)

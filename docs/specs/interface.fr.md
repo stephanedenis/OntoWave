@@ -20,7 +20,7 @@ Une page OntoWave correcte contient uniquement :
   <title>Mon site</title>
 </head>
 <body>
-  <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ontowave@1.0.76/dist/ontowave.min.js"></script>
 </body>
 </html>
 ```
@@ -48,7 +48,7 @@ L'API la plus simple : déclarer l'objet de configuration directement dans la pa
       i18n: { default: 'fr', supported: ['fr', 'en'] }
     };
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ontowave@1.0.76/dist/ontowave.min.js"></script>
 </body>
 ```
 
@@ -270,7 +270,7 @@ Pendant que le panneau est ouvert :
   <script>
     window.ontoWaveConfig = { roots: [...], i18n: {...} };
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/ontowave@latest/dist/ontowave.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ontowave@1.0.76/dist/ontowave.min.js"></script>
 </body>
 </html>
 ```
@@ -321,7 +321,7 @@ Les pages de démo dans `docs/demos/` existent en deux versions :
 
 | Version | URL / Fichier | But |
 |---------|---------------|-----|
-| **CDN** | `*.html` (référencé dans le site) | Démontre l'usage réel avec `@latest` |
+| **CDN** | `*.html` (référencé dans le site) | Démontre l'usage réel avec une version épinglée (jsDelivr) |
 | **Locale** | `*.local.html` (ou equivalent CI) | Tests E2E Playwright — charge `/ontowave.min.js` local |
 
 Cette dualité garantit :
